@@ -4,7 +4,7 @@ echo "here: $1"
 
 if [ ! -e $1/../dist/rdfcoder-0.5.jar ]
 then
-    echo "rdfcoder not yet distribute: try doing * ant dist * first" 1>&2
+    echo "rdfcoder not yet distributed: try doing * ant dist * first" 1>&2
     exit 1
     fi
 
