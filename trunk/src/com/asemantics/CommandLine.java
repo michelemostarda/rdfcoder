@@ -34,7 +34,7 @@ public class CommandLine {
 
     public static final int VERSION_MAJOR  = 0;
 
-    public static final int VERSION_MINOR  = 6; 
+    public static final int VERSION_MINOR  = 5; 
 
     public static final String COMMAND_PREFIX = "command_";
 

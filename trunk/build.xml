@@ -28,7 +28,7 @@
   	<!-- =================================================================== -->
   	<property name="name"    value="rdfcoder"/>
   	<property name="Name"    value="RDF Coder"/>
-  	<property name="version" value="0.6"/>
+  	<property name="version" value="0.5"/>
   	<property name="year"    value="2008"/>
 
   	<property name="debug" value="on"/>
