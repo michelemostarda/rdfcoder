@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr" lang="en">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Language" content="en" />
+        <meta name="keywords" content="sparql grammar parser antlr" />
+        <link rel="shortcut icon" href="favicon.ico" />
+        <link rel="license" href="" />
+        <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
+        <title>RDFCoder - Architecture</title>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="header">
+                <h1>RDFCoder - Architecture</h1>
+            </div>
+
+            <div id="page">
+                <!-- START SIDEBAR -->
+                <div id="sidebar">
+                    <div id="sidebarslidebox">
+                        <div>
+                            <div class="related">
+                                <div>
+                                    <h3>Architecture</h3>
+                                    <ul>
+										<li><a href="#overall_architecture">Overall Architecture</a></li>
+                                        <li><a href="#java_source_parser">Java Source Parser</a></li>
+                                        <li><a href="#java_bytecode_parser">Java Bytecode Parser</a></li>
+										<li><a href="#javadoc_parser">Javadoc Parser</a></li>
+										<li><a href="#code_handler">Code Handler</a></li>
+										<li><a href="#objects_table">Objects Table</a></li>
+										<li><a href="#code_model">Code Model</a></li>
+										<li><a href="#code_storage">Code Storage</a></li>
+										<li><a href="#query_engine">Query Engine</a></li>
+										<li><a href="#model_inspector">Model Inspector</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END SIDEBAR -->
+
+                <div id="content">
+                    <div class="article">
+                        <h1 class="firstHeading">Architecture</h1>
+
+                        <a name="overall_architecture"></a>
+                        <h2>Overall Architecture</h2>
+                        <p>
+							The figure below shows the <b>RDF Coder</b> overall architecture.
+							The main elements of architecture are:
+							<ul>
+								<li>
+									<b>Java Source Parser</b> - a set of classes able to parse <b>.java</b> files and convert its contents
+									in <b>CodeHandler</b> events.
+								</li>
+								<li>
+									<b>Java Bytecode Parser</b> - a set of classes able to parse <b>.class</b> files (eventually inside <b>.jar</b> archives) and convert its contents
+									in <b>CodeHandler</b> events.
+								</li>
+								<li>
+									<b>Javadoc Parser</b> - a set of classes able to parse <b>.java</b> files <b>Javadoc</b> documentation and convert it
+									in <b>CodeHandler</b> events.
+								</li>
+								<li>
+									<b>CodeHandler</b> - the Code Handler is a class able to convert class events in RDF triples. <br/>
+									The way the Code handler translates received events into triples is described in <a href="model.html">model</a> section.
+									Despite the Code Handler currently generates only RDF triples, in theory may generate any entity representation
+									compliant with the interface of the <b>CodeModel</b>. 
+								</li>
+								<li>
+									<b>ObjectsTable</b> - the Code Handler needs to fully qualify (i.e.: add full package qualification) all the objects it finds 
+									during the compilation process. 
+									<br/>
+									The fully qualification is done by populating and querying the Objects Table.Every time that an Object needs 
+									to be fully qualified, the Objects Table is inquired by providing the object name and the <b>Imports Context</b>
+									that is the list of the imports provided when used the object itself.
+								</li>
+								<li>
+									<b>CodeModel</b> - the Code Model is a container of the triples representing a bunch of related libraries. 
+									<br/>
+									A code model provides operations to add triples, remove triples, perform basic search on triples, perform complex queries. 
+									<br/>
+									Despite currently the only implementation provided is an RDF model, the Code Model can be anything able to 
+									store relationships among the entities involved in the code representation. 
+								</li>
+								<li>
+									<b>CodeStorage</b> - the Code Storage is a set of classes meant to make <b>persistent</b> a code model.
+									<br/>
+									There may be several persistent storages like Filesystem or a <b>RDMS</b>.
+								</li>
+								<li>
+									<b>QueryEngine</b> - the Query Engine is a set of classes meant to perform queries on a storage.
+									<br/>
+									At the moment the only supported query language is <a href="http://path/to/w3c/sparql">SPARQL</a>.
+								</li>
+								<li>
+									<b>ModelInspector</b> - the Model Inspector is a high level representation of the CodeModel.
+									<br/>
+									By using the Model Inspector it is possible to navigate Java objects representing the entities stored
+									into the model.
+								</li>
+							</ul>
+							<br/>
+							<font color="red">TODO</font>	
+						</p>
+
+                        <p><img src="images/rdf_coder_architecture.jpg"></p>
+                    </div>
+
+                    <div class="article">
+                        <h1 class="firstHeading">Java Source Parser</h1>
+
+                        <a name="java_source_parser"></a>
+                        <h2>JavaSourceFileParser</h2>
+						<h2>JavaSourceDirParser</h2>
+                        <p>
+							<font color="red">TODO</font>
+						</p>
+                    </div>
+
+                    <div class="article">
+                        <h1 class="firstHeading">Java Bytecode Parser</h1>
+
+                        <a name="java_bytecode_parser"></a>
+                        <h2>JavaBytecodeFileParser</h2>
+						<h2>JavaBytecodeJarParser</h2>
+                        <p>
+							<font color="red">TODO</font>
+						</p>
+                    </div>
+
+                    <div class="article">
+                        <h1 class="firstHeading">Javadoc Parser</h1>
+
+                        <a name="javavadoc_parser"></a>
+                        <h2>JavadocFileParser</h2>
+						<h2>JavadocDirParser</h2>
+                        <p>
+							<font color="red">TODO</font>
+						</p>
+                    </div>
+
+                    <div class="article">
+                        <h1 class="firstHeading">Code Handler</h1>
+
+                        <a name="code_handler"></a>
+                        <p>
+							<font color="red">TODO</font>
+						</p>
+                    </div>
+
+                    <div class="article">
+                        <h1 class="firstHeading">Objects Table</h1>
+
+                        <a name="objects_table"></a>
+                        <p>
+							<font color="red">TODO</font>
+						</p>
+                    </div>
+
+                    <div class="article">
+                        <h1 class="firstHeading">Code Model</h1>
+
+                        <a name="code_model"></a>
+                        <p>
+							<font color="red">TODO</font>
+						</p>
+                    </div>
+
+                    <div class="article">
+                        <h1 class="firstHeading">Code Storage</h1>
+
+                        <a name="code_storage"></a>
+                        <p>
+							<font color="red">TODO</font>
+						</p>
+                    </div>
+
+                    <div class="article">
+                        <h1 class="firstHeading">Query Engine</h1>
+
+                        <a name="query_engine"></a>
+                        <h2>Query Engine</h2>
+                        <p>
+							<font color="red">TODO</font>
+						</p>
+                    </div>
+
+                    <div class="article">
+                        <h1 class="firstHeading">Model Inspector</h1>
+
+                        <a name="model_inspector"></a>
+                        <p>
+							<font color="red">TODO</font>
+						</p>
+                    </div>
+
+                <!-- end id content -->
+
+                <div id="footer">
+                    <ul>
+                        <li>Copyright &copy; 2007 - The <a href="http://code.google.com/p/rdf-coder/">RDF Coder</a> team</li>
+                    </ul>
+                    <ul>
+                        <li>Content is available under <a href="http://path/to/apache/license">Apache License</a> [the Apache License].</li>
+                    </ul>
+                </div>
+
+            </div>
+            <!-- end id page -->
+
+        </div>
+        <!-- end id container -->
+    </body>
+
+</html>

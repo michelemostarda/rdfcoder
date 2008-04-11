@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr" lang="en">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Language" content="en" />
+        <meta name="keywords" content="sparql grammar parser antlr" />
+        <link rel="shortcut icon" href="favicon.ico" />
+        <link rel="license" href="" />
+        <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
+        <title>RDFCoder - Quick Start</title>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="header">
+                <h1>RDFCoder - Quick Start</h1>
+            </div>
+
+            <div id="page">
+                <!-- START SIDEBAR -->
+                <div id="sidebar">
+                    <div id="sidebarslidebox">
+                        <div>
+
+                            <div class="related">
+                                <div>
+                                    <h3>Index</h3>
+                                    <ul>
+                                        <li><a href="#createmodel">Create Model</a></li>
+                                        <li><a href="#storemodel">Store Model</a></li>
+										<li><a href="#querymodel">Query Model</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END SIDEBAR -->
+
+                <div id="content">
+
+					<div class="article">
+                        <a name="commandline"></a>
+						<h1 class="firstHeading">Install RDFCoder</h1>
+						<p>
+							 Download the latest distribution of RDFCoder from the <a href="TODO">download page</a>.
+							 <br/>
+							 Extract the archive <i>rdf-coder-x.y.z.tgz</i> with the command:
+							 <br/>
+<pre>
+$ tar xvzf rdf-coder-x.y.z.tgz
+</pre>
+
+							Access the extracted folder:
+<pre>
+$ cd rdf-coder-x.y.z
+</pre>
+							Launch the bash script:
+<pre>
+$ bin/rdfcoder
+</pre>
+							<font color="red">TODO: windows users</font>	
+						</p>
+                    </div>
+
+					<div class="article">
+                        <a name="commandline"></a>
+						<h1 class="firstHeading">The Command Line</h1>
+						<p>
+							<b>RDFCoder</b> provides a useful Command Line interactive console.
+							<br/> 
+							The complete command line documentation can be found <a href="commandline.html">here</a>. 
+							<br/>
+							To obtain help on available commands type <font color="green">help</font>.
+							<br/>
+							<br/>
+							The main commands are:							
+							<table border="1">
+								<tr><td>newmodel</td><td>creates a new CodeModel to store library informations.</td></tr>
+								<tr><td>clearmodel</td><td>cleans the content of a CodeModel.</td></tr>
+								<tr><td>removemodel</td><td>removes a previously created CodeModel.</td></tr>
+								<tr><td>setmodel</td><td>allows to change the selected model.</td></tr>
+								<tr><td>list</td><td>lists all the currently loaded models.</td></tr>
+								<tr><td>querymodel</td><td>allows to perform a query (SPARQL) on the current model.</td></tr>
+								<tr><td>load</td><td>loads a library on the selected model.</td></tr>
+								<tr><td>savemodel</td><td>saves a model on a storage.</td></tr>
+							</table>
+						</p>
+                    </div>
+                    
+					<div class="article">
+                        <a name="createmodel"></a>
+						<h1 class="firstHeading">Create Model</h1>
+						<p> 
+							To create the model simply use the command <b>newmodel</b>
+							and set it as the selected model using <b>setmodel</b>.
+							<br/>
+							<code>
+								<font color="green">default > newmodel test</font>
+								<br/>
+								Created model: test
+								<br/>
+								<font color="green">default > setmodel test</font>
+								<br/>
+								default model: test
+								<br/>
+								<font color="green">test > load /path/to/yourlib.jar</font>
+								<br/>
+								loading /path/to/yourlib.jar ... done
+								<br/>
+								<font color="orange">[Statistics/Error output]</font>
+								<br/>
+								<font color="green">test > load /path/to/java/src/</font>
+								<br/>
+								loading /path/to/java/src/ ... done
+								<br/>
+								<font color="orange">[Statistics/Error output]</font>
+							</code>
+						</p>
+                    </div>
+
+					<div class="article">
+                        <a name="storemodel"></a>
+						<h1 class="firstHeading">Store Model</h1>
+						<p> 
+							To store the selected model use the command <b>savemodel</b>. The model can be stored either on
+							the Filesystem or a database storage or any kind of persistent storage.
+							<br/>
+							<code>
+								<font color="green">test > savemodel "fsfilename=/path/to/filename.rdf"</font>
+								<br/>
+								stored model "test" in "/path/to/filename.rdf"
+							</code>
+						</p>						
+                    </div>
+					
+					<div class="article">
+                        <a name="querymodel"></a>
+						<h1 class="firstHeading">Query Model</h1>
+						<p> 
+							To query the selected model use the command <b>querymodel</b> by providing a SPARQL query.
+							<br/>
+							<code>
+								<font color="green">test > querymodel "select ?a ?b ?c where {?a ?b ?c}"</font>
+								<br/>
+								-------------
+								<br/>
+								| a | b | c |
+								<br/>
+								<font color="orange">[query result]</font>
+								<br/>
+								-------------
+							</code>
+						</p>
+                    </div>
+
+                <!-- end id content -->
+
+                <div id="footer">
+                    <ul>
+                        <li>Copyright &copy; 2007 - The <a href="http://code.google.com/p/rdf-coder/">RDF Coder</a> team</li>
+                    </ul>
+                    <ul>
+                        <li>Content is available under <a href="http://path/to/apache/license">Apache License</a> [the Apache License].</li>
+                    </ul>
+                </div>
+
+            </div>
+            <!-- end id page -->
+
+        </div>
+        <!-- end id container -->
+    </body>
+
+</html>

@@ -1,0 +1,20 @@
+CodeModelFactory cmf = new JenaCodeModelFactory();
+CodeModel cm = cmf.createCodeModelInstance();
+
+CodeScanner cs = new JavaCodeScanner();
+cs.scan("src/", cm);
+
+cmf.save(cm, "identifier", "./persistence.dat");
+
+...
+
+
+CodeModelFactory cmf = new JenaCodeModelFactory();
+CodeModel cm = cmf.createCodeModelInstance();
+cmf.load(cm, "identifier", "./persistence.dat");
+
+cm.parentPackageOf("p1");
+
+QueryModel qm = CodeModelFactory.createQueryModel(cm);
+qm.getAllPackages();
+
