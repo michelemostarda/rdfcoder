@@ -1,0 +1,10 @@
+#!/bin/bash
+# Run the RDFCoder command line utility tool. 
+
+[ "$JAVA_HOME"   = "" ] && { echo "JAVA_HOME unset" 1>&2 ; exit 1 ; }
+
+# Make sure all the scripts are on the PATH
+P=`dirname $0`
+CP="`$P/rdfcoder_path $P`:$P/../dist/rdfcoder-0.5.jar"
+
+exec java -Xmx256m -cp "$CP" com.asemantics.CommandLine "$@" 2>&1
