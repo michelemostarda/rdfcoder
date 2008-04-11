@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+
+<!-- 
+	***********************************************************
+	*   JRefactory 2.9.19 Java 1.5 Grammar build system.
+	*
+   	*	Most useful targets:
+	*
+ 	* help   : provides usage help
+	* javacc : generates the Parser files on the given grammar.
+	*
+	* authors: Michele Mostarda ( michele.mostarda@gmail.com )
+	* version: $Id$
+	*
+	***********************************************************
+-->
+
+<project 
+	default="help"
+	name="jrefactory-2.9.19-rdfc-0.5" 
+	basedir="."
+>
+
+  	<!-- =================================================================== -->
+  	<!-- Build properties                                                    -->
+  	<!-- =================================================================== -->
+  	<property name="name"    value="jrefactory-2.9.19-rdfc-0.5"/>
+  	<property name="Name"    value="JRefactory 2.9.19 Java 1.5 Parser for RDF Coder"/>
+  	<property name="version" value="0.5"/>
+  	<property name="year"    value="2008"/>
+
+  	<property name="debug" value="on"/>
+
+  	<property name="src.dir"     value="${basedir}/src"/>
+	<property name="classes.dir" value="${basedir}/classes"/>
+  	<property name="docs.dir"    value="${basedir}/docs"/>
+  	<property name="lib.dir"     value="${basedir}/lib"/>
+  	<property name="parent.dir"  value="${basedir}/../"/>
+
+  	<property name="test.dir"     value="test"/>
+  	<property name="test.src.dir" value="${test.dir}/src"/>
+
+  	<property name="test.reports" value="${build.dir}/reports"/>
+  
+  	<property name="dist.dir" value="${basedir}/dist"/>
+
+	<property name="ast.dir" value="${basedir}/src/net/sourceforge/jrefactory/ast/"/>
+  	<property name="jjtree.file"  value="${basedir}/javacc/java1_5.jjt"/>
+	<property name="grammar.file" value="${ast.dir}/java1_5.jj"/>
+  
+  	<!-- =================================================================== -->
+  	<!-- Classpaths.		                                                 -->
+  	<!-- =================================================================== -->
+
+  <path id="build.classpath">
+     <pathelement path="${lib.dir}/javacc.jar"/>
+  </path>
+
+  <path id="test.build.classpath">
+    <pathelement path="${lib.dir}/junit.jar"/>
+  </path>
+
+  <!-- =================================================================== -->
+  <!-- Targets.						                                       -->
+  <!-- =================================================================== -->
+	
+	<target
+			name        = "help"
+			description = "Shows the build help."
+	>
+      <echo>=======================================================================</echo>
+      <echo>${Name}</echo>
+      <echo>=======================================================================</echo>
+      <exec executable="${ant.home}/bin/ant" os="Linux, Solaris, SunOS, FreeBSD, Mac OS X, Mac OS">
+          <arg value="-projecthelp" />
+      </exec>
+      <exec executable="${ant.home}/bin/ant.bat" os="Windows NT, Windows 2000, Windows XP">
+          <arg value="-projecthelp" />
+      </exec>
+	    <echo/>
+      <echo>=======================================================================</echo>
+				
+	</target>
+
+	<target 
+		name="javacc"
+		description="compiles the JRefactory java1_5.jjt grammar to java source files."
+   	>
+    	<mkdir dir="${ast.dir}"/>
+     	<java classname="jjtree" fork="yes" dir="${ast.dir}">
+        	<arg value="${jjtree.file}"/>
+			<classpath  refid="build.classpath"/>
+     	</java>
+
+     	<java classname="javacc" fork="yes" dir="${ast.dir}">
+        	<arg value="${grammar.file}"/>
+        	<classpath  refid="build.classpath"/>
+     	</java>
+  	</target>
+	
+	<target
+		name        = "compile"
+		description = "compiles the generated code."
+	>
+		<mkdir dir="${classes.dir}"/>
+		<javac
+			srcdir ="${src.dir}"
+			destdir="${classes.dir}"
+		/>
+	</target>
+	
+	<target
+		name        = "dist"
+		depends     = "compile"
+	    description = "distributes the jrefactory subset library."
+	>
+		<mkdir dir="${dist.dir}"/>
+		<jar destfile="${dist.dir}/${name}.jar">
+			<fileset dir="${classes.dir}"/>
+		</jar>
+	</target>
+	
+	<target
+		name        = "clean"
+		description = "Removes all generated files"
+	>
+		<delete dir="${classes.dir}"/>
+	</target>
+	
+	<!-- TODO: to be completed: see original build.xml file. Alternativelly the original file can be restored. -->
+	<target name="post-javacc" depends="javacc">
+	     <replace file="${ast.dir}/JavaParser.java"         token="new SimpleCharStream" value="CharStream.make"/>
+	     <replace file="${ast.dir}/JavaParser.java"         token="SimpleCharStream"     value="CharStream"/>
+	     <replace file="${ast.dir}/ASTTypeParameter.java"   token="ASTTypeParameter extends SimpleNode"   value="ASTTypeParameter extends ASTName"/>
+	     <replace file="${ast.dir}/ASTGenericNameList.java" token="ASTGenericNameList extends SimpleNode" value="ASTGenericNameList extends ASTNameList"/>
+	     <replace file="${ast.dir}/ASTEnumElement.java"     token="ASTEnumElement extends SimpleNode"     value="ASTEnumElement extends ASTLiteral"/>
+	     <replace file="${ast.dir}/ASTIdentifier.java"      token="ASTIdentifier extends SimpleNode"      value="ASTIdentifier extends ASTLiteral"/>
+	  </target>
+	
+</project>

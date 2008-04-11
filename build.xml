@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+
+<!-- 
+	***********************************************************
+	*   RDFCoder 0.5 [Simbges] - Build System.
+	*
+   	*	Most useful targets:
+	*
+ 	* help    : provides usage help
+	* dist    : distributes the library
+	* console : runs the command line console
+	* clean   : cleanup all the generated files
+	*
+	* authors: Michele Mostarda ( michele.mostarda@gmail.com )
+	* version: $Id$
+	*
+	***********************************************************
+-->
+
+<project 
+	default="help"
+	name="rdfcoder-0.5" 
+	basedir="."
+>
+
+  	<!-- =================================================================== -->
+  	<!-- Build properties                                                    -->
+  	<!-- =================================================================== -->
+  	<property name="name"    value="rdfcoder"/>
+  	<property name="Name"    value="RDF Coder"/>
+  	<property name="version" value="0.6"/>
+  	<property name="year"    value="2008"/>
+
+  	<property name="debug" value="on"/>
+
+  	<property name="src.dir"     value="${basedir}/src"/>
+	<property name="classes.dir" value="${basedir}/classes"/>
+  	<property name="javadoc.dir" value="${basedir}/javadoc"/>
+  	<property name="lib.dir"     value="${basedir}/lib"/>
+  	<property name="parent.dir"  value="${basedir}/../"/>
+
+  	<property name="test.dir"     value="test"/>
+  	<property name="test.src.dir" value="${test.dir}/src"/>
+  	<property name="test.reports" value="${basedir}/reports"/>
+  
+  	<property name="dist.dir"     value="${basedir}/dist"/>
+
+	<property name="rdfcoder.jar.file" value="${name}-${version}.jar"/>
+
+	<property name="jrefactory.dir"  value="${basedir}/jrefactory-2.9.19-full"/>
+	<property name="jrefactory.lib"  value="jrefactory-2.9.19-rdfc-0.5.jar"/>
+	  
+  	<!-- =================================================================== -->
+  	<!-- Classpaths.				                                         -->
+  	<!-- =================================================================== -->
+
+	<path id="jena.classpath">
+		<pathelement path="${lib.dir}/antlr-2.7.5.jar"/>
+		<pathelement path="${lib.dir}/arq.jar"/>
+		<pathelement path="${lib.dir}/bcel-5.2.jar"/>
+		<pathelement path="${lib.dir}/commons-logging.jar"/>
+		<pathelement path="${lib.dir}/concurrent.jar"/>
+		<pathelement path="${lib.dir}/icu4j_3_4.jar"/>
+		<pathelement path="${lib.dir}/iri.jar"/>
+		<pathelement path="${lib.dir}/jena.jar"/>
+		<pathelement path="${lib.dir}/jenatest.jar"/>
+		<pathelement path="${lib.dir}/jrefactory-2.9.19-rdfc-0.5.jar"/>
+		<pathelement path="${lib.dir}/json.jar"/>
+		<pathelement path="${lib.dir}/log4j-1.2.12.jar"/>
+		<pathelement path="${lib.dir}/mysql-connector-java-5.0.6-bin.jar"/>
+		<pathelement path="${lib.dir}/stax-api-1.0.jar"/>
+		<pathelement path="${lib.dir}/wstx-asl-2.8.jar"/>
+		<pathelement path="${lib.dir}/xercesImpl.jar"/>
+		<pathelement path="${lib.dir}/xml-apis.jar"/>
+	</path>
+
+	<path id="build.classpath">
+		<path refid="jena.classpath"/>
+     	<pathelement path="${lib.dir}/${jrefactory.lib}"/>
+		<pathelement path="${lib.dir}/bcel-5.2.jar"/>
+		<pathelement path="${lib.dir}/jline-0.9.93.jar"/>
+  	</path>
+
+  	<path id="test.build.classpath">
+	    <path        refid = "build.classpath"/>
+		<pathelement path  = "${lib.dir}/junit.jar"/>
+    </path>
+
+    <path id="test.classpath">
+        <path        refid = "test.build.classpath"/>
+        <pathelement path  = "${test.dir}"/>
+    </path>
+
+    <path id="run.classpath">
+		<path refid="build.classpath"/>
+		<pathelement path="${dist.dir}/${rdfcoder.jar.file}"/>
+	</path>
+
+  <!-- =================================================================== -->
+  <!-- Targets.						                                       -->
+  <!-- =================================================================== -->
+	
+	<target
+			name        = "help"
+			description = "Shows the build help."
+	>
+      <echo>=======================================================================</echo>
+      <echo>${Name}</echo>
+      <echo>=======================================================================</echo>
+      <exec executable="${ant.home}/bin/ant" os="Linux, Solaris, SunOS, FreeBSD, Mac OS X, Mac OS">
+          <arg value="-projecthelp" />
+      </exec>
+      <exec executable="${ant.home}/bin/ant.bat" os="Windows NT, Windows 2000, Windows XP">
+          <arg value="-projecthelp" />
+      </exec>
+	  <echo/>
+      <echo>=======================================================================</echo>
+				
+	</target>
+	
+	<!-- Distributes the dependencies of the library, at the moment only JRefactory. -->
+	<target name="dist.dependencies">
+		<ant 
+			dir="${jrefactory.dir}" 
+			inheritall="false" 
+			target="dist">
+    	</ant>
+		<copy file="${jrefactory.dir}/dist/${jrefactory.lib}" todir="${lib.dir}"/>
+	</target>
+	
+	<target
+		name        = "compile"
+		depends     = "dist.dependencies"
+		description = "compiles the library code."
+	>
+		<mkdir dir="${classes.dir}"/>
+		<javac
+			srcdir ="${src.dir}"
+			destdir="${classes.dir}"
+			debug="${debug}"
+		>
+			<classpath refid="build.classpath"/>
+		</javac>
+	</target>
+
+    <target
+		name        = "test.compile"
+		depends     = "compile"
+	>
+		<mkdir dir="${classes.dir}"/>
+		<javac
+			srcdir ="${test.dir}"
+			destdir="${classes.dir}"
+			debug="${debug}"
+		>
+			<classpath refid="test.build.classpath"/>
+		</javac>
+	</target>
+
+    <target
+		name        = "dist"
+		depends     = "compile"
+	    description = "distributes the library."
+	>
+		<mkdir dir="${dist.dir}"/>
+		<jar destfile="${dist.dir}/${rdfcoder.jar.file}">
+			<fileset dir="${classes.dir}"/>
+		</jar>
+		
+		<echo>=======================================================================</echo>
+		<echo>	RDF Coder has been built. To run it:  								 </echo>
+		<echo>		bin/rdfcoder													 </echo>
+		<echo/>	
+		<echo>=======================================================================</echo>
+		
+	</target>
+	
+	<target
+		name        = "clean"
+		description = "Removes all generated files"
+	>
+		<delete dir="${classes.dir}"/>
+		<delete dir="${dist.dir}"/>
+		<delete dir="${javadoc.dir}"/>
+	</target>
+	
+	<target
+		name        = "javadoc"
+		description = "Generates the Javadoc documentation"
+	>
+		<mkdir dir="${javadoc.dir}"/>
+		<javadoc 
+			destdir="${javadoc.dir}" 
+			author="true" 
+			version="true"
+            use="true" 
+			windowtitle="${Name} - Javadoc"
+			linksource="true"
+		>
+            <fileset dir="${src.dir}">
+				<include name="**/*.java"/>
+				<include name="**/*.html"/>
+			</fileset>
+			<classpath refid = "build.classpath"/>
+            <doctitle><![CDATA[<h1>${Name} API</h1>]]></doctitle>
+			<bottom><![CDATA[<i>Copyright &#169; 2008 Michele Mostarda. All Rights Reserved.</i>]]></bottom>
+			<group title="CommandLine" packages="org.asemantics.*"/>
+			<group title="Model API Packages" packages="org.asemantics.model.*"/>
+			<group title="Model Implementation Packages" packages="org.asemantics.modelimpl.*"/>
+		    <group title="Parsing Packages" packages="org.asemantics.sourceparse.*"/>
+            <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+            <link href="http://jena.sourceforge.net/javadoc/"/>
+        </javadoc>
+	</target>
+
+ 	<target
+		name        = "test"
+		description = "Runs the library test cases."
+        depends     = "test.compile"
+    >
+         <mkdir dir="${test.reports}"/>
+         <junit
+                 printsummary="yes"
+                 haltonfailure="no"
+          >
+             <classpath>
+	 			<path        refid = "test.classpath"/>
+				<pathelement path  = "${classes.dir}"/>
+			 </classpath>
+
+             <formatter type="plain"/>
+
+             <!--<test name="org.asemantics.RDFCoderTestSuite"/>-->
+
+             <batchtest
+                     fork="yes"
+                     todir="${test.reports}"
+             >
+                 <fileset dir="${test.dir}">
+                     <include name="**/*Test.java"/>
+                 </fileset>
+             </batchtest>
+         </junit>
+    </target>
+	
+</project>
