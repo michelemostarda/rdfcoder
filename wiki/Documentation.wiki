@@ -1,3 +1,8 @@
+#labels rdfcoder,documentation
 == Welcome to the RDFCoder Documentation ==
 
 You can find the project documentation [http://code.google.com/p/rdfcoder/source/browse/trunk/doc/htmldoc/ here]
+
+To check out the documentation use:
+
+{{{ svn co http://rdfcoder.googlecode.com/svn/trunk/doc/htmldoc rdfcoder-doc }}}
