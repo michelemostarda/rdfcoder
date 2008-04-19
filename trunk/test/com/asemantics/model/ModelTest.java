@@ -40,10 +40,21 @@ public class ModelTest extends TestCase {
         jch.startPackage("p0.p1.p2");
         jch.startPackage("p0.p1.p2.p3");
 
-        jch.startClass(CodeModel.JVisibility.PUBLIC, "p0.p1.p2.p3.class1", null, null);
+        jch.startClass(
+                new CodeModel.JModifier[] { CodeModel.JModifier.STATIC },
+                CodeModel.JVisibility.PUBLIC,
+                "p0.p1.p2.p3.class1",
+                null,
+                null
+        );
 
-        jch.startEnumeration(CodeModel.JVisibility.PUBLIC, "p0.p1.p2.p3.class1.enum1", new String[] {"ELEM_1", "ELEM_2", "ELEM_3"} );
+        jch.startEnumeration(new CodeModel.JModifier[] { CodeModel.JModifier.FINAL },
+                CodeModel.JVisibility.PUBLIC, "p0.p1.p2.p3.class1.enum1",
+                new String[] {"ELEM_1", "ELEM_2", "ELEM_3"}
+        );
+
         jch.method(
+            new CodeModel.JModifier[] { CodeModel.JModifier.NATIVE },
             CodeModel.JVisibility.DEFAULT,
             "p0.p1.p2.p3.class1.enum1.method1",
             1,
@@ -54,14 +65,33 @@ public class ModelTest extends TestCase {
         );
         jch.endEnumeration();
 
-        jch.attribute(CodeModel.JVisibility.PRIVATE, "p0.p1.p2.p3.class1.attribute1", CodeModel.INT,"0");
-        jch.attribute(CodeModel.JVisibility.PRIVATE, "p0.p1.p2.p3.class1.attribute2", new CodeModel.ObjectType("a.b.Obj1"),"0");
+        jch.attribute(
+                new CodeModel.JModifier[] { CodeModel.JModifier.TRANSIENT },
+                CodeModel.JVisibility.PRIVATE,
+                "p0.p1.p2.p3.class1.attribute1",
+                CodeModel.INT,
+                "0"
+        );
+        jch.attribute(
+                new CodeModel.JModifier[] { CodeModel.JModifier.STATIC },
+                CodeModel.JVisibility.PRIVATE,
+                "p0.p1.p2.p3.class1.attribute2",
+                new CodeModel.ObjectType("a.b.Obj1"),
+                "0"
+        );
 
         jch.endClass();
 
-        jch.startClass(CodeModel.JVisibility.PROTECTED,"p0.p1.p2.p3.class2", null, null);
+        jch.startClass(
+                new CodeModel.JModifier[] { CodeModel.JModifier.STATIC },
+                CodeModel.JVisibility.PROTECTED,
+                "p0.p1.p2.p3.class2",
+                null,
+                null
+        );
 
         jch.method(
+            new CodeModel.JModifier[] { CodeModel.JModifier.NATIVE },
             CodeModel.JVisibility.DEFAULT,
             "p0.p1.p2.p3.class2.method1",
             1,
@@ -71,11 +101,19 @@ public class ModelTest extends TestCase {
             null
         );
 
-        jch.startClass(CodeModel.JVisibility.PRIVATE,"p0.p1.p2.p3.class2.class3", null, null);
+        jch.startClass(
+                new CodeModel.JModifier[] { CodeModel.JModifier.STATIC },
+                CodeModel.JVisibility.PRIVATE,
+                "p0.p1.p2.p3.class2.class3",
+                null,
+                null
+        );
         jch.endClass();
 
-        jch.startInterface("p0.p1.p2.p3.I1", new String[] {"E1", "E2", "E3"});
+        jch.startInterface( "p0.p1.p2.p3.I1", new String[] {"E1", "E2", "E3"} );
+
         jch.method(
+                new CodeModel.JModifier[] { CodeModel.JModifier.NATIVE },
                 CodeModel.JVisibility.PUBLIC,
                 "p0.p1.p2.p3.method1",
                 1,
@@ -98,6 +136,8 @@ public class ModelTest extends TestCase {
         /***********************************/
 
         // Querying model.
+
+        //TODO: add JModifier test asserts.
 
         // Checking asset.
         System.out.println("Asset >>>");

@@ -77,12 +77,14 @@ public interface CodeHandler extends BackTrackingSupport {
      * Notifies the begin of a class parsing.
      * The class is expected to be FULLY QUALIFIED.
      *
+     * @param modifiers the class modifiers.
      * @param visibility the class visibility level.
      * @param pathToClass the fully qualified path to the class.
      * @param extendedClass the fully qualified pathToClass of the class extended by the starting class.
      * @param implementedInterfaces the fully qualified names for the interfaces implemented by the starting class.
      */
     public void startClass(
+            CodeModel.JModifier[] modifiers,
             CodeModel.JVisibility visibility,
             String pathToClass,
             String extendedClass,
@@ -99,11 +101,17 @@ public interface CodeHandler extends BackTrackingSupport {
      *
      * The enumeration is expected to be FULLY QUALIFIED.
      *
+     * @param modifiers the enumeration modifiers.
      * @param visibility the visibility level of the enumeration.
      * @param pathToEnumeration the fully qualified path to the enumeration.
      * @param elements the list of the elements of the enumeration.
      */
-    public void startEnumeration( CodeModel.JVisibility visibility, String pathToEnumeration, String[] elements);
+    public void startEnumeration(
+            CodeModel.JModifier[] modifiers,
+            CodeModel.JVisibility visibility,
+            String pathToEnumeration,
+            String[] elements
+    );
 
     /**
      * Notifies the end of the enumeration class.
@@ -115,12 +123,19 @@ public interface CodeHandler extends BackTrackingSupport {
      *
      * The attribute is expected to be FULLY QUALIFIED.
      *
+     * @param modifiers the attribute modifiers.
      * @param visibility the attribute visibility level.
      * @param pathToAttribute the absolute path to the attribute.
      * @param type the type of the attribute.
      * @param value the init value for the attribute. 
      */
-    public void attribute(CodeModel.JVisibility visibility, String pathToAttribute, CodeModel.JType type, String value);
+    public void attribute(
+            CodeModel.JModifier[] modifiers,
+            CodeModel.JVisibility visibility,
+            String pathToAttribute,
+            CodeModel.JType type,
+            String value
+    );
 
     /**
      * Notifies the parsing of a constructor.
@@ -128,6 +143,7 @@ public interface CodeHandler extends BackTrackingSupport {
      * The length of paramterSize and parameterNames is the same,
      * the association between these elements is done positionally.
      *
+     * @param modifiers the constructor modifiers.
      * @param visibility the visibility level for the constructor.
      * @param overloadIndex the overload index for the constructor.
      * @param parameterNames the array of parameter names.
@@ -136,6 +152,7 @@ public interface CodeHandler extends BackTrackingSupport {
      *
      */
     public void constructor(
+            CodeModel.JModifier[] modifiers,
             CodeModel.JVisibility visibility,
             int overloadIndex,
             String[] parameterNames,
@@ -151,6 +168,7 @@ public interface CodeHandler extends BackTrackingSupport {
      * The length of paramterSize and parameterNames is the same,
      * the association between these elements is done positionally.
      *
+     * @param modifiers the method modifiers.
      * @param visibility the method visibility level.
      * @param pathToMethod the fully qualified path to the method.
      * @param overloadIndex the index of the current overload for the method.
@@ -161,6 +179,7 @@ public interface CodeHandler extends BackTrackingSupport {
      *
      */
     public void method(
+            CodeModel.JModifier[] modifiers,
             CodeModel.JVisibility visibility,
             String pathToMethod,
             int overloadIndex,

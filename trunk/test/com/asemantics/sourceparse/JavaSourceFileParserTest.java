@@ -29,15 +29,15 @@ public class JavaSourceFileParserTest extends TestCase {
     }
 
     public void testProcessFileOnClass() throws IOException, ParseException, ParserException {
-        jsfp.parse( new File("/Users/michele/repository/RDFCoder/2007-10-31-RDFCoder/target_test/TestClass.java") );
+        jsfp.parse( new File("/Users/michele/repository/RDFCoder/2007-10-31-RDFCoder/trunk/target_test/TestClass.java") );
     }
 
     public void testProcessFileOnInterface() throws IOException, ParseException, ParserException {
-        jsfp.parse( new File("/Users/michele/repository/RDFCoder/2007-10-31-RDFCoder/target_test/TestInterface.java") );
+        jsfp.parse( new File("/Users/michele/repository/RDFCoder/2007-10-31-RDFCoder/trunk/target_test/TestInterface.java") );
     }
 
     public void testProcessEnum() throws IOException, ParseException, ParserException {
-        jsfp.parse( new File("/Users/michele/repository/RDFCoder/2007-10-31-RDFCoder/target_test/TestEnum.java") );
+        jsfp.parse( new File("/Users/michele/repository/RDFCoder/2007-10-31-RDFCoder/trunk/target_test/TestEnum.java") );
     }
 
 }

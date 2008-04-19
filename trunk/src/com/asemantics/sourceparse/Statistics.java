@@ -293,9 +293,9 @@ public class Statistics {
             parsedInterfaces++;
         }
 
-        public void startClass(CodeModel.JVisibility visibility, String pathToClass, String extendedClass, String[] implementedInterfaces) {
+        public void startClass(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToClass, String extendedClass, String[] implementedInterfaces) {
             if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.startClass(visibility, pathToClass, extendedClass, implementedInterfaces);
+            wrapped.startClass(modifiers, visibility, pathToClass, extendedClass, implementedInterfaces);
         }
 
         public void endClass() {
@@ -304,9 +304,9 @@ public class Statistics {
             parsedClasses++;
         }
 
-        public void startEnumeration(CodeModel.JVisibility visibility, String pathToEnumeration, String[] elements) {
+        public void startEnumeration(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToEnumeration, String[] elements) {
             if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.startEnumeration(visibility, pathToEnumeration, elements);
+            wrapped.startEnumeration(modifiers, visibility, pathToEnumeration, elements);
             parsedEnumarations++;
         }
 
@@ -315,21 +315,21 @@ public class Statistics {
             wrapped.endEnumeration();
         }
 
-        public void attribute(CodeModel.JVisibility visibility, String pathToAttribute, CodeModel.JType type, String value) {
+        public void attribute(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToAttribute, CodeModel.JType type, String value) {
             if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.attribute(visibility, pathToAttribute, type, value);
+            wrapped.attribute(modifiers, visibility, pathToAttribute, type, value);
             parsedAttributes++;
         }
 
-        public void constructor(CodeModel.JVisibility visibility, int overloadIndex, String[] parameterNames, CodeModel.JType[] parameterTypes, CodeModel.ExceptionType[] exceptions) {
+        public void constructor(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, int overloadIndex, String[] parameterNames, CodeModel.JType[] parameterTypes, CodeModel.ExceptionType[] exceptions) {
             if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.constructor(visibility, overloadIndex, parameterNames, parameterTypes, exceptions);
+            wrapped.constructor(modifiers, visibility, overloadIndex, parameterNames, parameterTypes, exceptions);
             parsedConstructors++;
         }
 
-        public void method(CodeModel.JVisibility visibility, String pathToMethod, int overloadIndex, String[] parameterNames, CodeModel.JType[] parameterTypes, CodeModel.JType returnType, CodeModel.ExceptionType[] exceptions) {
+        public void method(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToMethod, int overloadIndex, String[] parameterNames, CodeModel.JType[] parameterTypes, CodeModel.JType returnType, CodeModel.ExceptionType[] exceptions) {
             if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.method(visibility, pathToMethod, overloadIndex, parameterNames, parameterTypes, returnType, exceptions);
+            wrapped.method(modifiers, visibility, pathToMethod, overloadIndex, parameterNames, parameterTypes, returnType, exceptions);
             parsedMethods++;
         }
 

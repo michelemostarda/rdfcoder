@@ -45,7 +45,7 @@ public class JavaBytecodeJarParserTest extends TestCase {
     }
 
     public void testParse() throws IOException {
-        parser.parseFile(new File("/Developer/Java/smack_3_0_4/smack.jar") );
+        parser.parseFile(new File("/Developer/Java/smack_src_3_0_4/smack.jar") );
     }
 
 }

@@ -442,8 +442,25 @@ public abstract class CodeModel implements BackTrackingSupport {
      * Defines the Java modifiers.
      */
     public enum JModifier {
+
+        /**
+         * Entity is declared abstract.
+         */
+        ABSTRACT {
+            private static final byte FA = 0x1;
+            public byte value() {
+                return FA;
+            }
+            public boolean isValue(byte b) {
+                return (b & FA) == FA;
+            }
+        },
+
+        /**
+         * Entity is declared final.
+         */
         FINAL {
-            private static final byte FB = 0x1;
+            private static final byte FB = 0x2;
             public byte value() {
                 return FB;
             }
@@ -451,8 +468,12 @@ public abstract class CodeModel implements BackTrackingSupport {
                 return (b & FB) == FB; 
             }
         },
+
+        /**
+         * Entity is declared static.
+         */
         STATIC {
-            private static final byte FS = 0x2;
+            private static final byte FS = 0x4;
             public byte value() {
                 return FS;
             }
@@ -460,8 +481,12 @@ public abstract class CodeModel implements BackTrackingSupport {
                 return (b & FS) == FS;
             }
         },
+
+        /**
+         * Entity is declared volatile.
+         */
         VOLATILE {
-            private static final byte FV = 0x4;
+            private static final byte FV = 0x8;
             public byte value() {
                 return FV;
             }
@@ -469,8 +494,12 @@ public abstract class CodeModel implements BackTrackingSupport {
                 return (b & FV) == FV;
             }
         },
+
+        /**
+         * Entity is declared native.
+         */
         NATIVE {
-            private static final byte FN = 0x8;
+            private static final byte FN = 0x16;
             public byte value() {
                 return FN;
             }
@@ -478,28 +507,60 @@ public abstract class CodeModel implements BackTrackingSupport {
                 return (b & FN) == FN;
             }
         },
-        CONST {
-            private static final byte FC = 0x16;
+
+        /**
+         * Entity is declared transient.
+         */
+        TRANSIENT {
+            private static final byte TR = 0x32;
             public byte value() {
-                return FC;
+                return TR;
             }
             public boolean isValue(byte b) {
-                return (b & FC) == FC;
+                return (b & TR) == TR;
+            }
+        },
+
+        /**
+         * Entity is declared synchronized.
+         */
+        SYNCHRONIZED {
+            private static final byte SY = 0x64;
+            public byte value() {
+                return SY;
+            }
+            public boolean isValue(byte b) {
+                return (b & SY) == SY;
             }
         };
+
+        //TODO: manage CONST modifier.
 
         public abstract byte    value();
         public abstract boolean isValue(byte b);
 
-        public JModifier getModifier(byte b) {
+        public JModifier[] getModifiers(byte b) {
+            List<JModifier> modifiers = new ArrayList<JModifier>(JModifier.values().length);
             for( JModifier v : JModifier.values()) {
                 if(v.isValue(b)) {
-                    return v;
+                    modifiers.add(v);
                 }
             }
-            throw new IllegalArgumentException();
+            return modifiers.toArray(new JModifier[modifiers.size()]);
         }
 
+        public JModifier[] getModifiers(String m) {
+            byte b = Byte.parseByte(m);
+            return getModifiers(b);
+        }
+
+        public static Byte toByte(JModifier[] modifiers) {
+            byte result = 0;
+            for(JModifier m : modifiers) {
+                result &= m.value();
+            }
+            return result;
+        }
     }
 
 
@@ -705,6 +766,11 @@ public abstract class CodeModel implements BackTrackingSupport {
      * Defines the visibility level of an entity.
      */
     public static final String HAS_VISIBILITY     = toURI("has_visibility");
+
+    /**
+     * Defines the modifier of an entity.
+     */
+    public static final String HAS_MODIFIERS      = toURI("has_modifiers");
 
 
     /* Low level query methods. */

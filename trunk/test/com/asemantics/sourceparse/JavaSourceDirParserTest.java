@@ -53,7 +53,7 @@ public class JavaSourceDirParserTest extends TestCase {
         jsdp.parseDirectory(new File("/Developer/Java/JDK 1.5.0/src/org") );
         jsdp.dispose();
         Map<String,String> params = new HashMap();
-        params.put(CodeStorage.FS_FILENAME, "/Users/michele/repository/RDFCoder/2007-10-31-RDFCoder/target_test/test_scan_src_dir.xml");
+        params.put(CodeStorage.FS_FILENAME, "/Users/michele/repository/RDFCoder/2007-10-31-RDFCoder/trunk/target_test/test_scan_src_dir.xml");
         jcs.saveModel(jcm, params);
         System.out.println(statistics);
     }
