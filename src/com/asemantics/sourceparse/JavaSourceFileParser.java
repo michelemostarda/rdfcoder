@@ -18,15 +18,56 @@ import java.util.*;
  */
 public class JavaSourceFileParser extends FileParser {
 
+    /**
+     * Represents a method attributes container.
+     */
     private class Method {
+
+        CodeModel.JModifier[] modifiers;
+
+        /**
+         * Method visibility.
+         */
         CodeModel.JVisibility visibility;
+
+        /**
+         * Full method path.
+         */
         private String methodPath;
+
+        /**
+         * Parameter names.
+         */
         private String[] parameterNames;
+
+        /**
+         * Parameter types.
+         */
         private CodeModel.JType[] parameterTypes;
+
+        /**
+         * Method return type.
+         */
         CodeModel.JType returnType;
+
+        /**
+         * Method exceptions.
+         */
         CodeModel.ExceptionType[] exceptions;
 
-        Method(CodeModel.JVisibility v, String mp, String[] pns, CodeModel.JType[] pts, CodeModel.JType rt, CodeModel.ExceptionType[] excs) {
+        /**
+         * Constructor.
+         *
+         * @param m
+         * @param v
+         * @param mp
+         * @param pns
+         * @param pts
+         * @param rt
+         * @param excs
+         */
+        Method(CodeModel.JModifier[] m, CodeModel.JVisibility v, String mp, String[] pns, CodeModel.JType[] pts, CodeModel.JType rt, CodeModel.ExceptionType[] excs) {
+            modifiers = m;
             visibility = v;
             methodPath = mp;
             parameterNames = pns;
@@ -119,6 +160,8 @@ public class JavaSourceFileParser extends FileParser {
                 }
 
                 getCodeHandler().startClass(
+                        //TODO: verify the subsequest row.
+                        extractModifiers( classDeclaration ),
                         clsOrIntVisibility,
                         packagePath + CodeHandler.PACKAGE_SEPARATOR + className,
                         superClass != null ? qualifyType(importsContext, superClass, new CodeModel.ObjectType(null) ) : null,
@@ -172,6 +215,38 @@ public class JavaSourceFileParser extends FileParser {
         }
 
     }
+
+    /**
+     * Extracts the list of modifiers associated to this access node.
+     * @param accessNode
+     * @return
+     */
+    private CodeModel.JModifier[] extractModifiers(AccessNode accessNode) {
+        List<CodeModel.JModifier> modifiers = new ArrayList<CodeModel.JModifier>(CodeModel.JModifier.values().length);
+        if( accessNode.isAbstract() ) {
+            modifiers.add(CodeModel.JModifier.ABSTRACT);
+        }
+        if( accessNode.isFinal() ) {
+            modifiers.add(CodeModel.JModifier.FINAL);
+        }
+        if( accessNode.isStatic() ) {
+            modifiers.add(CodeModel.JModifier.STATIC);
+        }
+        if( accessNode.isVolatile() ) {
+            modifiers.add(CodeModel.JModifier.VOLATILE);
+        }
+        if( accessNode.isNative() ) {
+            modifiers.add(CodeModel.JModifier.NATIVE);
+        }
+        if( accessNode.isTransient() ) {
+            modifiers.add(CodeModel.JModifier.TRANSIENT);
+        }
+        if( accessNode.isSynchronized() ) {
+            modifiers.add(CodeModel.JModifier.SYNCHRONIZED);
+        }
+        return modifiers.toArray(new CodeModel.JModifier[modifiers.size()]);
+    }
+
 
     /**
      * Returns an array containing the fully quelified types of the implemented interfaces
@@ -253,7 +328,10 @@ public class JavaSourceFileParser extends FileParser {
                 attributeType = isArray ? new CodeModel.ArrayType(type, variableDeclaratorId.getArrayCount()) : type;
             }
 
-            ch.attribute(attributeVisibility, qualifyAttribute(packagePath, attributeName), attributeType, null);
+            ch.attribute(
+                    extractModifiers(fieldDeclaration),
+                    attributeVisibility,
+                    qualifyAttribute(packagePath, attributeName), attributeType, null);
         }
     }
 
@@ -282,6 +360,7 @@ public class JavaSourceFileParser extends FileParser {
             CodeModel.ExceptionType[] exceptions = extractExceptions(importsContext, constructorDeclaration);
 
             ch.constructor(
+                    extractModifiers(constructorDeclaration),
                     retrieveVisibility(constructorDeclaration),
                     c,
                     parameterNames.toArray( new String[parameterNames.size()] ),
@@ -372,6 +451,7 @@ public class JavaSourceFileParser extends FileParser {
             // Storing method.
             methodsBuffer.add(
                     new JavaSourceFileParser.Method(
+                            extractModifiers(methodDeclaration),
                             methodVisibility,
                             qualifyMethod(packagePath, methodName),
                             parameterNames.toArray(new String[parameterNames.size()]),
@@ -404,6 +484,7 @@ public class JavaSourceFileParser extends FileParser {
             entry = entries.next();
             for (int i = 0; i < entry.getValue().size(); i++) {
                 ch.method(
+                        entry.getValue().get(i).modifiers,
                         entry.getValue().get(i).visibility,
                         entry.getKey(),
                         i,
@@ -430,6 +511,7 @@ public class JavaSourceFileParser extends FileParser {
                 elements.add( ((ASTEnumElement) enumElements.get(ee)).getName() );
             }
             ch.startEnumeration(
+                    extractModifiers(enumDeclaration),
                     visibility,
                     qualifyEnumeration(packagePath, identifier),
                     (String[]) elements.toArray(new String[elements.size()])

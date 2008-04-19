@@ -48,7 +48,7 @@ public class JavadocFileParserTest extends TestCase {
             throw new UnsupportedOperationException();
         }
 
-        public void startClass(CodeModel.JVisibility visibility, String pathToClass, String extendedClass, String[] implementedInterfaces) {
+        public void startClass(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToClass, String extendedClass, String[] implementedInterfaces) {
             throw new UnsupportedOperationException();
         }
 
@@ -56,7 +56,7 @@ public class JavadocFileParserTest extends TestCase {
             throw new UnsupportedOperationException();
         }
 
-        public void startEnumeration(CodeModel.JVisibility visibility, String pathToEnumeration, String[] elements) {
+        public void startEnumeration(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToEnumeration, String[] elements) {
             throw new UnsupportedOperationException();
         }
 
@@ -64,15 +64,15 @@ public class JavadocFileParserTest extends TestCase {
             throw new UnsupportedOperationException();
         }
 
-        public void attribute(CodeModel.JVisibility visibility, String pathToAttribute, CodeModel.JType type, String value) {
+        public void attribute(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToAttribute, CodeModel.JType type, String value) {
             throw new UnsupportedOperationException();
         }
 
-        public void constructor(CodeModel.JVisibility visibility, int overloadIndex, String[] parameterNames, CodeModel.JType[] parameterTypes, CodeModel.ExceptionType[] exceptions) {
+        public void constructor(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, int overloadIndex, String[] parameterNames, CodeModel.JType[] parameterTypes, CodeModel.ExceptionType[] exceptions) {
             throw new UnsupportedOperationException();
         }
 
-        public void method(CodeModel.JVisibility visibility, String pathToMethod, int overloadIndex, String[] parameterNames, CodeModel.JType[] parameterTypes, CodeModel.JType returnType, CodeModel.ExceptionType[] exceptions) {
+        public void method(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToMethod, int overloadIndex, String[] parameterNames, CodeModel.JType[] parameterTypes, CodeModel.JType returnType, CodeModel.ExceptionType[] exceptions) {
             throw new UnsupportedOperationException();
         }
 

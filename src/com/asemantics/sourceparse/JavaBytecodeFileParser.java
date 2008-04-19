@@ -85,6 +85,10 @@ public class JavaBytecodeFileParser extends CodeParser {
 
             Field[] fields = javaClass.getFields();
             List<String> enumElements = new ArrayList<String>();
+
+            // Extracts class modifiers.
+            CodeModel.JModifier[] modifiers = extractModifiers(javaClass);
+
             if( javaClass.isEnum() ) { // Enumeration.
                 for(int i = 0; i < fields.length - 1; i++) {   // Skip last element containing $VALUE
                     if( fields[i].getType().toString().equals( javaClass.getClassName() ) ) { // Excluding real enumElements.
@@ -92,12 +96,14 @@ public class JavaBytecodeFileParser extends CodeParser {
                     }
                 }
                 codeHandler.startEnumeration(
+                        modifiers,
                         toVisibility( javaClass ),
                         toQualifiedClassName( javaClass ),
                         enumElements.toArray( new String[ enumElements.size() ] )
                 );
             } else if( javaClass.isClass() ) { // Class.
                 codeHandler.startClass(
+                   modifiers,
                    toVisibility(javaClass),
                    toQualifiedClassName(javaClass),
                    toQualifiedSuperClassName(javaClass),
@@ -118,6 +124,7 @@ public class JavaBytecodeFileParser extends CodeParser {
                     continue;
                 }
                 codeHandler.attribute(
+                        extractModifiers(fields[i]),
                         toVisibility(fields[i]),
                         toQualifiedAttribute(fields[i]),
                         bcelTypeToJType( fields[i].getType() ),
@@ -133,6 +140,7 @@ public class JavaBytecodeFileParser extends CodeParser {
 
                 if( INIT_METHOD.equals(methods[i].getName()) ) { // Constructors.
                     codeHandler.constructor(
+                        extractModifiers(methods[i]),
                         toVisibility( methods[i] ),
                         i,
                         toParameterNames( methods[i].getArgumentTypes()  ),
@@ -142,6 +150,7 @@ public class JavaBytecodeFileParser extends CodeParser {
                 }
 
                 codeHandler.method(
+                        extractModifiers(methods[i]),
                         toVisibility( methods[i] ),
                         toQualifiedMethod( methods[i] ),
                         i,
@@ -409,4 +418,36 @@ public class JavaBytecodeFileParser extends CodeParser {
         }
         return exceptions;
     }
+
+    /**
+     * Extracts the list of modifiers associated to the given entity.
+     * @param accessFlags
+     * @return
+     */
+    private CodeModel.JModifier[] extractModifiers(AccessFlags accessFlags) {
+        List<CodeModel.JModifier> modifiers = new ArrayList<CodeModel.JModifier>(CodeModel.JModifier.values().length);
+        if( accessFlags.isAbstract() ) {
+            modifiers.add(CodeModel.JModifier.ABSTRACT);
+        }
+        if( accessFlags.isFinal() ) {
+            modifiers.add(CodeModel.JModifier.FINAL);
+        }
+        if( accessFlags.isStatic() ) {
+            modifiers.add(CodeModel.JModifier.STATIC);
+        }
+        if( accessFlags.isVolatile() ) {
+            modifiers.add(CodeModel.JModifier.VOLATILE);
+        }
+        if( accessFlags.isNative() ) {
+            modifiers.add(CodeModel.JModifier.NATIVE);
+        }
+        if( accessFlags.isTransient() ) {
+            modifiers.add(CodeModel.JModifier.TRANSIENT);
+        }
+        if( accessFlags.isSynchronized() ) {
+            modifiers.add(CodeModel.JModifier.SYNCHRONIZED);
+        }
+        return modifiers.toArray(new CodeModel.JModifier[modifiers.size()]);
+    }
+
 }
