@@ -33,7 +33,7 @@ public class JavaSourceDirParserTest extends TestCase {
         jcm  = (JenaCodeModel) jcf.createCodeModel();
         jcs  = jcf.createCodeStorage();
         ch   = jcf.createHandlerOnModel(jcm);
-        ch.startParsing("jdk_1.5.0", "java_home");
+        ch.startParsing("RDFCoder Auto Inspection", "src");
     }
 
      public void tearDown() {
@@ -50,10 +50,10 @@ public class JavaSourceDirParserTest extends TestCase {
         Statistics statistics = new Statistics();
         CodeHandler sch = statistics.createStatisticsCodeHandler(ch);
         jsdp.initialize(sch, ot);
-        jsdp.parseDirectory(new File("/Developer/Java/JDK 1.5.0/src/org") );
+        jsdp.parseDirectory(new File("../src") );
         jsdp.dispose();
         Map<String,String> params = new HashMap();
-        params.put(CodeStorage.FS_FILENAME, "/Users/michele/repository/RDFCoder/2007-10-31-RDFCoder/trunk/target_test/test_scan_src_dir.xml");
+        params.put(CodeStorage.FS_FILENAME, "out/test_scan_src_dir.xml");
         jcs.saveModel(jcm, params);
         System.out.println(statistics);
     }

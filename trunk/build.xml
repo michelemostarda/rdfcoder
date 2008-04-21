@@ -4,7 +4,7 @@
 	***********************************************************
 	*   RDFCoder 0.5 [Simbges] - Build System.
 	*
-   	*	Most useful targets:
+   	*	Main targets:
 	*
  	* help    : provides usage help
 	* dist    : distributes the library
@@ -182,7 +182,10 @@
 		<delete dir="${classes.dir}"/>
 		<delete dir="${dist.dir}"/>
 		<delete dir="${javadoc.dir}"/>
-	</target>
+
+        <delete dir="target_test/classes"/>
+		<delete dir="target_test/out"/>
+    </target>
 	
 	<target
 		name        = "javadoc"
@@ -214,14 +217,26 @@
 	</target>
 
  	<target
+        name        = "prepare.test"
+        description = "Prepares the target classes used by tests."
+    >
+        <mkdir dir="target_test/classes"/>
+        <javac srcdir="target_test/src" destdir="target_test/classes"/>
+
+        <mkdir dir="target_test/out"/> 
+
+    </target>
+
+    <target
 		name        = "test"
 		description = "Runs the library test cases."
-        depends     = "test.compile"
+        depends     = "test.compile, prepare.test"
     >
          <mkdir dir="${test.reports}"/>
          <junit
                  printsummary="yes"
                  haltonfailure="no"
+                 dir="target_test"
           >
              <classpath>
 	 			<path        refid = "test.classpath"/>

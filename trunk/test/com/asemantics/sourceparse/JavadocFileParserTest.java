@@ -168,7 +168,7 @@ public class JavadocFileParserTest extends TestCase {
     public void testInputFile() throws ParserException {
         JavadocFileParser javadocFileParser = new JavadocFileParser();
         javadocFileParser.initialize(new TestJavadocParserListener(), new ObjectsTable() );
-        javadocFileParser.parse(new File("/Users/michele/repository/RDFCoder/2007-10-31-RDFCoder/target_test/TestJavadoc.java"));
+        javadocFileParser.parse(new File("TestJavadoc.java"));
         javadocFileParser.dispose();
     }
 }
