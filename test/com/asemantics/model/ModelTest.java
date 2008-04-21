@@ -138,6 +138,7 @@ public class ModelTest extends TestCase {
         // Querying model.
 
         //TODO: add JModifier test asserts.
+        //TODO: add JVisibility test asserts.
 
         // Checking asset.
         System.out.println("Asset >>>");

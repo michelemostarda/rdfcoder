@@ -574,13 +574,42 @@ public class QueryModelImpl implements QueryModel {
         throw new QueryModelException("Cannot find the rdfType of entity : '" + pathToEntity + "'.");
     }
 
+    public CodeModel.JVisibility getVisibility(String pathToEntity) {
+        TripleIterator t1 = codeModel.searchTriples(pathToEntity, CodeModel.HAS_VISIBILITY, CodeModel.ALL_MATCH);
+        String result = null;
+        try {
+            if( t1.next() ) {
+                result = t1.getObject();
+            }
+        } finally {
+            t1.close();
+        }
+        return result == null ? CodeModel.JVisibility.DEFAULT : CodeModel.JVisibility.toJVisibility(result);
+    }
+
+    public CodeModel.JModifier[] getModifiers(String pathToEntity) {
+        TripleIterator t1 = codeModel.searchTriples(pathToEntity, CodeModel.HAS_MODIFIERS, CodeModel.ALL_MATCH);
+        String result = null;
+        try {
+            if( t1.next() ) {
+                result = t1.getObject();
+            }
+        } finally {
+            t1.close();
+        }
+        return result == null ? new CodeModel.JModifier[]{} : CodeModel.JModifier.toModifiers( result );
+    }
+
     private String checkType(String prefixedPathToEntity) {
         TripleIterator t1 = codeModel.searchTriples(prefixedPathToEntity, CodeModel.SUBCLASSOF, CodeModel.ALL_MATCH);
         String result = null;
-        if( t1.next() ) {
-            result = t1.getObject();
+        try {
+            if( t1.next() ) {
+                result = t1.getObject();
+            }
+        } finally {
+            t1.close();
         }
-        t1.close();
         return result;
     }
 

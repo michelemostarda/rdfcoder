@@ -254,4 +254,22 @@ public interface QueryModel {
      * @throws QueryModelException
      */
     public String getRDFType(String path) throws QueryModelException;
+
+    /**
+     * Returns the visibility associated to the entity.
+     * 
+     * @param pathtoEntity path to the entity.
+     * @return
+     */
+    public CodeModel.JVisibility getVisibility(String pathtoEntity);
+
+    /**
+     * Returns the modifiers associated to the given entity.
+     *
+     * @param pathToEntity
+     * @return
+     */
+    public CodeModel.JModifier[] getModifiers(String pathToEntity);
+
+
 }

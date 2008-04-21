@@ -436,6 +436,20 @@ public abstract class CodeModel implements BackTrackingSupport {
         public String getIdentifier() {
             return toURI(getInternalIdentifier());
         }
+
+        /**
+         * Converts a JVisibility string to an enumerated value.
+         * @param s
+         * @return
+         */
+        public static JVisibility toJVisibility(String s) {
+            for(JVisibility v : JVisibility.values() ) {
+                if(v.getIdentifier().equals(s)) {
+                    return v;
+                }
+            }
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -539,7 +553,7 @@ public abstract class CodeModel implements BackTrackingSupport {
         public abstract byte    value();
         public abstract boolean isValue(byte b);
 
-        public JModifier[] getModifiers(byte b) {
+        public static JModifier[] getModifiers(byte b) {
             List<JModifier> modifiers = new ArrayList<JModifier>(JModifier.values().length);
             for( JModifier v : JModifier.values()) {
                 if(v.isValue(b)) {
@@ -549,7 +563,7 @@ public abstract class CodeModel implements BackTrackingSupport {
             return modifiers.toArray(new JModifier[modifiers.size()]);
         }
 
-        public JModifier[] getModifiers(String m) {
+        public static JModifier[] toModifiers(String m) {
             byte b = Byte.parseByte(m);
             return getModifiers(b);
         }
