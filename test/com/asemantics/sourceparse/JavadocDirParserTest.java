@@ -50,10 +50,10 @@ public class JavadocDirParserTest extends TestCase {
         Statistics statistics = new Statistics();
         CodeHandler sch = statistics.createStatisticsCodeHandler(ch);
         jsdp.initialize(sch, ot);
-        jsdp.parseDirectory(new File("/Developer/Java/JDK 1.5.0/src/") );
+        jsdp.parseDirectory(new File("../src") );
         jsdp.dispose();
         Map<String,String> params = new HashMap();
-        params.put(CodeStorage.FS_FILENAME, "/Users/michele/repository/RDFCoder/2007-10-31-RDFCoder/trunk/target_test/test_scan_src_javadoc_dir.xml");
+        params.put(CodeStorage.FS_FILENAME, "out/src.xml");
         jcs.saveModel(jcm, params);
         System.out.println(statistics);
     }

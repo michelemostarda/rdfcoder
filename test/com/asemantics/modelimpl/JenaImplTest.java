@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class JenaImplTest extends TestCase {
 
-    private static final String TEST_FILE  = "/Users/michele/repository/RDFCoder/2007-10-31-RDFCoder/target_test/test.xml";
+    private static final String TEST_FILE  = "test.xml";
 
     private static final int TEST_SIZE     = 10000;
 

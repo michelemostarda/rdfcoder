@@ -33,7 +33,7 @@ public class JavaBytecodeFileParserTest extends TestCase {
 
     public void testMain() throws IOException {
         javaBytecodeFileParser.parse(
-                new File("/Users/michele/repository/RDFCoder/2007-10-31-RDFCoder/trunk/target_test/Test.class")
+                new File("classes/p1/p2/Test.class")
         );
     }
 

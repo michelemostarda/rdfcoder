@@ -1,7 +1,7 @@
-package com.asemantics.sourceparse;
+package p1.p2;
 
 /**
- * This class is use to test the parser.
+ * This class is used to test the </i>Java Bytecode Parser</i>.
  */
 
 enum PreEnum {
