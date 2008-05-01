@@ -1,10 +1,10 @@
 package com.asemantics.sourceparse;
 
+import com.asemantics.model.CodeHandler;
+import com.asemantics.model.CodeModel;
 import net.sourceforge.jrefactory.ast.*;
 import net.sourceforge.jrefactory.parser.JavaParser;
 import net.sourceforge.jrefactory.parser.ParseException;
-import com.asemantics.model.CodeHandler;
-import com.asemantics.model.CodeModel;
 
 import java.io.File;
 import java.io.FileInputStream;

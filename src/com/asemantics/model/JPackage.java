@@ -45,4 +45,7 @@ public class JPackage extends JContainer {
         return this.getClass().getSimpleName();
     }
 
+    public CodeModel.JVisibility getVisibility() throws QueryModelException {
+        return CodeModel.JVisibility.PUBLIC;
+    }
 }

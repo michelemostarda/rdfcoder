@@ -1,17 +1,16 @@
 package com.asemantics.model;
 
+import com.asemantics.RDFCoder;
+import com.asemantics.sourceparse.JavadocEntry;
+import com.asemantics.sourceparse.ObjectsTable;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
-import java.util.Stack;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
-
-import com.asemantics.RDFCoder;
-import com.asemantics.sourceparse.ObjectsTable;
-import com.asemantics.sourceparse.JavadocEntry;
+import java.util.List;
+import java.util.Stack;
 
 /**
  * The <code>CodeHandler</code> standard implementation.

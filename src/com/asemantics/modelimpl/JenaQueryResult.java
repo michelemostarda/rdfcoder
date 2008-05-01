@@ -1,7 +1,7 @@
 package com.asemantics.modelimpl;
 
-import com.hp.hpl.jena.query.*;
 import com.asemantics.model.QueryResult;
+import com.hp.hpl.jena.query.*;
 
 import java.io.PrintStream;
 import java.util.List;

@@ -247,29 +247,29 @@ public interface QueryModel {
     public CodeModel.JType getReturnType(String pathToSignature) throws QueryModelException;
 
     /**
-     * Returns the RDF type of a path.
-     * 
-     * @param path the path to the entity to extract the RDF type.
-     * @return
-     * @throws QueryModelException
-     */
-    public String getRDFType(String path) throws QueryModelException;
-
-    /**
      * Returns the visibility associated to the entity.
      * 
      * @param pathtoEntity path to the entity.
      * @return
+     * @throws QueryModelException
      */
-    public CodeModel.JVisibility getVisibility(String pathtoEntity);
+    public CodeModel.JVisibility getVisibility(String pathtoEntity) throws QueryModelException;
 
     /**
      * Returns the modifiers associated to the given entity.
      *
      * @param pathToEntity
      * @return
+     * @throws QueryModelException
      */
-    public CodeModel.JModifier[] getModifiers(String pathToEntity);
+    public CodeModel.JModifier[] getModifiers(String pathToEntity) throws QueryModelException;
 
-
+    /**
+     * Returns the RDF type of a path.
+     *
+     * @param path the path to the entity to extract the RDF type.
+     * @return
+     * @throws QueryModelException
+     */
+    public String getRDFType(String path) throws QueryModelException;
 }

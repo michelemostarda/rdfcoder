@@ -5,7 +5,7 @@ package com.asemantics.model;
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
-public class JAttribute extends JBase {
+public class JAttribute extends JModifiable {
 
     /**
      * Checks if the path to the attribute exists.

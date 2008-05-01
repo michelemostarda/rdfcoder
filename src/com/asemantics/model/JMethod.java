@@ -5,7 +5,7 @@ package com.asemantics.model;
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
-public class JMethod extends JBase {
+public class JMethod extends JModifiable {
 
     public static boolean exists(QueryModel qm, String pathToMethod) {
         return qm.methodExists(pathToMethod);
