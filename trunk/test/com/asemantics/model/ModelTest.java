@@ -74,7 +74,7 @@ public class ModelTest extends TestCase {
         );
         jch.attribute(
                 new CodeModel.JModifier[] { CodeModel.JModifier.STATIC },
-                CodeModel.JVisibility.PRIVATE,
+                CodeModel.JVisibility.PROTECTED,
                 "p0.p1.p2.p3.class1.attribute2",
                 new CodeModel.ObjectType("a.b.Obj1"),
                 "0"
@@ -83,7 +83,7 @@ public class ModelTest extends TestCase {
         jch.endClass();
 
         jch.startClass(
-                new CodeModel.JModifier[] { CodeModel.JModifier.STATIC },
+                new CodeModel.JModifier[] { CodeModel.JModifier.FINAL },
                 CodeModel.JVisibility.PROTECTED,
                 "p0.p1.p2.p3.class2",
                 null,
@@ -133,12 +133,10 @@ public class ModelTest extends TestCase {
 
         jch.endParsing();
 
-        /***********************************/
+
+        /* End model preparation. *********************************/
 
         // Querying model.
-
-        //TODO: add JModifier test asserts.
-        //TODO: add JVisibility test asserts.
 
         // Checking asset.
         System.out.println("Asset >>>");
@@ -160,19 +158,39 @@ public class ModelTest extends TestCase {
         System.out.println("Packages <<<");
 
         System.out.println("Classes >>>");
+
+        // Check classes containement.
         JClass[] classes  = qm.getAllClasses();
         JClass[] classes2 = qm.getClassesInto("p0.p1.p2.p3");
         JClass[] classes3 = qm.getClassesInto("p0.p1.p2.p3.class2");
         assertEquals(3, classes.length);
         assertEquals(2, classes2.length);
         assertEquals(1, classes3.length);
+
+        // Print out classes.
         for(JClass clazz : classes) {
             System.out.println(clazz);
         }
+
+        // Check visibility and modifiers.
+        for(int i = 0; i < classes.length; i++) {
+            if ( "class1".equals(classes[i].getName()) ) {
+                assertEquals(CodeModel.JVisibility.PUBLIC, classes[i].getVisibility());
+                assertEquals(1, classes[i].getModifiers().length);
+                assertEquals(CodeModel.JModifier.STATIC, classes[i].getModifiers()[0]);
+            }
+            if ( "class2".equals(classes[i].getName()) ) {
+                assertEquals(CodeModel.JVisibility.PROTECTED, classes[i].getVisibility());
+                assertEquals(1, classes[i].getModifiers().length);
+                assertEquals(CodeModel.JModifier.FINAL, classes[i].getModifiers()[0]);
+            }
+        }
+
         System.out.println("Classes <<<");
 
         // Retrieve methods from class.
         System.out.println("Methods >>>");
+
         JMethod[] methods = qm.getMethodsInto("p0.p1.p2.p3.class2");
         assertEquals(1, methods.length);
         for (JMethod method : methods) {
@@ -185,27 +203,59 @@ public class ModelTest extends TestCase {
             }
             System.out.println("\tSignatures <<<");
         }
+
+        // Check visibility and modifiers.
+        for(int i = 0; i < methods.length; i++) {
+            if ( "method1".equals(methods[i].getName()) ) {
+                assertEquals(CodeModel.JVisibility.DEFAULT, methods[i].getVisibility());
+                assertEquals(1, methods[i].getModifiers().length);
+                assertEquals(CodeModel.JModifier.NATIVE, methods[i].getModifiers()[0]);
+            }
+        }
+
+
         System.out.println("Methods <<<");
 
         // Retrieve attributes.
         JAttribute[] attributes = qm.getAttributesInto("p0.p1.p2.p3.class1");
         assertEquals(attributes.length, 2);
         System.out.println("Attributes >>>");
+
+        // Check visibility and modifiers.
+        for(int i = 0; i < attributes.length; i++) {
+            if ( "attribute1".equals(attributes[i].getName()) ) {
+                assertEquals(CodeModel.JVisibility.PRIVATE, attributes[i].getVisibility());
+                assertEquals(1, attributes[i].getModifiers().length);
+                assertEquals(CodeModel.JModifier.TRANSIENT, attributes[i].getModifiers()[0]);
+            }
+            if ( "attribute2".equals(attributes[i].getName()) ) {
+                assertEquals(CodeModel.JVisibility.PROTECTED, attributes[i].getVisibility());
+                assertEquals(1, attributes[i].getModifiers().length);
+                assertEquals(CodeModel.JModifier.STATIC, attributes[i].getModifiers()[0]);
+            }
+        }
+
+
         for (JAttribute attribute : attributes) {
             System.out.println(attribute);
         }
+
+
         System.out.println("Attributes <<<");
 
         // Retrieve interfaces.
         System.out.println("Interfaces >>>");
+
         JInterface[] interfaces = qm.getAllInterfaces();
         assertEquals(1, interfaces.length);
         for(JInterface inter : interfaces) {
             System.out.println(inter);
         }
+
         System.out.println("Interfaces <<<");
 
         System.out.println("Enumerations >>>");
+
         JEnumeration[] enumerations = qm.getEnumerationsInto("p0.p1.p2.p3.class1");
         assertEquals(1, enumerations.length);
         for(JEnumeration enumeration : enumerations) {
@@ -216,6 +266,7 @@ public class ModelTest extends TestCase {
                 System.out.println("method: " + method);
             }
         }
+
         System.out.println("Enumerations <<<");
     }
 

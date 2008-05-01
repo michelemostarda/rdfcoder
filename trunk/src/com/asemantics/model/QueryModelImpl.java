@@ -1,6 +1,8 @@
 package com.asemantics.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Represents a method signature.
@@ -554,28 +556,13 @@ public class QueryModelImpl implements QueryModel {
         }
     }
 
-    public String getRDFType(String pathToEntity) throws QueryModelException {
-        String type;
-        type = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.PACKAGE_PREFIX, pathToEntity) );
-        if( type != null ) { return type; }
-        type = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.CLASS_PREFIX, pathToEntity) );
-        if( type != null ) { return type; }
-        type = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.INTERFACE_PREFIX, pathToEntity) );
-        if( type != null ) { return type; }
-        type = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.ENUMERATION_PREFIX, pathToEntity) );
-        if( type != null ) { return type; }
-        type = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.ATTRIBUTE_PREFIX, pathToEntity) ); 
-        if( type != null ) { return type; }
-        type = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.CONSTRUCTOR_PREFIX, pathToEntity) );
-        if( type != null ) { return type; }
-        type = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.METHOD_PREFIX, pathToEntity) );
-        if( type != null ) { return type; }
-
-        throw new QueryModelException("Cannot find the rdfType of entity : '" + pathToEntity + "'.");
-    }
-
-    public CodeModel.JVisibility getVisibility(String pathToEntity) {
-        TripleIterator t1 = codeModel.searchTriples(pathToEntity, CodeModel.HAS_VISIBILITY, CodeModel.ALL_MATCH);
+    public CodeModel.JVisibility getVisibility(String pathToEntity) throws QueryModelException {
+        String prefix = CodeModel.getPrefixFromRDFType( getRDFType(pathToEntity) );
+        TripleIterator t1 = codeModel.searchTriples(
+                CodeModel.prefixFullyQualifiedName(prefix, pathToEntity),
+                CodeModel.HAS_VISIBILITY,
+                CodeModel.ALL_MATCH
+        );
         String result = null;
         try {
             if( t1.next() ) {
@@ -587,8 +574,13 @@ public class QueryModelImpl implements QueryModel {
         return result == null ? CodeModel.JVisibility.DEFAULT : CodeModel.JVisibility.toJVisibility(result);
     }
 
-    public CodeModel.JModifier[] getModifiers(String pathToEntity) {
-        TripleIterator t1 = codeModel.searchTriples(pathToEntity, CodeModel.HAS_MODIFIERS, CodeModel.ALL_MATCH);
+    public CodeModel.JModifier[] getModifiers(String pathToEntity) throws QueryModelException {
+        String prefix = CodeModel.getPrefixFromRDFType( getRDFType(pathToEntity) );
+        TripleIterator t1 = codeModel.searchTriples(
+                CodeModel.prefixFullyQualifiedName(prefix, pathToEntity),
+                CodeModel.HAS_MODIFIERS,
+                CodeModel.ALL_MATCH
+        );
         String result = null;
         try {
             if( t1.next() ) {
@@ -600,17 +592,57 @@ public class QueryModelImpl implements QueryModel {
         return result == null ? new CodeModel.JModifier[]{} : CodeModel.JModifier.toModifiers( result );
     }
 
+    public String getRDFType(String pathToEntity) throws QueryModelException {
+        String rdfType;
+
+        rdfType = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.CLASS_PREFIX, pathToEntity) );
+        if(rdfType != null) {
+            return rdfType;
+        }
+        rdfType = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.INTERFACE_PREFIX, pathToEntity) );
+        if(rdfType != null) {
+            return rdfType;
+        }
+        rdfType = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.METHOD_PREFIX, pathToEntity) );
+        if(rdfType != null) {
+            return rdfType;
+        }
+        rdfType = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.PACKAGE_PREFIX, pathToEntity) );
+        if(rdfType != null) {
+            return rdfType;
+        }
+        rdfType = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.ATTRIBUTE_PREFIX, pathToEntity) );
+        if(rdfType != null) {
+            return rdfType;
+        }
+        rdfType = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.CONSTRUCTOR_PREFIX, pathToEntity) );
+        if(rdfType != null) {
+            return rdfType;
+        }
+        rdfType = checkType( CodeModel.prefixFullyQualifiedName(CodeModel.ENUMERATION_PREFIX, pathToEntity) );
+        if(rdfType != null) {
+            return rdfType;
+        }
+
+        throw new QueryModelException("Cannot find the full qualification of entity : '" + pathToEntity + "'.");
+    }
+
+    /**
+     * Returns the RDF type of the prefixed entity if exists, <code>null</code>otherwise.
+     *
+     * @param prefixedPathToEntity the entity to check.
+     * @return
+     */
     private String checkType(String prefixedPathToEntity) {
         TripleIterator t1 = codeModel.searchTriples(prefixedPathToEntity, CodeModel.SUBCLASSOF, CodeModel.ALL_MATCH);
-        String result = null;
         try {
             if( t1.next() ) {
-                result = t1.getObject();
+                return t1.getObject();
             }
         } finally {
             t1.close();
         }
-        return result;
+        return null;
     }
 
 }

@@ -1,9 +1,9 @@
 package com.asemantics.sourceparse;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.*;
 import com.asemantics.model.CodeHandler;
 import com.asemantics.model.CodeModel;
+import org.apache.bcel.Constants;
+import org.apache.bcel.classfile.*;
 
 import java.io.File;
 import java.io.FileInputStream;

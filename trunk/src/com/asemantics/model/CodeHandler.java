@@ -1,8 +1,7 @@
 package com.asemantics.model;
 
-import com.asemantics.sourceparse.ObjectsTable;
 import com.asemantics.sourceparse.JavadocEntry;
-import com.asemantics.model.BackTrackingSupport;
+import com.asemantics.sourceparse.ObjectsTable;
 
 /**
  * This interface represents a code handler.

@@ -1,7 +1,7 @@
 package com.asemantics.model;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -9,7 +9,7 @@ import java.util.ArrayList;
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
-public abstract class JContainer extends JBase {
+public abstract class JContainer extends JModifiable {
 
     protected JContainer(QueryModel qm, String[] sections)
     throws QueryModelException {

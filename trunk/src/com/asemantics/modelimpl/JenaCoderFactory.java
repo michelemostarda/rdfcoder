@@ -1,9 +1,9 @@
 package com.asemantics.modelimpl;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.asemantics.model.CoderFactory;
 import com.asemantics.model.SPARQLQuerableCodeModel;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 /**
  ** The <code>CoderFactory</code> implementation for the Jena backend.

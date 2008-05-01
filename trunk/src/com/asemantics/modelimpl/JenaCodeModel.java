@@ -1,12 +1,14 @@
 package com.asemantics.modelimpl;
 
-import com.asemantics.model.*;
 import com.asemantics.RDFCoder;
-
-import java.io.*;
-
-import com.hp.hpl.jena.rdf.model.*;
+import com.asemantics.model.*;
 import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.*;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * The <code>CodeModel</code> implementation for the Jena backend.

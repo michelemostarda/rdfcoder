@@ -30,6 +30,10 @@ public class JInterface extends JObject {
         super(queryModel, pathToInterface);
     }
 
+    public CodeModel.JVisibility getVisibility() throws QueryModelException {
+        return CodeModel.JVisibility.PUBLIC;
+    }
+
     /**
      * Constructor by sections.
      * @param qm

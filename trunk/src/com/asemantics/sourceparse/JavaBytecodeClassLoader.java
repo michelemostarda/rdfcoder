@@ -1,8 +1,8 @@
 package com.asemantics.sourceparse;
 
+import com.asemantics.CoderUtils;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
-import com.asemantics.CoderUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

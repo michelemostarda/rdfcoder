@@ -513,7 +513,7 @@ public abstract class CodeModel implements BackTrackingSupport {
          * Entity is declared native.
          */
         NATIVE {
-            private static final byte FN = 0x16;
+            private static final byte FN = 0x10;
             public byte value() {
                 return FN;
             }
@@ -526,7 +526,7 @@ public abstract class CodeModel implements BackTrackingSupport {
          * Entity is declared transient.
          */
         TRANSIENT {
-            private static final byte TR = 0x32;
+            private static final byte TR = 0x20;
             public byte value() {
                 return TR;
             }
@@ -539,7 +539,7 @@ public abstract class CodeModel implements BackTrackingSupport {
          * Entity is declared synchronized.
          */
         SYNCHRONIZED {
-            private static final byte SY = 0x64;
+            private static final byte SY = 0x40;
             public byte value() {
                 return SY;
             }
@@ -571,7 +571,7 @@ public abstract class CodeModel implements BackTrackingSupport {
         public static Byte toByte(JModifier[] modifiers) {
             byte result = 0;
             for(JModifier m : modifiers) {
-                result &= m.value();
+                result |= m.value();
             }
             return result;
         }
@@ -653,25 +653,28 @@ public abstract class CodeModel implements BackTrackingSupport {
 
     /* Entity prefixes. */
 
-    public static final String PACKAGE_PREFIX     = toPrefix("package");
+    //TODO: entity prefixes and RDF classes MUST be the same.
 
-    public static final String CLASS_PREFIX       = toPrefix("class");
+    public static final String PACKAGE_PREFIX     = toPrefix("jpackage");
 
-    public static final String INTERFACE_PREFIX   = toPrefix("interface");
+    public static final String CLASS_PREFIX       = toPrefix("jclass");
 
-    public static final String ATTRIBUTE_PREFIX   = toPrefix("attribute");
+    public static final String INTERFACE_PREFIX   = toPrefix("jinterface");
 
-    public static final String CONSTRUCTOR_PREFIX = toPrefix("constructor");
+    public static final String ATTRIBUTE_PREFIX   = toPrefix("jattribute");
 
-    public static final String METHOD_PREFIX      = toPrefix("method");
+    public static final String CONSTRUCTOR_PREFIX = toPrefix("jconstructor");
 
-    public static final String ENUMERATION_PREFIX = toPrefix("enumeration");
+    public static final String METHOD_PREFIX      = toPrefix("jmethod");
 
-    public static final String ELEMENT_PREFIX     = toPrefix("element");
+    public static final String ENUMERATION_PREFIX = toPrefix("jenumeration");
 
-    public static final String SIGNATURE_PREFIX   = toPrefix("signature");
+    public static final String ELEMENT_PREFIX     = toPrefix("jelement");
 
-    public static final String PARAMETER_PREFIX   = toPrefix("parameter");
+    public static final String SIGNATURE_PREFIX   = toPrefix("jsignature");
+
+    public static final String PARAMETER_PREFIX   = toPrefix("jparameter");
+
 
     /**
      * Marks unqualified types.
@@ -915,6 +918,30 @@ public abstract class CodeModel implements BackTrackingSupport {
                     "Something wrong in path '" + path + "' in applying prefix '" + prefix + "'"
             );
         }
+    }
+
+    /**
+     * Returns <code>true</code> if the path is already prefixed, <code>false</code>
+     * otherwise.
+     *  
+     * @param path the path to check.
+     * @return
+     */
+    protected static boolean isPrefixed(String path) {
+         return path.indexOf(CodeModel.PREFIX_SEPARATOR) != -1;
+    }
+
+    /**
+     * Returns the prefix associated to a <i>RDF</i> type.
+     * 
+     * @param rdfType
+     * @return
+     */
+    protected static String getPrefixFromRDFType(String rdfType) {
+        if(rdfType.indexOf(URI) < 0) {
+            throw new IllegalArgumentException("Invalid rdfType: '" + rdfType + "'");
+        }
+        return rdfType.substring(URI.length()) + PREFIX_SEPARATOR;
     }
 
     /**
