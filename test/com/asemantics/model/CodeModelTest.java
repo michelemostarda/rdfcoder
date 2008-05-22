@@ -18,7 +18,7 @@
 
 package com.asemantics.model;
 
-import com.asemantics.modelimpl.JenaCoderFactory;
+import com.asemantics.storage.JenaCoderFactory;
 import junit.framework.TestCase;
 
 /**
@@ -27,7 +27,7 @@ import junit.framework.TestCase;
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  *
  */
-public class ModelTest extends TestCase {
+public class CodeModelTest extends TestCase {
 
     private JenaCoderFactory jcmf;
 

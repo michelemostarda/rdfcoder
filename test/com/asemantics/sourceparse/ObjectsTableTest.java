@@ -4,14 +4,6 @@ import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.HashMap;
-
-import com.asemantics.model.CoderFactory;
-import com.asemantics.model.CodeModel;
-import com.asemantics.model.CodeStorage;
-import com.asemantics.model.TripleIterator;
-import com.asemantics.modelimpl.JenaCoderFactory;
 
 /**
  * Test unit of <code>ObjectsTable</code>

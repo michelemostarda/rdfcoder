@@ -118,15 +118,6 @@ public interface QueryModel {
     public JPackage[] getAllPackages();
 
     /**
-     * Returns all packages in the given package expressed as string.
-     *
-     * @param path
-     * @return
-     * @throws QueryModelException
-     */
-    public JPackage[] getPackagesInto(String path) throws QueryModelException;
-
-    /**
      * Retruns the package with a given pack name.
      *
      * @param pack
@@ -136,6 +127,15 @@ public interface QueryModel {
     public JPackage getPackage(String pack) throws QueryModelException;
 
     /**
+     * Returns all packages in the given package expressed as string.
+     *
+     * @param path
+     * @return
+     * @throws QueryModelException
+     */
+    public JPackage[] getPackagesInto(String path) throws QueryModelException;
+
+    /**
      * Returns all interfaces in Code Model.
      *
      * @return
@@ -143,11 +143,29 @@ public interface QueryModel {
     public JInterface[] getAllInterfaces();
 
     /**
+     * Returns the interface specified by the given path.
+     *
+     * @param pathToInterface
+     * @return
+     * @throws QueryModelException
+     */
+    public JInterface getInterface(String pathToInterface) throws QueryModelException;
+
+    /**
      * Returns all classes in Code Model.
      *
      * @return
      */
     public JClass[] getAllClasses();
+
+    /**
+     * Returns the class specified by tge given path.
+     *
+     * @param pathToClass
+     * @return
+     * @throws QueryModelException
+     */
+    public JClass getClazz(String pathToClass) throws QueryModelException;
 
     /**
      * Returns all interfaces into a container path.

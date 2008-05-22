@@ -2,9 +2,9 @@ package com.asemantics.sourceparse;
 
 import com.asemantics.sourceparse.ObjectsTable;
 import com.asemantics.sourceparse.DirectoryParser;
-import com.asemantics.modelimpl.JenaCoderFactory;
-import com.asemantics.modelimpl.JenaCodeModel;
-import com.asemantics.modelimpl.JenaCodeStorage;
+import com.asemantics.storage.JenaCoderFactory;
+import com.asemantics.storage.JenaCodeModel;
+import com.asemantics.storage.JenaCodeStorage;
 import com.asemantics.model.CodeHandler;
 import com.asemantics.model.CodeModelException;
 import com.asemantics.model.CodeStorage;

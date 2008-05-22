@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.modelimpl;
+package com.asemantics.storage;
 
 import com.asemantics.RDFCoder;
 import com.asemantics.model.*;
@@ -223,7 +223,7 @@ public class JenaCodeModel extends SPARQLQuerableCodeModel {
         iterator.close();
     }
 
-    public QueryResult performQuery(String sparqlQry) {
+    public QueryResult performQuery(String sparqlQry) throws SPARQLException {
         Query query = QueryFactory.create(sparqlQry);
         QueryExecution queryExecution = QueryExecutionFactory.create(query, jenaModel);
           try {
@@ -231,9 +231,8 @@ public class JenaCodeModel extends SPARQLQuerableCodeModel {
             QueryResult queryResult = new JenaQueryResult(queryExecution, query, results);
             return queryResult;
           } catch(Throwable t) {
-              queryExecution.close();
-              t.printStackTrace();
-              throw new RuntimeException(t);
+              queryExecution.close(); // Query execution is closed only if an error occurs during query excution.
+              throw new SPARQLException("Error during execution of SPARQL query: '" + sparqlQry + "'", t);
           }
     }
     
