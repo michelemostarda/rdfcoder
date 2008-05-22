@@ -21,8 +21,8 @@ package com.asemantics;
 import junit.framework.TestSuite;
 import junit.framework.Test;
 
-import com.asemantics.model.ModelTest;
-import com.asemantics.modelimpl.JenaImplTest;
+import com.asemantics.model.CodeModelTest;
+import com.asemantics.storage.JenaImplTest;
 import com.asemantics.sourceparse.*;
 import com.asemantics.sourceparse.JavaSourceFileParserTest;
 
@@ -43,7 +43,7 @@ public class RDFCoderTestSuite extends TestSuite {
     }
 
     private void loadModelTests() {
-        addTest( new ModelTest() );
+        addTest( new CodeModelTest() );
     }
 
     private void loadModelImplTests() {

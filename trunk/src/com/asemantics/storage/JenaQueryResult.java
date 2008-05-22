@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.modelimpl;
+package com.asemantics.storage;
 
 import com.asemantics.model.QueryResult;
 import com.hp.hpl.jena.query.*;

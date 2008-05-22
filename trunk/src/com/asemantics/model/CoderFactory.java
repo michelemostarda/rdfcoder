@@ -80,11 +80,11 @@ public abstract class CoderFactory {
 
    /**
      * Creates a new JInterface object.
-     * @param pathToClass
+     * @param pathToInterface
      * @return
      */
-    public static Object createJInterface(QueryModelImpl qm, String pathToClass) throws QueryModelException {
-        return new JInterface(qm, pathToClass);
+    public static JInterface createJInterface(QueryModelImpl qm, String pathToInterface) throws QueryModelException {
+        return new JInterface(qm, pathToInterface);
     }
 
     /**

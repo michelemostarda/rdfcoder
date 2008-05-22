@@ -246,6 +246,10 @@ public class QueryModelImpl implements QueryModel {
         return (JInterface[]) classes.toArray( new JInterface[classes.size()] );
     }
 
+    public JInterface getInterface(String pathToInterface) throws QueryModelException {
+        return CoderFactory.createJInterface(this, pathToInterface);
+    }
+
     public JClass[] getAllClasses() {
         TripleIterator t1 = codeModel.searchTriples(CodeModel.ALL_MATCH, CodeModel.SUBCLASSOF, CodeModel.JCLASS);
         List classes = new ArrayList();
@@ -261,6 +265,10 @@ public class QueryModelImpl implements QueryModel {
             t1.close();
         }
         return (JClass[]) classes.toArray( new JClass[classes.size()] );
+    }
+
+    public JClass getClazz(String pathToClass) throws QueryModelException {
+        return CoderFactory.createJClass(this, pathToClass);
     }
 
     public JInterface[] getInterfacesInto(String pathToContainer) throws QueryModelException {

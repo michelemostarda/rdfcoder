@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.modelimpl;
+package com.asemantics.storage;
 
 import com.asemantics.model.CoderFactory;
 import com.asemantics.model.SPARQLQuerableCodeModel;

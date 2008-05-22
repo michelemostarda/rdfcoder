@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.modelimpl;
+package com.asemantics.storage;
 
 import junit.framework.TestCase;
 import com.asemantics.model.*;
@@ -82,14 +82,18 @@ public class JenaImplTest extends TestCase {
         assertEquals(TEST_SIZE, counter);
     }
 
-    public void testQuery() throws IOException, CodeModelException {
+    public void testQuery() throws IOException, CodeModelException, SPARQLException {
         // Loading data into model.
         for(int i = 0; i < 1000; i++) {
             cm.addTriple("proto:subject_" + i, "proto:predicate_" + i, "proto:object_" + i);
         }
 
         QueryResult queryResult = cm.performQuery("select ?s ?p ?o where {?s ?p ?o}");
-        queryResult.toTabularView(System.out);
+        try {
+            queryResult.toTabularView(System.out);
+        } finally {
+            queryResult.close();
+        }
     }
 
 }

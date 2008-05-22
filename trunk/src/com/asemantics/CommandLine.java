@@ -19,7 +19,7 @@
 package com.asemantics;
 
 import com.asemantics.model.*;
-import com.asemantics.modelimpl.JenaCoderFactory;
+import com.asemantics.storage.JenaCoderFactory;
 import com.asemantics.sourceparse.*;
 import jline.*;
 
@@ -176,9 +176,15 @@ public class CommandLine {
             throw new IllegalArgumentException("code model " + modelName + " is not a QuerableCodeModel instance.");
         }
         SPARQLQuerableCodeModel qcm = (SPARQLQuerableCodeModel) cm;
-        QueryResult qr = qcm.performQuery(qry);
-        qr.toTabularView(ps);
-        qr.close();
+        QueryResult qr = null;
+        try {
+            qr = qcm.performQuery(qry);
+            qr.toTabularView(ps);
+        } catch (SPARQLException e) {
+            throw new IllegalArgumentException("Cannot perform SPARQL query.");
+        } finally {
+            qr.close();
+        }
     }
 
     private void performQueryOnModel(String qry, PrintStream ps) {

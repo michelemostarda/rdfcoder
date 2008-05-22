@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.modelimpl;
+package com.asemantics.storage;
 
 import com.asemantics.RDFCoder;
 import com.asemantics.model.CodeModel;

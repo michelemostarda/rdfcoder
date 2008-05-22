@@ -2,8 +2,8 @@ package com.asemantics.sourceparse;
 
 import junit.framework.TestCase;
 import com.asemantics.model.CodeHandler;
-import com.asemantics.modelimpl.JenaCodeModel;
-import com.asemantics.modelimpl.JenaCoderFactory;
+import com.asemantics.storage.JenaCodeModel;
+import com.asemantics.storage.JenaCoderFactory;
 
 import java.io.File;
 import java.io.IOException;
