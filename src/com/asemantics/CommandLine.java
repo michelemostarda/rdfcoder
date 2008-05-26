@@ -19,9 +19,13 @@
 package com.asemantics;
 
 import com.asemantics.model.*;
-import com.asemantics.storage.JenaCoderFactory;
 import com.asemantics.sourceparse.*;
+import com.asemantics.storage.JenaCoderFactory;
 import jline.*;
+import org.apache.commons.jexl.Expression;
+import org.apache.commons.jexl.ExpressionFactory;
+import org.apache.commons.jexl.JexlContext;
+import org.apache.commons.jexl.JexlHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,59 +43,151 @@ import java.util.Map;
  */
 public class CommandLine {
 
+    /**
+     * Defines a model handler, i.e. a set of related classes
+     * used to handle a code model.
+     */
     class ModelHandler {
 
+        /**
+         * Code model.
+         */
         CodeModel   codeModel;
 
+        /**
+         * Code handler.
+         */
         CodeHandler codeHandler;
 
-        ModelHandler(CodeModel cm, CodeHandler ch) {
+        /**
+         * Query interface.
+         */
+        QueryModel  queryModel;
+
+        ModelHandler(CodeModel cm, CodeHandler ch, QueryModel qm) {
             codeModel   = cm;
             codeHandler = ch;
+            queryModel  = qm;
         }
     }
 
     /* Public constants. */
 
+    /**
+     * Major version of CommandLine console.
+     */
     public static final int VERSION_MAJOR  = 0;
 
-    public static final int VERSION_MINOR  = 5; 
+    /**
+     * Minor version of CommandLine console.
+     */
+    public static final int VERSION_MINOR  = 5;
 
-    public static final String COMMAND_PREFIX = "command_";
+    /**
+     * Name of the active model used to perform inspection command.
+     */
+    public static final String INSPECTION_MODEL_NAME = "model";
 
-    public static final String SHORT_COMMAND_DESCRIPTION_PREFIX = "__"  + COMMAND_PREFIX;
+    /**
+     * The command method expected prefix.
+     */
+    protected static final String COMMAND_PREFIX = "command_";
 
-    public static final String LONG_COMMAND_DESCRIPTION_PREFIX  = "___" + COMMAND_PREFIX;
+    /**
+     * Short command description prefix.
+     */
+    protected static final String SHORT_COMMAND_DESCRIPTION_PREFIX = "__"  + COMMAND_PREFIX;
 
-    public static final String EXIT_COMMAND = "exit";
+    /**
+     * Extended command description prefix.
+     */
+    protected static final String LONG_COMMAND_DESCRIPTION_PREFIX  = "___" + COMMAND_PREFIX;
 
-    public static final File HISTORY_FILE = new File("/Users/michele/.rdfcoder");
+    /**
+     * Jar resource prefix.
+     */
+    protected static final String RESOURCE_JAR_PREFIX    = "jar:";
+
+    /**
+     * Source dir resource prefix.
+     */
+    protected static final String RESOURCE_SOURCE_PREFIX = "src:";
+
+    /**
+     * Source dir resource prefix.
+     */
+    protected static final String RESOURCE_JAVADOC_PREFIX = "javadoc:";
+
+    /**
+     * Class dir resource prefix.
+     */
+    protected static final String RESOURCE_CLASS_PREFIX  = "class:";
+
+    /**
+     * Exit command.
+     */
+    protected static final String EXIT_COMMAND = "exit";
+
+    /**
+     * Command shell history file.
+     */
+    protected static final File HISTORY_FILE = new File("/Users/michele/.rdfcoder");
 
     /* Private constants. */
 
-    private static final String DEFAULT_CODE_MODEL = "default";
+    /**
+     * Default code model name.
+     */
+    protected static final String DEFAULT_CODE_MODEL = "default";
 
+    /**
+     * Defualt jar expected extension. 
+     */
     private static final String JAR_EXT = ".jar";
 
     /* Fields. */
 
     private CoderFactory coderFactory;
 
+    /**
+     * Loaded model handlers.
+     */
     private Map<String,ModelHandler> modelHandlers;
 
+    /**
+     * Currently selected model.
+     */
     private String selectedModel;
 
+    /**
+     * Debug mode flag.
+     */
     private boolean debug = false;
 
+    /**
+     * List of model that has been modified and are waiting to be saved.
+     */
     private List<String> toBeSaved;
 
     /* Console readed stuff. */
 
+    /**
+     * Command line console reader.
+     */
     private ConsoleReader consoleReader;
 
+    /**
+     * Console history.
+     */
     private History history;
 
-
+    /**
+     * Constructor.
+     *
+     * @throws IOException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     public CommandLine() throws IOException, IllegalAccessException, InvocationTargetException {
         coderFactory = new JenaCoderFactory();
         modelHandlers = new HashMap();
@@ -123,6 +219,12 @@ public class CommandLine {
         );        
     }
 
+    /**
+     * Creates a model handler for a model name.
+     *
+     * @param modelName
+     * @return
+     */
     private ModelHandler createModelHandler(String modelName) {
         if(modelHandlers.containsKey(modelName)) {
             throw new IllegalArgumentException("a model with name " + modelName + " already exists.");   
@@ -130,11 +232,17 @@ public class CommandLine {
 
         CodeModel cm   = coderFactory.createCodeModel();
         CodeHandler ch = coderFactory.createHandlerOnModel(cm);
-        ModelHandler mh = new ModelHandler(cm, ch);
+        QueryModel qm  = coderFactory.createQueryModel(cm);
+        ModelHandler mh = new ModelHandler(cm, ch, qm);
         modelHandlers.put(modelName, mh);
         return mh;
     }
 
+    /**
+     * Removes a model handler for the specified model name.
+     *
+     * @param modelName
+     */
     private void removeModelHandler(String modelName) {
         if( ! modelHandlers.containsKey(modelName)) {
             throw new IllegalArgumentException("model with name " + modelName + " doesn't exist."); 
@@ -148,6 +256,11 @@ public class CommandLine {
         modelHandlers.remove(modelName);
     }
 
+    /**
+     * Cleans up a model handler.
+     *
+     * @param modelName
+     */
     private void clearModelHandler(String modelName) {
         if( ! modelHandlers.containsKey(modelName)) {
             throw new IllegalArgumentException("model with name " + modelName + " doesn't exist.");
@@ -157,6 +270,11 @@ public class CommandLine {
         mh.codeModel.clearAll();
     }
 
+    /**
+     * Sets the selected model.
+     *
+     * @param modelName
+     */
     private void setSelectedModel(String modelName) {
         if( ! modelHandlers.containsKey(modelName)) {
             throw new IllegalArgumentException("model with name " + modelName + " doesn't exist.");
@@ -165,6 +283,13 @@ public class CommandLine {
         selectedModel = modelName;
     }
 
+    /**
+     * Performs a SPARQL query on the specified model.
+     * 
+     * @param modelName
+     * @param qry
+     * @param ps
+     */
     private void performQueryOnModel(String modelName, String qry, PrintStream ps) {
         if( ! modelHandlers.containsKey(modelName)) {
             throw new IllegalArgumentException("model with name " + modelName + " doesn't exist.");
@@ -183,69 +308,210 @@ public class CommandLine {
         } catch (SPARQLException e) {
             throw new IllegalArgumentException("Cannot perform SPARQL query.");
         } finally {
-            qr.close();
+            if(qr != null) { qr.close(); }
         }
     }
 
+    /**
+     * Performs a SPARQL query on the selected model.
+     *
+     * @param qry
+     * @param ps
+     */
     private void performQueryOnModel(String qry, PrintStream ps) {
         performQueryOnModel(selectedModel, qry, ps);
     }
 
+    /**
+     * Inspect the specified model as a bean.
+     *
+     * @param modelName
+     * @param qry
+     * @param ps
+     */
+    private void inspectModel(String modelName, String qry, PrintStream ps) {
+        if( ! modelHandlers.containsKey(modelName) ) {
+            throw new IllegalArgumentException("model with name '" + modelName + "' doesn't exist.");
+        }
+
+        ModelHandler mh = modelHandlers.get(modelName);
+        QueryModel qm = mh.queryModel;
+
+        try {
+            Expression expression = ExpressionFactory.createExpression( qry );
+            JexlContext jc = JexlHelper.createContext();
+            jc.getVars().put(INSPECTION_MODEL_NAME, qm);
+            Object o = expression.evaluate(jc);
+            ps.println(o);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Cannot perform inspection query.", e);
+        }
+    }
+
+    /**
+     * Inspects the active code model as a bean.
+     * @param qry
+     * @param ps
+     */
+    private void inspectModel(String qry, PrintStream ps) {
+        inspectModel(selectedModel, qry, ps);
+    }
+
+    /**
+     * Returns the code handler associated to the selected model.
+     *
+     * @return
+     */
     private CodeHandler getCodeHandler() {
         ModelHandler mh = modelHandlers.get( selectedModel );
         return mh.codeHandler;
     }
 
+    /**
+     * Returns the code model associated to the selected model.
+     *
+     * @return
+     */
     private CodeModel getCodeModel() {
         ModelHandler mh = modelHandlers.get( selectedModel );
         return mh.codeModel;
     }
 
+    /**
+     * Validates a library name.
+     *
+     * @param libName
+     */
     private void validLibraryName(String libName) {
-        // Empty.
+        if(libName == null || libName.trim().length() == 0) {
+            throw new IllegalArgumentException("Illegal library name: '" + libName + "'");
+        }
     }
 
-    private boolean validJar(File pathToJar) {
-        return pathToJar.exists() && pathToJar.isFile() && pathToJar.getName().lastIndexOf(JAR_EXT) == ( pathToJar.length() - JAR_EXT.length() );
+    /**
+     * Validates a Jar file.
+     *
+     * @param pathToJar
+     * @return
+     */
+    private File validJar(String pathToJar) {
+        if(pathToJar.indexOf(RESOURCE_JAR_PREFIX) != 0) {
+             return null;
+        }
+        File jarFile = new File(pathToJar.substring(RESOURCE_JAR_PREFIX.length()));
+        return jarFile.exists() && jarFile.isFile() ? jarFile : null;
     }
 
-    private boolean validSource(File pathToSource) {
-        return pathToSource.exists() && pathToSource.isDirectory();
+    /**
+     * Validates a source dir path.
+     *
+     * @param pathToSource
+     * @return
+     */
+    private File validSource(String pathToSource) {
+       if(pathToSource.indexOf(RESOURCE_SOURCE_PREFIX) != 0) {
+             return null;
+        }
+        File sourceDir = new File(pathToSource.substring(RESOURCE_SOURCE_PREFIX.length()));
+        return sourceDir.exists() && sourceDir.isDirectory() ? sourceDir : null;
     }
 
+    /**
+     * Validates a javadoc dir path.
+     *
+     * @param pathToJavadoc
+     * @return
+     */
+    private File validJavadoc(String pathToJavadoc) {
+       if(pathToJavadoc.indexOf(RESOURCE_JAVADOC_PREFIX) != 0) {
+             return null;
+        }
+        File javadocDir = new File(pathToJavadoc.substring(RESOURCE_JAVADOC_PREFIX.length()));
+        return javadocDir.exists() && javadocDir.isDirectory() ? javadocDir : null;
+    }
+
+    /**
+     * Validates a classes dir path.
+     *
+     * @param pathToClass
+     * @return
+     */
+    private File validClass(String pathToClass) {
+       if(pathToClass.indexOf(RESOURCE_CLASS_PREFIX) != 0) {
+             return null;
+        }
+        File classDir = new File(pathToClass.substring(RESOURCE_CLASS_PREFIX.length()));
+        return classDir.exists() && classDir.isDirectory() ? classDir : null;
+    }
+
+    /**
+     * Enumeration on library types.
+     */
     private enum LibraryType {
+        JAR_FILE,
         SOURCE_DIR,
+        JAVADOC_DIR,
         CLASS_DIR,
-        JAR_FILE
     }
 
+    /**
+     * Defines a library entity when defining a class path.
+     */
     private class Library {
+
+        /**
+         * Library name.
+         */
+        String name;
+
+        /**
+         * Library location.
+         */
         File location;
+
+        /**
+         * Library type.
+         */
         LibraryType type;
 
-        Library(File f, LibraryType t) {
+        Library(String n, File f, LibraryType t) {
+            name     = n;
             location = f;
             type     = t;
         }
     }
 
+    /**
+     * Loads a list of libraries and reports the result operations on the given PrintStream.
+     * 
+     * @param args
+     * @param ps
+     * @throws IOException
+     */
     private void loadLibraries(String[] args, PrintStream ps) throws IOException {
         String libraryName;
+        String libraryLocation;
 
         // Validate arguments first.
         List<Library> libraries = new ArrayList<Library>();
-        File file;
-        for(int i = 0; i < args.length; i+=2) {
+        for(int i = 0; i < args.length; i += 2) {
             libraryName = args[i];
             validLibraryName(libraryName);
-            file = new File(args[i+i]);
-            if( validJar(file) ) {
-                libraries.add(new Library(file, LibraryType.JAR_FILE));
-            } else if ( validSource(file) ) {
-                libraries.add(new Library(file, LibraryType.SOURCE_DIR));
+            String resource = args[i + 1];
+            File resourceFile;
+            LibraryType type;
+            if( (resourceFile = validJar(resource)) != null ) {
+                type = LibraryType.JAR_FILE;
+            } else if ( (resourceFile = validSource(resource) ) != null ) {
+                type = LibraryType.SOURCE_DIR;
+            } else if ( (resourceFile = validJavadoc(resource)) != null ) {
+                type = LibraryType.JAVADOC_DIR;
+            } else if ( (resourceFile = validClass(resource)  ) != null ) {
+                type = LibraryType.CLASS_DIR;
             } else {
                 throw new IllegalArgumentException("Invalid argument " + args[i + 1]);
             }
+            libraries.add(new Library(libraryName, resourceFile, type));
         }
 
         // Process arguments.
@@ -253,32 +519,75 @@ public class CommandLine {
         Statistics statistics = new Statistics();
         CodeHandler statisticsCodeHandler = statistics.createStatisticsCodeHandler( getCodeHandler() );
 
-        for(int i = 0; i < args.length; i+=2) {
+        JavaBytecodeJarParser javaBytecodeJarParser = null;
+        DirectoryParser sourceDirectoryParser       = null;
+        DirectoryParser javadocDirectoryParser      = null;
+        for(int i = 0; i < libraries.size(); i++) {
 
-            libraryName = args[i];
-            statisticsCodeHandler.startParsing(libraryName, "location");
+            try {
+                statisticsCodeHandler.startParsing(libraries.get(i).name, libraries.get(i).location.getAbsolutePath());
 
-            JavaBytecodeJarParser javaBytecodeJarParser = new JavaBytecodeJarParser();
-            javaBytecodeJarParser.initialize( statisticsCodeHandler, ot );
-            JavaSourceFileParser javaSourceFileParser = new JavaSourceFileParser();
-            DirectoryParser directoryParser = new DirectoryParser(javaSourceFileParser);
-            directoryParser.initialize( statisticsCodeHandler, ot );
+                javaBytecodeJarParser = new JavaBytecodeJarParser();
+                javaBytecodeJarParser.initialize( statisticsCodeHandler, ot );
 
-            if( libraries.get(i).type == LibraryType.JAR_FILE ) {
-                System.out.print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
-                javaBytecodeJarParser.parseFile(libraries.get(i).location);
-                System.out.println(" done");
-            } else if( libraries.get(i).type == LibraryType.SOURCE_DIR ) {
-                System.out.print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
-                directoryParser.parseDirectory( libraries.get(i).location );
-                System.out.println(" done");
-            } else {
+                JavaSourceFileParser javaSourceFileParser = new JavaSourceFileParser();
+                sourceDirectoryParser = new DirectoryParser(javaSourceFileParser);
+                sourceDirectoryParser.initialize( statisticsCodeHandler, ot );
 
-                throw new IllegalStateException("Invalid argument " + args[i + 1]);
+                JavadocFileParser javadocFileParser = new JavadocFileParser();
+                javadocDirectoryParser = new DirectoryParser(javadocFileParser);
+                javadocDirectoryParser.initialize( statisticsCodeHandler, ot );
+
+                if( libraries.get(i).type == LibraryType.JAR_FILE ) {
+
+                    try {
+                        System.out.print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
+                        javaBytecodeJarParser.parseFile(libraries.get(i).location);
+                        System.out.println(" done");
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException("Error while loading JAR: '" + libraries.get(i).location + "'", e);
+                    }
+
+                } else if( libraries.get(i).type == LibraryType.SOURCE_DIR ) {
+
+                    try {
+                        System.out.print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
+                        sourceDirectoryParser.parseDirectory( libraries.get(i).name, libraries.get(i).location );
+                        System.out.println(" done");
+                    } catch(Exception e) {
+                        throw new IllegalArgumentException("Error while reading SRC dir: '" + libraries.get(i).location + "'", e);
+                    }
+
+                } else if(libraries.get(i).type == LibraryType.JAVADOC_DIR ) {
+
+                    try {
+                        System.out.print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
+                        javadocDirectoryParser.parseDirectory( libraries.get(i).name, libraries.get(i).location  );
+                        System.out.println(" done");
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException("Error while reading JAVADOC dir: '" + libraries.get(i).location + "'", e);
+                    }
+
+                } else if(libraries.get(i).type == LibraryType.CLASS_DIR ) {
+
+                    try {
+                        System.out.print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
+                        //TODO: complete this.
+                        throw new UnsupportedOperationException("Not yet implemented.");
+                        //System.out.println(" done");
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException("Error while reading CLASS dir: '" + libraries.get(i).location + "'", e);
+                    }
+
+                } else {
+                    throw new IllegalStateException("Cannot load library: '" + libraries.get(i).name + "'");
+                }
+
+            } finally {
+                if(javaBytecodeJarParser  != null) { javaBytecodeJarParser.dispose();  }
+                if(sourceDirectoryParser  != null) { sourceDirectoryParser.dispose();  }
+                if(javadocDirectoryParser != null) { javadocDirectoryParser.dispose(); }
             }
-
-            javaBytecodeJarParser.dispose();
-            directoryParser.dispose();
         }
 
         statisticsCodeHandler.endParsing();
@@ -291,6 +600,12 @@ public class CommandLine {
         toBeSaved.add(selectedModel);
     }
 
+    /**
+     * Saves a model on the basis of the given parameters.
+     *
+     * @param parameters
+     * @throws IOException
+     */
     private void saveModel(Map parameters) throws IOException {
         CodeStorage codeStorage = coderFactory.createCodeStorage();
         codeStorage.saveModel( getCodeModel(), parameters );
@@ -298,11 +613,24 @@ public class CommandLine {
         toBeSaved.remove(selectedModel);
     }
 
+    /**
+     * Loads a model on the basis of the given parameters.
+     *
+     * @param parameters
+     * @throws IOException
+     */
     private void loadModel(Map parameters) throws IOException {
         CodeStorage codeStorage = coderFactory.createCodeStorage();
         codeStorage.loadModel( getCodeModel(), parameters );
     }
 
+    /**
+     * Retrieve a specified param on an array of arguments.
+     *
+     * @param param
+     * @param args
+     * @return
+     */
     private String retrieveParam(String param, String[] args) {
         String target = param + "=";
         for(String arg : args) {
@@ -313,11 +641,22 @@ public class CommandLine {
         return null;
     }
 
+    /**
+     * Defines a command with a name and a description.
+     */
     private class Command {
         private String name;
         private String description;
     }
 
+    /**
+     * Retrieves the short command description of a specified command.
+     *
+     * @param commandName
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     private String getShortCommandDescription(String commandName) throws IllegalAccessException, InvocationTargetException {
         Method[] methods = this.getClass().getMethods();
         for(int i = 0; i < methods.length; i++) {
@@ -329,6 +668,14 @@ public class CommandLine {
         return null;
     }
 
+    /**
+     * Retrieves the extended command description of a specified command.
+     *
+     * @param commandName
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     private String getLongCommandDescription(String commandName) throws IllegalAccessException, InvocationTargetException {
         Method[] methods = this.getClass().getMethods();
         for(int i = 0; i < methods.length; i++) {
@@ -340,9 +687,16 @@ public class CommandLine {
         return null;
     }
 
+    /**
+     * Returns an array of the available commands declared in this class.
+     *
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     private Command[] getAvailableCommands() throws IllegalAccessException, InvocationTargetException {
         Method[] methods = this.getClass().getMethods();
-        List<Command> commands = new ArrayList();
+        List<Command> commands = new ArrayList<Command>();
         for(int i = 0; i < methods.length; i++) {
             Command command;
             if( methods[i].getName().indexOf(COMMAND_PREFIX) == 0) {
@@ -356,6 +710,13 @@ public class CommandLine {
         return commands.toArray( new Command[commands.size()] );
     }
 
+    /**
+     * Returns an array of the available command names.
+     *
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     private String[] getAvailableCommandNames() throws IllegalAccessException, InvocationTargetException {
         Command[] commands = getAvailableCommands();
         String[] commandNames = new String[commands.length];
@@ -365,6 +726,13 @@ public class CommandLine {
         return commandNames;
     }
 
+    /**
+     * Prints the usage of the CommandLine interface.
+     *
+     * @param ps
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     private void printUsage(PrintStream ps) throws IllegalAccessException, InvocationTargetException {
         ps.println("Usage: <command> <parameters>");
         ps.println();
@@ -376,8 +744,13 @@ public class CommandLine {
         ps.println();
     }
 
-    /* BEGIN Command line commands. */
+    /* BEGIN: Command line commands. */
 
+    /**
+     * Command to enable / disable the debug flag.
+     *
+     * @param args
+     */
     public void command_debug(String[] args) {
         if( args.length == 0 ) {
             System.out.println("debug: " + debug);
@@ -401,6 +774,11 @@ public class CommandLine {
                 "\tthe debug flag affects the level of debugging messages printed out during processing";
     }
 
+    /**
+     * Command to create a new model.
+     *
+     * @param args
+     */
     public void command_newmodel(String[] args) {
         if( args.length != 1 ) {
             throw new IllegalArgumentException();
@@ -419,6 +797,11 @@ public class CommandLine {
                 "\n\tthis command allows to create a new model and add it to the model set";
     }
 
+    /**
+     * Command to remove an existing model.
+     *
+     * @param args
+     */
     public void command_removemodel(String[] args) {
         if( args.length != 1 ) {
             throw new IllegalArgumentException("a model name must be specified");
@@ -438,6 +821,11 @@ public class CommandLine {
                 "\n\tremoves a model from the models set";
     }
 
+    /**
+     * Command to clear the content of a model.
+     *
+     * @param args
+     */
     public void command_clearmodel(String[] args) {
         if( args.length != 1 ) {
             throw new IllegalArgumentException();
@@ -457,6 +845,11 @@ public class CommandLine {
                 "\n\tcleans up the content of an existing model";
     }
 
+    /**
+     * Command to set the active model.
+     *
+     * @param args
+     */
     public void command_setmodel(String[] args) {
         if(args.length == 0) {
             System.out.println("selected model: " + selectedModel);
@@ -480,6 +873,11 @@ public class CommandLine {
                 "\n\toperation where the model is not specified";
     }
 
+    /**
+     * Command to list the available models.
+     *
+     * @param args
+     */
     public void command_list(String[] args) {
         if(args.length > 0) {
             throw new IllegalArgumentException();
@@ -502,6 +900,11 @@ public class CommandLine {
                 "\n\tlists all the models in the models set.";
     }
 
+    /**
+     * Command to query a model with a SPARQL query.
+     *
+     * @param args
+     */
     public void command_querymodel(String[] args) {
         if( args.length != 1 ) {
             throw new IllegalArgumentException();
@@ -521,7 +924,28 @@ public class CommandLine {
                 "\n\tperforms the given query on the current query model.";
     }
 
+    public void command_inspectmodel(String[] args) {
+       if( args.length != 1 ) {
+            throw new IllegalArgumentException();
+        }
+        String qry = args[0];
+        inspectModel(qry, System.out);
+    }
+
+    public String __command_inspectmodel() {
+        return "allows to inspect the active model";
+    }
+
+    public String ___command_inspectmodel() {
+        return
+                __command_inspectmodel() +
+                "\nsyntax: inspectmodel <INSPECTION_query>" +
+                "\n\tperforms an inspection on the current query model";        
+    }
+
     /**
+     * Command to load a classpath on the active model.
+     *
      * Expected: load <lib_name> file1 [, file2, ...]
      *
      * @param args
@@ -542,11 +966,22 @@ public class CommandLine {
         return
                 __command_loadclasspath() +
                 "\nsyntax: loadclasspath resource1 [resource2 ... ]" +
-                "\n\twhere resource can be a source dir, a classes dir or a jar file." +
+                "\n\twhere resource can be" +
+                "\n\t\ta jar    file:  jar:/path/to/jarfile.jar" +
+                "\n\t\ta source  dir:  src:/path/to/src" +
+                "\n\t\ta javadoc dir:  javadoc:/path/to/src" +
+                "\n\t\ta class   dir:  class:/path/to/class" +
+                "\n" +
                 "\n\tPerforms a parsing of the given set of resources" +
-                "\n\tand loads them on the curretly selected model";
+                "\n\tand loads the generated model in the active model";
     }
 
+    /**
+     * Retrieves the file storage parameters.
+     *
+     * @param args
+     * @return
+     */
     private Map fileStorageParams(String[] args) {
         Map parameters = new HashMap();
         String filename = retrieveParam(CodeStorage.FS_FILENAME, args);
@@ -554,6 +989,12 @@ public class CommandLine {
         return parameters;
     }
 
+    /**
+     * Retrieves the database storage parameters.
+     *
+     * @param args
+     * @return
+     */
     private Map databaseStorageParams(String[] args) {
         Map parameters = new HashMap();
         String server = retrieveParam(CodeStorage.DB_SERVER, args);
@@ -584,6 +1025,12 @@ public class CommandLine {
         return parameters;
     }
 
+    /**
+     * Command to save a model on the storage specified with parameters.
+     *
+     * @param args
+     * @throws IOException
+     */
     public void command_savemodel(String[] args) throws IOException {
         if(args.length < 1) {
             throw new IllegalArgumentException("at least storage name must be specified");
@@ -613,6 +1060,12 @@ public class CommandLine {
 
     }
 
+    /**
+     * Command to load a model.
+     *
+     * @param args
+     * @throws IOException
+     */
     public void command_loadmodel(String[] args) throws IOException {
         if(args.length < 1) {
             throw new IllegalArgumentException("at least storage name must be specified");
@@ -642,6 +1095,13 @@ public class CommandLine {
 
     }
 
+    /**
+     * Command to obtain help on other command.
+     *
+     * @param args
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     public void command_help(String[] args) throws IllegalAccessException, InvocationTargetException {
         if(args.length == 0) {
             printUsage(System.out);
@@ -672,7 +1132,14 @@ public class CommandLine {
 
     /* END Command line commands. */
 
-    private void processCommand(String[] args) throws IllegalAccessException, InvocationTargetException {
+    /**
+     * Processes a command line input.
+     *
+     * @param args
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    protected void processCommand(String[] args) throws IllegalAccessException, InvocationTargetException {
         if(args.length == 0) {
             return;
         }
@@ -702,6 +1169,13 @@ public class CommandLine {
         throw new IllegalArgumentException("unknown command: " + command);
     }
 
+    /**
+     * Handles an IllegalArgumentException raised by a command method transforming it
+     * in a error message.
+     * 
+     * @param iae
+     * @param cmd
+     */
     private void handleIllegalArgumentException(IllegalArgumentException iae, String cmd) {
         System.out.println("error: " + iae.toString());
         if(debug) { iae.printStackTrace(); }
@@ -718,10 +1192,18 @@ public class CommandLine {
         }
     }
 
+    /**
+     * Handles an IllegalArgumentException.
+     *
+     * @param iae
+     */
     private void handleIllegalArgumentException(IllegalArgumentException iae) {
         handleIllegalArgumentException(iae, null);
     }
 
+    /**
+     * Prints a <i>Hello</i> message.
+     */
     private void printHello() {
         System.out.println("RDFCoder command line console [version " + VERSION_MAJOR + "." + VERSION_MINOR + "]");
         System.out.println();
@@ -745,6 +1227,12 @@ public class CommandLine {
 
     }
 
+    /**
+     * Requires a confirmation exit.
+     *
+     * @return
+     * @throws IOException
+     */
     private boolean confirmExit() throws IOException {
        if( ! toBeSaved.isEmpty() ) { // There are models not yes stored.
             System.out.println("Following models has been modified but not stored:");
@@ -763,7 +1251,14 @@ public class CommandLine {
         return true;
     }
 
-    private void mainCycle() throws IllegalAccessException, InvocationTargetException, IOException {
+    /**
+     * Main cycle of the command line console.
+     *
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws IOException
+     */
+    protected void mainCycle() throws IllegalAccessException, InvocationTargetException, IOException {
         printHello();
         while (true) {
             String[] arguments = extractArgs( readInput(selectedModel + "> ") );
@@ -781,7 +1276,13 @@ public class CommandLine {
 
     private static List<String> commands = new ArrayList();
 
-    private static String[] extractArgs(String cl) {
+    /**
+     * Extracts arguments from a command line input.
+     *
+     * @param cl
+     * @return
+     */
+    protected static String[] extractArgs(String cl) {
         commands.clear();
         boolean insideQuotes = false;
         int begin = 0;
@@ -815,10 +1316,23 @@ public class CommandLine {
         return commands.toArray(new String[commands.size()]);
     }
 
+    /**
+     * Returns <code>true</code> if <i>EXIT_COMMAND</i> has been specified.
+     * @param args
+     * @return
+     */
     private static boolean isExit(String[] args) {
         return args.length > 0 && args[0].equals(EXIT_COMMAND);
     }
 
+    /**
+     * Access point.
+     * 
+     * @param args
+     * @throws IOException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     public static void main(String[] args) throws IOException, IllegalAccessException, InvocationTargetException {
         CommandLine commandLine = new CommandLine();
         commandLine.mainCycle();

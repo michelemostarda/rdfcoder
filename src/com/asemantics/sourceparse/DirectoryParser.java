@@ -11,37 +11,66 @@ import java.util.*;
  */
 public class DirectoryParser extends CodeParser {
 
+    /**
+     * Directory stack.
+     */
     private Stack<File> dirStack;
 
+    /**
+     * File parser.
+     */
     private FileParser fileParser;
 
+    /**
+     * Constructor.
+     *
+     * @param fs
+     */
     public DirectoryParser(FileParser fs) {
         dirStack = new Stack<File>();
         fileParser = fs;
     }
 
-    public int parseDirectory(File d) {
+    /**
+     * Parses a directory content.
+     *
+     * @param d
+     * @return
+     */
+    public int parseDirectory(String libraryName, File d) {
         dirStack.clear();
-        if( d == null || ! d.isDirectory() ) {
+        if( d == null || ! d.exists() ||! d.isDirectory() ) {
             throw new IllegalArgumentException();
         }
         dirStack.push(d);
 
         fileParser.initialize( getCodeHandler(), getObjectsTable() );
 
-        preScan();
+        // Begin parsing.
+        getCodeHandler().startParsing(libraryName, d.getAbsolutePath());
 
-        File current;
-        while( ! dirStack.isEmpty() ) {
-            current = dirStack.pop();
-            scanDirectory( current );
+        try {
+            preScan();
+            File current;
+            while( ! dirStack.isEmpty() ) {
+                current = dirStack.pop();
+                scanDirectory( current );
+            }
+        } finally {
+            // End parsing.
+            getCodeHandler().endParsing();
         }
+
 
         int unresolved = postScan();
         fileParser.dispose();
         return unresolved;
     }
 
+    /**
+     * Low level scan operation.
+     * @param dir
+     */
     protected void scanDirectory(File dir) {
 
         File[] content = dir.listFiles();
@@ -52,7 +81,6 @@ public class DirectoryParser extends CodeParser {
         }
 
         File[] javaFiles = dir.listFiles( new CoderUtils.JavaSourceFilenameFilter() );
-
         for(int f = 0; f < javaFiles.length; f++) {
             try {
                 fileParser.parse(javaFiles[f]);
@@ -65,10 +93,18 @@ public class DirectoryParser extends CodeParser {
         }
     }
 
+    /**
+     * Pre scan operation handler.
+     */
     public void preScan() {
         // Empty.
     }
 
+    /**
+     * Post scan operation handler.
+     * 
+     * @return
+     */
     public int postScan() {
         Set<String> unresolved = getObjectsTable().processTemporaryIdentifiers(getCodeHandler());
         List<String> unresolvedList = new ArrayList(unresolved);
