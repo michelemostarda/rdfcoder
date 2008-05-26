@@ -156,7 +156,7 @@ public class CodeHandlerImpl implements CodeHandler {
         this.libraryLocation = libraryLocation;
 
         if(parsingStarted) {
-            throw new CodeHandlerException("Parse process already parsingStarted.");
+            throw new CodeHandlerException("Parse process already started.");
         } else {
             parsingStarted = true;
         }
@@ -167,7 +167,7 @@ public class CodeHandlerImpl implements CodeHandler {
 
     public void endParsing() {
         if( !parsingStarted) {
-            throw new CodeHandlerException("Parse process already parsingStarted.");
+            throw new CodeHandlerException("Parse process not yet started.");
         }
         if(! containersStack.isEmpty() ) {
             throw new CodeHandlerException("There are some classes opened but not closed: " + containersStack.peek());
