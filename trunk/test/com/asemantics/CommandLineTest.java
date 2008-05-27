@@ -20,6 +20,7 @@ package com.asemantics;
 import junit.framework.TestCase;
 
 import java.lang.reflect.InvocationTargetException;
+import java.io.File;
 
 
 public class CommandLineTest extends TestCase {
@@ -27,7 +28,7 @@ public class CommandLineTest extends TestCase {
     private CommandLine commandLine;
 
     protected void setUp() throws Exception {
-        commandLine = new CommandLine();
+        commandLine = new CommandLine(new File("."));
     }
 
     protected void tearDown() throws Exception {
