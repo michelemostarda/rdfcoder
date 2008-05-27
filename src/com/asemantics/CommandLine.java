@@ -182,13 +182,24 @@ public class CommandLine {
     private History history;
 
     /**
+     * The current console directory.
+     */
+    private File currentDirectory;
+
+    /**
      * Constructor.
-     *
+
+     * @param file the initial location.
      * @throws IOException
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    public CommandLine() throws IOException, IllegalAccessException, InvocationTargetException {
+    public CommandLine(File file) throws IOException, IllegalAccessException, InvocationTargetException {
+        if(file == null) {
+            throw new IllegalArgumentException("file cannot be null");
+        }
+        currentDirectory = file;
+
         coderFactory = new JenaCoderFactory();
         modelHandlers = new HashMap();
         toBeSaved = new ArrayList();
@@ -217,6 +228,28 @@ public class CommandLine {
                     new FileNameCompletor ()
                 )
         );        
+    }
+
+    /**
+     * Sets a new current location.
+     *
+     * @param newLocation
+     */
+    protected void setCurrentDirectory(File newLocation) {
+        if(newLocation.exists()) {
+            currentDirectory = newLocation;
+        } else {
+            throw new IllegalArgumentException("cannot change directory to unexisting path:'" + newLocation.getAbsolutePath() + "'");
+        }
+    }
+
+    /**
+     * Returns the current location.
+     * 
+     * @return
+     */
+    public File getCurrentDirectory() {
+        return currentDirectory;
     }
 
     /**
@@ -775,6 +808,30 @@ public class CommandLine {
     }
 
     /**
+     * Prints the current directory.
+     *
+     * @param args
+     */
+    public void command_pwd(String[] args) {
+        System.out.println(currentDirectory.getAbsolutePath());
+    }
+
+    public String __command_pwd() {
+        return "prints the current directory";
+    }
+
+    public String ___command_pwd() {
+         return __command_pwd();
+    }
+
+    public void command_cd(String args[]) {
+        if(args.length != 1) {
+            throw new IllegalArgumentException("A single path must be specified");
+        }
+        setCurrentDirectory( new File(args[0]) );
+    }
+
+    /**
      * Command to create a new model.
      *
      * @param args
@@ -1252,6 +1309,15 @@ public class CommandLine {
     }
 
     /**
+     * Generates the prompt string.
+     *
+     * @return
+     */
+    protected String getPrompt() {
+        return getCurrentDirectory().getName() + "~" + selectedModel + "> ";
+    }
+
+    /**
      * Main cycle of the command line console.
      *
      * @throws IllegalAccessException
@@ -1261,7 +1327,7 @@ public class CommandLine {
     protected void mainCycle() throws IllegalAccessException, InvocationTargetException, IOException {
         printHello();
         while (true) {
-            String[] arguments = extractArgs( readInput(selectedModel + "> ") );
+            String[] arguments = extractArgs( readInput( getPrompt() ) );
             if ( isExit(arguments) && confirmExit() ) {
                 System.out.println("Bye");
                 System.exit(0);
@@ -1334,7 +1400,7 @@ public class CommandLine {
      * @throws InvocationTargetException
      */
     public static void main(String[] args) throws IOException, IllegalAccessException, InvocationTargetException {
-        CommandLine commandLine = new CommandLine();
+        CommandLine commandLine = new CommandLine(new File("."));
         commandLine.mainCycle();
     }
 }
