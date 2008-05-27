@@ -253,6 +253,21 @@ public class CommandLine {
     }
 
     /**
+     * If <i>in</i>parameter is an absolute file it is returned unchanged,
+     * otherwise a concatenation of #currentDirectory and the relative path is
+     * returned.
+     *  
+     * @return
+     */
+    protected File toAbsolutePath(String in) {
+        File inFile = new File(in);
+        if(inFile.isAbsolute()) {
+            return inFile;
+        }
+        return new File( getCurrentDirectory(), in );
+    }
+
+    /**
      * Creates a model handler for a model name.
      *
      * @param modelName
@@ -431,7 +446,7 @@ public class CommandLine {
         if(pathToJar.indexOf(RESOURCE_JAR_PREFIX) != 0) {
              return null;
         }
-        File jarFile = new File(pathToJar.substring(RESOURCE_JAR_PREFIX.length()));
+        File jarFile = toAbsolutePath(pathToJar.substring(RESOURCE_JAR_PREFIX.length()));
         return jarFile.exists() && jarFile.isFile() ? jarFile : null;
     }
 
@@ -445,7 +460,7 @@ public class CommandLine {
        if(pathToSource.indexOf(RESOURCE_SOURCE_PREFIX) != 0) {
              return null;
         }
-        File sourceDir = new File(pathToSource.substring(RESOURCE_SOURCE_PREFIX.length()));
+        File sourceDir = toAbsolutePath(pathToSource.substring(RESOURCE_SOURCE_PREFIX.length()));
         return sourceDir.exists() && sourceDir.isDirectory() ? sourceDir : null;
     }
 
@@ -459,7 +474,7 @@ public class CommandLine {
        if(pathToJavadoc.indexOf(RESOURCE_JAVADOC_PREFIX) != 0) {
              return null;
         }
-        File javadocDir = new File(pathToJavadoc.substring(RESOURCE_JAVADOC_PREFIX.length()));
+        File javadocDir = toAbsolutePath(pathToJavadoc.substring(RESOURCE_JAVADOC_PREFIX.length()));
         return javadocDir.exists() && javadocDir.isDirectory() ? javadocDir : null;
     }
 
@@ -473,7 +488,7 @@ public class CommandLine {
        if(pathToClass.indexOf(RESOURCE_CLASS_PREFIX) != 0) {
              return null;
         }
-        File classDir = new File(pathToClass.substring(RESOURCE_CLASS_PREFIX.length()));
+        File classDir = toAbsolutePath(pathToClass.substring(RESOURCE_CLASS_PREFIX.length()));
         return classDir.exists() && classDir.isDirectory() ? classDir : null;
     }
 
@@ -542,7 +557,7 @@ public class CommandLine {
             } else if ( (resourceFile = validClass(resource)  ) != null ) {
                 type = LibraryType.CLASS_DIR;
             } else {
-                throw new IllegalArgumentException("Invalid argument " + args[i + 1]);
+                throw new IllegalArgumentException("Cannot find resource: '" + args[i + 1] + "'");
             }
             libraries.add(new Library(libraryName, resourceFile, type));
         }
@@ -1234,8 +1249,13 @@ public class CommandLine {
      * @param cmd
      */
     private void handleIllegalArgumentException(IllegalArgumentException iae, String cmd) {
-        System.out.println("error: " + iae.toString());
+        System.out.println("error: '" + iae.getMessage() + "'");
         if(debug) { iae.printStackTrace(); }
+        if(iae.getCause() != null) {
+            System.out.println(" with cause: '" + iae.getCause().getMessage() + "'");
+            if(debug) { iae.getCause().printStackTrace(); }
+        }
+
         try {
             if(cmd == null) {
                 printUsage(System.out);
@@ -1266,22 +1286,10 @@ public class CommandLine {
         System.out.println();
     }
 
-//    private static StringBuffer inputBuffer = new StringBuffer();
-
     private String readInput(String prompt) throws IOException {
         System.out.print(prompt);
         String ret = consoleReader.readLine();
         return ret;
-
-//        inputBuffer.delete(0, inputBuffer.length());
-//        System.out.print(prompt);
-//        int b;
-//        while ((b = System.in.read()) != '\n') {
-//            System.out.println("CHAR:" + b);
-//            inputBuffer.append((char) b);
-//        }
-//        return inputBuffer.toString();
-
     }
 
     /**

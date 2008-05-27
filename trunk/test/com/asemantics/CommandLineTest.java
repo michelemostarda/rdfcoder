@@ -28,6 +28,7 @@ public class CommandLineTest extends TestCase {
     private CommandLine commandLine;
 
     protected void setUp() throws Exception {
+        System.out.println(">" + new File(".").getAbsolutePath());
         commandLine = new CommandLine(new File("."));
     }
 
@@ -37,7 +38,7 @@ public class CommandLineTest extends TestCase {
 
     public void testLoadClasspath() throws IllegalAccessException, InvocationTargetException {
         //TODO: introduce relative paths in command line.
-        String[] command = new String[]{"loadclasspath", "src1", "src:/Users/michele/repository/RDFCoder/rdfcoder-googlecode/trunk/src"};
+        String[] command = new String[]{"loadclasspath", "src1", "src:src"};
         commandLine.processCommand(command);
     }
 }
