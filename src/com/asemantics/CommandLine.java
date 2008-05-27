@@ -30,6 +30,7 @@ import org.apache.commons.jexl.JexlHelper;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.FilePermission;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -237,7 +238,7 @@ public class CommandLine {
      */
     protected void setCurrentDirectory(File newLocation) {
         if(newLocation.exists()) {
-            currentDirectory = newLocation;
+            currentDirectory = new File( toAbsolutePath( newLocation.getAbsolutePath() ).getAbsolutePath());
         } else {
             throw new IllegalArgumentException("cannot change directory to unexisting path:'" + newLocation.getAbsolutePath() + "'");
         }
@@ -848,6 +849,53 @@ public class CommandLine {
             throw new IllegalArgumentException("A single path must be specified");
         }
         setCurrentDirectory( new File(args[0]) );
+    }
+
+    public String __command_cd() {
+        return "changes the current directory";
+    }
+
+    public String ___command_cd() {
+        return
+                __command_cd() +
+                "\n\tsyntax: cd <path to new location>";
+    }
+
+    private String rewriteActions(String in) {
+        StringBuilder sb = new StringBuilder();
+        if(in.indexOf("read")    != -1) { sb.append("r"); }
+        if(in.indexOf("write")   != -1) { sb.append("w"); }
+        if(in.indexOf("execute") != -1) { sb.append("e"); }
+        if(in.indexOf("delete")  != -1) { sb.append("d"); }
+        return sb.toString();
+    }
+
+    /**
+     * Lists the content of the current directory.
+     */
+    public void command_ls(String args[]) {
+        File[] content = getCurrentDirectory().listFiles();
+        FilePermission fp;
+        for(File f : content) {
+            fp = new FilePermission(f.getAbsolutePath(), "read,write,execute,delete");
+            System.out.printf(
+                    "%s\t%s\t\t\t%s\t%d\n",
+                    ( f.isDirectory() ? "d" : "-"),
+                    f.getName(),
+                    rewriteActions( fp.getActions() ),
+                    f.length()
+            );
+        }
+    }
+
+    public String __command_ls() {
+        return "Lists the content of the current directory";
+    }
+
+    public String ___command_ls() {
+        return
+                __command_ls() +
+                "\n\tsyntax: ls";
     }
 
     /**
