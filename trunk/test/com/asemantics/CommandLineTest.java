@@ -36,9 +36,13 @@ public class CommandLineTest extends TestCase {
         commandLine = null;
     }
 
-    public void testLoadClasspath() throws IllegalAccessException, InvocationTargetException {
-        //TODO: introduce relative paths in command line.
-        String[] command = new String[]{"loadclasspath", "src1", "src:src"};
-        commandLine.processCommand(command);
+    public void testLoadSources() throws IllegalAccessException, InvocationTargetException {
+        String[] command = new String[]{"loadclasspath", "classes", "src:src"};
+        assertTrue( commandLine.processCommand(command) );
+    }
+
+   public void testLoadClasses() throws IllegalAccessException, InvocationTargetException {
+        String[] command = new String[]{"loadclasspath", "sources", "class:classes"};
+        assertTrue( commandLine.processCommand(command) );
     }
 }

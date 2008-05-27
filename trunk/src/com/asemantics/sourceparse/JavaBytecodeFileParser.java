@@ -32,7 +32,7 @@ import java.util.*;
 /**
  * The Java bytecode parser.
  */
-public class JavaBytecodeFileParser extends CodeParser {
+public class JavaBytecodeFileParser extends FileParser {
 
     /**
      * Name that bcel uses to describe constructor methods.
@@ -44,7 +44,10 @@ public class JavaBytecodeFileParser extends CodeParser {
      */
     private Stack<JavaClass> containersStack;
 
-    protected JavaBytecodeFileParser() {
+    /**
+     * Constructor.
+     */
+    public JavaBytecodeFileParser() {
         containersStack = new Stack();
     }
 
@@ -89,6 +92,7 @@ public class JavaBytecodeFileParser extends CodeParser {
     }
 
     public void parse( File file) throws IOException {
+        //TODO - HIGH: check this constructor: JavaBytecodeClassLoader must not be null.
         parse(null, file);
     }
 
