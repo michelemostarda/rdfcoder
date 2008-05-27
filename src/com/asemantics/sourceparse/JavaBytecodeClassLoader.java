@@ -19,16 +19,35 @@ import java.util.jar.JarFile;
  */
 public interface JavaBytecodeClassLoader {
 
-    class BaseClassLoader {
-        
-    }
+    /**
+     * Loads a <i>JavaClass</i> object.
+     *
+     * @param pathToClass
+     * @return
+     * @throws IOException
+     */
+     JavaClass loadClass(String pathToClass) throws IOException;
 
+    /**
+     * Allows to load a Jar class file.
+     */
     public static class JarClassLoader implements JavaBytecodeClassLoader {
 
+        /**
+         * Represents the JAR file. 
+         */
         private File file;
 
+        /**
+         * Represents the jarfile object.
+         */
         JarFile jarFile;
 
+        /**
+         * Constructor.
+         *
+         * @param f  path to the JAR file to load.
+         */
         public JarClassLoader(File f) {
             if(f == null) {
                 throw new NullPointerException("invalid jarFile: cannot be null");
@@ -40,6 +59,13 @@ public interface JavaBytecodeClassLoader {
             file = f;
         }
 
+        /**
+         * Loads a Java class representation on the given path to class.
+         *
+         * @param pathToClass
+         * @return
+         * @throws IOException
+         */
         public JavaClass loadClass(String pathToClass) throws IOException {
             if(jarFile == null) {
                 jarFile = new JarFile(file);
@@ -66,10 +92,21 @@ public interface JavaBytecodeClassLoader {
         
     }
 
+    /**
+     * Directory class loader.
+     */
     public static class DirClassLoader implements JavaBytecodeClassLoader {
 
+        /**
+         * The directory to load.
+         */
         private File dir;
 
+        /**
+         * Constructor.
+         *
+         * @param d
+         */
         public DirClassLoader(File d) {
             if(d == null) {
                 throw new NullPointerException("invalid classes d: cannot be null");
@@ -81,6 +118,13 @@ public interface JavaBytecodeClassLoader {
             dir = d;
         }
 
+        /**
+         * Loads a class file into a directory.
+         * 
+         * @param pathToClass
+         * @return
+         * @throws IOException
+         */
         public JavaClass loadClass(String pathToClass) throws IOException {
             File classFile = new File(dir, CoderUtils.fullyQualifiedObjToFilePath(pathToClass) );
             InputStream is = new FileInputStream(classFile);
@@ -94,6 +138,6 @@ public interface JavaBytecodeClassLoader {
 
     }
 
-    JavaClass loadClass(String pathToClass) throws IOException;
+
 
 }
