@@ -538,7 +538,6 @@ public class CommandLine {
      */
     private void loadLibraries(String[] args, PrintStream ps) throws IOException {
         String libraryName;
-        String libraryLocation;
 
         // Validate arguments first.
         List<Library> libraries = new ArrayList<Library>();
@@ -570,6 +569,7 @@ public class CommandLine {
         JavaBytecodeJarParser javaBytecodeJarParser = null;
         DirectoryParser sourceDirectoryParser       = null;
         DirectoryParser javadocDirectoryParser      = null;
+        DirectoryParser classDirectoryParser        = null;
         for(int i = 0; i < libraries.size(); i++) {
 
             try {
@@ -585,6 +585,10 @@ public class CommandLine {
                 JavadocFileParser javadocFileParser = new JavadocFileParser();
                 javadocDirectoryParser = new DirectoryParser(javadocFileParser);
                 javadocDirectoryParser.initialize( statisticsCodeHandler, ot );
+
+                JavaBytecodeFileParser javaBytecodeFileParser = new JavaBytecodeFileParser();
+                classDirectoryParser = new DirectoryParser(javaBytecodeFileParser);
+                classDirectoryParser.initialize( statisticsCodeHandler, ot );
 
                 if( libraries.get(i).type == LibraryType.JAR_FILE ) {
 
@@ -610,7 +614,7 @@ public class CommandLine {
 
                     try {
                         System.out.print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
-                        javadocDirectoryParser.parseDirectory( libraries.get(i).name, libraries.get(i).location  );
+                        javadocDirectoryParser.parseDirectory( libraries.get(i).name, libraries.get(i).location );
                         System.out.println(" done");
                     } catch (Exception e) {
                         throw new IllegalArgumentException("Error while reading JAVADOC dir: '" + libraries.get(i).location + "'", e);
@@ -620,9 +624,8 @@ public class CommandLine {
 
                     try {
                         System.out.print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
-                        //TODO: complete this.
-                        throw new UnsupportedOperationException("Not yet implemented.");
-                        //System.out.println(" done");
+                        classDirectoryParser.parseDirectory( libraries.get(i).name, libraries.get(i).location );
+                        System.out.println(" done");
                     } catch (Exception e) {
                         throw new IllegalArgumentException("Error while reading CLASS dir: '" + libraries.get(i).location + "'", e);
                     }
@@ -635,6 +638,7 @@ public class CommandLine {
                 if(javaBytecodeJarParser  != null) { javaBytecodeJarParser.dispose();  }
                 if(sourceDirectoryParser  != null) { sourceDirectoryParser.dispose();  }
                 if(javadocDirectoryParser != null) { javadocDirectoryParser.dispose(); }
+                if(classDirectoryParser   != null) { classDirectoryParser.dispose();   }
             }
         }
 
@@ -1211,9 +1215,9 @@ public class CommandLine {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    protected void processCommand(String[] args) throws IllegalAccessException, InvocationTargetException {
+    protected boolean processCommand(String[] args) throws IllegalAccessException, InvocationTargetException {
         if(args.length == 0) {
-            return;
+            return true;
         }
 
         String command = args[0];
@@ -1231,11 +1235,12 @@ public class CommandLine {
                     if (ite.getCause() instanceof IllegalArgumentException) {
                         IllegalArgumentException iae = (IllegalArgumentException) ite.getCause();
                         handleIllegalArgumentException(iae, command);
+                        return false;
                     } else {
                         throw ite;
                     }
-            }
-                return;
+                }
+                return true;
             }
         }
         throw new IllegalArgumentException("unknown command: " + command);
