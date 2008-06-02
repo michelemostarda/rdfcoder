@@ -20,7 +20,7 @@ package com.asemantics.sourceparse;
 
 import com.asemantics.model.CodeHandler;
 import com.asemantics.model.CodeModelException;
-import com.asemantics.model.CodeStorage;
+import com.asemantics.storage.CodeStorage;
 import com.asemantics.storage.JenaCodeModel;
 import com.asemantics.storage.JenaCodeStorage;
 import com.asemantics.storage.JenaCoderFactory;
