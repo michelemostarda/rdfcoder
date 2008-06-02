@@ -16,7 +16,9 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.storage;
+
+import com.asemantics.model.CodeModel;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

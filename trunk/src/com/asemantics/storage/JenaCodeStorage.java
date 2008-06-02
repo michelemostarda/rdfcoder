@@ -20,7 +20,7 @@ package com.asemantics.storage;
 
 import com.asemantics.RDFCoder;
 import com.asemantics.model.CodeModel;
-import com.asemantics.model.CodeStorage;
+import com.asemantics.storage.CodeStorage;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
