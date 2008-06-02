@@ -26,6 +26,10 @@
 
                             <div class="related">
                                 <div>
+									<h3>Navigation<h3/>
+									<ul>
+										<li><a href="index.html">Home</a></li>
+									</ul>
                                     <h3>Main</h3>
                                     <ul>
                                         <li><a href="#obtain_help">Obtain help</a></li>
@@ -76,21 +80,94 @@ default> help
 						Finally a <i>model</i> can be made persistent on any supported <b>code storage</b> like database or filesystem.
 						<br/>
 						Many supported commands are specifically applied on a <i>model</i>, at any time
-						the console has a default <i>model</i> that is printed in the prompt.
+						the console has a <i>selected model</i> that is printed in prompt.
 						If a <i>model</i> related command is invoked with no explicit model name, the command
-						is invoked on the default one.
+						is invoked on the selected one.
 						<br/>
 						<br/>
-						The main commands are:							
+
+						The main commands are:
 						<table border="1">
+							<tr>
+								<td><b>debug</b></td>
+								<td>
+									Enables / disables the debug mode.
+									<br/>
+									<i><b>debug [true | false]?</b></i>
+									<br/>
+									With argument this command enables / disables the debug mode. 
+									If called without arguments shows the current value of the debug <i>flag</i>.
+								</td>
+							</tr>
+							<tr>
+								<td><b>pwd</b></td>
+								<td>
+									Prints the current directory.
+									<br/>
+									<i><b>pwd</b></i>
+									<br/>
+									This command prints the current working directory, such directory
+									is used every time a <i>relative</i> path is specified as argument in other
+									commands requiring file system resources.
+								</td>
+							</tr>
+							<tr>
+								<td><b>cd</b></td>
+								<td>
+									Changes the current directory.
+									<br/>
+									<i><b>cd &lt;path_to_dir&gt;</b></i>
+									<br/>
+									This command changes the current working directory.
+									The &lt;path_to_dir&gt; argument can be both an absolute
+									path or a relative path. 
+								</td>
+							</tr>
+							<tr>
+								<td><b>ls</b></td>
+								<td>
+									Lists the content of the current directory.
+									<br/>
+									<i><b>ls</b></i>
+									<br/>
+									This command lists the content of the current working directory,
+									reporting for every file the type (file or directory), the size
+									and the writing permissions.
+								</td>
+							</tr>
+							<tr>
+								<td><b>list</b></td>
+								<td>
+									Lists all the currently loaded models.
+									<br/>
+									<i><b>list</b></i>
+									<br/>
+									prints out the list of all the loaded models, the name of the selected model is marked with an asterisk.
+								</td>
+							</tr>
+							<tr>
+								<td><b>setmodel</b></td>
+								<td>
+									Allows to set the <i><b>selected model</b></i>.
+									<br/>
+									<i><b>setmodel [&lt;model_name&gt;]</b></i>
+									<br/>
+									<i>model name</i> is the name of the model to set as selected, if not specified the command
+									prints out the name of the currently <i>selected model</i>.
+									<br/>
+									Any command requiring a model name uses the <i>selected model</i> if
+									no explicit model was specified. The <i>selected model</i> name is printed out 
+									in prompt.
+								</td>
+							</tr>
 							<tr>
 								<td><b>newmodel</b></td>
 								<td>
-									Creates a new CodeModel to store library informations.
+									Creates a new <i>Code Model</i> to store library informations.
 									<br/>
-									<i>newmodel &lt;modelname&gt;</i>
+									<i><b>newmodel &lt;model_name&gt;</b></i>
 									<br/>
-									<i>modelname</i> is the name of the new model, that must differ from the names
+									<i>model name</i> is the name of the new model, that must differ from the names
 									of the already loaded models.
 									<br/>
 									This command creates a code model from scrath. A CodeModel 
@@ -104,10 +181,10 @@ default> help
 								<td>
 									Cleans the content of a CodeModel.
 									<br/>
-									<i>clearmodel [&lt;modelname&gt;]</i>
+									<i><b>clearmodel [&lt;model_name&gt;]</b></i>
 									<br/>
-									<i>modelname</i> is the name of the model model to delete, if not specified the default model
-									is deleted.
+									<i>model name</i> is the name of the model model to delete, if not specified the 
+									<i>selected model</i> is deleted.
 									<br/>
 									This command removes all the triples present in the specified model.
 								</td>
@@ -115,40 +192,15 @@ default> help
 							<tr>
 								<td><b>removemodel</b></td>
 								<td>
-									Removes a previously created CodeModel.
+									Removes a previously created <i>Code Model</i>.
 									<br/>
-									<i>removemodel [&lt;modelname&gt;]</i>
+									<i><b>removemodel [&lt;model_name&gt;]</b></i>
 									<br/>
-									<i>modelname</i> is the name of the model to remove, if not specified the default model
-									is removed.
+									<i>model name</i> is the name of the model to remove, if not specified the 
+									<i>selected model</i>is removed.
 									<br/>
 									Removing a model deletes all the not stored content.
 									To make the content of the model persistent use <b>savemodel</b>.
-								</td>
-							</tr>
-							<tr>
-								<td><b>setmodel</b></td>
-								<td>
-									Allows to change the selected model.
-									<br/>
-									<i>setmodel [&lt;modelname&gt;]</i>
-									<br/>
-									<i>modelname</i> is the name of the model to set as default, if not specified the command
-									prints out the name of the default model.
-									<br/>
-									Any command requiring a model name uses the default model name if
-									no explicit model was specified. The default model name is printed in
-									the prompt.
-								</td>
-							</tr>
-							<tr>
-								<td><b>list</b></td>
-								<td>
-									Lists all the currently loaded models.
-									<br/>
-									<i>list</i>
-									<br/>
-									prints out the list of all the loaded models, the name of the default model is marked with an asterisk.
 								</td>
 							</tr>
 							<tr>
@@ -156,23 +208,32 @@ default> help
 								<td>
 									Allows to perform a query (SPARQL) on the current model.
 									<br/>
-									<i>querymodel &lt;query&gt;</i>
+									<i><b>querymodel &lt;query&gt;</b></i>
 									<br/>
-									Performs the SPARQL <i>query</i> on the default model. 
+									Performs the SPARQL <i>query</i> on the <i>selected model</i>. 
 								</td>
 							</tr>
 							<tr>
-								<td><b>load</b></td>
+								<td><b>inspectmodel</b></td>
 								<td>
-									Loads a library on the selected model.
+									Allows to inspect the <i>current model</i>. 
 									<br/>
-									<i>load [classpath]</i>
+									<i><b>inspectmodel &lt;query&gt;</b></i>
 									<br/>
-									Loads the <i>classpath</i> on the selected model.
-									The classpath is a <b>:</b> separated list of paths
-									locating source directories, class directories or jar files.
-									If paths are expressed as relative ones, the reference dir is
-									given by the <font color="red">pwd</font> command.
+									Performs an inpection <i>query</i> on the <i>selected model</i>. 
+									<font color="red">TODO: provide references to the query syntax.</font>
+								</td>
+							</tr>
+							<tr>
+								<td><b>loadmodel</b></td>
+								<td>
+									Loads a library model.
+									<br/>
+									<i><b>loadmodel &lt;storage_name&gt; &lt;storage_param_1&gt; ...</b></i>
+									<br/>
+									This command loads a model with name <i>storage_name</i> retrieving it
+									from a phisical storage which access is described using a list of
+									<i>storage_parameters</i>.
 								</td>
 							</tr>
 							<tr>
@@ -180,7 +241,7 @@ default> help
 								<td>
 									Saves a model on a storage.
 									<br/>
-									<i>savemodel &lt;storage type&gt; &lt;storage parameters&gt;</i>
+									<i><b>savemodel &lt;storage_type&gt; &lt;storage_parameters&gt;</b></i>
 									<br/>
 									Saves the model on the storage specified with <i>storage type</i>
 									using the given <i>parameters</i>. Storage type can be fs or db.
@@ -188,6 +249,20 @@ default> help
 									fsfile containing the path to the file to store the model.
 									For db there are dbuser, dbpassword, dbname. <font color="red">TODO: TBC</font>
 									<br/>
+								</td>
+							</tr>
+							<tr>
+								<td><b>loadclasspath</b></td>
+								<td>
+									Loads source classpath extracting the RDF representation.
+									<br/>
+									<i><b>loadclasspath [classpath]</b></i>
+									<br/>
+									Loads the <i>classpath</i> on the selected model.
+									The classpath is a <b>:</b> separated list of paths
+									locating source packages, class packages or jar files.
+									If paths are expressed as relative ones, the reference dir is
+									given by the <i>pwd</i> command.
 								</td>
 							</tr>
 						</table>

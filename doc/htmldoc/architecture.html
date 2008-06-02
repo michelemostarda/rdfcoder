@@ -24,18 +24,25 @@
                         <div>
                             <div class="related">
                                 <div>
+									<h3>Navigation<h3/>
+									<ul>
+										<li><a href="index.html">Home</a></li>
+									</ul>
                                     <h3>Architecture</h3>
                                     <ul>
 										<li><a href="#overall_architecture">Overall Architecture</a></li>
-                                        <li><a href="#java_source_parser">Java Source Parser</a></li>
-                                        <li><a href="#java_bytecode_parser">Java Bytecode Parser</a></li>
-										<li><a href="#javadoc_parser">Javadoc Parser</a></li>
-										<li><a href="#code_handler">Code Handler</a></li>
 										<li><a href="#objects_table">Objects Table</a></li>
+                                        <li><a href="#java_source_parser">Java Source Parser</a></li>
+                                        <li><a href="#javadoc_parser">Javadoc Parser</a></li>
+										<li><a href="#java_bytecode_file_parser">Java Bytecode File Parser</a></li>
+										<li><a href="#java_bytecode_jar_parser">Java Bytecode JAR Parser</a></li>
+										<li><a href="#directory_parser">Directory Parser</a></li>
+										
+										<li><a href="#code_handler">Code Handler</a></li>
 										<li><a href="#code_model">Code Model</a></li>
+										<li><a href="#query_model">Query Model</a></li>
+										
 										<li><a href="#code_storage">Code Storage</a></li>
-										<li><a href="#query_engine">Query Engine</a></li>
-										<li><a href="#model_inspector">Model Inspector</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -60,46 +67,46 @@
 								</li>
 								<li>
 									<b>Java Bytecode Parser</b> - a set of classes able to parse <b>.class</b> files (eventually inside <b>.jar</b> archives) and convert its contents
-									in <b>CodeHandler</b> events.
+									in <b>Code Handler</b> events.
 								</li>
 								<li>
 									<b>Javadoc Parser</b> - a set of classes able to parse <b>.java</b> files <b>Javadoc</b> documentation and convert it
-									in <b>CodeHandler</b> events.
+									in <b>Code Handler</b> events.
 								</li>
 								<li>
-									<b>CodeHandler</b> - the Code Handler is a class able to convert class events in RDF triples. <br/>
+									<b>Code Handler</b> - the Code Handler is a class able to convert class events in RDF triples. <br/>
 									The way the Code handler translates received events into triples is described in <a href="model.html">model</a> section.
 									Despite the Code Handler currently generates only RDF triples, in theory may generate any entity representation
-									compliant with the interface of the <b>CodeModel</b>. 
+									compliant with the interface of the <b>Code Model</b>. 
 								</li>
 								<li>
-									<b>ObjectsTable</b> - the Code Handler needs to fully qualify (i.e.: add full package qualification) all the objects it finds 
+									<b>Objects Table</b> - the Code Handler needs to fully qualify (i.e.: add full package qualification) all the objects it finds 
 									during the compilation process. 
 									<br/>
-									The fully qualification is done by populating and querying the Objects Table.Every time that an Object needs 
+									The fully qualification is done by populating and querying the Objects Table. Every time that an Object needs 
 									to be fully qualified, the Objects Table is inquired by providing the object name and the <b>Imports Context</b>
 									that is the list of the imports provided when used the object itself.
 								</li>
 								<li>
-									<b>CodeModel</b> - the Code Model is a container of the triples representing a bunch of related libraries. 
+									<b>Code Model</b> - the Code Model is a container of the triples representing a bunch of related libraries. 
 									<br/>
 									A code model provides operations to add triples, remove triples, perform basic search on triples, perform complex queries. 
 									<br/>
-									Despite currently the only implementation provided is an RDF model, the Code Model can be anything able to 
+									Despite currently the only implementation provided is an RDF model, the Code Model may rely on any support able to 
 									store relationships among the entities involved in the code representation. 
 								</li>
 								<li>
-									<b>CodeStorage</b> - the Code Storage is a set of classes meant to make <b>persistent</b> a code model.
+									<b>Code Storage</b> - the Code Storage is a set of classes meant to make <b>persistent</b> a code model.
 									<br/>
 									There may be several persistent storages like Filesystem or a <b>RDMS</b>.
 								</li>
 								<li>
-									<b>QueryEngine</b> - the Query Engine is a set of classes meant to perform queries on a storage.
+									<b>Query Engine</b> - the Query Engine is a set of classes meant to perform queries on a storage.
 									<br/>
 									At the moment the only supported query language is <a href="http://path/to/w3c/sparql">SPARQL</a>.
 								</li>
 								<li>
-									<b>ModelInspector</b> - the Model Inspector is a high level representation of the CodeModel.
+									<b>Model Inspector</b> - the Model Inspector is a high level representation of the Code Model.
 									<br/>
 									By using the Model Inspector it is possible to navigate Java objects representing the entities stored
 									into the model.
@@ -113,92 +120,104 @@
                     </div>
 
                     <div class="article">
-                        <h1 class="firstHeading">Java Source Parser</h1>
+                        <h1 class="firstHeading">Parsing</h1>
+						
+						<a name="objects_table"></a>
+						<h2>Objects Table</h2>
+						<div>
+							This class defines a table to resolve objects.
+							<br/>
+							<a href="../../javadoc/com/asemantics/sourceparse/ObjectsTable.html">reference</a>
+						</div>
 
                         <a name="java_source_parser"></a>
                         <h2>JavaSourceFileParser</h2>
-						<h2>JavaSourceDirParser</h2>
-                        <p>
-							<font color="red">TODO</font>
-						</p>
-                    </div>
+						<div>
+							This class is able to scan a java source file and generate corresponding triples.
+							<br/>
+							<a href="../../javadoc/com/asemantics/sourceparse/JavaSourceFileParser.html">reference</a>
+						</div>
+						
+						 <a name="javadoc_parser"></a>
+	                     <h2>JavadocFileParser</h2>
+						<div>
+							The Javadoc file parser.
+							<br/>
+							<a href="../../javadoc/com/asemantics/sourceparse/JavadocFileParser.html">reference</a>
+						</div>
 
-                    <div class="article">
-                        <h1 class="firstHeading">Java Bytecode Parser</h1>
-
-                        <a name="java_bytecode_parser"></a>
+                        <a name="java_bytecode_file_parser"></a>
                         <h2>JavaBytecodeFileParser</h2>
+						<div>
+							The Java bytecode parser.
+							<br/>
+							<a href="../../javadoc/com/asemantics/sourceparse/JavaBytecodeFileParser.html">reference</a>
+						</div>
+						
+						<a name="java_bytecode_jar_parser"></a>
 						<h2>JavaBytecodeJarParser</h2>
-                        <p>
-							<font color="red">TODO</font>
-						</p>
+						<div>
+							This class provides methods to process the content of a Jar file.
+							<br/>
+							<a href="../../javadoc/com/asemantics/sourceparse/JavaBytecodeJarParser.html">reference</a>
+						</div>
+						
+						<a name="directory_parser"></a>
+						<h2>DirectoryParser</h2>
+						<div>
+							Scans a given directory.
+							<br/>
+							<a href="../../javadoc/com/asemantics/sourceparse/DirectoryParser.html">reference</a>
+						</div>
+						
                     </div>
 
                     <div class="article">
-                        <h1 class="firstHeading">Javadoc Parser</h1>
+                        <h1 class="firstHeading">Modeling</h1>
+                        
+						<a name="code_handler"></a>
+						<h2>Code Handler</h2>
+						<div>
+							This interface represents a code handler. 
+							An handler is something able to receive code analysis events and use it to perform some analysis.
+							<br/>
+							<a href="../../javadoc/com/asemantics/model/CodeHandler.html">reference</a>
+						</div>
+						
+						<a name="code_model"></a>
+						<h2>Code Model</h2>
+						<div>
+							This abstract class describes a code org.asemantics.model. 
+							A code org.asemantics.model is a rapresentation of a code structure 
+							containing packages, classes, attributes methods and so on.
+							<br/>
+							<a href="../../javadoc/com/asemantics/model/CodeModel.html">reference</a>
+						</div>
+						
+						<a name="query_model"></a>
+						<h2>Query Model</h2>
+						<div>
+							Common interface to perform queries on representational model.
+							<br/>
+							<a href="../../javadoc/com/asemantics/model/QueryModel.html">reference</a>
+						</div>
 
-                        <a name="javavadoc_parser"></a>
-                        <h2>JavadocFileParser</h2>
-						<h2>JavadocDirParser</h2>
-                        <p>
-							<font color="red">TODO</font>
-						</p>
                     </div>
 
                     <div class="article">
-                        <h1 class="firstHeading">Code Handler</h1>
+                        <h1 class="firstHeading">Storing</h1>
 
-                        <a name="code_handler"></a>
-                        <p>
-							<font color="red">TODO</font>
-						</p>
-                    </div>
+						<a name="code_storage"></a>
+						<h2>Code Storage</h2>
+						<div>
+							Defines a persistent sotrage for a CodeModel.
+							<br/>
+							<a href="../../javadoc/com/asemantics/storage/CodeStorage.html">reference</a>
+						</div>
 
-                    <div class="article">
-                        <h1 class="firstHeading">Objects Table</h1>
+					</div>
 
-                        <a name="objects_table"></a>
-                        <p>
-							<font color="red">TODO</font>
-						</p>
-                    </div>
-
-                    <div class="article">
-                        <h1 class="firstHeading">Code Model</h1>
-
-                        <a name="code_model"></a>
-                        <p>
-							<font color="red">TODO</font>
-						</p>
-                    </div>
-
-                    <div class="article">
-                        <h1 class="firstHeading">Code Storage</h1>
-
-                        <a name="code_storage"></a>
-                        <p>
-							<font color="red">TODO</font>
-						</p>
-                    </div>
-
-                    <div class="article">
-                        <h1 class="firstHeading">Query Engine</h1>
-
-                        <a name="query_engine"></a>
-                        <h2>Query Engine</h2>
-                        <p>
-							<font color="red">TODO</font>
-						</p>
-                    </div>
-
-                    <div class="article">
-                        <h1 class="firstHeading">Model Inspector</h1>
-
-                        <a name="model_inspector"></a>
-                        <p>
-							<font color="red">TODO</font>
-						</p>
-                    </div>
+          
 
                 <!-- end id content -->
 
