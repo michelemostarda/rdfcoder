@@ -18,6 +18,8 @@
 
 package com.asemantics.model;
 
+import com.asemantics.storage.CodeStorage;
+
 /**
  * A <code>CoderFactory</code> allows to create a code org.asemantics.model and every
  * related object.

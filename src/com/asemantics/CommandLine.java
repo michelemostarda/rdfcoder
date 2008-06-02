@@ -21,6 +21,7 @@ package com.asemantics;
 import com.asemantics.model.*;
 import com.asemantics.sourceparse.*;
 import com.asemantics.storage.JenaCoderFactory;
+import com.asemantics.storage.CodeStorage;
 import jline.*;
 import org.apache.commons.jexl.Expression;
 import org.apache.commons.jexl.ExpressionFactory;
@@ -1063,7 +1064,7 @@ public class CommandLine {
     public String ___command_inspectmodel() {
         return
                 __command_inspectmodel() +
-                "\nsyntax: inspectmodel <INSPECTION_query>" +
+                "\nsyntax: inspectmodel <inspection_query>" +
                 "\n\tperforms an inspection on the current query model";        
     }
 
