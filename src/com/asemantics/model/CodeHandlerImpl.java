@@ -181,8 +181,8 @@ public class CodeHandlerImpl implements CodeHandler {
         String prefixedlibraryName = CodeModel.prefixFullyQualifiedName(CodeModel.JASSET_PREFIX, libraryName);
         String formattedDate = formatLibraryDatetime( new Date() );        
         model.addTriple(CodeModel.JASSET, CodeModel.CONTAINS_LIBRARY,  prefixedlibraryName);
-        model.addTriple(prefixedlibraryName, CodeModel.LIBRARY_LOCATION, libraryLocation);
-        model.addTriple(prefixedlibraryName, CodeModel.LIBRARY_DATETIME, formattedDate);
+        model.addTripleLiteral(prefixedlibraryName, CodeModel.LIBRARY_LOCATION, libraryLocation);
+        model.addTripleLiteral(prefixedlibraryName, CodeModel.LIBRARY_DATETIME, formattedDate);
     }
 
     public void startCompilationUnit(String identifier) {
