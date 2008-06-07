@@ -268,7 +268,7 @@ public class CodeHandlerImpl implements CodeHandler {
 
         String prefPTC = CodeModel.prefixFullyQualifiedName(CodeModel.CLASS_PREFIX, pathToClass);
         model.addTriple(prefPTC, SUBCLASSOF, CodeModel.JCLASS);
-        model.addTriple(prefPTC, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
+        model.addTripleLiteral(prefPTC, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
         model.addTriple(prefPTC, CodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         if(extededClass != null) {
             model.addTriple(
@@ -313,7 +313,7 @@ public class CodeHandlerImpl implements CodeHandler {
 
         String prefPTE = CodeModel.prefixFullyQualifiedName(CodeModel.ENUMERATION_PREFIX, pathToEnumeration);
         model.addTriple(prefPTE, SUBCLASSOF, CodeModel.JENUMERATION);
-        model.addTriple(prefPTE, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
+        model.addTripleLiteral(prefPTE, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
         model.addTriple(prefPTE, CodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         for(int i = 0; i < elements.length; i++) {
             model.addTriple(
@@ -352,7 +352,7 @@ public class CodeHandlerImpl implements CodeHandler {
 
         String prefPTA = CodeModel.prefixFullyQualifiedName(CodeModel.ATTRIBUTE_PREFIX, pathToAttribute);
         model.addTriple(prefPTA, SUBCLASSOF, CodeModel.JATTRIBUTE);
-        model.addTriple(prefPTA, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
+        model.addTripleLiteral(prefPTA, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
         model.addTriple(prefPTA, CodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         model.addTriple(prefPTA, CodeModel.ATTRIBUTE_TYPE,  type.getIdentifier());
         if(value != null) { // Default value defined.
@@ -391,7 +391,7 @@ public class CodeHandlerImpl implements CodeHandler {
         String pathToClass = peekContainer();
         String prefPTCO =  CodeModel.prefixFullyQualifiedName(CodeModel.CONSTRUCTOR_PREFIX, pathToClass) + "_" + overloadIndex;
         model.addTriple(prefPTCO, SUBCLASSOF, CodeModel.JCONSTRUCTOR);
-        model.addTriple(prefPTCO, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
+        model.addTripleLiteral(prefPTCO, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
         model.addTriple(prefPTCO, CodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         String qualifiedParameter;
         for(int i = 0; i < paramNamesSize; i++) {
@@ -436,7 +436,7 @@ public class CodeHandlerImpl implements CodeHandler {
         String prefPTM = CodeModel.prefixFullyQualifiedName(CodeModel.METHOD_PREFIX, pathToMethod);
         // Creating structure.
         model.addTriple(prefPTM, SUBCLASSOF, CodeModel.JMETHOD);
-        model.addTriple(prefPTM, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
+        model.addTripleLiteral(prefPTM, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
         model.addTriple(prefPTM, CodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         String signature = CodeModel.prefixFullyQualifiedName(CodeModel.SIGNATURE_PREFIX, pathToMethod) + "_" + overloadIndex;
         model.addTriple(signature, SUBCLASSOF, CodeModel.JSIGNATURE);
@@ -637,7 +637,11 @@ public class CodeHandlerImpl implements CodeHandler {
             return;
         }
         for(ErrorListener el : errorListeners) {
-            el.packageDiscrepancy(this, processedPackage, declaredContainerPackage);
+            try {
+                el.packageDiscrepancy(this, processedPackage, declaredContainerPackage);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
         }
     }
 
@@ -646,7 +650,11 @@ public class CodeHandlerImpl implements CodeHandler {
             return;
         }
         for(ErrorListener el : errorListeners) {
-            el.parseError(this, location, description);
+            try {
+                el.parseError(this, location, description);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
         }
     }
 
@@ -655,7 +663,11 @@ public class CodeHandlerImpl implements CodeHandler {
             return;
         }
         for(ErrorListener el : errorListeners) {
-            el.unresolvedTypes(this, types);
+            try {
+                el.unresolvedTypes(this, types);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
         }
     }
 
