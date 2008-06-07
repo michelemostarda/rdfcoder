@@ -26,10 +26,9 @@ package com.asemantics.model;
 public interface TripleIterator {
 
     /**
-     * moves to the next statement, retuns
-     * <code>true</code> if the list of statements
+     * moves to the next statement.
+     * @return <code>true</code> if the list of statements
      * has not been reahed, <code>false</code> otherwise.
-     * @return
      */
     boolean next();
 
