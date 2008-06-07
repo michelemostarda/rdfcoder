@@ -319,7 +319,7 @@ public class JavadocFileParser extends FileParser {
                             List<String> list = attributesMap.get(key);
                             if(list == null) {
                                 list = new ArrayList<String>();
-                                System.out.println("PUTTING " + key + "::" + list);
+                                System.out.println("list " + key + "::" + list);
                                 attributesMap.put(key, list);
                             }
                             list.add(attributeText.toString().trim());

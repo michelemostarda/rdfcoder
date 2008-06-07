@@ -1077,7 +1077,7 @@ public class CommandLine {
      * @throws IOException
      */
     public void command_loadclasspath(String[] args) throws IOException {
-        if( args.length % 2 != 0 ) {
+        if( args.length == 0 || args.length % 2 != 0 ) {
             throw new IllegalArgumentException("couples <library_name> <library_location> must be specified.");
         }
         loadLibraries(args, System.out);
@@ -1179,7 +1179,9 @@ public class CommandLine {
                 __command_savemodel() +
                 "\nsyntax: savemodel <storagename> [<storage_param1> ...]" +
                 "\n\tsaves the current model on the storage with name storagename by using the given parameters" +
-                "\n\t possible values for storagename are: " + CodeStorage.STORAGE_FS  + "==filesystem" + CodeStorage.STORAGE_DB + "==database" +       
+                "\n\t possible values for storagename are: " +
+                "\n\t\t" + CodeStorage.STORAGE_FS  + "==filesystem" + 
+                "\n\t\t" + CodeStorage.STORAGE_DB + "==database" +
                 "\n\texample:" +
                 "\n\tmodel1> savemodel fs filename=/path/to/file.xml";
 
@@ -1303,7 +1305,7 @@ public class CommandLine {
      * @param cmd
      */
     private void handleIllegalArgumentException(IllegalArgumentException iae, String cmd) {
-        System.out.println("error: '" + iae.getMessage() + "'");
+        System.out.println("ERROR: '" + iae.getMessage() + "'");
         if(debug) { iae.printStackTrace(); }
         if(iae.getCause() != null) {
             System.out.println(" with cause: '" + iae.getCause().getMessage() + "'");
@@ -1330,6 +1332,24 @@ public class CommandLine {
      */
     private void handleIllegalArgumentException(IllegalArgumentException iae) {
         handleIllegalArgumentException(iae, null);
+    }
+
+    /**
+     * Handles a severe exception.
+     *
+     * @param t
+     */
+    private void handleGenericException(Throwable t) {
+        System.out.println("SEVERE ERROR: an expected exception occurred: '" + t.getMessage() + "'");
+        if(debug) {
+            t.printStackTrace();
+        }
+        if(t.getCause() != null) {
+            System.out.println("with cause: '" + t.getCause().getMessage() + "'");
+            if(debug) {
+                t.getCause().printStackTrace();
+            }
+         }
     }
 
     /**
@@ -1398,6 +1418,8 @@ public class CommandLine {
                 processCommand(arguments);
             } catch (IllegalArgumentException iae) {
                 handleIllegalArgumentException(iae);
+            } catch (Throwable t) {
+                handleGenericException(t);
             }
         }
     }
