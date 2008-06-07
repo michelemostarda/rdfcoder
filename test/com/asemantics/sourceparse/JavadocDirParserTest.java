@@ -48,14 +48,12 @@ public class JavadocDirParserTest extends TestCase {
         jcm  = (JenaCodeModel) jcf.createCodeModel();
         jcs  = jcf.createCodeStorage();
         ch   = jcf.createHandlerOnModel(jcm);
-        ch.startParsing("jdk_1.5.0", "java_home");
     }
 
      public void tearDown() {
-        ch.endParsing();
         ot.clear();
         ot   = null;
-        jcf = null;
+        jcf  = null;
         jcm  = null;
         ch   = null;
     }
@@ -64,13 +62,19 @@ public class JavadocDirParserTest extends TestCase {
         DirectoryParser jsdp = new DirectoryParser( new JavadocFileParser() );
         Statistics statistics = new Statistics();
         CodeHandler sch = statistics.createStatisticsCodeHandler(ch);
+        try {
         jsdp.initialize(sch, ot);
-        jsdp.parseDirectory("src", new File("../src") );
+        jsdp.parseDirectory("http://www.rdfcoder.org/2007/1.0#src", new File("src") );
         jsdp.dispose();
         Map<String,String> params = new HashMap();
         params.put(CodeStorage.FS_FILENAME, "out/src.xml");
         jcs.saveModel(jcm, params);
-        System.out.println(statistics);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
+            System.out.println(statistics);
+        }
     }
 
 }

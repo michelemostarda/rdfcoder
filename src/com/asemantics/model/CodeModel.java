@@ -615,11 +615,6 @@ public abstract class CodeModel implements BackTrackingSupport {
     /* Asset classes and properties. */
 
     /**
-     * The Asset unique class.
-     */
-    public static final String JASSET = toPrefix("jasset");
-
-    /**
      * The model asset contains library.
      */
     public static final String CONTAINS_LIBRARY = toURI("contains_library");
@@ -640,6 +635,11 @@ public abstract class CodeModel implements BackTrackingSupport {
     public static String toURI(String prop) {
         return URI + prop;
     }
+
+    /**
+     * The Asset unique class.
+     */
+    public static final String JASSET       = toURI("jasset");
 
     public static final String JPACKAGE     = toURI("jpackage");
 
@@ -672,6 +672,8 @@ public abstract class CodeModel implements BackTrackingSupport {
     /* Entity prefixes. */
 
     //TODO: entity prefixes and RDF classes MUST be the same.
+
+    public static final String JASSET_PREFIX      = toPrefix("jasset");
 
     public static final String PACKAGE_PREFIX     = toPrefix("jpackage");
 

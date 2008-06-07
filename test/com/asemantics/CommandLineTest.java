@@ -37,12 +37,12 @@ public class CommandLineTest extends TestCase {
     }
 
     public void testLoadSources() throws IllegalAccessException, InvocationTargetException {
-        String[] command = new String[]{"loadclasspath", "classes", "src:src"};
+        String[] command = new String[]{"loadclasspath", "sources", "src:src"};
         assertTrue( commandLine.processCommand(command) );
     }
 
    public void testLoadClasses() throws IllegalAccessException, InvocationTargetException {
-        String[] command = new String[]{"loadclasspath", "sources", "class:classes"};
+        String[] command = new String[]{"loadclasspath", "classes", "class:classes"};
         assertTrue( commandLine.processCommand(command) );
     }
 }
