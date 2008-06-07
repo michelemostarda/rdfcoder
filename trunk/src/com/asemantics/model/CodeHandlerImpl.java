@@ -131,9 +131,10 @@ public class CodeHandlerImpl implements CodeHandler {
 
     protected void checkLibraryName(String name) {
         TripleIterator ti = model.searchTriples(CodeModel.JASSET, CodeModel.CONTAINS_LIBRARY, CodeModel.ALL_MATCH);
+        String targetLibraryName = CodeModel.prefixFullyQualifiedName(CodeModel.JASSET_PREFIX, name);
         try {
             while(ti.next()) {
-                if(ti.getObject().equals(name)) {
+                if( targetLibraryName.equals(ti.getObject()) ) {
                     throw new CodeHandlerException("a library with name '" + name + "' already exists in the model asset.");
                 }
             }
@@ -177,10 +178,11 @@ public class CodeHandlerImpl implements CodeHandler {
         }
         parsingStarted = false;
 
-        model.addTriple(CodeModel.JASSET, CodeModel.CONTAINS_LIBRARY, libraryName);
-        model.addTriple(libraryName, CodeModel.LIBRARY_LOCATION, libraryLocation);
-        String formattedDate = formatLibraryDatetime( new Date() );
-        model.addTriple(libraryName, CodeModel.LIBRARY_DATETIME, formattedDate);
+        String prefixedlibraryName = CodeModel.prefixFullyQualifiedName(CodeModel.JASSET_PREFIX, libraryName);
+        String formattedDate = formatLibraryDatetime( new Date() );        
+        model.addTriple(CodeModel.JASSET, CodeModel.CONTAINS_LIBRARY,  prefixedlibraryName);
+        model.addTriple(prefixedlibraryName, CodeModel.LIBRARY_LOCATION, libraryLocation);
+        model.addTriple(prefixedlibraryName, CodeModel.LIBRARY_DATETIME, formattedDate);
     }
 
     public void startCompilationUnit(String identifier) {

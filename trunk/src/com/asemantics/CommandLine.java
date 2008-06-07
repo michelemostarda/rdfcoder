@@ -575,7 +575,7 @@ public class CommandLine {
         for(int i = 0; i < libraries.size(); i++) {
 
             try {
-                statisticsCodeHandler.startParsing(libraries.get(i).name, libraries.get(i).location.getAbsolutePath());
+                //statisticsCodeHandler.startParsing(libraries.get(i).name, libraries.get(i).location.getAbsolutePath());
 
                 javaBytecodeJarParser = new JavaBytecodeJarParser();
                 javaBytecodeJarParser.initialize( statisticsCodeHandler, ot );
@@ -644,7 +644,7 @@ public class CommandLine {
             }
         }
 
-        statisticsCodeHandler.endParsing();
+        //statisticsCodeHandler.endParsing();
 
         ot.clear();
 

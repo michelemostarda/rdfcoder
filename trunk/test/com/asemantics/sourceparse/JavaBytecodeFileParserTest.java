@@ -51,7 +51,7 @@ public class JavaBytecodeFileParserTest extends TestCase {
 
     public void testMain() throws IOException {
         javaBytecodeFileParser.parse(
-                new File("classes/p1/p2/Test.class")
+                new File("target_test/classes/p1/p2/Test.class")
         );
     }
 

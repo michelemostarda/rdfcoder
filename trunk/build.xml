@@ -237,7 +237,7 @@
          <junit
                  printsummary="yes"
                  haltonfailure="no"
-                 dir="target_test"
+                 dir="."
           >
              <classpath>
 	 			<path        refid = "test.classpath"/>

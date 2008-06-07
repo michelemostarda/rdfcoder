@@ -47,15 +47,15 @@ public class JavaSourceFileParserTest extends TestCase {
     }
 
     public void testProcessFileOnClass() throws IOException, ParseException, ParserException {
-        jsfp.parse( new File("TestClass.java") );
+        jsfp.parse( new File("target_test/TestClass.java") );
     }
 
     public void testProcessFileOnInterface() throws IOException, ParseException, ParserException {
-        jsfp.parse( new File("TestInterface.java") );
+        jsfp.parse( new File("target_test/TestInterface.java") );
     }
 
     public void testProcessEnum() throws IOException, ParseException, ParserException {
-        jsfp.parse( new File("TestEnum.java") );
+        jsfp.parse( new File("target_test/TestEnum.java") );
     }
 
 }

@@ -176,7 +176,7 @@ public class JavadocFileParserTest extends TestCase {
         byteArrayInputStream = null;
     }
 
-    public void testInputStram() throws ParserException {
+    public void testInputStream() throws ParserException {
         JavadocFileParser javadocFileParser = new JavadocFileParser();
         javadocFileParser.initialize(new TestJavadocParserListener(), new ObjectsTable() );
         javadocFileParser.parse(byteArrayInputStream, "test_input");
@@ -186,7 +186,7 @@ public class JavadocFileParserTest extends TestCase {
     public void testInputFile() throws ParserException {
         JavadocFileParser javadocFileParser = new JavadocFileParser();
         javadocFileParser.initialize(new TestJavadocParserListener(), new ObjectsTable() );
-        javadocFileParser.parse(new File("TestJavadoc.java"));
+        javadocFileParser.parse(new File("target_test/TestJavadoc.java"));
         javadocFileParser.dispose();
     }
 }

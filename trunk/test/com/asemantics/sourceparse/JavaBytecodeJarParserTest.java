@@ -63,7 +63,7 @@ public class JavaBytecodeJarParserTest extends TestCase {
     }
 
     public void testParse() throws IOException {
-        parser.parseFile(new File("target.jar") );
+        parser.parseFile(new File("target_test/target.jar") );
     }
 
 }
