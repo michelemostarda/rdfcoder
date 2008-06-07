@@ -234,8 +234,7 @@ public class JenaCodeModel extends SPARQLQuerableCodeModel {
                     ||
                     statement.getPredicate().toString().indexOf(":") == -1
             ) {
-                System.err.println("Found error at statement: " + statement);
-                throw new CodeModelDebugException("Invalid model");
+                throw new CodeModelDebugException("Invalid model: found error in statement: " + statement);
             }
         }
         iterator.close();
