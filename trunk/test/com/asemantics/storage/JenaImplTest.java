@@ -33,9 +33,14 @@ public class JenaImplTest extends TestCase {
 
     private static final String TEST_FILE  = "test.xml";
 
-    private static final int TEST_SIZE     = 10000;
+    // Resource object triples.
+    private static final int RES_OBJ_TRIPLES = 9000;
 
-    private static final String TEST_MODEL = "test_model";
+    // Literal object triples.
+    private static final int LIT_OBJ_TRIPLES = 1000;
+
+    // Total triples.
+    private static final int TEST_SIZE       = RES_OBJ_TRIPLES + LIT_OBJ_TRIPLES;
 
     private JenaCoderFactory jcmf;
 
@@ -62,8 +67,13 @@ public class JenaImplTest extends TestCase {
     }
 
     public void testWrite() throws IOException, CodeModelException {
-        for(int i = 0; i < 10000; i++) {
+        // Writes triples with resource objects.
+        for(int i = 0; i < RES_OBJ_TRIPLES; i++) {
             cm.addTriple("proto:subject_" + i, "proto:predicate_" + i, "proto:object_" + i);
+        }
+        // Writes triples with literal objects.
+        for(int i = 0; i < LIT_OBJ_TRIPLES; i++) {
+            cm.addTripleLiteral("proto:subject_" + i, "proto:predicate_" + i, "literal_object_" + i);
         }
         cs.saveModel(cm, params);
     }
@@ -84,7 +94,7 @@ public class JenaImplTest extends TestCase {
 
     public void testQuery() throws IOException, CodeModelException, SPARQLException {
         // Loading data into model.
-        for(int i = 0; i < 1000; i++) {
+        for(int i = 0; i < 300; i++) {
             cm.addTriple("proto:subject_" + i, "proto:predicate_" + i, "proto:object_" + i);
         }
 

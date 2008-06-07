@@ -101,19 +101,8 @@ public class JenaCodeModel extends SPARQLQuerableCodeModel {
         return new InternalTripleIterator(iter);
     }
 
-//    int tripleTTT = 0;
     public void addTriple(String subject, String predicate, String object) {
-        if(RDFCoder.isDEBUG()) {
-            if(subject.length() == 0 ) {
-                throw new CodeModelDebugException("invalid 0 length subject.");
-            }
-            if( predicate.length() == 0) {
-                throw new CodeModelDebugException("invalid 0 length predicate.");
-            }
-            if( object.length() == 0) {
-                throw new CodeModelDebugException("invalid 0 length object.");
-            }
-        }
+        checkTriple(subject, predicate, object);
         
         Resource s = jenaModel.createResource(subject);
         Property p = jenaModel.createProperty(predicate);
@@ -126,6 +115,21 @@ public class JenaCodeModel extends SPARQLQuerableCodeModel {
         Property p = jenaModel.createProperty(predicate);
         Resource o = jenaModel.createResource(object);
         jenaModel.remove(s, p, o);
+    }
+
+    public void addTripleLiteral(String subject, String predicate, String literal) {
+        checkTriple(subject, predicate, literal);
+        Resource s = jenaModel.createResource(subject);
+        Property p = jenaModel.createProperty(predicate);
+        Literal  l = jenaModel.createLiteral(literal);
+        s.addProperty(p, l);
+    }
+
+    public void removeTripleLiteral(String subject, String predicate, String object) {
+        Resource s = jenaModel.createResource(subject);
+        Property p = jenaModel.createProperty(predicate);
+        Literal  l = jenaModel.createLiteral(object);
+        jenaModel.remove(s, p, l);
     }
 
     public void clearAll() {
@@ -165,6 +169,20 @@ public class JenaCodeModel extends SPARQLQuerableCodeModel {
         jenaModel.write(fw);
         fw.flush();
         fw.close();
+    }
+
+    private void checkTriple(String subject, String predicate, String object) {
+         if(RDFCoder.isDEBUG()) {
+            if(subject.length() == 0 ) {
+                throw new CodeModelDebugException("invalid 0 length subject.");
+            }
+            if( predicate.length() == 0) {
+                throw new CodeModelDebugException("invalid 0 length predicate.");
+            }
+            if( object.length() == 0) {
+                throw new CodeModelDebugException("invalid 0 length object.");
+            }
+        }
     }
 
     /**

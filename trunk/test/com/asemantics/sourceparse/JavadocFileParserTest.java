@@ -162,7 +162,7 @@ public class JavadocFileParserTest extends TestCase {
                        " * @param param2 desc value 2\n" +
                        " * @param param3 desc value 3\n" +
                        " * @param param4 desc value 4\n" +
-                       " * @return \n" +
+                       " * @return return description\n" +
                        " * @see {aaa bbb ccc} \n" +
                        " */" +
                        " // post ---" +

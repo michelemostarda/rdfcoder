@@ -63,12 +63,12 @@ public class JavadocDirParserTest extends TestCase {
         Statistics statistics = new Statistics();
         CodeHandler sch = statistics.createStatisticsCodeHandler(ch);
         try {
-        jsdp.initialize(sch, ot);
-        jsdp.parseDirectory("http://www.rdfcoder.org/2007/1.0#src", new File("src") );
-        jsdp.dispose();
-        Map<String,String> params = new HashMap();
-        params.put(CodeStorage.FS_FILENAME, "out/src.xml");
-        jcs.saveModel(jcm, params);
+            jsdp.initialize(sch, ot);
+            jsdp.parseDirectory("http://www.rdfcoder.org/2007/1.0#src", new File("src") );
+            jsdp.dispose();
+            Map<String,String> params = new HashMap();
+            params.put(CodeStorage.FS_FILENAME, "out/src.xml");
+            jcs.saveModel(jcm, params);
         } catch (Exception e) {
             e.printStackTrace();
             fail();
