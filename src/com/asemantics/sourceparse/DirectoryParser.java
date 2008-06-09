@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  *
@@ -65,7 +65,11 @@ public class DirectoryParser extends CodeParser {
         fileParser.initialize( getCodeHandler(), getObjectsTable() );
 
         // Begin parsing.
-        getCodeHandler().startParsing(libraryName, d.getAbsolutePath());
+        try {
+            getCodeHandler().startParsing(libraryName, d.getAbsolutePath());
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
 
         try {
             preScan();
@@ -76,7 +80,11 @@ public class DirectoryParser extends CodeParser {
             }
         } finally {
             // End parsing.
-            getCodeHandler().endParsing();
+            try {
+                getCodeHandler().endParsing();
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
         }
 
 
@@ -129,7 +137,11 @@ public class DirectoryParser extends CodeParser {
         unresolved.clear();
         Collections.sort(unresolvedList);
         String[] unresolvedTypes = unresolvedList.toArray( new String[unresolvedList.size()] );
-        getCodeHandler().unresolvedTypes(unresolvedTypes);
+        try {
+            getCodeHandler().unresolvedTypes(unresolvedTypes);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
         return unresolved.size();
     }
 }

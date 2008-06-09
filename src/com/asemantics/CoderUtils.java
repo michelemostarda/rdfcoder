@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  *
@@ -55,7 +55,7 @@ public class CoderUtils {
         }
     }
 
-    private static StringBuffer join_sb = new StringBuffer();
+    private static StringBuilder join_sb = new StringBuilder();
 
     public static String join(List list, String separator) {
         join_sb.delete(0, join_sb.length());

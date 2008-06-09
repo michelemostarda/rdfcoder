@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  *
@@ -97,7 +97,11 @@ public class JavaSourceFileParser extends FileParser {
 
     public void processCompilationUnit(String location, ASTCompilationUnit ast) {
 
-        getCodeHandler().startCompilationUnit(location);
+        try {
+            getCodeHandler().startCompilationUnit(location);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
 
         // Retrieve package.
         List packs = ast.findChildrenOfType(ASTPackageDeclaration.class);
@@ -107,7 +111,11 @@ public class JavaSourceFileParser extends FileParser {
         } else {
             packagePath = ""; // Default package.
         }
-        getCodeHandler().startPackage(packagePath);
+        try {
+            getCodeHandler().startPackage(packagePath);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
 
         try {
 
@@ -142,8 +150,16 @@ public class JavaSourceFileParser extends FileParser {
             processLevel(packagePath, importsContext, ast);
 
         } finally {
-            getCodeHandler().endPackage();
-            getCodeHandler().endCompilationUnit();
+            try {
+                getCodeHandler().endPackage();
+            }catch (Throwable t) {
+                t.printStackTrace();
+            }
+            try {
+                getCodeHandler().endCompilationUnit();
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
         }
     }
 
@@ -601,7 +617,7 @@ public class JavaSourceFileParser extends FileParser {
     }
 
     private static String printArray(final int arrayCount) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < arrayCount; i++) {
             sb.append("[]");
         }
@@ -609,7 +625,7 @@ public class JavaSourceFileParser extends FileParser {
     }
 
     private static String tab(int t) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < t; i++) {
             sb.append("-");
         }

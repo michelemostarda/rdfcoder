@@ -517,7 +517,7 @@ public class SimpleNode implements Node {
     * @since          JRefactory 2.7.00
     */
    public String dumpString(String prefix) {
-      StringBuffer sb = new StringBuffer(toString(prefix));
+      StringBuilder sb = new StringBuilder(toString(prefix));
       sb.append(prefix+"parent="+parent+"\n");
       sb.append(prefix+"specials={\n");
       java.util.Iterator i=specials.iterator();
@@ -622,7 +622,7 @@ public class SimpleNode implements Node {
     * @param  sb      Description of Parameter
     * @param  prefix  Description of Parameter
     */
-   private static void dumper(SimpleNode node, StringBuffer sb, String prefix) {
+   private static void dumper(SimpleNode node, StringBuilder sb, String prefix) {
       if (node.children != null) {
          for (int i = 0; i < node.children.length; ++i) {
             SimpleNode n = (SimpleNode)node.children[i];

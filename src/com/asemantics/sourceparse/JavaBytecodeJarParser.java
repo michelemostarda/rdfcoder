@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  *
@@ -66,7 +66,11 @@ public class JavaBytecodeJarParser extends CodeParser {
             throw new IllegalArgumentException("Cannot find file: " + f.getAbsolutePath());
         }
 
-        fileParser.initialize( getCodeHandler(), getObjectsTable() );
+        try {
+            fileParser.initialize( getCodeHandler(), getObjectsTable() );
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
 
         JarFile jarFile = new JarFile(f);
         Enumeration<JarEntry> entries = jarFile.entries();

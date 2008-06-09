@@ -1,6 +1,4 @@
-package com.asemantics.model;
-
-/**
+/*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  * <p/>
@@ -16,6 +14,9 @@ package com.asemantics.model;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
+package com.asemantics.model;
 
 /**
  * Exception raised by {@link com.asemantics.model.SPARQLQuerableCodeModel} if any

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  *
@@ -24,6 +24,8 @@ import java.util.Map;
 
 public class JavadocEntry {
 
+    static final String PARAMETER_IDENTIFIER = "@param";
+
     /**
      * The short desciption of the comment.
      */
@@ -33,6 +35,11 @@ public class JavadocEntry {
      * The long decription of the content.
      */
     private String longDescription;
+
+    /**
+     * List of parameter names.
+     */
+    private String[] parameterNames;
 
     /**
      * The atreibutes of the entry.
@@ -49,6 +56,15 @@ public class JavadocEntry {
      */
     private int col;
 
+    /**
+     * Constructor.
+     *
+     * @param sd
+     * @param ld
+     * @param attrs
+     * @param row
+     * @param col
+     */
     public JavadocEntry(String sd, String ld, Map<String, List<String>> attrs, int row, int col) {
         shortDescription = sd;
         longDescription = ld;
@@ -71,18 +87,20 @@ public class JavadocEntry {
         if (parametersMap == null) {
             parametersMap = new HashMap();
             for (Map.Entry<String, List<String>> entry : attributes.entrySet()) {
-                if (entry.getKey().equals("parameter")) {
+                if ( PARAMETER_IDENTIFIER.equals( entry.getKey() ) ) {
                     for(String listItem: entry.getValue()) {
                         int separator = listItem.indexOf(" ");
-                        parametersMap.put(listItem.substring(0, separator), listItem.substring(separator));
+                        if(separator != -1) {
+                            parametersMap.put(listItem.substring(0, separator), listItem.substring(separator));
+                        } else {
+                            parametersMap.put(listItem, null);
+                        }
                     }
                 }
             }
         }
         return parametersMap;
     }
-
-    String[] parameterNames;
 
     public String[] getParameterNames() {
         if (parameterNames == null) {
@@ -101,23 +119,28 @@ public class JavadocEntry {
         return desc != null ? desc.substring(desc.indexOf(".")) : "";
     }
 
-    public String[] getAuthor() {
-        List<String> authors = attributes.get("author");
+    public String getReturnDescription() {
+        List<String> ret = attributes.get("@return");
+        return ret.get(0);
+    }
+
+    public String[] getAuthors() {
+        List<String> authors = attributes.get("@author");
         return authors.toArray(new String[authors.size()]);
     }
 
     public String[] getSee() {
-        List<String> sees = attributes.get("see");
+        List<String> sees = attributes.get("@see");
         return sees.toArray(new String[sees.size()]);
     }
 
     public String getSince() {
-        List<String> since = attributes.get("see");
+        List<String> since = attributes.get("@since");
         return since.get(0);
     }
 
     public String getVersion() {
-        List<String> version = attributes.get("version");
+        List<String> version = attributes.get("@version");
         return version.get(0);
     }
 
@@ -130,10 +153,11 @@ public class JavadocEntry {
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(this.getClass().getSimpleName()).append(" at location r=").append(row).append(",c=").append(col).append(" {\n");
         sb.append("\tshort description: ").append(shortDescription).append("\n");
         sb.append("\tlong  description: ").append(longDescription).append("\n");
+        sb.append("parameter names: ").append( printArray(getParameterNames()) ).append("\n");
         sb.append("\tparams {\n");
         for (Map.Entry e : attributes.entrySet()) {
             sb.append("\t\t'").append(e.getKey()).append("'='").append(e.getValue()).append("'\n");
@@ -142,4 +166,14 @@ public class JavadocEntry {
         sb.append("}\n");
         return sb.toString();
     }
+
+    private String printArray(Object[] a) {
+        StringBuilder sb = new StringBuilder();
+        for(Object o : a) {
+            sb.append(o);
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
 }
