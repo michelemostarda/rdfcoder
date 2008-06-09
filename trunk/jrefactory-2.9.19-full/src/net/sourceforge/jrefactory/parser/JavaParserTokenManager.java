@@ -1685,7 +1685,7 @@ static final long[] jjtoMore = {
 protected CharStream input_stream;
 private final int[] jjrounds = new int[64];
 private final int[] jjstateSet = new int[128];
-StringBuffer image;
+StringBuilder image;
 int jjimageLen;
 int lengthOfMatch;
 protected char curChar;
@@ -1919,7 +1919,7 @@ void SkipLexicalActions(Token matchedToken)
    {
       case 4 :
          if (image == null)
-            image = new StringBuffer(new String(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1))));
+            image = new StringBuilder(new String(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1))));
          else
             image.append(new String(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1))));
               System.out.println("Warning: cntl-z found at end of file");
@@ -1935,7 +1935,7 @@ void MoreLexicalActions()
    {
       case 5 :
          if (image == null)
-              image = new StringBuffer(new String(input_stream.GetSuffix(jjimageLen)));
+              image = new StringBuilder(new String(input_stream.GetSuffix(jjimageLen)));
          else
             image.append(new String(input_stream.GetSuffix(jjimageLen)));
          jjimageLen = 0;
@@ -1943,7 +1943,7 @@ void MoreLexicalActions()
          break;
       case 10 :
          if (image == null)
-              image = new StringBuffer(new String(input_stream.GetSuffix(jjimageLen)));
+              image = new StringBuilder(new String(input_stream.GetSuffix(jjimageLen)));
          else
             image.append(new String(input_stream.GetSuffix(jjimageLen)));
          jjimageLen = 0;
@@ -1959,14 +1959,14 @@ void TokenLexicalActions(Token matchedToken)
    {
       case 19 :
         if (image == null)
-            image = new StringBuffer(jjstrLiteralImages[19]);
+            image = new StringBuilder(jjstrLiteralImages[19]);
          else
             image.append(jjstrLiteralImages[19]);
                          if (!JavaParser.useAssert) matchedToken.kind = IDENTIFIER;
          break;
       case 33 :
         if (image == null)
-            image = new StringBuffer(jjstrLiteralImages[33]);
+            image = new StringBuilder(jjstrLiteralImages[33]);
          else
             image.append(jjstrLiteralImages[33]);
                      if (!JavaParser.generics) matchedToken.kind = IDENTIFIER;

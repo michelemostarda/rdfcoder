@@ -122,7 +122,7 @@ public class ASTName extends SimpleNode implements Cloneable {
             return name;
          }
          //  Local Variables
-         StringBuffer buf = new StringBuffer();
+         StringBuilder buf = new StringBuilder();
          boolean first = true;
 
          //  Iterate through the parts

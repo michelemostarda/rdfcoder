@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  *
@@ -609,7 +609,7 @@ public class CodeHandlerImpl implements CodeHandler {
     }
 
     private String[]     checkPackageDiscrepancy_stackArray;
-    private StringBuffer checkPackageDiscrepancy_sb = new StringBuffer();
+    private StringBuilder checkPackageDiscrepancy_sb = new StringBuilder();
 
     private void checkPackageDiscrepancy(String pathToContainer) {
         if( ! RDFCoder.isCHECK_PACKAGE_DISCREPANCY() ) { return; }

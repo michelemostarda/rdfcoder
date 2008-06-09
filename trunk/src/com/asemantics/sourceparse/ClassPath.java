@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  *
@@ -89,7 +89,7 @@ public class ClassPath {
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("Source dirs {\n");
         for(File source : sourceDirs) {
             sb.append(source.getAbsolutePath()).append("\n");

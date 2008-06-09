@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  * <p/>

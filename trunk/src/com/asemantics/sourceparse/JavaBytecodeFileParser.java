@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  *
@@ -91,8 +91,8 @@ public class JavaBytecodeFileParser extends FileParser {
         inputStream.close();
     }
 
-    public void parse( File file) throws IOException {
-        //TODO - HIGH: check this constructor: JavaBytecodeClassLoader must not be null.
+    public void parse(File file) throws IOException {
+        //TODO - HIGH: check this method: JavaBytecodeClassLoader must not be null.
         parse(null, file);
     }
 
@@ -263,7 +263,7 @@ public class JavaBytecodeFileParser extends FileParser {
         if( containersStack.size() == 1 ) {
             return containersStack.peek().getPackageName();  
         }
-        StringBuffer pack = new StringBuffer();
+        StringBuilder pack = new StringBuilder();
         pack.append( containersStack.get(0).getPackageName() );
         for(int i = 1; i < containersStack.size(); i++) {
             pack.append( containersStack.get(i).getClassName() );

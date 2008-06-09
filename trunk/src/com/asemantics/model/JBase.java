@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  *
@@ -149,7 +149,7 @@ public abstract class JBase {
      * @return
      */
     public static final String concatenate(final String[] sections, final int index) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for(int s = 0; s <= index; s++) {
             sb.append(sections[s]);
             if(s != index) {

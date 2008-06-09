@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  *
@@ -45,7 +45,7 @@ public class Statistics {
     private int methodsJavadoc;
     private String[] unresolved;
 
-    private StringBuffer errorMessages;
+    private StringBuilder errorMessages;
 
     private double startParsingTime;
     private double endParsingTime;
@@ -56,7 +56,7 @@ public class Statistics {
     private List<StatisticsCodeHandler> statisticsCodeHandlers;
 
     public Statistics() {
-        errorMessages = new StringBuffer();
+        errorMessages = new StringBuilder();
         statisticsCodeHandlers = new ArrayList();
     }
 
@@ -220,7 +220,7 @@ public class Statistics {
     }
 
     public String toStringReport() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("parsing time (secs):").append( (endParsingTime - startParsingTime) / 1000 ).append("\n"); 
         sb.append("parsed files: ").append(parsedFiles).append("\n");
         sb.append("parsed classes: ").append(parsedClasses).append("\n");

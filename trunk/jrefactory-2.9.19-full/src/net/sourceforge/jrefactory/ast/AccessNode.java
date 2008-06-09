@@ -410,7 +410,7 @@ public class AccessNode extends SimpleNode implements ModifierHolder {
     */
    public String toStringAlphabetical() {
       //  Local Variables
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
 
       //  Protection first
       if (isPrivate()) {
@@ -483,7 +483,7 @@ public class AccessNode extends SimpleNode implements ModifierHolder {
     */
    public String toStandardOrderString() {
       //  Local Variables
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
 
       //  Protection first
       if (isPrivate()) {

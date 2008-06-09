@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  *
@@ -60,7 +60,7 @@ public abstract class JContainer extends JModifiable {
      * @return
      */
     public static String getDebugPath(JContainer[] path) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for(int i = 0; i < path.length; i++) {
             sb.append(path[i].getName()).append(":").append(path[i].getHyerarchyElemType());
             if(i < path.length -1) {
@@ -83,7 +83,7 @@ public abstract class JContainer extends JModifiable {
      * @return
      */
     public static String getPathAsString(JContainer[] path) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for(int i = 0; i < path.length; i++) {
             sb.append( path[i].getName() );
             if(i < path.length -1) {

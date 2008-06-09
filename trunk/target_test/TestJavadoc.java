@@ -2,12 +2,14 @@
 /**
  * Class C1 short comment.
  * Class C1 long description
- * @author author C1
+ * @since x.y
+ * @see #a.b.c
+ * @author AuthorName AuthorSurname
  */
 public class C1 {
 
 	/**
-	 * This is the method 1 short comment.
+     * This is the method 1 short comment.
 	 * This should be the long one.
 	 *
 	 * @param o1 the object 1
