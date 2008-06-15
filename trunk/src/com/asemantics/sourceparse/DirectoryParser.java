@@ -19,6 +19,7 @@
 package com.asemantics.sourceparse;
 
 import com.asemantics.CoderUtils;
+import com.asemantics.model.CodeHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,11 +63,11 @@ public class DirectoryParser extends CodeParser {
         }
         dirStack.push(d);
 
-        fileParser.initialize( getCodeHandler(), getObjectsTable() );
+        fileParser.initialize( getParseHandler(), getObjectsTable() );
 
         // Begin parsing.
         try {
-            getCodeHandler().startParsing(libraryName, d.getAbsolutePath());
+            getParseHandler().startParsing(libraryName, d.getAbsolutePath());
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -81,7 +82,7 @@ public class DirectoryParser extends CodeParser {
         } finally {
             // End parsing.
             try {
-                getCodeHandler().endParsing();
+                getParseHandler().endParsing();
             } catch (Throwable t) {
                 t.printStackTrace();
             }
@@ -114,7 +115,7 @@ public class DirectoryParser extends CodeParser {
                 throw new RuntimeException(ioe);
             } catch (ParserException pe) {
                 pe.printStackTrace();
-                getCodeHandler().parseError(javaFiles[f].getAbsolutePath(), "[" + pe.getClass().getName() + "]" + pe.getMessage());
+                getParseHandler().parseError(javaFiles[f].getAbsolutePath(), "[" + pe.getClass().getName() + "]" + pe.getMessage());
             }
         }
     }
@@ -132,13 +133,14 @@ public class DirectoryParser extends CodeParser {
      * @return
      */
     public int postScan() {
-        Set<String> unresolved = getObjectsTable().processTemporaryIdentifiers(getCodeHandler());
+        CodeHandler codeHandler = (CodeHandler) getParseHandler();
+        Set<String> unresolved = getObjectsTable().processTemporaryIdentifiers( codeHandler );
         List<String> unresolvedList = new ArrayList(unresolved);
         unresolved.clear();
         Collections.sort(unresolvedList);
         String[] unresolvedTypes = unresolvedList.toArray( new String[unresolvedList.size()] );
         try {
-            getCodeHandler().unresolvedTypes(unresolvedTypes);
+            codeHandler.unresolvedTypes(unresolvedTypes);
         } catch (Throwable t) {
             t.printStackTrace();
         }

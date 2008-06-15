@@ -27,13 +27,14 @@ import java.util.*;
 import com.asemantics.model.CodeHandler;
 import com.asemantics.model.CodeModel;
 import com.asemantics.model.ErrorListener;
+import com.asemantics.model.JavadocHandler;
 
 /**
  * Test unit of <code>JavadocFileParser</code>.
  */
 public class JavadocFileParserTest extends TestCase {
 
-    class TestJavadocParserListener implements CodeHandler {
+    class TestJavadocParserListener implements JavadocHandler {
 
         private JavadocEntry je;
 
@@ -46,11 +47,11 @@ public class JavadocFileParserTest extends TestCase {
         }
 
         public void startParsing(String libraryName, String location) {
-            // Empty.
+            System.out.println("Start parsing of '" + libraryName + "' at location: '" + location + "'");
         }
 
         public void endParsing() {
-            // Empty.
+            System.out.println("End parsing");
         }
 
         public void startCompilationUnit(String identifier) {
@@ -61,76 +62,8 @@ public class JavadocFileParserTest extends TestCase {
             System.out.println("endCompilationUnit");
         }
 
-        public void startPackage(String pathToPackage) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void endPackage() {
-            throw new UnsupportedOperationException();
-        }
-
-        public void startInterface(String pathToInterface, String[] extendedInterfaces) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void endInterface() {
-            throw new UnsupportedOperationException();
-        }
-
-        public void startClass(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToClass, String extendedClass, String[] implementedInterfaces) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void endClass() {
-            throw new UnsupportedOperationException();
-        }
-
-        public void startEnumeration(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToEnumeration, String[] elements) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void endEnumeration() {
-            throw new UnsupportedOperationException();
-        }
-
-        public void attribute(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToAttribute, CodeModel.JType type, String value) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void constructor(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, int overloadIndex, String[] parameterNames, CodeModel.JType[] parameterTypes, CodeModel.ExceptionType[] exceptions) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void method(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToMethod, int overloadIndex, String[] parameterNames, CodeModel.JType[] parameterTypes, CodeModel.JType returnType, CodeModel.ExceptionType[] exceptions) {
-            throw new UnsupportedOperationException();
-        }
-
         public void parseError(String location, String description) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void unresolvedTypes(String[] unresolvedTypes) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void preloadObjectsFromModel(ObjectsTable objectsTable) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void serializeUnresolvedTypeEntries(ObjectsTable objectTable) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void deserializeUnresolvedTypeEntries(ObjectsTable objectTable) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void addErrorListener(ErrorListener errorListener) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void removeErrorListener(ErrorListener errorListener) {
-            throw new UnsupportedOperationException();
+            System.err.println("Parse error at location:" + location + ": " + description);
         }
 
         public void parsedEntry(JavadocEntry entry) {
@@ -156,13 +89,6 @@ public class JavadocFileParserTest extends TestCase {
             System.out.println("=======================================");
         }
 
-        public String generateTempUniqueIdentifier() {
-            throw new UnsupportedOperationException();
-        }
-
-        public int replaceIdentifierWithQualifiedType(String identifier, String qualifiedType) {
-            throw new UnsupportedOperationException();
-        }
     }
 
     private static final String SHORT_DESCRIPTION = "This is the short description";
@@ -175,8 +101,6 @@ public class JavadocFileParserTest extends TestCase {
     private static final String PATH_TO_SEE        = "#path.to.see";
 
     private static final String SINCE_VALUE        = "x.y";
-
-
 
     private ByteArrayInputStream byteArrayInputStream;
 

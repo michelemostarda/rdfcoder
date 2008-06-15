@@ -67,7 +67,7 @@ public class JavaBytecodeJarParser extends CodeParser {
         }
 
         try {
-            fileParser.initialize( getCodeHandler(), getObjectsTable() );
+            fileParser.initialize( getParseHandler(), getObjectsTable() );
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -84,7 +84,7 @@ public class JavaBytecodeJarParser extends CodeParser {
                 inputStream = jarFile.getInputStream(entry);
                 fileParser.parse(jarClassLoader, inputStream, entry.getName());
             } catch(IOException ioe) {
-                getCodeHandler().parseError(
+                getParseHandler().parseError(
                         entry.getName(), "[" + entry.getClass().getName() + "]: " + ioe.getMessage()
                 );
             } finally {

@@ -20,14 +20,13 @@ package com.asemantics.sourceparse;
 
 import com.asemantics.CoderUtils;
 import com.asemantics.model.CodeHandler;
+import com.asemantics.model.JavadocHandler;
 
 import java.io.*;
 import java.util.*;
 
 /**
  * The Javadoc file parser.
- *
- * TODO: HIGH - TB tested.
  */
 public class JavadocFileParser extends FileParser {
 
@@ -392,6 +391,8 @@ public class JavadocFileParser extends FileParser {
      */
     public void parse(InputStream inputStream, String compilationUnitPath) throws ParserException {
 
+        final JavadocHandler javadocHandler = (JavadocHandler) getParseHandler();
+
         tokensPipe.clear();
         classes.clear();
         methodName = null;
@@ -403,7 +404,7 @@ public class JavadocFileParser extends FileParser {
         lastEntry = null;
 
         try {
-            getCodeHandler().startCompilationUnit(compilationUnitPath);
+            getParseHandler().startCompilationUnit(compilationUnitPath);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -456,7 +457,7 @@ public class JavadocFileParser extends FileParser {
                         // Notifies last entry to listener.
                         try {
                             // A Javadoc entry has been found.
-                            getCodeHandler().parsedEntry(entry);
+                            javadocHandler.parsedEntry(entry);
                         } catch(Throwable t) {
                             t.printStackTrace();
                         }
@@ -510,7 +511,7 @@ public class JavadocFileParser extends FileParser {
                         if(lastEntry != null) {
                             String containerPath = getContainerPath();
                             try {
-                                getCodeHandler().classJavadoc( lastEntry, containerPath );
+                                javadocHandler.classJavadoc( lastEntry, containerPath );
                             } catch(Throwable t) {
                                 t.printStackTrace();
                             }
@@ -548,7 +549,7 @@ public class JavadocFileParser extends FileParser {
                             String pathToMethod    = (containerPath.equals("") ? "" : containerPath + CodeHandler.PACKAGE_SEPARATOR) + methodName;
                             String[] signature   = toSignature(parameters);
                             try {
-                                getCodeHandler().methodJavadoc(lastEntry, pathToMethod, signature);
+                                javadocHandler.methodJavadoc(lastEntry, pathToMethod, signature);
                             } catch (Throwable t) {
                                 t.printStackTrace();
                             }
@@ -575,7 +576,7 @@ public class JavadocFileParser extends FileParser {
         }
 
         try {
-            getCodeHandler().endCompilationUnit();
+            getParseHandler().endCompilationUnit();
         } catch (Throwable t) {
             t.printStackTrace();
         }

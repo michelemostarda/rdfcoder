@@ -34,8 +34,6 @@ import java.util.Stack;
  * The <code>CodeHandler</code> standard implementation.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
- *
- * TODO: LOW - define an interface and implementation SourceCodeHandler / SourceCodehandlerImpl able to accept unresolved types.
  */
 public class CodeHandlerImpl implements CodeHandler {
 
@@ -499,9 +497,7 @@ public class CodeHandlerImpl implements CodeHandler {
     }
 
     public void serializeUnresolvedTypeEntries(ObjectsTable objectTable) {
-        for(ObjectsTable.UnresolvedTypeEntry entry : objectTable.getUnresolvedTypeEntries() ) {
-            //TODO: LOW - TBI
-        }
+        //TODO: LOW - TBI
     }
 
     public void deserializeUnresolvedTypeEntries(ObjectsTable objectTable) {
