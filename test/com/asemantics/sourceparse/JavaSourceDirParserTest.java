@@ -67,7 +67,7 @@ public class JavaSourceDirParserTest extends TestCase {
             jsdp.parseDirectory("src", new File("src") );
             jsdp.dispose();
             Map<String,String> params = new HashMap();
-            params.put(CodeStorage.FS_FILENAME, "out/test_scan_src_dir.xml");
+            params.put(CodeStorage.FS_FILENAME, "target_test/out/test_scan_src_dir.xml");
             jcs.saveModel(jcm, params);
         } catch (Exception e) {
             e.printStackTrace();

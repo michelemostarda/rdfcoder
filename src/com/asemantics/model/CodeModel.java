@@ -611,6 +611,16 @@ public abstract class CodeModel implements BackTrackingSupport {
      */
     protected static final String URI = "http://www.rdfcoder.org/2007/1.0#";
 
+    /**
+     * URI-fier function.
+     *
+     * @param prop
+     * @return
+     */
+    public static String toURI(String prop) {
+        return URI + prop;
+    }
+
 
     /* Asset classes and properties. */
 
@@ -630,11 +640,7 @@ public abstract class CodeModel implements BackTrackingSupport {
     public static final String LIBRARY_DATETIME = toURI("library_date");
 
 
-    /* RDFS classes. */
-
-    public static String toURI(String prop) {
-        return URI + prop;
-    }
+    /* BEGIN: RDF classes. */
 
     /**
      * The Asset unique class.
@@ -658,6 +664,8 @@ public abstract class CodeModel implements BackTrackingSupport {
     public static final String JSIGNATURE   = toURI("jsignature");
 
     public static final String JPARAMETER   = toURI("jparameter");
+
+    /* END: RDF classes. */
 
 
     /* Prefix disambiguation. */

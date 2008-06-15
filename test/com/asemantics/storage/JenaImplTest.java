@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class JenaImplTest extends TestCase {
 
-    private static final String TEST_FILE  = "test.xml";
+    private static final String TEST_FILE  = "target_test/jena_impl_test.xml";
 
     // Resource object triples.
     private static final int RES_OBJ_TRIPLES = 9000;

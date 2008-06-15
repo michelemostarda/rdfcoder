@@ -19,15 +19,14 @@
 package com.asemantics.sourceparse;
 
 import com.asemantics.model.CodeHandler;
+import com.asemantics.model.ParseHandler;
 
 /**
- * Base class for any <code>CodeParser</code> implementation.
- * TODO: LOW - introduce ClassParser, JavadocParser as extensions of CodeParser,
- *       ClassParserListener, JavadocParserListener, define CodeHandler as implemntation of both these listeners. 
+ * Base class for any <code>CodeParser</code> implementation. 
  */
 public abstract class CodeParser {
 
-    private CodeHandler     codeHandler;
+    private ParseHandler    parseHandler;
     private ObjectsTable    objectsTable;
 
     protected CodeParser() {
@@ -35,19 +34,19 @@ public abstract class CodeParser {
     }
 
     /**
-     * initializes the parser with the given codeHandler and objects table.
+     * initializes the parser with the given parse handler and objects table.
      *
      * @param ch
      * @param ot
      */
-    public void initialize(CodeHandler ch, ObjectsTable ot) {
+    public void initialize(ParseHandler ch, ObjectsTable ot) {
         if( ch == null ) {
-            throw new IllegalArgumentException("codeHandler cannot be null");
+            throw new IllegalArgumentException("parseHandler cannot be null");
         }
         if( ot == null ) {
             throw new IllegalArgumentException("ot cannot be null");
         }
-        codeHandler  = ch;
+        parseHandler = ch;
         objectsTable = ot;
     }
 
@@ -55,12 +54,12 @@ public abstract class CodeParser {
      * Disposes the parser session.
      */
     public void dispose() {
-        codeHandler  = null;
+        parseHandler = null;
         objectsTable = null;
     }
 
-    protected CodeHandler getCodeHandler() {
-        return codeHandler;
+    protected ParseHandler getParseHandler() {
+        return parseHandler;
     }
 
     protected ObjectsTable getObjectsTable() {

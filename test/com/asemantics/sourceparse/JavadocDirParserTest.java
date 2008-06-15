@@ -32,19 +32,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Unit test of JavadocSourceDirParser.
+ * JUnit test for {@link JavadocFileParser} on directory.
  */
 public class JavadocDirParserTest extends TestCase {
 
-    ObjectsTable ot;
-    JenaCoderFactory jcf;
-    JenaCodeModel jcm;
-    JenaCodeStorage jcs;
-    CodeHandler ch;
+    private ObjectsTable ot;
+    private JenaCoderFactory jcf;
+    private JenaCodeModel jcm;
+    private JenaCodeStorage jcs;
+    private CodeHandler ch;
 
     public void setUp() {
         ot   = new ObjectsTable();
-        jcf = new JenaCoderFactory();
+        jcf  = new JenaCoderFactory();
         jcm  = (JenaCodeModel) jcf.createCodeModel();
         jcs  = jcf.createCodeStorage();
         ch   = jcf.createHandlerOnModel(jcm);
@@ -67,7 +67,7 @@ public class JavadocDirParserTest extends TestCase {
             jsdp.parseDirectory("http://www.rdfcoder.org/2007/1.0#src", new File("src") );
             jsdp.dispose();
             Map<String,String> params = new HashMap();
-            params.put(CodeStorage.FS_FILENAME, "out/src.xml");
+            params.put(CodeStorage.FS_FILENAME, "target_test/out/src.xml");
             jcs.saveModel(jcm, params);
         } catch (Exception e) {
             e.printStackTrace();

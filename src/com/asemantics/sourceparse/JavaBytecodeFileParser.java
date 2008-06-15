@@ -58,7 +58,7 @@ public class JavaBytecodeFileParser extends FileParser {
         ClassParser classParser = new ClassParser( inputStream, fileName );
         JavaClass javaClass = classParser.parse();
 
-        CodeHandler codeHandler   = getCodeHandler();
+        final CodeHandler codeHandler   = (CodeHandler) getParseHandler();
         ObjectsTable objectsTable = getObjectsTable();
 
         // Package.

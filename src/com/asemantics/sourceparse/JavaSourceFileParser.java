@@ -95,10 +95,24 @@ public class JavaSourceFileParser extends FileParser {
         }
     }
 
+
+    /**
+     * The code handler to be used during processing.
+     */
+    private CodeHandler codeHandler;
+
+    /**
+     * Processes a single compilation unit.
+     *
+     * @param location
+     * @param ast
+     */
     public void processCompilationUnit(String location, ASTCompilationUnit ast) {
 
+        codeHandler = (CodeHandler) getParseHandler();
+
         try {
-            getCodeHandler().startCompilationUnit(location);
+            codeHandler.startCompilationUnit(location);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -112,7 +126,7 @@ public class JavaSourceFileParser extends FileParser {
             packagePath = ""; // Default package.
         }
         try {
-            getCodeHandler().startPackage(packagePath);
+            codeHandler.startPackage(packagePath);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -132,7 +146,7 @@ public class JavaSourceFileParser extends FileParser {
                     try {
                         importsContext.addStarredPackage(importEntry);
                     } catch(IllegalArgumentException iae) {
-                        getCodeHandler().parseError( location, iae.getClass().getName()  + "[" + iae.getMessage() + "]" );
+                        codeHandler.parseError( location, iae.getClass().getName()  + "[" + iae.getMessage() + "]" );
                     }
                 } else {
                     importsContext.addFullyQualifiedObject(importEntry);
@@ -142,7 +156,7 @@ public class JavaSourceFileParser extends FileParser {
             // Note: enumerations can be present only at first level.
             extractEnumerations(
                     packagePath,
-                    getCodeHandler(),
+                    codeHandler,
                     (ASTCompilationUnit) ast.findChildrenOfType(ASTCompilationUnit.class).get(0)
             );
 
@@ -151,12 +165,12 @@ public class JavaSourceFileParser extends FileParser {
 
         } finally {
             try {
-                getCodeHandler().endPackage();
+                codeHandler.endPackage();
             }catch (Throwable t) {
                 t.printStackTrace();
             }
             try {
-                getCodeHandler().endCompilationUnit();
+                codeHandler.endCompilationUnit();
             } catch (Throwable t) {
                 t.printStackTrace();
             }
@@ -193,7 +207,7 @@ public class JavaSourceFileParser extends FileParser {
                     superClass = retrieveObjectName( ((ASTClassOrInterfaceType) classOrInterface.get(0)).findChildrenOfType(ASTIdentifier.class) );
                 }
 
-                getCodeHandler().startClass(
+                codeHandler.startClass(
                         //TODO: verify the subsequest row.
                         extractModifiers( classDeclaration ),
                         clsOrIntVisibility,
@@ -202,16 +216,16 @@ public class JavaSourceFileParser extends FileParser {
                         extractImplementedInterfaces(importsContext, unmodifiedClassDeclaration)
                 );
                 try {
-                    extractEnumerations(packagePath, getCodeHandler(), unmodifiedClassDeclaration);
-                    extractAttributes  (packagePath, getCodeHandler(), importsContext, unmodifiedClassDeclaration);
-                    extractContructors (getCodeHandler(), importsContext, unmodifiedClassDeclaration);
-                    extractMethods     (packagePath, getCodeHandler(), importsContext, unmodifiedClassDeclaration);
+                    extractEnumerations(packagePath, codeHandler, unmodifiedClassDeclaration);
+                    extractAttributes  (packagePath, codeHandler, importsContext, unmodifiedClassDeclaration);
+                    extractContructors (codeHandler, importsContext, unmodifiedClassDeclaration);
+                    extractMethods     (packagePath, codeHandler, importsContext, unmodifiedClassDeclaration);
 
                     // Recursive invocation.
                     processLevel(packagePath + CodeHandler.PACKAGE_SEPARATOR + className, importsContext, unmodifiedClassDeclaration);
 
                 } finally {
-                    getCodeHandler().endClass();
+                    codeHandler.endClass();
                 }
 
             }
@@ -229,20 +243,20 @@ public class JavaSourceFileParser extends FileParser {
 
                 getObjectsTable().addObject(packagePath, interfaceName);
 
-                getCodeHandler().startInterface(
+                codeHandler.startInterface(
                         packagePath + CodeHandler.PACKAGE_SEPARATOR + interfaceName,
                         extractImplementedInterfaces(importsContext, unmodifiedInterfaceDeclaration)
                 );
                 try {
-                    extractEnumerations(packagePath, getCodeHandler(), unmodifiedInterfaceDeclaration);
-                    extractAttributes  (packagePath, getCodeHandler(), importsContext, unmodifiedInterfaceDeclaration);
-                    extractMethods     (packagePath, getCodeHandler(), importsContext, unmodifiedInterfaceDeclaration);
+                    extractEnumerations(packagePath, codeHandler, unmodifiedInterfaceDeclaration);
+                    extractAttributes  (packagePath, codeHandler, importsContext, unmodifiedInterfaceDeclaration);
+                    extractMethods     (packagePath, codeHandler, importsContext, unmodifiedInterfaceDeclaration);
 
                     // Recursive invocation.
                     processLevel(packagePath + CodeHandler.PACKAGE_SEPARATOR + interfaceName, importsContext, unmodifiedInterfaceDeclaration);
 
                 } finally {
-                    getCodeHandler().endInterface();
+                    codeHandler.endInterface();
                 }
 
             }
@@ -734,7 +748,7 @@ public class JavaSourceFileParser extends FileParser {
       private String qualifyType(ImportsContext importsContext, String typeName, CodeModel.JType type) {
           String qualifiedObject = importsContext.qualifyType(getObjectsTable(), typeName);
           if (qualifiedObject == null) {
-              String tempId = getCodeHandler().generateTempUniqueIdentifier();
+              String tempId = codeHandler.generateTempUniqueIdentifier();
               if(type instanceof CodeModel.ObjectType) {
                   ((CodeModel.ObjectType) type).setInternalIdentifier(tempId);
               } else if( type instanceof CodeModel.InterfaceType) {

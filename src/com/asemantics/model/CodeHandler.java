@@ -29,7 +29,7 @@ import com.asemantics.sourceparse.ObjectsTable;
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
-public interface CodeHandler extends BackTrackingSupport {
+public interface CodeHandler extends ParseHandler, JavadocHandler, BackTrackingSupport {
 
     /**
      * Expected format of the library datetime.
@@ -40,29 +40,6 @@ public interface CodeHandler extends BackTrackingSupport {
      * The package separator character.
      */
     public static final String PACKAGE_SEPARATOR = ".";
-
-    /**
-     * Notifies the beginning of parsing process.
-     *
-     * @param libraryName the unique name of the parsed library.
-     * @param location the location of the parsed library.
-     */
-    public void startParsing(String libraryName, String location);
-
-    /**
-     * Notifies the end of parsing process.
-     */
-    public void endParsing();
-
-    /**
-     * Notifies the begin of a compilation unit (A class or interface or enumeration of first level).
-     */
-    public void startCompilationUnit(String identifier);
-
-    /**
-     * Notifies the end of a compilation unit.
-     */
-    public void endCompilationUnit();
 
     /**
      * Nofifies the begin of a package parsing.
@@ -206,27 +183,20 @@ public interface CodeHandler extends BackTrackingSupport {
             CodeModel.ExceptionType[] exceptions
     );
 
-    /**
-     * Notifies an error occurred during parsing.
-     *
-     * @param location the location of the compilation unit raising the error.
-     * @param description the error description.
-     * TODO: MED - refactor it.
-     */
-    public void parseError(String location, String description);
 
     /**
-     * Collects the unresolvedTypes remained unresolved at the end of the parsing.
+     * Collects the unresolved types at the end of the parsing.
      *
      * @param unresolvedTypes
      */
     public void unresolvedTypes(String[] unresolvedTypes);
 
     /**
-     * Preloads the given Objects Table with the objects present into the underlying model.
+     * Preloads the given Objects Table with the objects present in the underlying model.
      *
      * @param objectsTable
      */
+    //TODO: LOW - integrate preloading.
     public void preloadObjectsFromModel(ObjectsTable objectsTable);
 
     /**
@@ -254,31 +224,5 @@ public interface CodeHandler extends BackTrackingSupport {
      * @param errorListener
      */
     public void removeErrorListener(ErrorListener errorListener);
-
-    /* Javadoc handling. */ //TODO: MED - refactor it.
-
-    /**
-     * Raised wether a Javadoc comment is found.
-     *
-     * @param entry
-     */
-    public void parsedEntry(JavadocEntry entry);
-
-    /**
-     * Raised when the parsed entry refers to a class.
-     *
-     * @param entry
-     * @param pathToClass
-     */
-    public void classJavadoc(JavadocEntry entry, String pathToClass);
-
-    /**
-     * Raised when the parsed entry refers to a method.
-     *
-     * @param entry
-     * @param pathToMethod
-     * @param signature
-     */
-    public void methodJavadoc(JavadocEntry entry, String pathToMethod, String[] signature);
 
 }
