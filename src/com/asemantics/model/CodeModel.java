@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
-public abstract class CodeModel implements BackTrackingSupport {
+public abstract class CodeModel implements CodeModelInterface, BackTrackingSupport {
 
     /* Primitive types. */
 
@@ -824,63 +824,6 @@ public abstract class CodeModel implements BackTrackingSupport {
      * No elemente specified.
      */
     public static final String ALL_MATCH = null;
-
-    /**
-     * Allows to perform a triple search on the org.asemantics.model.
-     * @param subject
-     * @param predicate
-     * @param object
-     * @return
-     */
-    public abstract TripleIterator searchTriples(String subject, String predicate, String object);
-
-    /**
-     * Allows to add a triple into the model.
-     * NOTE: this method accepts only resource objects.
-     *
-     * @param subject a subject resource
-     * @param predicate a predicate
-     * @param object a resource object
-     */
-    public abstract void addTriple(String subject, String predicate, String object);
-
-    /**
-     * Allows to remove a triple from the model.
-     * NOTE: this method accepts only resource objects.
-     *
-     * @param subject
-     * @param predicate
-     * @param object
-     * @see #addTriple(String, String, String)
-     */
-    public abstract void removeTriple(String subject, String predicate, String object);
-
-    /**
-     * Allows to add a triple into the model.
-     * NOTE: this method accepts only literal object.
-     *
-     * @param subject a subject resource
-     * @param predicate a predicate
-     * @param literal a literal object
-     */
-    public abstract void addTripleLiteral(String subject, String predicate, String literal);
-
-    /**
-     * Allows to remove a triple from the model.
-     * NOTE: this method accepts only literal object.
-     *
-     * @param subject
-     * @param predicate
-     * @param object
-     * @see #addTripleLiteral(String, String, String)
-     */
-    public abstract void removeTripleLiteral(String subject, String predicate, String object);
-
-
-    /**
-     *  Remove the entire content of the model.
-     */
-    public abstract void clearAll();
 
     /* Persistence. */
 

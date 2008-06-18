@@ -1,13 +1,13 @@
 /*
  * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
- * <p/>
+ *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,8 @@ import junit.framework.TestCase;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.io.PrintStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.asemantics.model.CodeModel;
 
@@ -115,10 +117,34 @@ public class DefaultOntologyTest extends TestCase {
     public void testAccess() throws MalformedURLException, OntologyException {
         testPopulate();
 
-        for( int i = 0; i < ontology.getRelationsCount(); i++) {
-            assertEquals(SUB_PREFIX + i      , ontology.getRelationSubjectPrefix(i) );
-            assertEquals(OBJ_PREFIX + i      , ontology.getRelationObjectPrefix(i) );
-            assertEquals(PREDICATE  + (i % 2), ontology.getRelationPredicate(i) );
+        Set found = new HashSet();
+        final int count = ontology.getRelationsCount();
+
+        for( int i = 0; i < count; i++) {
+            if(found.contains(ontology.getRelationSubjectPrefix(i))) {
+                fail("Cannot contain a subject prefix twice");
+            }
+            found.add(ontology.getRelationSubjectPrefix(i));
         }
+        assertEquals(count,  found.size());
+
+        found.clear();
+        for( int i = 0; i < count; i++) {
+            if(found.contains(ontology.getRelationObjectPrefix(i))) {
+                fail("Cannot contain an object prefix twice");
+            }
+            found.add(ontology.getRelationObjectPrefix(i));
+        }
+        assertEquals(count,  found.size());
+
+        found.clear();
+        for( int i = 0; i < count; i++) {
+            found.add(ontology.getRelationPredicate(i));
+        }
+        assertEquals(2,  found.size());
+
+        assertEquals(SIZE, count);
+
+        found.clear();
     }
 }
