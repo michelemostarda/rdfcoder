@@ -26,6 +26,7 @@ import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.asemantics.model.JavaCodeModel;
 import com.asemantics.model.CodeModel;
 
 /**

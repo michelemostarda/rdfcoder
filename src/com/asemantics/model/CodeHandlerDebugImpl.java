@@ -63,8 +63,8 @@ public class CodeHandlerDebugImpl implements CodeHandler {
     }
 
     public void startClass(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             String pathToClass,
             String extendedClass,
             String[] implementedInterfaces
@@ -72,7 +72,7 @@ public class CodeHandlerDebugImpl implements CodeHandler {
         System.out.print(
                 "Start class " + pathToClass +
                         " visibility: " + visibility +
-                        " modifiers: " + CodeModel.JModifier.toByte(modifiers)
+                        " modifiers: " + JavaCodeModel.JModifier.toByte(modifiers)
         );
         System.out.print(" extending class " + extendedClass);
         System.out.print(" implemented interfaces < ");
@@ -87,15 +87,15 @@ public class CodeHandlerDebugImpl implements CodeHandler {
     }
 
     public void startEnumeration(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             String pathToEnumeration,
             String[] elements
     ) {
         System.out.print(
                 "start enumeration " + pathToEnumeration +
                         " visibility " + visibility  +
-                        " modifiers "  + CodeModel.JModifier.toByte(modifiers)
+                        " modifiers "  + JavaCodeModel.JModifier.toByte(modifiers)
         );
         System.out.println("{");
         for(int i = 0; i < elements.length; i++) {
@@ -109,32 +109,32 @@ public class CodeHandlerDebugImpl implements CodeHandler {
     }
 
     public void attribute(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             String pathToAttribute,
-            CodeModel.JType type,
+            JavaCodeModel.JType type,
             String value) {
         System.out.print(
                 "attribute " + pathToAttribute +
                         " visibility " + visibility +
-                        " modifiers " + CodeModel.JModifier.toByte(modifiers)
+                        " modifiers " + JavaCodeModel.JModifier.toByte(modifiers)
         );
         System.out.print(" of type " + type + " ");
         System.out.println(" with value " + value);
     }
 
     public void constructor(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             int overloadIndex,
             String[] parameterNames,
-            CodeModel.JType[] parameterTypes,
-            CodeModel.ExceptionType[] exceptions
+            JavaCodeModel.JType[] parameterTypes,
+            JavaCodeModel.ExceptionType[] exceptions
     ) {
         System.out.print(
                 "constructor " + overloadIndex +
                         " visibility " + visibility +
-                        " modifiers "  + CodeModel.JModifier.toByte(modifiers) 
+                        " modifiers "  + JavaCodeModel.JModifier.toByte(modifiers)
         );
         System.out.println("{");
         printParameters(parameterNames, parameterTypes);
@@ -143,19 +143,19 @@ public class CodeHandlerDebugImpl implements CodeHandler {
     }
 
     public void method(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             String pathToMethod,
             int overloadIndex,
             String[] parameterNames,
-            CodeModel.JType[] parameterTypes,
-            CodeModel.JType returnType,
-            CodeModel.ExceptionType[] exceptions
+            JavaCodeModel.JType[] parameterTypes,
+            JavaCodeModel.JType returnType,
+            JavaCodeModel.ExceptionType[] exceptions
     ) {
         System.out.print(
                 "method " + pathToMethod + " index " + overloadIndex +
                         " visibility " + visibility +
-                        " modifiers " + CodeModel.JModifier.toByte(modifiers)
+                        " modifiers " + JavaCodeModel.JModifier.toByte(modifiers)
         );
         System.out.println(" return type " + returnType);
         System.out.println("{");
@@ -220,13 +220,13 @@ public class CodeHandlerDebugImpl implements CodeHandler {
         return 0;
     }
 
-    private void printParameters(String[] names, CodeModel.JType[] types) {
+    private void printParameters(String[] names, JavaCodeModel.JType[] types) {
         for(int i = 0; i < names.length; i++) {
             System.out.println(names[i] + ": " + types[i]);
         }
     }
 
-    private void printExceptions(CodeModel.ExceptionType[] exceptions) {
+    private void printExceptions(JavaCodeModel.ExceptionType[] exceptions) {
         if(exceptions == null || exceptions.length == 0) {
             return;
         }

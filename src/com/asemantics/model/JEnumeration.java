@@ -23,7 +23,7 @@ package com.asemantics.model;
  */
 public class JEnumeration extends JObject {
 
-    public static boolean exists(QueryModel qm, String pathToEnumeration) {
+    public static boolean exists(JavaQueryModel qm, String pathToEnumeration) {
         return qm.enumerationExists(pathToEnumeration);
     }
 
@@ -33,7 +33,7 @@ public class JEnumeration extends JObject {
       * @param sections
       * @throws CodeModelException
       */
-     protected JEnumeration(QueryModel queryModel, String[] sections)
+     protected JEnumeration(JavaQueryModel queryModel, String[] sections)
              throws QueryModelException {
          super(queryModel, sections);
      }
@@ -44,7 +44,7 @@ public class JEnumeration extends JObject {
       * @param pathToMethod
       * @throws CodeModelException
       */
-     protected JEnumeration(QueryModel queryModel, String pathToMethod)
+     protected JEnumeration(JavaQueryModel queryModel, String pathToMethod)
              throws QueryModelException {
          super(queryModel, pathToMethod);
      }

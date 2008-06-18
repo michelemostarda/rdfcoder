@@ -31,7 +31,7 @@ public class JAttribute extends JModifiable {
      * @param pathToAttribute the path to the attribute.
      * @return true if the path is valid, false otherwise.
      */
-    public static final boolean exists(QueryModel qm, final String pathToAttribute) {
+    public static final boolean exists(JavaQueryModel qm, final String pathToAttribute) {
         return qm.attributeExists(pathToAttribute);
     }
 
@@ -41,7 +41,7 @@ public class JAttribute extends JModifiable {
      * @param sections
      * @throws CodeModelException
      */
-    protected JAttribute(QueryModel qm, String[] sections)
+    protected JAttribute(JavaQueryModel qm, String[] sections)
     throws QueryModelException {
         super(qm, sections);
     }
@@ -52,7 +52,7 @@ public class JAttribute extends JModifiable {
      * @param pathToAttribute
      * @throws CodeModelException
      */
-    protected JAttribute(QueryModel qm, String pathToAttribute)
+    protected JAttribute(JavaQueryModel qm, String pathToAttribute)
     throws QueryModelException {
         super(qm, pathToAttribute);
     }

@@ -54,7 +54,7 @@ public class CommandLine {
         /**
          * Code model.
          */
-        CodeModel   codeModel;
+        CodeModel codeModel;
 
         /**
          * Code handler.
@@ -64,9 +64,9 @@ public class CommandLine {
         /**
          * Query interface.
          */
-        QueryModel  queryModel;
+        JavaQueryModel queryModel;
 
-        ModelHandler(CodeModel cm, CodeHandler ch, QueryModel qm) {
+        ModelHandler(CodeModel cm, CodeHandler ch, JavaQueryModel qm) {
             codeModel   = cm;
             codeHandler = ch;
             queryModel  = qm;
@@ -280,10 +280,10 @@ public class CommandLine {
             throw new IllegalArgumentException("a model with name " + modelName + " already exists.");   
         }
 
-        CodeModel cm   = coderFactory.createCodeModel();
-        CodeHandler ch = coderFactory.createHandlerOnModel(cm);
-        QueryModel qm  = coderFactory.createQueryModel(cm);
-        ModelHandler mh = new ModelHandler(cm, ch, qm);
+        CodeModelBase cmb   = coderFactory.createCodeModel();
+        CodeHandler ch      = coderFactory.createHandlerOnModel(cmb);
+        JavaQueryModel qm       = coderFactory.createQueryModel(cmb);
+        ModelHandler mh     = new ModelHandler(cmb, ch, qm);
         modelHandlers.put(modelName, mh);
         return mh;
     }
@@ -385,7 +385,7 @@ public class CommandLine {
         }
 
         ModelHandler mh = modelHandlers.get(modelName);
-        QueryModel qm = mh.queryModel;
+        JavaQueryModel qm = mh.queryModel;
 
         try {
             Expression expression = ExpressionFactory.createExpression( qry );

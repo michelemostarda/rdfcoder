@@ -31,7 +31,7 @@ public class JPackage extends JContainer {
      * @param pathToPackege
      * @return
      */
-    public static boolean exists(QueryModel qm,  String pathToPackege) {
+    public static boolean exists(JavaQueryModel qm,  String pathToPackege) {
         return qm.packageExists( pathToPackege );
     }
 
@@ -40,7 +40,7 @@ public class JPackage extends JContainer {
      * @param codeModel
      * @param packageSections
      */
-    protected JPackage(QueryModel codeModel, String[] packageSections)
+    protected JPackage(JavaQueryModel codeModel, String[] packageSections)
     throws QueryModelException {
         super(codeModel, packageSections);
     }
@@ -50,7 +50,7 @@ public class JPackage extends JContainer {
      * @param codeModel
      * @param name
      */
-    protected JPackage(QueryModel codeModel, String name)
+    protected JPackage(JavaQueryModel codeModel, String name)
     throws QueryModelException {
         super(codeModel, name);
     }
@@ -63,7 +63,7 @@ public class JPackage extends JContainer {
         return this.getClass().getSimpleName();
     }
 
-    public CodeModel.JVisibility getVisibility() throws QueryModelException {
-        return CodeModel.JVisibility.PUBLIC;
+    public JavaCodeModel.JVisibility getVisibility() throws QueryModelException {
+        return JavaCodeModel.JVisibility.PUBLIC;
     }
 }

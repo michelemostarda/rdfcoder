@@ -19,7 +19,7 @@
 package com.asemantics.sourceparse;
 
 import com.asemantics.model.CodeHandler;
-import com.asemantics.model.CodeModel;
+import com.asemantics.model.JavaCodeModel;
 import org.apache.bcel.Constants;
 import org.apache.bcel.classfile.*;
 
@@ -109,7 +109,7 @@ public class JavaBytecodeFileParser extends FileParser {
             List<String> enumElements = new ArrayList<String>();
 
             // Extracts class modifiers.
-            CodeModel.JModifier[] modifiers = extractModifiers(javaClass);
+            JavaCodeModel.JModifier[] modifiers = extractModifiers(javaClass);
 
             if( javaClass.isEnum() ) { // Enumeration.
                 for(int i = 0; i < fields.length - 1; i++) {   // Skip last element containing $VALUE
@@ -244,15 +244,15 @@ public class JavaBytecodeFileParser extends FileParser {
         return new InnerClass[0];
     }
 
-    private CodeModel.JVisibility toVisibility(AccessFlags af) {
+    private JavaCodeModel.JVisibility toVisibility(AccessFlags af) {
         if( af.isPublic() ) {
-            return CodeModel.JVisibility.PUBLIC;
+            return JavaCodeModel.JVisibility.PUBLIC;
         } else if( af.isProtected() ) {
-            return CodeModel.JVisibility.PROTECTED;
+            return JavaCodeModel.JVisibility.PROTECTED;
         } else if( af.isPrivate() ) {
-            return CodeModel.JVisibility.PRIVATE;
+            return JavaCodeModel.JVisibility.PRIVATE;
         } else {
-            return CodeModel.JVisibility.DEFAULT;
+            return JavaCodeModel.JVisibility.DEFAULT;
         }
     }
 
@@ -317,39 +317,39 @@ public class JavaBytecodeFileParser extends FileParser {
         return c.toString();
     }
 
-    private CodeModel.JType bcelTypeToJType(org.apache.bcel.generic.Type type) {
+    private JavaCodeModel.JType bcelTypeToJType(org.apache.bcel.generic.Type type) {
 
         // Convert basic types.
         if(type == org.apache.bcel.generic.Type.VOID ) {
-             return CodeModel.VOID;
+             return JavaCodeModel.VOID;
         } else if( type == org.apache.bcel.generic.Type.BOOLEAN ) {
-            return CodeModel.BOOL;
+            return JavaCodeModel.BOOL;
         } else if( type == org.apache.bcel.generic.Type.INT ) {
-            return CodeModel.INT;
+            return JavaCodeModel.INT;
         } else if( type == org.apache.bcel.generic.Type.SHORT ) {
-            return CodeModel.SHORT;
+            return JavaCodeModel.SHORT;
         } else if( type == org.apache.bcel.generic.Type.BYTE ) {
-            return CodeModel.BYTE;
+            return JavaCodeModel.BYTE;
         } else if( type == org.apache.bcel.generic.Type.LONG ) {
-            return CodeModel.LONG;
+            return JavaCodeModel.LONG;
         } else if( type == org.apache.bcel.generic.Type.DOUBLE) {
-            return CodeModel.DOUBLE;
+            return JavaCodeModel.DOUBLE;
         } else if( type == org.apache.bcel.generic.Type.FLOAT ) {
-            return CodeModel.FLOAT;
+            return JavaCodeModel.FLOAT;
         } else if( type == org.apache.bcel.generic.Type.CHAR ) {
-            return CodeModel.CHAR;
+            return JavaCodeModel.CHAR;
         }
 
         // Convert object types.
         if( type instanceof org.apache.bcel.generic.ObjectType) {
             org.apache.bcel.generic.ObjectType bcelOT = (org.apache.bcel.generic.ObjectType) type;
-            return new CodeModel.ObjectType( bcelOT.getClassName() );
+            return new JavaCodeModel.ObjectType( bcelOT.getClassName() );
         }
 
         // Array types.
         if ( type instanceof org.apache.bcel.generic.ArrayType ) {
             org.apache.bcel.generic.ArrayType arrayType = (org.apache.bcel.generic.ArrayType) type;
-            return new CodeModel.ArrayType(
+            return new JavaCodeModel.ArrayType(
                     bcelTypeToJType(arrayType.getBasicType() ),
                     arrayType.getDimensions()
             );
@@ -421,22 +421,22 @@ public class JavaBytecodeFileParser extends FileParser {
         return names;
     }
 
-    private CodeModel.JType[] toParameterTypes( org.apache.bcel.generic.Type[] types ) {
-        CodeModel.JType[] result = new CodeModel.JType[types.length];
+    private JavaCodeModel.JType[] toParameterTypes( org.apache.bcel.generic.Type[] types ) {
+        JavaCodeModel.JType[] result = new JavaCodeModel.JType[types.length];
         for(int i = 0; i < types.length; i++) {
             result[i] = bcelTypeToJType(types[i]);
         }
         return result;
     }
 
-    private CodeModel.ExceptionType[] toExceptionTypes(ExceptionTable exceptionTable) {
+    private JavaCodeModel.ExceptionType[] toExceptionTypes(ExceptionTable exceptionTable) {
         if(exceptionTable == null) {
             return null;
         }
         String[] exceptionNames = exceptionTable.getExceptionNames();
-        CodeModel.ExceptionType[] exceptions = new CodeModel.ExceptionType[exceptionNames.length];
+        JavaCodeModel.ExceptionType[] exceptions = new JavaCodeModel.ExceptionType[exceptionNames.length];
         for(int i = 0; i < exceptionNames.length; i++) {
-            exceptions[i] = new CodeModel.ExceptionType(exceptionNames[i]);
+            exceptions[i] = new JavaCodeModel.ExceptionType(exceptionNames[i]);
         }
         return exceptions;
     }
@@ -446,30 +446,30 @@ public class JavaBytecodeFileParser extends FileParser {
      * @param accessFlags
      * @return
      */
-    private CodeModel.JModifier[] extractModifiers(AccessFlags accessFlags) {
-        List<CodeModel.JModifier> modifiers = new ArrayList<CodeModel.JModifier>(CodeModel.JModifier.values().length);
+    private JavaCodeModel.JModifier[] extractModifiers(AccessFlags accessFlags) {
+        List<JavaCodeModel.JModifier> modifiers = new ArrayList<JavaCodeModel.JModifier>(JavaCodeModel.JModifier.values().length);
         if( accessFlags.isAbstract() ) {
-            modifiers.add(CodeModel.JModifier.ABSTRACT);
+            modifiers.add(JavaCodeModel.JModifier.ABSTRACT);
         }
         if( accessFlags.isFinal() ) {
-            modifiers.add(CodeModel.JModifier.FINAL);
+            modifiers.add(JavaCodeModel.JModifier.FINAL);
         }
         if( accessFlags.isStatic() ) {
-            modifiers.add(CodeModel.JModifier.STATIC);
+            modifiers.add(JavaCodeModel.JModifier.STATIC);
         }
         if( accessFlags.isVolatile() ) {
-            modifiers.add(CodeModel.JModifier.VOLATILE);
+            modifiers.add(JavaCodeModel.JModifier.VOLATILE);
         }
         if( accessFlags.isNative() ) {
-            modifiers.add(CodeModel.JModifier.NATIVE);
+            modifiers.add(JavaCodeModel.JModifier.NATIVE);
         }
         if( accessFlags.isTransient() ) {
-            modifiers.add(CodeModel.JModifier.TRANSIENT);
+            modifiers.add(JavaCodeModel.JModifier.TRANSIENT);
         }
         if( accessFlags.isSynchronized() ) {
-            modifiers.add(CodeModel.JModifier.SYNCHRONIZED);
+            modifiers.add(JavaCodeModel.JModifier.SYNCHRONIZED);
         }
-        return modifiers.toArray(new CodeModel.JModifier[modifiers.size()]);
+        return modifiers.toArray(new JavaCodeModel.JModifier[modifiers.size()]);
     }
 
 }

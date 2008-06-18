@@ -27,15 +27,15 @@ import junit.framework.TestCase;
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  *
  */
-public class CodeModelTest extends TestCase {
+public class JavaCodeModelTest extends TestCase {
 
     private JenaCoderFactory jcmf;
 
-    private CodeModel cm;
+    private CodeModelBase cm;
 
     private CodeHandler jch;
 
-    private QueryModel qm;
+    private JavaQueryModel qm;
 
     public void setUp() {
         jcmf = new JenaCoderFactory();
@@ -59,69 +59,69 @@ public class CodeModelTest extends TestCase {
         jch.startPackage("p0.p1.p2.p3");
 
         jch.startClass(
-                new CodeModel.JModifier[] { CodeModel.JModifier.STATIC },
-                CodeModel.JVisibility.PUBLIC,
+                new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.STATIC },
+                JavaCodeModel.JVisibility.PUBLIC,
                 "p0.p1.p2.p3.class1",
                 null,
                 null
         );
 
-        jch.startEnumeration(new CodeModel.JModifier[] { CodeModel.JModifier.FINAL },
-                CodeModel.JVisibility.PUBLIC, "p0.p1.p2.p3.class1.enum1",
+        jch.startEnumeration(new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.FINAL },
+                JavaCodeModel.JVisibility.PUBLIC, "p0.p1.p2.p3.class1.enum1",
                 new String[] {"ELEM_1", "ELEM_2", "ELEM_3"}
         );
 
         jch.method(
-            new CodeModel.JModifier[] { CodeModel.JModifier.NATIVE },
-            CodeModel.JVisibility.DEFAULT,
+            new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.NATIVE },
+            JavaCodeModel.JVisibility.DEFAULT,
             "p0.p1.p2.p3.class1.enum1.method1",
             1,
             new String[]{"param1", "param2"},
-            new CodeModel.JType[] {CodeModel.INT, CodeModel.FLOAT},
-            CodeModel.VOID,
+            new JavaCodeModel.JType[] {JavaCodeModel.INT, JavaCodeModel.FLOAT},
+            JavaCodeModel.VOID,
             null
         );
         jch.endEnumeration();
 
         jch.attribute(
-                new CodeModel.JModifier[] { CodeModel.JModifier.TRANSIENT },
-                CodeModel.JVisibility.PRIVATE,
+                new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.TRANSIENT },
+                JavaCodeModel.JVisibility.PRIVATE,
                 "p0.p1.p2.p3.class1.attribute1",
-                CodeModel.INT,
+                JavaCodeModel.INT,
                 "0"
         );
         jch.attribute(
-                new CodeModel.JModifier[] { CodeModel.JModifier.STATIC },
-                CodeModel.JVisibility.PROTECTED,
+                new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.STATIC },
+                JavaCodeModel.JVisibility.PROTECTED,
                 "p0.p1.p2.p3.class1.attribute2",
-                new CodeModel.ObjectType("a.b.Obj1"),
+                new JavaCodeModel.ObjectType("a.b.Obj1"),
                 "0"
         );
 
         jch.endClass();
 
         jch.startClass(
-                new CodeModel.JModifier[] { CodeModel.JModifier.FINAL },
-                CodeModel.JVisibility.PROTECTED,
+                new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.FINAL },
+                JavaCodeModel.JVisibility.PROTECTED,
                 "p0.p1.p2.p3.class2",
                 null,
                 null
         );
 
         jch.method(
-            new CodeModel.JModifier[] { CodeModel.JModifier.NATIVE },
-            CodeModel.JVisibility.DEFAULT,
+            new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.NATIVE },
+            JavaCodeModel.JVisibility.DEFAULT,
             "p0.p1.p2.p3.class2.method1",
             1,
             new String[]{"param1", "param2", "param3"},
-            new CodeModel.JType[] {CodeModel.INT, CodeModel.FLOAT, CodeModel.LONG},
-            CodeModel.VOID,
+            new JavaCodeModel.JType[] {JavaCodeModel.INT, JavaCodeModel.FLOAT, JavaCodeModel.LONG},
+            JavaCodeModel.VOID,
             null
         );
 
         jch.startClass(
-                new CodeModel.JModifier[] { CodeModel.JModifier.STATIC },
-                CodeModel.JVisibility.PRIVATE,
+                new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.STATIC },
+                JavaCodeModel.JVisibility.PRIVATE,
                 "p0.p1.p2.p3.class2.class3",
                 null,
                 null
@@ -131,13 +131,13 @@ public class CodeModelTest extends TestCase {
         jch.startInterface( "p0.p1.p2.p3.I1", new String[] {"E1", "E2", "E3"} );
 
         jch.method(
-                new CodeModel.JModifier[] { CodeModel.JModifier.NATIVE },
-                CodeModel.JVisibility.PUBLIC,
+                new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.NATIVE },
+                JavaCodeModel.JVisibility.PUBLIC,
                 "p0.p1.p2.p3.method1",
                 1,
                 new String[] {"pa", "pb"},
-                new CodeModel.JType[] { CodeModel.INT, new CodeModel.ObjectType("a.b.T") },
-                CodeModel.VOID,
+                new JavaCodeModel.JType[] { JavaCodeModel.INT, new JavaCodeModel.ObjectType("a.b.T") },
+                JavaCodeModel.VOID,
                 null
         );
         jch.endInterface();
@@ -193,14 +193,14 @@ public class CodeModelTest extends TestCase {
         // Check visibility and modifiers.
         for(int i = 0; i < classes.length; i++) {
             if ( "class1".equals(classes[i].getName()) ) {
-                assertEquals(CodeModel.JVisibility.PUBLIC, classes[i].getVisibility());
+                assertEquals(JavaCodeModel.JVisibility.PUBLIC, classes[i].getVisibility());
                 assertEquals(1, classes[i].getModifiers().length);
-                assertEquals(CodeModel.JModifier.STATIC, classes[i].getModifiers()[0]);
+                assertEquals(JavaCodeModel.JModifier.STATIC, classes[i].getModifiers()[0]);
             }
             if ( "class2".equals(classes[i].getName()) ) {
-                assertEquals(CodeModel.JVisibility.PROTECTED, classes[i].getVisibility());
+                assertEquals(JavaCodeModel.JVisibility.PROTECTED, classes[i].getVisibility());
                 assertEquals(1, classes[i].getModifiers().length);
-                assertEquals(CodeModel.JModifier.FINAL, classes[i].getModifiers()[0]);
+                assertEquals(JavaCodeModel.JModifier.FINAL, classes[i].getModifiers()[0]);
             }
         }
 
@@ -225,9 +225,9 @@ public class CodeModelTest extends TestCase {
         // Check visibility and modifiers.
         for(int i = 0; i < methods.length; i++) {
             if ( "method1".equals(methods[i].getName()) ) {
-                assertEquals(CodeModel.JVisibility.DEFAULT, methods[i].getVisibility());
+                assertEquals(JavaCodeModel.JVisibility.DEFAULT, methods[i].getVisibility());
                 assertEquals(1, methods[i].getModifiers().length);
-                assertEquals(CodeModel.JModifier.NATIVE, methods[i].getModifiers()[0]);
+                assertEquals(JavaCodeModel.JModifier.NATIVE, methods[i].getModifiers()[0]);
             }
         }
 
@@ -242,14 +242,14 @@ public class CodeModelTest extends TestCase {
         // Check visibility and modifiers.
         for(int i = 0; i < attributes.length; i++) {
             if ( "attribute1".equals(attributes[i].getName()) ) {
-                assertEquals(CodeModel.JVisibility.PRIVATE, attributes[i].getVisibility());
+                assertEquals(JavaCodeModel.JVisibility.PRIVATE, attributes[i].getVisibility());
                 assertEquals(1, attributes[i].getModifiers().length);
-                assertEquals(CodeModel.JModifier.TRANSIENT, attributes[i].getModifiers()[0]);
+                assertEquals(JavaCodeModel.JModifier.TRANSIENT, attributes[i].getModifiers()[0]);
             }
             if ( "attribute2".equals(attributes[i].getName()) ) {
-                assertEquals(CodeModel.JVisibility.PROTECTED, attributes[i].getVisibility());
+                assertEquals(JavaCodeModel.JVisibility.PROTECTED, attributes[i].getVisibility());
                 assertEquals(1, attributes[i].getModifiers().length);
-                assertEquals(CodeModel.JModifier.STATIC, attributes[i].getModifiers()[0]);
+                assertEquals(JavaCodeModel.JModifier.STATIC, attributes[i].getModifiers()[0]);
             }
         }
 

@@ -32,7 +32,7 @@ public abstract class CoderFactory {
      * Creates a code model instance.
      * @return
      */
-    public abstract CodeModel createCodeModel();
+    public abstract CodeModelBase createCodeModel();
 
     /**
      * Creates a code storage instance.
@@ -45,7 +45,7 @@ public abstract class CoderFactory {
      * @param model
      * @return
      */
-    public CodeHandler createHandlerOnModel(CodeModel model) {
+    public CodeHandler createHandlerOnModel(CodeModelBase model) {
         return new CodeHandlerImpl(model);
     }
 
@@ -54,11 +54,11 @@ public abstract class CoderFactory {
      * @param model
      * @return
      */
-    public static QueryModel createQueryModel(CodeModel model) {
-        return new QueryModelImpl(model);        
+    public static JavaQueryModel createQueryModel(CodeModel model) {
+        return new JavaQueryModelImpl(model);
     }
 
-    public static final JAsset createJAsset(QueryModel qm) {
+    public static final JAsset createJAsset(JavaQueryModel qm) {
         return new JAsset(qm);
     }
 
@@ -67,7 +67,7 @@ public abstract class CoderFactory {
      * @param sections
      * @return
      */
-    public static final JPackage createJPackage(QueryModel qm, String[] sections) throws QueryModelException {
+    public static final JPackage createJPackage(JavaQueryModel qm, String[] sections) throws QueryModelException {
         return new JPackage(qm, sections);
     }
 
@@ -76,7 +76,7 @@ public abstract class CoderFactory {
      * @param pathToPackage
      * @return
      */
-    public static final JPackage createJPackage(QueryModel qm, String pathToPackage) throws QueryModelException {
+    public static final JPackage createJPackage(JavaQueryModel qm, String pathToPackage) throws QueryModelException {
         return new JPackage(qm, pathToPackage);
     }
 
@@ -85,7 +85,7 @@ public abstract class CoderFactory {
      * @param pathToInterface
      * @return
      */
-    public static JInterface createJInterface(QueryModelImpl qm, String pathToInterface) throws QueryModelException {
+    public static JInterface createJInterface(JavaQueryModelImpl qm, String pathToInterface) throws QueryModelException {
         return new JInterface(qm, pathToInterface);
     }
 
@@ -94,7 +94,7 @@ public abstract class CoderFactory {
      * @param sections
      * @return
      */
-    public static final JClass createJClass(QueryModel qm, String[] sections) throws QueryModelException {
+    public static final JClass createJClass(JavaQueryModel qm, String[] sections) throws QueryModelException {
         return new JClass(qm, sections);
     }
 
@@ -103,7 +103,7 @@ public abstract class CoderFactory {
      * @param pathToClass
      * @return
      */
-    public static final JClass createJClass(QueryModel qm, String pathToClass) throws QueryModelException {
+    public static final JClass createJClass(JavaQueryModel qm, String pathToClass) throws QueryModelException {
         return new JClass(qm, pathToClass);
     }
 
@@ -112,7 +112,7 @@ public abstract class CoderFactory {
      * @param qm
      * @return
      */
-    public static final JAttribute createJAttribute(QueryModel qm, String[] sections) throws QueryModelException {
+    public static final JAttribute createJAttribute(JavaQueryModel qm, String[] sections) throws QueryModelException {
         return new JAttribute(qm, sections);
     }
 
@@ -121,7 +121,7 @@ public abstract class CoderFactory {
      * @param qm
      * @return
      */
-    public static final JAttribute createJAttribute(QueryModel qm, String pathToAttribute) throws QueryModelException {
+    public static final JAttribute createJAttribute(JavaQueryModel qm, String pathToAttribute) throws QueryModelException {
         return new JAttribute(qm, pathToAttribute);
     }
 
@@ -130,7 +130,7 @@ public abstract class CoderFactory {
      * @param sections the path to the method.
      * @return
      */
-    public static final JMethod createJMethod(QueryModel qm, String[] sections) throws QueryModelException {
+    public static final JMethod createJMethod(JavaQueryModel qm, String[] sections) throws QueryModelException {
         return new JMethod(qm, sections);
     }
 
@@ -139,7 +139,7 @@ public abstract class CoderFactory {
      * @param pathToMethod the path to the method.
      * @return
      */
-    public static final JMethod createJMethod(QueryModel qm, String pathToMethod) throws QueryModelException {
+    public static final JMethod createJMethod(JavaQueryModel qm, String pathToMethod) throws QueryModelException {
         return new JMethod(qm, pathToMethod);
     }
 
@@ -148,7 +148,7 @@ public abstract class CoderFactory {
      * @param sections
      * @return
      */
-    public static final JEnumeration createJEnumeration(QueryModel qm, String[] sections) throws QueryModelException {
+    public static final JEnumeration createJEnumeration(JavaQueryModel qm, String[] sections) throws QueryModelException {
         return new JEnumeration(qm, sections);
     }
 
@@ -157,7 +157,7 @@ public abstract class CoderFactory {
      * @param pathToEnumeration the path to the enumeration.
      * @return
      */
-    public static final JEnumeration createJEnumeration(QueryModel qm, String pathToEnumeration) throws QueryModelException {
+    public static final JEnumeration createJEnumeration(JavaQueryModel qm, String pathToEnumeration) throws QueryModelException {
         return new JEnumeration(qm, pathToEnumeration);
     }
 
@@ -171,10 +171,10 @@ public abstract class CoderFactory {
      * @throws CodeModelException
      */
     public static final JSignature createJSignature(
-             QueryModel qm,
+             JavaQueryModel qm,
              String[] sections,
-             CodeModel.JType[] parameterTypes,
-             CodeModel.JType returnType
+             JavaCodeModel.JType[] parameterTypes,
+             JavaCodeModel.JType returnType
     ) throws QueryModelException {
         return new JSignature(qm, sections, parameterTypes, returnType);
     }
@@ -189,25 +189,25 @@ public abstract class CoderFactory {
      * @throws CodeModelException
      */
     public static final JSignature createJSignature(
-             QueryModel qm,
+             JavaQueryModel qm,
              String pathToSignature,
-             CodeModel.JType[] parameterTypes,
-             CodeModel.JType returnType
+             JavaCodeModel.JType[] parameterTypes,
+             JavaCodeModel.JType returnType
     ) throws QueryModelException {
         return new JSignature(qm, pathToSignature, parameterTypes, returnType);
     }
 
-    protected static final JBase createBaseOnRDFClass(QueryModel qm, String[] sections, String rdfClass)
+    protected static final JBase createBaseOnRDFClass(JavaQueryModel qm, String[] sections, String rdfClass)
     throws QueryModelException {
-        if(CodeModel.JPACKAGE.equals(rdfClass)) {
+        if(JavaCodeModel.JPACKAGE.equals(rdfClass)) {
             return createJPackage(qm, sections);
-        } else if( CodeModel.JCLASS.equals(rdfClass) ) {
+        } else if( JavaCodeModel.JCLASS.equals(rdfClass) ) {
             return createJClass(qm, sections);
-        } else if( CodeModel.JATTRIBUTE.equals(rdfClass)) {
+        } else if( JavaCodeModel.JATTRIBUTE.equals(rdfClass)) {
             return createJAttribute(qm, sections);
-        } else if( CodeModel.JMETHOD.equals(rdfClass) ) {
+        } else if( JavaCodeModel.JMETHOD.equals(rdfClass) ) {
             return createJMethod(qm, sections);
-        } else if( CodeModel.JENUMERATION.equals(rdfClass) ) {
+        } else if( JavaCodeModel.JENUMERATION.equals(rdfClass) ) {
             return createJEnumeration(qm, sections);
         } else {
             throw new IllegalArgumentException("Unknown rdfClass: " + rdfClass);

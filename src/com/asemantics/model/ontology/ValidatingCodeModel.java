@@ -18,17 +18,17 @@
 
 package com.asemantics.model.ontology;
 
-import com.asemantics.model.CodeModelInterface;
+import com.asemantics.model.CodeModel;
 import com.asemantics.model.TripleIterator;
 
 /**
  * This decorator validates addition of model triples over a given
  * ontology.
  *
- * @see com.asemantics.model.CodeModelInterface
+ * @see com.asemantics.model.CodeModel
  * @see com.asemantics.model.ontology.Ontology
  */
-public class ValidatingCodeModel implements CodeModelInterface {
+public class ValidatingCodeModel implements CodeModel {
 
     /**
      * Validation error message.
@@ -38,14 +38,14 @@ public class ValidatingCodeModel implements CodeModelInterface {
     /**
      * Decorated code model.
      */
-    private CodeModelInterface decorated;
+    private CodeModel decorated;
 
     /**
      * Applied ontology.
      */
     private Ontology ontology;
 
-    public ValidatingCodeModel(CodeModelInterface codeModel, Ontology otlg) {
+    public ValidatingCodeModel(CodeModel codeModel, Ontology otlg) {
         if(codeModel == null || otlg == null) {
             throw new IllegalArgumentException();
         }

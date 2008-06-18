@@ -84,7 +84,7 @@ public class JenaImplTest extends TestCase {
         FileInputStream fis = new FileInputStream(TEST_FILE);
         cs.loadModel(cm, params);
         fis.close();
-        TripleIterator ti = cm.searchTriples(CodeModel.ALL_MATCH, CodeModel.ALL_MATCH, CodeModel.ALL_MATCH);
+        TripleIterator ti = cm.searchTriples(JavaCodeModel.ALL_MATCH, JavaCodeModel.ALL_MATCH, JavaCodeModel.ALL_MATCH);
         int counter = 0;
         while( ti.next() ) {
             counter++;

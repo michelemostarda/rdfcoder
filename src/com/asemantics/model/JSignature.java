@@ -28,12 +28,12 @@ public class JSignature extends JBase {
     /**
      * The parameter types of the signature.
      */
-    CodeModel.JType[] paramTypes;
+    JavaCodeModel.JType[] paramTypes;
 
     /**
      * The return type of the signature.
      */
-    CodeModel.JType returnType;
+    JavaCodeModel.JType returnType;
 
     /**
      * Check wether a signaure exists.
@@ -41,15 +41,15 @@ public class JSignature extends JBase {
      * @param pathToSignature
      * @return
      */
-    public static boolean exists( QueryModel qm, String pathToSignature) {
+    public static boolean exists( JavaQueryModel qm, String pathToSignature) {
         return qm.signatureExists(pathToSignature);
     }
 
     protected JSignature(
-            QueryModel queryModel,
+            JavaQueryModel queryModel,
             String[] sections,
-            CodeModel.JType[] paramTypes,
-            CodeModel.JType returnType
+            JavaCodeModel.JType[] paramTypes,
+            JavaCodeModel.JType returnType
     ) throws QueryModelException {
         super(queryModel, sections);
         if(paramTypes == null || returnType == null) {
@@ -61,10 +61,10 @@ public class JSignature extends JBase {
     }
 
     protected JSignature(
-            QueryModel queryModel,
+            JavaQueryModel queryModel,
             String pathToSignature,
-            CodeModel.JType[] paramTypes,
-            CodeModel.JType returnType
+            JavaCodeModel.JType[] paramTypes,
+            JavaCodeModel.JType returnType
     ) throws QueryModelException {
         super(queryModel, pathToSignature);
         if(paramTypes == null || returnType == null) {
@@ -76,7 +76,7 @@ public class JSignature extends JBase {
     }
 
     protected JSignature(
-        QueryModel queryModel,
+        JavaQueryModel queryModel,
         String[] sections
     ) throws QueryModelException {
         super(queryModel, sections);
@@ -86,7 +86,7 @@ public class JSignature extends JBase {
     }
 
     protected JSignature(
-        QueryModel queryModel,
+        JavaQueryModel queryModel,
         String pathToSignature
     ) throws QueryModelException {
         super(queryModel, pathToSignature);
@@ -94,11 +94,11 @@ public class JSignature extends JBase {
         returnType = queryModel.getReturnType(pathToSignature);
     }
 
-    CodeModel.JType[] getParameters() {
+    JavaCodeModel.JType[] getParameters() {
         return paramTypes.clone();
     }
 
-    CodeModel.JType getReturnType() {
+    JavaCodeModel.JType getReturnType() {
         return returnType.cloneType();
     }
 

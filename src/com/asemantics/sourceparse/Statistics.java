@@ -19,7 +19,7 @@
 package com.asemantics.sourceparse;
 
 import com.asemantics.model.CodeHandler;
-import com.asemantics.model.CodeModel;
+import com.asemantics.model.JavaCodeModel;
 import com.asemantics.model.ErrorListener;
 
 import java.util.ArrayList;
@@ -311,7 +311,7 @@ public class Statistics {
             parsedInterfaces++;
         }
 
-        public void startClass(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToClass, String extendedClass, String[] implementedInterfaces) {
+        public void startClass(JavaCodeModel.JModifier[] modifiers, JavaCodeModel.JVisibility visibility, String pathToClass, String extendedClass, String[] implementedInterfaces) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.startClass(modifiers, visibility, pathToClass, extendedClass, implementedInterfaces);
         }
@@ -322,7 +322,7 @@ public class Statistics {
             parsedClasses++;
         }
 
-        public void startEnumeration(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToEnumeration, String[] elements) {
+        public void startEnumeration(JavaCodeModel.JModifier[] modifiers, JavaCodeModel.JVisibility visibility, String pathToEnumeration, String[] elements) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.startEnumeration(modifiers, visibility, pathToEnumeration, elements);
             parsedEnumarations++;
@@ -333,19 +333,19 @@ public class Statistics {
             wrapped.endEnumeration();
         }
 
-        public void attribute(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToAttribute, CodeModel.JType type, String value) {
+        public void attribute(JavaCodeModel.JModifier[] modifiers, JavaCodeModel.JVisibility visibility, String pathToAttribute, JavaCodeModel.JType type, String value) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.attribute(modifiers, visibility, pathToAttribute, type, value);
             parsedAttributes++;
         }
 
-        public void constructor(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, int overloadIndex, String[] parameterNames, CodeModel.JType[] parameterTypes, CodeModel.ExceptionType[] exceptions) {
+        public void constructor(JavaCodeModel.JModifier[] modifiers, JavaCodeModel.JVisibility visibility, int overloadIndex, String[] parameterNames, JavaCodeModel.JType[] parameterTypes, JavaCodeModel.ExceptionType[] exceptions) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.constructor(modifiers, visibility, overloadIndex, parameterNames, parameterTypes, exceptions);
             parsedConstructors++;
         }
 
-        public void method(CodeModel.JModifier[] modifiers, CodeModel.JVisibility visibility, String pathToMethod, int overloadIndex, String[] parameterNames, CodeModel.JType[] parameterTypes, CodeModel.JType returnType, CodeModel.ExceptionType[] exceptions) {
+        public void method(JavaCodeModel.JModifier[] modifiers, JavaCodeModel.JVisibility visibility, String pathToMethod, int overloadIndex, String[] parameterNames, JavaCodeModel.JType[] parameterTypes, JavaCodeModel.JType returnType, JavaCodeModel.ExceptionType[] exceptions) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.method(modifiers, visibility, pathToMethod, overloadIndex, parameterNames, parameterTypes, returnType, exceptions);
             parsedMethods++;
