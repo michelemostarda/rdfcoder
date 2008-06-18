@@ -43,6 +43,9 @@ public class RepositoryTest extends TestCase {
     protected void setUp() throws Exception {
         System.out.println("Removing location...");
         File[] content = location.listFiles();
+        if(content == null) {
+            return;
+        }
         for(File f : content) {
             f.delete();
         }
