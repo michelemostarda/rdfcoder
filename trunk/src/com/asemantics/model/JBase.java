@@ -28,7 +28,7 @@ public abstract class JBase {
     /**
      * The observed code org.asemantics.model.
      */
-    private QueryModel queryModel;
+    private JavaQueryModel queryModel;
 
     /**
      * The parent container.
@@ -45,7 +45,7 @@ public abstract class JBase {
      * @param qm
      * @param sections
      */
-    protected JBase(QueryModel qm, String[] sections) throws QueryModelException {
+    protected JBase(JavaQueryModel qm, String[] sections) throws QueryModelException {
         if(qm == null) {
             throw new NullPointerException("qm cannot be null");
         }
@@ -67,7 +67,7 @@ public abstract class JBase {
      * @param qm
      * @param path
      */
-    public JBase(QueryModel qm, String path) throws QueryModelException {
+    public JBase(JavaQueryModel qm, String path) throws QueryModelException {
         this( qm , splitPath(path) );
     }
 
@@ -91,7 +91,7 @@ public abstract class JBase {
      * Returns the associated query org.asemantics.model.
      * @return
      */
-    public QueryModel getQueryModel() {
+    public JavaQueryModel getQueryModel() {
         return queryModel;
     }
 
@@ -186,7 +186,7 @@ public abstract class JBase {
      * @param sections
      * @return
      */
-    protected final HierarchyResult makeHierarchy(QueryModel qm, String[] sections)
+    protected final HierarchyResult makeHierarchy(JavaQueryModel qm, String[] sections)
     throws QueryModelException {
 
         JBase parent = null;

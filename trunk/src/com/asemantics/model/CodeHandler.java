@@ -18,7 +18,6 @@
 
 package com.asemantics.model;
 
-import com.asemantics.sourceparse.JavadocEntry;
 import com.asemantics.sourceparse.ObjectsTable;
 
 /**
@@ -78,8 +77,8 @@ public interface CodeHandler extends ParseHandler, JavadocHandler, BackTrackingS
      * @param implementedInterfaces the fully qualified names for the interfaces implemented by the starting class.
      */
     public void startClass(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             String pathToClass,
             String extendedClass,
             String[] implementedInterfaces
@@ -101,8 +100,8 @@ public interface CodeHandler extends ParseHandler, JavadocHandler, BackTrackingS
      * @param elements the list of the elements of the enumeration.
      */
     public void startEnumeration(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             String pathToEnumeration,
             String[] elements
     );
@@ -124,10 +123,10 @@ public interface CodeHandler extends ParseHandler, JavadocHandler, BackTrackingS
      * @param value the init value for the attribute. 
      */
     public void attribute(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             String pathToAttribute,
-            CodeModel.JType type,
+            JavaCodeModel.JType type,
             String value
     );
 
@@ -146,12 +145,12 @@ public interface CodeHandler extends ParseHandler, JavadocHandler, BackTrackingS
      *
      */
     public void constructor(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             int overloadIndex,
             String[] parameterNames,
-            CodeModel.JType[] parameterTypes,
-            CodeModel.ExceptionType[] exceptions
+            JavaCodeModel.JType[] parameterTypes,
+            JavaCodeModel.ExceptionType[] exceptions
     );
 
     /**
@@ -173,14 +172,14 @@ public interface CodeHandler extends ParseHandler, JavadocHandler, BackTrackingS
      *
      */
     public void method(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             String pathToMethod,
             int overloadIndex,
             String[] parameterNames,
-            CodeModel.JType[] parameterTypes,
-            CodeModel.JType returnType,
-            CodeModel.ExceptionType[] exceptions
+            JavaCodeModel.JType[] parameterTypes,
+            JavaCodeModel.JType returnType,
+            JavaCodeModel.ExceptionType[] exceptions
     );
 
 

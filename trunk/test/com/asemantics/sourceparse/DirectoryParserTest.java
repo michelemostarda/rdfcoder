@@ -18,8 +18,9 @@
 package com.asemantics.sourceparse;
 
 import com.asemantics.model.CodeHandler;
-import com.asemantics.model.CodeModel;
+import com.asemantics.model.JavaCodeModel;
 import com.asemantics.model.CoderFactory;
+import com.asemantics.model.CodeModelBase;
 import com.asemantics.storage.JenaCoderFactory;
 import junit.framework.TestCase;
 
@@ -57,8 +58,8 @@ public class DirectoryParserTest extends TestCase {
     private Statistics processDir(FileParser fileParser, File dir) {
         Statistics statistics = new Statistics();
         CoderFactory coderFactory = new JenaCoderFactory();
-        CodeModel codeModel   = coderFactory.createCodeModel();
-        CodeHandler codeHandler = coderFactory.createHandlerOnModel(codeModel);
+        CodeModelBase codeModel   = coderFactory.createCodeModel();
+        CodeHandler codeHandler   = coderFactory.createHandlerOnModel(codeModel);
         ObjectsTable objectsTable = new ObjectsTable();
         CodeHandler statisticsCodeHandler = statistics.createStatisticsCodeHandler( codeHandler );
 

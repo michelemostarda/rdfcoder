@@ -25,7 +25,7 @@ package com.asemantics.model;
  */
 public class JMethod extends JModifiable {
 
-    public static boolean exists(QueryModel qm, String pathToMethod) {
+    public static boolean exists(JavaQueryModel qm, String pathToMethod) {
         return qm.methodExists(pathToMethod);
     }
 
@@ -35,7 +35,7 @@ public class JMethod extends JModifiable {
      * @param sections
      * @throws CodeModelException
      */
-    protected JMethod(QueryModel queryModel, String[] sections)
+    protected JMethod(JavaQueryModel queryModel, String[] sections)
             throws QueryModelException {
         super(queryModel, sections);
     }
@@ -46,7 +46,7 @@ public class JMethod extends JModifiable {
      * @param pathToMethod
      * @throws CodeModelException
      */
-    protected JMethod(QueryModel queryModel, String pathToMethod)
+    protected JMethod(JavaQueryModel queryModel, String pathToMethod)
             throws QueryModelException {
         super(queryModel, pathToMethod);
     }

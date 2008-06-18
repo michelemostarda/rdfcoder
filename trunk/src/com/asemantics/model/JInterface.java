@@ -32,7 +32,7 @@ public class JInterface extends JObject {
      * @param index
      * @return
      */
-    public static boolean exists(QueryModel qm, final String name[], int index) {
+    public static boolean exists(JavaQueryModel qm, final String name[], int index) {
        return qm.interfaceExists( concatenate(name, index) );
     }
 
@@ -42,14 +42,14 @@ public class JInterface extends JObject {
      * @param pathToInterface
      * @throws QueryModelException
      */
-    protected JInterface(QueryModel queryModel, String pathToInterface)
+    protected JInterface(JavaQueryModel queryModel, String pathToInterface)
     throws QueryModelException {
 
         super(queryModel, pathToInterface);
     }
 
-    public CodeModel.JVisibility getVisibility() throws QueryModelException {
-        return CodeModel.JVisibility.PUBLIC;
+    public JavaCodeModel.JVisibility getVisibility() throws QueryModelException {
+        return JavaCodeModel.JVisibility.PUBLIC;
     }
 
     /**
@@ -58,7 +58,7 @@ public class JInterface extends JObject {
      * @param sections
      * @throws QueryModelException
      */
-    protected JInterface(QueryModel qm, String[] sections) throws QueryModelException {
+    protected JInterface(JavaQueryModel qm, String[] sections) throws QueryModelException {
         super(qm, sections);
     }
 

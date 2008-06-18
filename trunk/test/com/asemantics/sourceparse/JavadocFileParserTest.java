@@ -24,9 +24,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.*;
 
-import com.asemantics.model.CodeHandler;
-import com.asemantics.model.CodeModel;
-import com.asemantics.model.ErrorListener;
 import com.asemantics.model.JavadocHandler;
 
 /**

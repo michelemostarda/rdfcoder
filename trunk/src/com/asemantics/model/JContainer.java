@@ -29,12 +29,12 @@ import java.util.List;
  */
 public abstract class JContainer extends JModifiable {
 
-    protected JContainer(QueryModel qm, String[] sections)
+    protected JContainer(JavaQueryModel qm, String[] sections)
     throws QueryModelException {
         super(qm, sections);
     }
 
-    protected JContainer(QueryModel qm, String pathToContainer)
+    protected JContainer(JavaQueryModel qm, String pathToContainer)
     throws QueryModelException {
         super(qm, pathToContainer);
     }

@@ -25,7 +25,7 @@ import java.util.Date;
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
-public interface QueryModel {
+public interface JavaQueryModel {
 
     /**
      * Returns the Code Model asset.
@@ -209,7 +209,7 @@ public interface QueryModel {
      * @return
      * @throws QueryModelException
      */
-    public CodeModel.JType getAttributeType(String pathToAttribute)  throws QueryModelException;
+    public JavaCodeModel.JType getAttributeType(String pathToAttribute)  throws QueryModelException;
 
     /**
      * Returns the methods in the given container.
@@ -271,7 +271,7 @@ public interface QueryModel {
      * @return
      * @throws QueryModelException
      */
-    public CodeModel.JType[] getParameters(String pathToSignature) throws QueryModelException;
+    public JavaCodeModel.JType[] getParameters(String pathToSignature) throws QueryModelException;
 
     /**
      * Returns the return type of a signature.
@@ -280,7 +280,7 @@ public interface QueryModel {
      * @return
      * @throws QueryModelException
      */
-    public CodeModel.JType getReturnType(String pathToSignature) throws QueryModelException;
+    public JavaCodeModel.JType getReturnType(String pathToSignature) throws QueryModelException;
 
     /**
      * Returns the visibility associated to the entity.
@@ -289,7 +289,7 @@ public interface QueryModel {
      * @return
      * @throws QueryModelException
      */
-    public CodeModel.JVisibility getVisibility(String pathtoEntity) throws QueryModelException;
+    public JavaCodeModel.JVisibility getVisibility(String pathtoEntity) throws QueryModelException;
 
     /**
      * Returns the modifiers associated to the given entity.
@@ -298,7 +298,7 @@ public interface QueryModel {
      * @return
      * @throws QueryModelException
      */
-    public CodeModel.JModifier[] getModifiers(String pathToEntity) throws QueryModelException;
+    public JavaCodeModel.JModifier[] getModifiers(String pathToEntity) throws QueryModelException;
 
     /**
      * Returns the RDF type of a path.

@@ -30,7 +30,7 @@ public abstract class JModifiable extends JBase {
      * @param sections
      * @throws QueryModelException
      */
-    protected JModifiable(QueryModel qm, String[] sections) throws QueryModelException {
+    protected JModifiable(JavaQueryModel qm, String[] sections) throws QueryModelException {
         super(qm, sections);
     }
 
@@ -41,7 +41,7 @@ public abstract class JModifiable extends JBase {
      * @param path
      * @throws QueryModelException
      */
-    public JModifiable(QueryModel qm, String path) throws QueryModelException {
+    public JModifiable(JavaQueryModel qm, String path) throws QueryModelException {
         super(qm, path);
     }
 
@@ -51,7 +51,7 @@ public abstract class JModifiable extends JBase {
      * @return
      * @throws QueryModelException
      */
-    public CodeModel.JVisibility getVisibility() throws QueryModelException {
+    public JavaCodeModel.JVisibility getVisibility() throws QueryModelException {
         return getQueryModel().getVisibility(super.getFullName());
     }
 
@@ -60,7 +60,7 @@ public abstract class JModifiable extends JBase {
      * @return
      * @throws QueryModelException
      */
-    public CodeModel.JModifier[] getModifiers() throws QueryModelException {
+    public JavaCodeModel.JModifier[] getModifiers() throws QueryModelException {
         return getQueryModel().getModifiers(super.getFullName());
     }
 }

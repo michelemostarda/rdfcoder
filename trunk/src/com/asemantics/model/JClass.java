@@ -31,7 +31,7 @@ public class JClass extends JObject {
      * @param pathToClass
      * @return
      */
-    public static boolean exists(QueryModel qm, final String pathToClass) {
+    public static boolean exists(JavaQueryModel qm, final String pathToClass) {
        return qm.classExists(pathToClass);
     }
 
@@ -41,7 +41,7 @@ public class JClass extends JObject {
      * @param pathToClass
      * @throws QueryModelException
      */
-    protected JClass(QueryModel queryModel, String pathToClass)
+    protected JClass(JavaQueryModel queryModel, String pathToClass)
     throws QueryModelException {
 
         super(queryModel, pathToClass);
@@ -53,7 +53,7 @@ public class JClass extends JObject {
      * @param sections
      * @throws QueryModelException
      */
-    protected JClass(QueryModel qm, String[] sections) throws QueryModelException {
+    protected JClass(JavaQueryModel qm, String[] sections) throws QueryModelException {
         super(qm, sections);
     }
 

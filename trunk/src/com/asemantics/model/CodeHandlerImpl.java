@@ -57,12 +57,12 @@ public class CodeHandlerImpl implements CodeHandler {
     /**
      * The default package.
      */
-    private final String DEFAULT_PACKAGE = CodeModel.PACKAGE_PREFIX;
+    private final String DEFAULT_PACKAGE = JavaCodeModel.PACKAGE_PREFIX;
 
     /**
-     * The code org.asemantics.model on which store code events.
+     * The code model on which store code events.
      */
-    private CodeModel model;
+    private CodeModelBase model;
 
     /**
      * The library name.
@@ -108,14 +108,14 @@ public class CodeHandlerImpl implements CodeHandler {
     /**
      * Contructor.
      * 
-     * @param cm the code org.asemantics.model to use to store handler data.
+     * @param cmb the code model to use to store handler data.
      */
-    protected CodeHandlerImpl(CodeModel cm) {
-        if(cm == null) {
+    protected CodeHandlerImpl(CodeModelBase cmb) {
+        if(cmb == null) {
             throw new NullPointerException();
         }
-        model         = cm;
-        packagesStack = new Stack();
+        model           = cmb;
+        packagesStack   = new Stack();
         containersStack = new Stack();
     }
 
@@ -128,8 +128,8 @@ public class CodeHandlerImpl implements CodeHandler {
     }
 
     protected void checkLibraryName(String name) {
-        TripleIterator ti = model.searchTriples(CodeModel.JASSET, CodeModel.CONTAINS_LIBRARY, CodeModel.ALL_MATCH);
-        String targetLibraryName = CodeModel.prefixFullyQualifiedName(CodeModel.JASSET_PREFIX, name);
+        TripleIterator ti = model.searchTriples(JavaCodeModel.JASSET, JavaCodeModel.CONTAINS_LIBRARY, CodeModel.ALL_MATCH);
+        String targetLibraryName = CodeModelBase.prefixFullyQualifiedName(JavaCodeModel.JASSET_PREFIX, name);
         try {
             while(ti.next()) {
                 if( targetLibraryName.equals(ti.getObject()) ) {
@@ -176,11 +176,11 @@ public class CodeHandlerImpl implements CodeHandler {
         }
         parsingStarted = false;
 
-        String prefixedlibraryName = CodeModel.prefixFullyQualifiedName(CodeModel.JASSET_PREFIX, libraryName);
+        String prefixedlibraryName = CodeModelBase.prefixFullyQualifiedName(JavaCodeModel.JASSET_PREFIX, libraryName);
         String formattedDate = formatLibraryDatetime( new Date() );        
-        model.addTriple(CodeModel.JASSET, CodeModel.CONTAINS_LIBRARY,  prefixedlibraryName);
-        model.addTripleLiteral(prefixedlibraryName, CodeModel.LIBRARY_LOCATION, libraryLocation);
-        model.addTripleLiteral(prefixedlibraryName, CodeModel.LIBRARY_DATETIME, formattedDate);
+        model.addTriple(JavaCodeModel.JASSET, JavaCodeModel.CONTAINS_LIBRARY,  prefixedlibraryName);
+        model.addTripleLiteral(prefixedlibraryName, CodeModelBase.LIBRARY_LOCATION, libraryLocation);
+        model.addTripleLiteral(prefixedlibraryName, CodeModelBase.LIBRARY_DATETIME, formattedDate);
     }
 
     public void startCompilationUnit(String identifier) {
@@ -205,10 +205,10 @@ public class CodeHandlerImpl implements CodeHandler {
             throw new CodeHandlerException("Cannot start a package when inside a class");
         }
 
-        String prefPTP = CodeModel.prefixFullyQualifiedName(CodeModel.PACKAGE_PREFIX, pathToPackage);
-        model.addTriple(prefPTP, SUBCLASSOF, CodeModel.JPACKAGE);
+        String prefPTP = CodeModelBase.prefixFullyQualifiedName(JavaCodeModel.PACKAGE_PREFIX, pathToPackage);
+        model.addTriple(prefPTP, SUBCLASSOF, JavaCodeModel.JPACKAGE);
         String parent = peekPackage();
-        model.addTriple(parent, CodeModel.CONTAINS_PACKAGE, prefPTP);
+        model.addTriple(parent, JavaCodeModel.CONTAINS_PACKAGE, prefPTP);
         pushPackage(prefPTP);
     }
 
@@ -227,16 +227,16 @@ public class CodeHandlerImpl implements CodeHandler {
 
         checkPackageDiscrepancy(pathToInterface);
 
-        String prefPTI = CodeModel.prefixFullyQualifiedName(CodeModel.INTERFACE_PREFIX, pathToInterface);
-        model.addTriple(prefPTI, CodeModel.SUBCLASSOF, CodeModel.JINTERFACE);
+        String prefPTI = JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.INTERFACE_PREFIX, pathToInterface);
+        model.addTriple(prefPTI, CodeModel.SUBCLASSOF, JavaCodeModel.JINTERFACE);
         String parentClass = peekContainer();
-        model.addTriple(parentClass, CodeModel.CONTAINS_INTERFACE, prefPTI);
+        model.addTriple(parentClass, JavaCodeModel.CONTAINS_INTERFACE, prefPTI);
         if(extendedInterfaces != null) {
             for(int i = 0; i < extendedInterfaces.length; i++) {
                 model.addTriple(
                         prefPTI,
-                        CodeModel.EXTENDS_INT,
-                        CodeModel.prefixFullyQualifiedName(CodeModel.INTERFACE_PREFIX, extendedInterfaces[i])
+                        JavaCodeModel.EXTENDS_INT,
+                        JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.INTERFACE_PREFIX, extendedInterfaces[i])
                 );
             }
         }
@@ -252,8 +252,8 @@ public class CodeHandlerImpl implements CodeHandler {
     }
 
     public void startClass(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             String pathToClass,
             String extededClass,                // Can be null.
             String[] implementedInterfaces      // Can be null.
@@ -264,28 +264,28 @@ public class CodeHandlerImpl implements CodeHandler {
 
         checkPackageDiscrepancy(pathToClass);
 
-        String prefPTC = CodeModel.prefixFullyQualifiedName(CodeModel.CLASS_PREFIX, pathToClass);
-        model.addTriple(prefPTC, SUBCLASSOF, CodeModel.JCLASS);
-        model.addTripleLiteral(prefPTC, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
-        model.addTriple(prefPTC, CodeModel.HAS_VISIBILITY, visibility.getIdentifier());
+        String prefPTC = JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.CLASS_PREFIX, pathToClass);
+        model.addTriple(prefPTC, CodeModel.SUBCLASSOF, JavaCodeModel.JCLASS);
+        model.addTripleLiteral(prefPTC, JavaCodeModel.HAS_MODIFIERS, JavaCodeModel.JModifier.toByte(modifiers).toString() );
+        model.addTriple(prefPTC, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         if(extededClass != null) {
             model.addTriple(
                     prefPTC,
-                    CodeModel.EXTENDS_CLASS,
-                    CodeModel.prefixFullyQualifiedName(CodeModel.CLASS_PREFIX, extededClass)
+                    JavaCodeModel.EXTENDS_CLASS,
+                    JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.CLASS_PREFIX, extededClass)
             );
         }
         if(implementedInterfaces != null) {
             for(int i = 0; i < implementedInterfaces.length; i++) {
                 model.addTriple(
                         prefPTC,
-                        CodeModel.IMPLEMENTS_INT,
-                        CodeModel.prefixFullyQualifiedName(CodeModel.INTERFACE_PREFIX, implementedInterfaces[i])
+                        JavaCodeModel.IMPLEMENTS_INT,
+                        CodeModelBase.prefixFullyQualifiedName(JavaCodeModel.INTERFACE_PREFIX, implementedInterfaces[i])
                 );
             }
         }
         String parentClass = peekContainer();
-        model.addTriple(parentClass, CodeModel.CONTAINS_CLASS, prefPTC);
+        model.addTriple(parentClass, JavaCodeModel.CONTAINS_CLASS, prefPTC);
         pushInterfaceOrClass(prefPTC);
     }
 
@@ -298,8 +298,8 @@ public class CodeHandlerImpl implements CodeHandler {
     }
 
     public void startEnumeration(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             String pathToEnumeration,
             String[] elements
     ) {
@@ -309,19 +309,19 @@ public class CodeHandlerImpl implements CodeHandler {
 
         checkPackageDiscrepancy(pathToEnumeration);
 
-        String prefPTE = CodeModel.prefixFullyQualifiedName(CodeModel.ENUMERATION_PREFIX, pathToEnumeration);
-        model.addTriple(prefPTE, SUBCLASSOF, CodeModel.JENUMERATION);
-        model.addTripleLiteral(prefPTE, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
-        model.addTriple(prefPTE, CodeModel.HAS_VISIBILITY, visibility.getIdentifier());
+        String prefPTE = JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.ENUMERATION_PREFIX, pathToEnumeration);
+        model.addTriple(prefPTE, CodeModel.SUBCLASSOF, JavaCodeModel.JENUMERATION);
+        model.addTripleLiteral(prefPTE, JavaCodeModel.HAS_MODIFIERS, JavaCodeModel.JModifier.toByte(modifiers).toString() );
+        model.addTriple(prefPTE, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         for(int i = 0; i < elements.length; i++) {
             model.addTriple(
                 prefPTE,
-                CodeModel.CONTAINS_ELEMENT,
-                CodeModel.prefixFullyQualifiedName(CodeModel.ELEMENT_PREFIX, elements[i])
+                JavaCodeModel.CONTAINS_ELEMENT,
+                JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.ELEMENT_PREFIX, elements[i])
             );
         }
         String parentClass = peekContainer();
-        model.addTriple(parentClass, CodeModel.CONTAINS_ENUMERATION, prefPTE);
+        model.addTriple(parentClass, JavaCodeModel.CONTAINS_ENUMERATION, prefPTE);
         pushInterfaceOrClass(prefPTE);
     }
 
@@ -335,10 +335,10 @@ public class CodeHandlerImpl implements CodeHandler {
     }
 
     public void attribute(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             String pathToAttribute,
-            CodeModel.JType type,
+            JavaCodeModel.JType type,
             String value                        // Can be null.
     ) {
         if(modifiers == null || visibility == null || pathToAttribute == null || type == null) {
@@ -348,25 +348,25 @@ public class CodeHandlerImpl implements CodeHandler {
             throw new CodeHandlerException("Must be inside a class to define an attribute.");
         }
 
-        String prefPTA = CodeModel.prefixFullyQualifiedName(CodeModel.ATTRIBUTE_PREFIX, pathToAttribute);
-        model.addTriple(prefPTA, SUBCLASSOF, CodeModel.JATTRIBUTE);
-        model.addTripleLiteral(prefPTA, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
-        model.addTriple(prefPTA, CodeModel.HAS_VISIBILITY, visibility.getIdentifier());
-        model.addTriple(prefPTA, CodeModel.ATTRIBUTE_TYPE,  type.getIdentifier());
+        String prefPTA = JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.ATTRIBUTE_PREFIX, pathToAttribute);
+        model.addTriple(prefPTA, SUBCLASSOF, JavaCodeModel.JATTRIBUTE);
+        model.addTripleLiteral(prefPTA, JavaCodeModel.HAS_MODIFIERS, JavaCodeModel.JModifier.toByte(modifiers).toString() );
+        model.addTriple(prefPTA, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
+        model.addTriple(prefPTA, JavaCodeModel.ATTRIBUTE_TYPE,  type.getIdentifier());
         if(value != null) { // Default value defined.
-            model.addTriple(prefPTA, CodeModel.ATTRIBUTE_VALUE, value);
+            model.addTriple(prefPTA, JavaCodeModel.ATTRIBUTE_VALUE, value);
         }
         String parentClass = peekContainer();
-        model.addTriple(parentClass, CodeModel.CONTAINS_ATTRIBUTE, prefPTA);
+        model.addTriple(parentClass, JavaCodeModel.CONTAINS_ATTRIBUTE, prefPTA);
     }
 
     public void constructor(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             int overloadIndex,
             String[] parameterNames,
-            CodeModel.JType[] parameterTypes,
-            CodeModel.ExceptionType[] exceptions
+            JavaCodeModel.JType[] parameterTypes,
+            JavaCodeModel.ExceptionType[] exceptions
     ) {
        if(modifiers == null || visibility == null || overloadIndex < 0) {
             throw new IllegalArgumentException();
@@ -387,32 +387,32 @@ public class CodeHandlerImpl implements CodeHandler {
 
         // Creating structure.
         String pathToClass = peekContainer();
-        String prefPTCO =  CodeModel.prefixFullyQualifiedName(CodeModel.CONSTRUCTOR_PREFIX, pathToClass) + "_" + overloadIndex;
-        model.addTriple(prefPTCO, SUBCLASSOF, CodeModel.JCONSTRUCTOR);
-        model.addTripleLiteral(prefPTCO, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
-        model.addTriple(prefPTCO, CodeModel.HAS_VISIBILITY, visibility.getIdentifier());
+        String prefPTCO =  JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.CONSTRUCTOR_PREFIX, pathToClass) + "_" + overloadIndex;
+        model.addTriple(prefPTCO, CodeModel.SUBCLASSOF, JavaCodeModel.JCONSTRUCTOR);
+        model.addTripleLiteral(prefPTCO, JavaCodeModel.HAS_MODIFIERS, JavaCodeModel.JModifier.toByte(modifiers).toString() );
+        model.addTriple(prefPTCO, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         String qualifiedParameter;
         for(int i = 0; i < paramNamesSize; i++) {
             qualifiedParameter = qualifyParameterName( pathToClass, parameterNames[i]);
-            model.addTriple( qualifiedParameter, SUBCLASSOF, CodeModel.JPARAMETER);
-            model.addTriple( qualifiedParameter, CodeModel.PARAMETER_TYPE, parameterTypes[i].getIdentifier());
-            model.addTriple( prefPTCO, CodeModel.CONTAINS_PARAMETER, qualifiedParameter);
+            model.addTriple( qualifiedParameter, CodeModel.SUBCLASSOF, JavaCodeModel.JPARAMETER);
+            model.addTriple( qualifiedParameter, JavaCodeModel.PARAMETER_TYPE, parameterTypes[i].getIdentifier());
+            model.addTriple( prefPTCO, JavaCodeModel.CONTAINS_PARAMETER, qualifiedParameter);
         }
         for(int i = 0; i < exceptionsSize; i++) {
-            model.addTriple(prefPTCO, CodeModel.THROWS, exceptions[i].getIdentifier());
+            model.addTriple(prefPTCO, JavaCodeModel.THROWS, exceptions[i].getIdentifier());
         }
-        model.addTriple(pathToClass, CodeModel.CONTAINS_CONSTRUCTOR, prefPTCO);
+        model.addTriple(pathToClass, JavaCodeModel.CONTAINS_CONSTRUCTOR, prefPTCO);
     }
 
     public void method(
-            CodeModel.JModifier[] modifiers,
-            CodeModel.JVisibility visibility,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             String pathToMethod,
             int overloadIndex,
             String[] parameterNames,
-            CodeModel.JType[] parameterTypes,
-            CodeModel.JType returnType,
-            CodeModel.ExceptionType[] exceptions
+            JavaCodeModel.JType[] parameterTypes,
+            JavaCodeModel.JType returnType,
+            JavaCodeModel.ExceptionType[] exceptions
     ) {
         if(modifiers == null || visibility == null || pathToMethod == null || overloadIndex < 0) {
             throw new IllegalArgumentException();
@@ -431,27 +431,27 @@ public class CodeHandlerImpl implements CodeHandler {
         }
         int exceptionsSize = exceptions == null ? 0 : exceptions.length;
 
-        String prefPTM = CodeModel.prefixFullyQualifiedName(CodeModel.METHOD_PREFIX, pathToMethod);
+        String prefPTM = JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.METHOD_PREFIX, pathToMethod);
         // Creating structure.
-        model.addTriple(prefPTM, SUBCLASSOF, CodeModel.JMETHOD);
-        model.addTripleLiteral(prefPTM, CodeModel.HAS_MODIFIERS, CodeModel.JModifier.toByte(modifiers).toString() );
-        model.addTriple(prefPTM, CodeModel.HAS_VISIBILITY, visibility.getIdentifier());
-        String signature = CodeModel.prefixFullyQualifiedName(CodeModel.SIGNATURE_PREFIX, pathToMethod) + "_" + overloadIndex;
-        model.addTriple(signature, SUBCLASSOF, CodeModel.JSIGNATURE);
+        model.addTriple(prefPTM, SUBCLASSOF, JavaCodeModel.JMETHOD);
+        model.addTripleLiteral(prefPTM, JavaCodeModel.HAS_MODIFIERS, JavaCodeModel.JModifier.toByte(modifiers).toString() );
+        model.addTriple(prefPTM, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
+        String signature = JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.SIGNATURE_PREFIX, pathToMethod) + "_" + overloadIndex;
+        model.addTriple(signature, SUBCLASSOF, JavaCodeModel.JSIGNATURE);
         String qualifiedParameter; 
         for(int i = 0; i < paramNamesSize; i++) {
             qualifiedParameter = qualifyParameterName( prefPTM, parameterNames[i]);
-            model.addTriple( qualifiedParameter, SUBCLASSOF, CodeModel.JPARAMETER);
-            model.addTriple( qualifiedParameter, CodeModel.PARAMETER_TYPE, parameterTypes[i].getIdentifier());
-            model.addTriple( signature, CodeModel.CONTAINS_PARAMETER, qualifiedParameter);
+            model.addTriple( qualifiedParameter, SUBCLASSOF, JavaCodeModel.JPARAMETER);
+            model.addTriple( qualifiedParameter, JavaCodeModel.PARAMETER_TYPE, parameterTypes[i].getIdentifier());
+            model.addTriple( signature, JavaCodeModel.CONTAINS_PARAMETER, qualifiedParameter);
         }
-        model.addTriple(signature, CodeModel.RETURN_TYPE, returnType.getIdentifier());
-        model.addTriple(prefPTM, CodeModel.CONTAINS_SIGNATURE, signature);
+        model.addTriple(signature, JavaCodeModel.RETURN_TYPE, returnType.getIdentifier());
+        model.addTriple(prefPTM, JavaCodeModel.CONTAINS_SIGNATURE, signature);
         for(int i = 0; i < exceptionsSize; i++) {
-            model.addTriple(prefPTM, CodeModel.THROWS, exceptions[i].getIdentifier());
+            model.addTriple(prefPTM, JavaCodeModel.THROWS, exceptions[i].getIdentifier());
         }
         String parentContainer = peekContainer();
-        model.addTriple(parentContainer, CodeModel.CONTAINS_METHOD, prefPTM);
+        model.addTriple(parentContainer, JavaCodeModel.CONTAINS_METHOD, prefPTM);
     }
 
     public void parseError(String location, String description) {
@@ -468,12 +468,12 @@ public class CodeHandlerImpl implements CodeHandler {
         }
 
         // Preloading classes.
-        TripleIterator t1 = model.searchTriples(CodeModel.ALL_MATCH, CodeModel.SUBCLASSOF, CodeModel.JCLASS);
+        TripleIterator t1 = model.searchTriples(JavaCodeModel.ALL_MATCH, JavaCodeModel.SUBCLASSOF, JavaCodeModel.JCLASS);
         try {
         String fullyQualifiedObject;
             while(t1.next()) {
                 fullyQualifiedObject = t1.getSubject();
-                fullyQualifiedObject = fullyQualifiedObject.substring(CodeModel.CLASS_PREFIX.length());
+                fullyQualifiedObject = fullyQualifiedObject.substring(JavaCodeModel.CLASS_PREFIX.length());
                 System.out.println("Add object: " + fullyQualifiedObject );
                 objectsTable.addObject( fullyQualifiedObject );
             }
@@ -482,12 +482,12 @@ public class CodeHandlerImpl implements CodeHandler {
         }
 
         // Preloading interfaces.
-        TripleIterator t2 = model.searchTriples(CodeModel.ALL_MATCH, CodeModel.SUBCLASSOF, CodeModel.JINTERFACE);
+        TripleIterator t2 = model.searchTriples(JavaCodeModel.ALL_MATCH, JavaCodeModel.SUBCLASSOF, JavaCodeModel.JINTERFACE);
         try {
         String fullyQualifiedObject;
             while(t2.next()) {
                 fullyQualifiedObject = t2.getSubject();
-                fullyQualifiedObject = fullyQualifiedObject.substring(CodeModel.INTERFACE_PREFIX.length());
+                fullyQualifiedObject = fullyQualifiedObject.substring(JavaCodeModel.INTERFACE_PREFIX.length());
                 System.out.println("Add object: " + fullyQualifiedObject );
                 objectsTable.addObject( fullyQualifiedObject );
             }
@@ -601,7 +601,7 @@ public class CodeHandlerImpl implements CodeHandler {
             throw new IllegalArgumentException();
         }
         String postFix = CodeHandler.PACKAGE_SEPARATOR + parameterName;
-        return CodeModel.prefixParameter( CodeModel.PARAMETER_PREFIX, pathToMethod + postFix);
+        return CodeModelBase.prefixParameter( JavaCodeModel.PARAMETER_PREFIX, pathToMethod + postFix);
     }
 
     private String[]     checkPackageDiscrepancy_stackArray;

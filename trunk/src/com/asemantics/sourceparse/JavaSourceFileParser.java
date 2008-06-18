@@ -19,7 +19,7 @@
 package com.asemantics.sourceparse;
 
 import com.asemantics.model.CodeHandler;
-import com.asemantics.model.CodeModel;
+import com.asemantics.model.JavaCodeModel;
 import net.sourceforge.jrefactory.ast.*;
 import net.sourceforge.jrefactory.parser.JavaParser;
 import net.sourceforge.jrefactory.parser.ParseException;
@@ -41,12 +41,12 @@ public class JavaSourceFileParser extends FileParser {
      */
     private class Method {
 
-        CodeModel.JModifier[] modifiers;
+        JavaCodeModel.JModifier[] modifiers;
 
         /**
          * Method visibility.
          */
-        CodeModel.JVisibility visibility;
+        JavaCodeModel.JVisibility visibility;
 
         /**
          * Full method path.
@@ -61,17 +61,17 @@ public class JavaSourceFileParser extends FileParser {
         /**
          * Parameter types.
          */
-        private CodeModel.JType[] parameterTypes;
+        private JavaCodeModel.JType[] parameterTypes;
 
         /**
          * Method return type.
          */
-        CodeModel.JType returnType;
+        JavaCodeModel.JType returnType;
 
         /**
          * Method exceptions.
          */
-        CodeModel.ExceptionType[] exceptions;
+        JavaCodeModel.ExceptionType[] exceptions;
 
         /**
          * Constructor.
@@ -84,7 +84,7 @@ public class JavaSourceFileParser extends FileParser {
          * @param rt
          * @param excs
          */
-        Method(CodeModel.JModifier[] m, CodeModel.JVisibility v, String mp, String[] pns, CodeModel.JType[] pts, CodeModel.JType rt, CodeModel.ExceptionType[] excs) {
+        Method(JavaCodeModel.JModifier[] m, JavaCodeModel.JVisibility v, String mp, String[] pns, JavaCodeModel.JType[] pts, JavaCodeModel.JType rt, JavaCodeModel.ExceptionType[] excs) {
             modifiers = m;
             visibility = v;
             methodPath = mp;
@@ -199,7 +199,7 @@ public class JavaSourceFileParser extends FileParser {
                 getObjectsTable().addObject(packagePath, className);
 
                 // Class visibility.
-                CodeModel.JVisibility clsOrIntVisibility = retrieveVisibility(classDeclaration);
+                JavaCodeModel.JVisibility clsOrIntVisibility = retrieveVisibility(classDeclaration);
 
                 // Find super class.
                 List classOrInterface = unmodifiedClassDeclaration.findChildrenOfType(ASTClassOrInterfaceType.class);
@@ -212,7 +212,7 @@ public class JavaSourceFileParser extends FileParser {
                         extractModifiers( classDeclaration ),
                         clsOrIntVisibility,
                         packagePath + CodeHandler.PACKAGE_SEPARATOR + className,
-                        superClass != null ? qualifyType(importsContext, superClass, new CodeModel.ObjectType(null) ) : null,
+                        superClass != null ? qualifyType(importsContext, superClass, new JavaCodeModel.ObjectType(null) ) : null,
                         extractImplementedInterfaces(importsContext, unmodifiedClassDeclaration)
                 );
                 try {
@@ -269,30 +269,30 @@ public class JavaSourceFileParser extends FileParser {
      * @param accessNode
      * @return
      */
-    private CodeModel.JModifier[] extractModifiers(AccessNode accessNode) {
-        List<CodeModel.JModifier> modifiers = new ArrayList<CodeModel.JModifier>(CodeModel.JModifier.values().length);
+    private JavaCodeModel.JModifier[] extractModifiers(AccessNode accessNode) {
+        List<JavaCodeModel.JModifier> modifiers = new ArrayList<JavaCodeModel.JModifier>(JavaCodeModel.JModifier.values().length);
         if( accessNode.isAbstract() ) {
-            modifiers.add(CodeModel.JModifier.ABSTRACT);
+            modifiers.add(JavaCodeModel.JModifier.ABSTRACT);
         }
         if( accessNode.isFinal() ) {
-            modifiers.add(CodeModel.JModifier.FINAL);
+            modifiers.add(JavaCodeModel.JModifier.FINAL);
         }
         if( accessNode.isStatic() ) {
-            modifiers.add(CodeModel.JModifier.STATIC);
+            modifiers.add(JavaCodeModel.JModifier.STATIC);
         }
         if( accessNode.isVolatile() ) {
-            modifiers.add(CodeModel.JModifier.VOLATILE);
+            modifiers.add(JavaCodeModel.JModifier.VOLATILE);
         }
         if( accessNode.isNative() ) {
-            modifiers.add(CodeModel.JModifier.NATIVE);
+            modifiers.add(JavaCodeModel.JModifier.NATIVE);
         }
         if( accessNode.isTransient() ) {
-            modifiers.add(CodeModel.JModifier.TRANSIENT);
+            modifiers.add(JavaCodeModel.JModifier.TRANSIENT);
         }
         if( accessNode.isSynchronized() ) {
-            modifiers.add(CodeModel.JModifier.SYNCHRONIZED);
+            modifiers.add(JavaCodeModel.JModifier.SYNCHRONIZED);
         }
-        return modifiers.toArray(new CodeModel.JModifier[modifiers.size()]);
+        return modifiers.toArray(new JavaCodeModel.JModifier[modifiers.size()]);
     }
 
 
@@ -312,7 +312,7 @@ public class JavaSourceFileParser extends FileParser {
             interfacesArray = new String[classOrInterfaceTypes.size()];
             for(int j = 0; j < classOrInterfaceTypes.size(); j++) {
                 List identifierList = ( (ASTClassOrInterfaceType) classOrInterfaceTypes.get(j)).findChildrenOfType(ASTIdentifier.class);
-                interfacesArray[j] = qualifyType(importsContext, retrieveObjectName(identifierList), new CodeModel.InterfaceType(null) );
+                interfacesArray[j] = qualifyType(importsContext, retrieveObjectName(identifierList), new JavaCodeModel.InterfaceType(null) );
             }
         }
         return interfacesArray;
@@ -321,8 +321,8 @@ public class JavaSourceFileParser extends FileParser {
     private void extractAttributes(String packagePath, CodeHandler ch, ImportsContext importsContext, NamedNode namedNode) {
         List attributes = namedNode.findChildrenOfType(ASTFieldDeclaration.class);
         String attributeName;
-        CodeModel.JVisibility attributeVisibility;
-        CodeModel.JType attributeType;
+        JavaCodeModel.JVisibility attributeVisibility;
+        JavaCodeModel.JType attributeType;
         for (int f = 0; f < attributes.size(); f++) {
             ASTFieldDeclaration fieldDeclaration = (ASTFieldDeclaration) attributes.get(f);
 
@@ -350,30 +350,30 @@ public class JavaSourceFileParser extends FileParser {
             // Retrieve type.
             List primitiveType = fieldDeclaration.findChildrenOfType(ASTPrimitiveType.class);
             if (primitiveType.size() > 0) { // Primitive type declared.
-                CodeModel.JType type = CodeModel.javaTypeToJType(((ASTPrimitiveType) primitiveType.get(0)).getName());
+                JavaCodeModel.JType type = JavaCodeModel.javaTypeToJType(((ASTPrimitiveType) primitiveType.get(0)).getName());
                 attributeType =
                         isArray
                                 ?
-                        new CodeModel.ArrayType(type, arraySize)
+                        new JavaCodeModel.ArrayType(type, arraySize)
                                 :
                         type;
             } else { // Obj identifier declared.
                 String typeName = retrieveObjectName( fieldDeclaration.findChildrenOfType(ASTIdentifier.class) );
-                CodeModel.JType type = new CodeModel.ObjectType(
+                JavaCodeModel.JType type = new JavaCodeModel.ObjectType(
                         qualifyType(
                                 importsContext,
                                 typeName,
                                 isArray
                                         ?
-                                        new CodeModel.ArrayType(
-                                            new CodeModel.ObjectType(null),
+                                        new JavaCodeModel.ArrayType(
+                                            new JavaCodeModel.ObjectType(null),
                                             arraySize
                                         )
                                         :
-                                        new CodeModel.ObjectType(null)
+                                        new JavaCodeModel.ObjectType(null)
                         )
                 );
-                attributeType = isArray ? new CodeModel.ArrayType(type, variableDeclaratorId.getArrayCount()) : type;
+                attributeType = isArray ? new JavaCodeModel.ArrayType(type, variableDeclaratorId.getArrayCount()) : type;
             }
 
             ch.attribute(
@@ -395,7 +395,7 @@ public class JavaSourceFileParser extends FileParser {
             // Extract parameters.
             ASTFormalParameter formalParameter;
             List<String> parameterNames = new ArrayList<String>();
-            List<CodeModel.JType> parameterTypes = new ArrayList<CodeModel.JType>();
+            List<JavaCodeModel.JType> parameterTypes = new ArrayList<JavaCodeModel.JType>();
             for( int fp = 0; fp < formalParameters.size(); fp++ ) {
                 formalParameter = (ASTFormalParameter) formalParameters.get(fp);
                 parameterNames.add(
@@ -405,14 +405,14 @@ public class JavaSourceFileParser extends FileParser {
             }
 
             // Extract exceptions.
-            CodeModel.ExceptionType[] exceptions = extractExceptions(importsContext, constructorDeclaration);
+            JavaCodeModel.ExceptionType[] exceptions = extractExceptions(importsContext, constructorDeclaration);
 
             ch.constructor(
                     extractModifiers(constructorDeclaration),
                     retrieveVisibility(constructorDeclaration),
                     c,
                     parameterNames.toArray( new String[parameterNames.size()] ),
-                    parameterTypes.toArray( new CodeModel.JType[parameterTypes.size()] ),
+                    parameterTypes.toArray( new JavaCodeModel.JType[parameterTypes.size()] ),
                     exceptions
             );
         }
@@ -421,10 +421,10 @@ public class JavaSourceFileParser extends FileParser {
     private void extractMethods(String packagePath, CodeHandler ch, ImportsContext importsContext, NamedNode namedNode) {
         List methods = namedNode.findChildrenOfType(ASTMethodDeclaration.class);
         String methodName;
-        CodeModel.JVisibility methodVisibility;
+        JavaCodeModel.JVisibility methodVisibility;
         boolean returnTypeIsArray;
         int returnTypeArraySize;
-        CodeModel.JType returnType;
+        JavaCodeModel.JType returnType;
         List<JavaSourceFileParser.Method> methodsBuffer = new ArrayList<JavaSourceFileParser.Method>();
         for (int m = 0; m < methods.size(); m++) {
             ASTMethodDeclaration methodDeclaration = (ASTMethodDeclaration) methods.get(m);
@@ -450,9 +450,9 @@ public class JavaSourceFileParser extends FileParser {
             ASTResultType resultType = (ASTResultType) methodDeclaration.findChildrenOfType(ASTResultType.class).get(0);
             List primitiveType = resultType.findChildrenOfType(ASTPrimitiveType.class);
             if (primitiveType.size() > 0) { // Result type is primitive.
-                CodeModel.JType type = CodeModel.javaTypeToJType(((ASTPrimitiveType) primitiveType.get(0)).getName());
+                JavaCodeModel.JType type = JavaCodeModel.javaTypeToJType(((ASTPrimitiveType) primitiveType.get(0)).getName());
                 if( returnTypeIsArray ) {
-                    returnType = new CodeModel.ArrayType(type, returnTypeArraySize);
+                    returnType = new JavaCodeModel.ArrayType(type, returnTypeArraySize);
                 } else {
                    returnType = type;
                 }
@@ -462,29 +462,29 @@ public class JavaSourceFileParser extends FileParser {
                         retrieveObjectName( resultType.findChildrenOfType(ASTIdentifier.class) ),
                         returnTypeIsArray
                                 ?
-                                new CodeModel.ArrayType(
-                                    new CodeModel.ObjectType(null),
+                                new JavaCodeModel.ArrayType(
+                                    new JavaCodeModel.ObjectType(null),
                                     returnTypeArraySize
                                 )
                                 :
-                                new CodeModel.ObjectType(null)
+                                new JavaCodeModel.ObjectType(null)
                 );
                 returnType = (
                         returnTypeIsArray
                                 ?
-                        new CodeModel.ArrayType( new CodeModel.ObjectType(qualifiedType), returnTypeArraySize)
+                        new JavaCodeModel.ArrayType( new JavaCodeModel.ObjectType(qualifiedType), returnTypeArraySize)
                                 :
-                        new CodeModel.ObjectType(qualifiedType)
+                        new JavaCodeModel.ObjectType(qualifiedType)
                 );
             } else { // Void type.
-                returnType = CodeModel.VOID;
+                returnType = JavaCodeModel.VOID;
             }
 
             // Extract formal parameters.
             List formalParameters = methodDeclaration.findChildrenOfType(ASTFormalParameter.class);
             ASTFormalParameter formalParameter;
             List<String> parameterNames = new ArrayList();
-            List<CodeModel.JType> parameterTypes = new ArrayList();
+            List<JavaCodeModel.JType> parameterTypes = new ArrayList();
             for (int p = 0; p < formalParameters.size(); p++) {
                 formalParameter = (ASTFormalParameter) formalParameters.get(p);
                 // Parameter identifier.
@@ -494,7 +494,7 @@ public class JavaSourceFileParser extends FileParser {
             }
 
             // Extract exceptions.
-            CodeModel.ExceptionType[] exceptions = extractExceptions(importsContext, methodDeclaration);
+            JavaCodeModel.ExceptionType[] exceptions = extractExceptions(importsContext, methodDeclaration);
 
             // Storing method.
             methodsBuffer.add(
@@ -503,7 +503,7 @@ public class JavaSourceFileParser extends FileParser {
                             methodVisibility,
                             qualifyMethod(packagePath, methodName),
                             parameterNames.toArray(new String[parameterNames.size()]),
-                            parameterTypes.toArray(new CodeModel.JType[parameterTypes.size()]),
+                            parameterTypes.toArray(new JavaCodeModel.JType[parameterTypes.size()]),
                             returnType,
                             exceptions
 
@@ -550,7 +550,7 @@ public class JavaSourceFileParser extends FileParser {
         ASTEnumDeclaration enumDeclaration = null;
         for(int ed = 0; ed < enumDeclarations.size(); ed++) {
             enumDeclaration = (ASTEnumDeclaration) enumDeclarations.get(ed);
-             CodeModel.JVisibility visibility = retrieveVisibility(enumDeclaration);
+             JavaCodeModel.JVisibility visibility = retrieveVisibility(enumDeclaration);
             ASTIdentifier indentifier = (ASTIdentifier) enumDeclaration.findChildrenOfType(ASTIdentifier.class).get(0);
             String identifier = indentifier.getName();
             List enumElements = enumDeclaration.findChildrenOfType(ASTEnumElement.class);
@@ -570,7 +570,7 @@ public class JavaSourceFileParser extends FileParser {
         }
     }
 
-    private CodeModel.JType extractFormalparameterType(ImportsContext importsContext, ASTFormalParameter formalParameter) {
+    private JavaCodeModel.JType extractFormalparameterType(ImportsContext importsContext, ASTFormalParameter formalParameter) {
 
         // Retrieve array size.
         int arraySize;
@@ -585,45 +585,45 @@ public class JavaSourceFileParser extends FileParser {
         // Retrieve type.
         List primitiveType = formalParameter.findChildrenOfType(ASTPrimitiveType.class);
         if (primitiveType.size() > 0) { // Result type is Primitive.
-            return CodeModel.javaTypeToJType(((ASTPrimitiveType) primitiveType.get(0)).getName());
+            return JavaCodeModel.javaTypeToJType(((ASTPrimitiveType) primitiveType.get(0)).getName());
         } else { // Result type is Object.
             String typeName =  retrieveObjectName( formalParameter.findChildrenOfType(ASTIdentifier.class) );
             if(arraySize > 0) {
-                return new CodeModel.ArrayType(
-                        new CodeModel.ObjectType(
+                return new JavaCodeModel.ArrayType(
+                        new JavaCodeModel.ObjectType(
                             qualifyType(
                                     importsContext,
                                     typeName,
-                                    new CodeModel.ArrayType(new CodeModel.ObjectType(null), arraySize)
+                                    new JavaCodeModel.ArrayType(new JavaCodeModel.ObjectType(null), arraySize)
                             )
                         ),
                          arraySize
                 );
             } else {
-                return new CodeModel.ObjectType(
+                return new JavaCodeModel.ObjectType(
                         qualifyType(
                             importsContext,
                             typeName,
-                            new CodeModel.ObjectType(null)
+                            new JavaCodeModel.ObjectType(null)
                         )
                 );
             }
         }
     }
 
-    private CodeModel.ExceptionType[] extractExceptions(ImportsContext importsContext,AccessNode accessNode) {
+    private JavaCodeModel.ExceptionType[] extractExceptions(ImportsContext importsContext,AccessNode accessNode) {
         List nameLists = accessNode.findChildrenOfType(ASTNameList.class);
-        CodeModel.ExceptionType[] exceptions = null;
+        JavaCodeModel.ExceptionType[] exceptions = null;
         if(nameLists.size() > 0) {
             ASTNameList nameList = (ASTNameList) nameLists.get(0);
             List namesList = nameList.findChildrenOfType(ASTName.class);
             String exceptionName;
-            exceptions = new CodeModel.ExceptionType[namesList.size()];
+            exceptions = new JavaCodeModel.ExceptionType[namesList.size()];
             for( int i = 0; i < namesList.size(); i++ ) {
                 ASTName name = (ASTName) namesList.get(i);
                 exceptionName = retrieveObjectName(name.findChildrenOfType(ASTIdentifier.class));
-                exceptions[i] = new CodeModel.ExceptionType(
-                    qualifyType(importsContext, exceptionName, new CodeModel.ExceptionType(null))
+                exceptions[i] = new JavaCodeModel.ExceptionType(
+                    qualifyType(importsContext, exceptionName, new JavaCodeModel.ExceptionType(null))
                 );
             }
         }
@@ -727,15 +727,15 @@ public class JavaSourceFileParser extends FileParser {
        * @param an
        * @return
        */
-      private CodeModel.JVisibility retrieveVisibility(AccessNode an) {
+      private JavaCodeModel.JVisibility retrieveVisibility(AccessNode an) {
           if (an.isPublic()) {
-              return CodeModel.JVisibility.PUBLIC;
+              return JavaCodeModel.JVisibility.PUBLIC;
           } else if (an.isProtected()) {
-              return CodeModel.JVisibility.PROTECTED;
+              return JavaCodeModel.JVisibility.PROTECTED;
           } else if (an.isPackage()) {
-              return CodeModel.JVisibility.DEFAULT;
+              return JavaCodeModel.JVisibility.DEFAULT;
           } else {
-              return CodeModel.JVisibility.PRIVATE;
+              return JavaCodeModel.JVisibility.PRIVATE;
           }
       }
 
@@ -745,16 +745,16 @@ public class JavaSourceFileParser extends FileParser {
        * @param typeName
        * @return
        */
-      private String qualifyType(ImportsContext importsContext, String typeName, CodeModel.JType type) {
+      private String qualifyType(ImportsContext importsContext, String typeName, JavaCodeModel.JType type) {
           String qualifiedObject = importsContext.qualifyType(getObjectsTable(), typeName);
           if (qualifiedObject == null) {
               String tempId = codeHandler.generateTempUniqueIdentifier();
-              if(type instanceof CodeModel.ObjectType) {
-                  ((CodeModel.ObjectType) type).setInternalIdentifier(tempId);
-              } else if( type instanceof CodeModel.InterfaceType) {
-                  ((CodeModel.InterfaceType) type).setInternalIdentifier(tempId);
-              } else if( type instanceof CodeModel.ArrayType) {
-                  ((CodeModel.ArrayType) type).setInternalIdentifier(tempId);
+              if(type instanceof JavaCodeModel.ObjectType) {
+                  ((JavaCodeModel.ObjectType) type).setInternalIdentifier(tempId);
+              } else if( type instanceof JavaCodeModel.InterfaceType) {
+                  ((JavaCodeModel.InterfaceType) type).setInternalIdentifier(tempId);
+              } else if( type instanceof JavaCodeModel.ArrayType) {
+                  ((JavaCodeModel.ArrayType) type).setInternalIdentifier(tempId);
               } else {
                   throw new IllegalStateException();
               }

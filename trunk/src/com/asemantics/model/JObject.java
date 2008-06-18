@@ -26,12 +26,12 @@ package com.asemantics.model;
  */
 public abstract class JObject extends JContainer {
 
-    protected JObject(QueryModel qm, String[] sections)
+    protected JObject(JavaQueryModel qm, String[] sections)
     throws QueryModelException {
         super(qm, sections);
     }
 
-    protected JObject(QueryModel qm, String pathToContainer)
+    protected JObject(JavaQueryModel qm, String pathToContainer)
     throws QueryModelException {
         super(qm, pathToContainer);
     }
@@ -42,7 +42,7 @@ public abstract class JObject extends JContainer {
      * @throws QueryModelException
      */
     public JClass[] getInnerClasses() throws QueryModelException {
-        QueryModel qm = getQueryModel();
+        JavaQueryModel qm = getQueryModel();
         return qm.getClassesInto( getPathAsString() );
     }
 
@@ -52,7 +52,7 @@ public abstract class JObject extends JContainer {
      * @throws QueryModelException
      */
     public JMethod[] getMethods() throws QueryModelException {
-        QueryModel qm = getQueryModel();
+        JavaQueryModel qm = getQueryModel();
         return qm.getMethodsInto( getPathAsString() );
     }
 
@@ -61,7 +61,7 @@ public abstract class JObject extends JContainer {
      * @return
      */
     public JAttribute[] getAttributes() throws QueryModelException {
-        QueryModel qm = getQueryModel();
+        JavaQueryModel qm = getQueryModel();
         return qm.getAttributesInto( getPathAsString() );
     }
 
@@ -71,7 +71,7 @@ public abstract class JObject extends JContainer {
      * @throws QueryModelException
      */
     public JEnumeration[] getEnumerations() throws QueryModelException {
-        QueryModel qm = getQueryModel();
+        JavaQueryModel qm = getQueryModel();
         return qm.getEnumerationsInto( getPathAsString() );
     }
 }

@@ -20,7 +20,7 @@ package com.asemantics.sourceparse;
 
 import com.asemantics.CoderUtils;
 import com.asemantics.model.CodeHandler;
-import com.asemantics.model.CodeModel;
+import com.asemantics.model.JavaCodeModel;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -93,7 +93,7 @@ public class ObjectsTable {
         /**
          * The usage done for the unresolved entry.
          */
-        CodeModel.JType type;
+        JavaCodeModel.JType type;
 
         /**
          * The context of the imports in which the
@@ -104,7 +104,7 @@ public class ObjectsTable {
         /**
          * The temporary identifier currently representing the type.
          */
-        UnresolvedTypeEntry(String tn, CodeModel.JType t, ImportsContext ic) {
+        UnresolvedTypeEntry(String tn, JavaCodeModel.JType t, ImportsContext ic) {
             typeName            = tn;
             type                = t;
             importsContext      = ic;
@@ -189,7 +189,7 @@ public class ObjectsTable {
      * @param type
      * @param ic
      */
-    public void addUnresolvedType(String tn, CodeModel.JType type, ImportsContext ic) {
+    public void addUnresolvedType(String tn, JavaCodeModel.JType type, ImportsContext ic) {
         if(tn == null || tn.trim().length() == 0 || type == null || ic == null) {
             throw new IllegalArgumentException();
         }
@@ -224,7 +224,7 @@ public class ObjectsTable {
             } else {
                 ch.replaceIdentifierWithQualifiedType(
                         prefixedIdentifier,
-                        CodeModel.UNQUALIFIED_PREFIX + ue.typeName
+                        JavaCodeModel.UNQUALIFIED_PREFIX + ue.typeName
                 );
                 definitivelyUnresolved.add( ue.typeName );
             }

@@ -25,9 +25,9 @@ import java.util.Date;
  */
 public class JAsset {
 
-    private QueryModel queryModel;
+    private JavaQueryModel queryModel;
 
-    protected JAsset(QueryModel qm) {
+    protected JAsset(JavaQueryModel qm) {
         queryModel = qm;   
     }
 
