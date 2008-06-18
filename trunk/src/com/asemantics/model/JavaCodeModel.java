@@ -34,7 +34,7 @@ import java.util.List;
  */
 public abstract class JavaCodeModel extends CodeModelBase {
 
-    /* Primitive types. */
+    /* BEGIN: Primitive types. */
 
     private static final String TYPE_VOID_STR    = "void";
 
@@ -56,8 +56,11 @@ public abstract class JavaCodeModel extends CodeModelBase {
 
     private static final String TYPE_ARRAY_STR   = "array";
 
+    /* END:   Primitive types. */
+
+
     /**
-     * The primitive types.
+     *  Java Type interface.
      */
     public interface JType {
 
@@ -71,6 +74,9 @@ public abstract class JavaCodeModel extends CodeModelBase {
 
     }
 
+    /**
+     * Java primitive Type base class. 
+     */
     protected static abstract class JPrimitiveType implements JType {
 
         public String getIdentifier() {
@@ -596,62 +602,86 @@ public abstract class JavaCodeModel extends CodeModelBase {
     }
 
 
+    /* BEGIN: Ontology terms. */
+
+    public static final String ASSET_KEY        = "jasset";
+
+    public static final String PACKAGE_KEY      = "jpackage";
+
+    public static final String INTERFACE_KEY    = "jinterface";
+
+    public static final String CLASS_KEY        = "jclass";
+
+    public static final String ATTRIBUTE_KEY    = "jattribute";
+
+    public static final String CONSTRUCTOR_KEY  = "jconstructor";
+
+    public static final String METHOD_KEY       = "jmethod";
+
+    public static final String ENUMERATION_KEY  = "jenumeration";
+
+    public static final String ELEMENT_KEY      = "jelement";
+
+    public static final String SIGNATURE_KEY    = "jsignature";
+
+    public static final String PARAMETER_KEY    = "jparameter";
+    
+    /* END:   Ontology terms. */
+
+
     /* BEGIN: RDF classes. */
 
-    /**
-     * The Asset unique class.
-     */
-    public static final String JASSET       = toURI("jasset");
+    public static final String JASSET       = toURI(ASSET_KEY);
 
-    public static final String JPACKAGE     = toURI("jpackage");
+    public static final String JPACKAGE     = toURI(PACKAGE_KEY);
 
-    public static final String JINTERFACE   = toURI("jinterface");
+    public static final String JINTERFACE   = toURI(INTERFACE_KEY);
 
-    public static final String JCLASS       = toURI("jclass");
+    public static final String JCLASS       = toURI(CLASS_KEY);
 
-    public static final String JATTRIBUTE   = toURI("jattribute");
+    public static final String JATTRIBUTE   = toURI(ATTRIBUTE_KEY);
 
-    public static final String JCONSTRUCTOR = toURI("jconstructor");
+    public static final String JCONSTRUCTOR = toURI(CONSTRUCTOR_KEY);
 
-    public static final String JMETHOD      = toURI("jmethod");
+    public static final String JMETHOD      = toURI(METHOD_KEY);
 
-    public static final String JENUMERATION = toURI("jenumeration");
+    public static final String JENUMERATION = toURI(ENUMERATION_KEY);
 
-    public static final String JSIGNATURE   = toURI("jsignature");
+    public static final String JSIGNATURE   = toURI(SIGNATURE_KEY);
 
-    public static final String JPARAMETER   = toURI("jparameter");
+    public static final String JPARAMETER   = toURI(PARAMETER_KEY);
 
-    /* END: RDF classes. */
+    /* END:   RDF classes. */
 
 
-    /* Entity prefixes. */
+    /* BEGIN: Entity prefixes. */
 
-    //TODO: entity prefixes and RDF classes MUST be the same.
+    public static final String JASSET_PREFIX      = toPrefix(ASSET_KEY);
 
-    public static final String JASSET_PREFIX      = toPrefix("jasset");
+    public static final String PACKAGE_PREFIX     = toPrefix(PACKAGE_KEY);
 
-    public static final String PACKAGE_PREFIX     = toPrefix("jpackage");
+    public static final String CLASS_PREFIX       = toPrefix(CLASS_KEY);
 
-    public static final String CLASS_PREFIX       = toPrefix("jclass");
+    public static final String INTERFACE_PREFIX   = toPrefix(INTERFACE_KEY);
 
-    public static final String INTERFACE_PREFIX   = toPrefix("jinterface");
+    public static final String ATTRIBUTE_PREFIX   = toPrefix(ATTRIBUTE_KEY);
 
-    public static final String ATTRIBUTE_PREFIX   = toPrefix("jattribute");
+    public static final String CONSTRUCTOR_PREFIX = toPrefix(CONSTRUCTOR_KEY);
 
-    public static final String CONSTRUCTOR_PREFIX = toPrefix("jconstructor");
+    public static final String METHOD_PREFIX      = toPrefix(METHOD_KEY);
 
-    public static final String METHOD_PREFIX      = toPrefix("jmethod");
+    public static final String ENUMERATION_PREFIX = toPrefix(ENUMERATION_KEY);
 
-    public static final String ENUMERATION_PREFIX = toPrefix("jenumeration");
+    public static final String ELEMENT_PREFIX     = toPrefix(ELEMENT_KEY);
 
-    public static final String ELEMENT_PREFIX     = toPrefix("jelement");
+    public static final String SIGNATURE_PREFIX   = toPrefix(SIGNATURE_KEY);
 
-    public static final String SIGNATURE_PREFIX   = toPrefix("jsignature");
+    public static final String PARAMETER_PREFIX   = toPrefix(PARAMETER_KEY);
 
-    public static final String PARAMETER_PREFIX   = toPrefix("jparameter");
+    /* END:   Entity prefixes. */
 
 
-    /* RDFS properties. */
+    /* BEGIN: RDFS properties. */
 
     /**
      * A package contains a package.
@@ -752,5 +782,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
      * Defines the modifier of an entity.
      */
     public static final String HAS_MODIFIERS      = toURI("has_modifiers");
+
+    /* END:   RDFS properties. */
 
 }
