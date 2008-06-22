@@ -16,19 +16,15 @@
  */
 
 
-package com.asemantics.model.ontology;
+package com.asemantics.profile;
 
 
-public class JavaOntology extends DefaultOntology {
+/**
+ * Defines an RDFCoder language profile, i.e. any
+ * language <i>RDF Coder</i> is able to process.
+ */
+public interface Profile {
 
-    JavaOntology() {
-        initJavaOntology();
-    }
-
-    private void initJavaOntology() {
-
-        //TODO: defines java ontology here.
-
-    }
+    
 
 }

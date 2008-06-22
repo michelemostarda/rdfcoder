@@ -18,38 +18,29 @@
 
 package com.asemantics.model;
 
-import com.asemantics.storage.CodeStorage;
-import com.asemantics.model.ontology.Ontology;
+import java.util.Date;
 
+/**
+ * Represents the Asset of the parsed libraries.
+ */
+public class Asset {
 
-public interface CoderFactory {
+    private JavaQueryModel queryModel;
 
-    /**
-     * Creates the <i>Code Model Ontology</i>. 
-     *
-     * @return
-     */
-    Ontology createCodeModelOntology();
+    protected Asset(JavaQueryModel qm) {
+        queryModel = qm;   
+    }
 
-    /**
-     * Creates a <i>Code Model</i> instance.
-     *
-     * @return
-     */
-    CodeModelBase createCodeModel();
+    public String[] getLibraries() {
+        return queryModel.getLibraries();
+    }
 
-    /**
-     * Creates a <i>Code Storage</i> instance.
-     *
-     * @return
-     */
-    CodeStorage createCodeStorage();
+    public String getLibraryLocation(String library) {
+        return queryModel.getLibraryLocation(library);
+    }
 
-    /**
-     * Creates a <i>Code Handler</i> instance.
-     * 
-     * @param model
-     * @return
-     */
-    CodeHandler createHandlerOnModel(CodeModelBase model);
+    public Date getLibraryDateTime(String library) {
+        return queryModel.getLibraryDateTime(library);
+    }
+
 }

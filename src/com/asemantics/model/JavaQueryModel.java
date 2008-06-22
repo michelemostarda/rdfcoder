@@ -18,43 +18,14 @@
 
 package com.asemantics.model;
 
-import java.util.Date;
-
 /**
- * Represents a method signature.
+ * Represents a model to query a {@link com.asemantics.model.JavaCodeModel}.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
+ * @see com.asemantics.model.QueryModel
+ * @see JavaCodeModel
  */
-public interface JavaQueryModel {
-
-    /**
-     * Returns the Code Model asset.
-     *
-     * @return
-     */
-    public JAsset getAsset();
-
-    /**
-     * Returns the asset libraries.
-     *
-     * @return
-     */
-    public String[] getLibraries();
-
-    /**
-     * Returns the library location.
-     *
-     * @return
-     */
-    public String getLibraryLocation(String library);
-
-    /**
-     * Returns the library datetime.
-     *
-     * @param library
-     * @return
-     */
-    public Date getLibraryDateTime(String library);
+public interface JavaQueryModel extends QueryModel {
 
     /**
      * Checks if a package exists in the Code Model.

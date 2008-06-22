@@ -128,8 +128,8 @@ public class CodeHandlerImpl implements CodeHandler {
     }
 
     protected void checkLibraryName(String name) {
-        TripleIterator ti = model.searchTriples(JavaCodeModel.JASSET, JavaCodeModel.CONTAINS_LIBRARY, CodeModel.ALL_MATCH);
-        String targetLibraryName = CodeModelBase.prefixFullyQualifiedName(JavaCodeModel.JASSET_PREFIX, name);
+        TripleIterator ti = model.searchTriples(JavaCodeModel.ASSET, JavaCodeModel.CONTAINS_LIBRARY, CodeModel.ALL_MATCH);
+        String targetLibraryName = CodeModelBase.prefixFullyQualifiedName(JavaCodeModel.ASSET_PREFIX, name);
         try {
             while(ti.next()) {
                 if( targetLibraryName.equals(ti.getObject()) ) {
@@ -176,9 +176,9 @@ public class CodeHandlerImpl implements CodeHandler {
         }
         parsingStarted = false;
 
-        String prefixedlibraryName = CodeModelBase.prefixFullyQualifiedName(JavaCodeModel.JASSET_PREFIX, libraryName);
+        String prefixedlibraryName = CodeModelBase.prefixFullyQualifiedName(JavaCodeModel.ASSET_PREFIX, libraryName);
         String formattedDate = formatLibraryDatetime( new Date() );        
-        model.addTriple(JavaCodeModel.JASSET, JavaCodeModel.CONTAINS_LIBRARY,  prefixedlibraryName);
+        model.addTriple(JavaCodeModel.ASSET, JavaCodeModel.CONTAINS_LIBRARY,  prefixedlibraryName);
         model.addTripleLiteral(prefixedlibraryName, CodeModelBase.LIBRARY_LOCATION, libraryLocation);
         model.addTripleLiteral(prefixedlibraryName, CodeModelBase.LIBRARY_DATETIME, formattedDate);
     }
@@ -608,7 +608,7 @@ public class CodeHandlerImpl implements CodeHandler {
     private StringBuilder checkPackageDiscrepancy_sb = new StringBuilder();
 
     private void checkPackageDiscrepancy(String pathToContainer) {
-        if( ! RDFCoder.isCHECK_PACKAGE_DISCREPANCY() ) { return; }
+        if( ! RDFCoder.checkPackageDiscrepancy() ) { return; }
 
         if(checkPackageDiscrepancy_stackArray == null || checkPackageDiscrepancy_stackArray.length != packagesStack.size()) {
             checkPackageDiscrepancy_stackArray = new String[packagesStack.size()];

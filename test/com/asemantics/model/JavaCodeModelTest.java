@@ -31,7 +31,7 @@ public class JavaCodeModelTest extends TestCase {
 
     private JenaCoderFactory jcmf;
 
-    private CodeModelBase cm;
+    private CodeModelBase cmb;
 
     private CodeHandler jch;
 
@@ -39,9 +39,9 @@ public class JavaCodeModelTest extends TestCase {
 
     public void setUp() {
         jcmf = new JenaCoderFactory();
-        cm   = jcmf.createCodeModel();
-        jch  = jcmf.createHandlerOnModel(cm);
-        qm   = jcmf.createQueryModel(cm);
+        cmb  = jcmf.createCodeModel();
+        jch  = jcmf.createHandlerOnModel(cmb);
+        qm   = jcmf.createQueryModel(cmb);
     }
 
     public void tearDown() {
@@ -158,7 +158,7 @@ public class JavaCodeModelTest extends TestCase {
 
         // Checking asset.
         System.out.println("Asset >>>");
-        JAsset asset = qm.getAsset();
+        Asset asset = qm.getAsset();
         for(String lib :  asset.getLibraries() ) {
             System.out.println(
                     "library: " + lib + " at location: " + asset.getLibraryLocation(lib) + " with date: " + asset.getLibraryDateTime(lib) );

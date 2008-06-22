@@ -18,8 +18,7 @@
 
 package com.asemantics.model.ontology;
 
-import com.asemantics.model.CodeModel;
-import com.asemantics.model.TripleIterator;
+import com.asemantics.model.*;
 
 /**
  * This decorator validates addition of model triples over a given
@@ -28,7 +27,7 @@ import com.asemantics.model.TripleIterator;
  * @see com.asemantics.model.CodeModel
  * @see com.asemantics.model.ontology.Ontology
  */
-public class ValidatingCodeModel implements CodeModel {
+public class ValidatingCodeModel extends CodeModelBase {
 
     /**
      * Validation error message.
@@ -62,7 +61,7 @@ public class ValidatingCodeModel implements CodeModel {
         try {
             ontology.validateTriple(subject, predicate, object);
         } catch (OntologyException oe) {
-            throw new RuntimeException(VALIDATION_ERROR, oe);
+            throw createRE(oe);
         }
         decorated.addTriple(subject, predicate, object);
     }
@@ -75,7 +74,7 @@ public class ValidatingCodeModel implements CodeModel {
         try {
             ontology.validateTripleLiteral(subject, predicate);
         } catch (OntologyException oe) {
-            throw new RuntimeException(VALIDATION_ERROR, oe);
+            throw createRE(oe);
         }
         decorated.addTripleLiteral(subject, predicate, literal);
     }
@@ -86,5 +85,9 @@ public class ValidatingCodeModel implements CodeModel {
 
     public void clearAll() {
         decorated.clearAll();
+    }
+
+    private RuntimeException createRE(OntologyException oe) {
+        return new RuntimeException(VALIDATION_ERROR + ": " + oe.getMessage(), oe);
     }
 }

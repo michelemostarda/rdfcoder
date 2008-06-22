@@ -33,6 +33,21 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport{
     /* BEGIN: Asset classes and properties. */
 
     /**
+     * The asset term.
+     */
+    public static final String ASSET_KEY        = "asset";
+
+    /**
+     * Asset subject.
+     */
+    public static final String ASSET            = toPrefix(ASSET_KEY);
+
+    /**
+     * Asset prefix.
+     */
+    public static final String ASSET_PREFIX     = toPrefix(ASSET_KEY);
+
+    /**
      * The model asset contains library.
      */
     public static final String CONTAINS_LIBRARY = toURI("contains_library");
@@ -172,7 +187,7 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport{
 //        System.out.println("indentifier: " + identifier);
 //        System.out.println("qualified type: " + qualifiedType);
 
-        if( RDFCoder.isDEBUG() && identifier.indexOf(CodeModel.PREFIX_SEPARATOR) == -1) {
+        if( RDFCoder.assertions() && identifier.indexOf(CodeModel.PREFIX_SEPARATOR) == -1) {
             throw new IllegalArgumentException("identifier: " + identifier + " qualified type: " + qualifiedType);
         }
 

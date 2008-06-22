@@ -60,7 +60,7 @@ public class JavadocDirParserTest extends TestCase {
 
     public void testParse() throws IOException, CodeModelException {
         DirectoryParser jsdp = new DirectoryParser( new JavadocFileParser() );
-        Statistics statistics = new Statistics();
+        JStatistics statistics = new JStatistics();
         CodeHandler sch = statistics.createStatisticsCodeHandler(ch);
         try {
             jsdp.initialize(sch, ot);

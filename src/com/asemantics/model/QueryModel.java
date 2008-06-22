@@ -18,38 +18,40 @@
 
 package com.asemantics.model;
 
-import com.asemantics.storage.CodeStorage;
-import com.asemantics.model.ontology.Ontology;
+import java.util.Date;
 
-
-public interface CoderFactory {
+/**
+ * Represents a model to query {@link com.asemantics.model.CodeModel}s.
+ */
+public interface QueryModel {
 
     /**
-     * Creates the <i>Code Model Ontology</i>. 
+     * Returns the Code Model asset.
      *
      * @return
      */
-    Ontology createCodeModelOntology();
+    public Asset getAsset();
 
     /**
-     * Creates a <i>Code Model</i> instance.
+     * Returns the asset libraries.
      *
      * @return
      */
-    CodeModelBase createCodeModel();
+    public String[] getLibraries();
 
     /**
-     * Creates a <i>Code Storage</i> instance.
+     * Returns the library location.
      *
      * @return
      */
-    CodeStorage createCodeStorage();
+    public String getLibraryLocation(String library);
 
     /**
-     * Creates a <i>Code Handler</i> instance.
-     * 
-     * @param model
+     * Returns the library datetime.
+     *
+     * @param library
      * @return
      */
-    CodeHandler createHandlerOnModel(CodeModelBase model);
+    public Date getLibraryDateTime(String library);
+    
 }

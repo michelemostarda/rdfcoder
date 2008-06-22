@@ -36,10 +36,10 @@ public class JavaBytecodeJarParserTest extends TestCase {
     private JenaCodeModel jcm;
     CodeHandler codeHandler;
     private JavaBytecodeJarParser parser;
-    Statistics statistics;
+    JStatistics statistics;
 
     public JavaBytecodeJarParserTest() {
-        statistics = new Statistics();
+        statistics = new JStatistics();
         objectsTable = new ObjectsTable();
         jcf = new JenaCoderFactory();
         jcm = (JenaCodeModel) jcf.createCodeModel();

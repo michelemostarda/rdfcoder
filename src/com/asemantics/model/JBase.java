@@ -195,7 +195,7 @@ public abstract class JBase {
             String parentType  = qm.getRDFType( concatenate(sections, sections.length - 2) );
             String[] parentSections = new String[sections.length -1];
             System.arraycopy(sections, 0, parentSections, 0, sections.length -1);
-            parent = CoderFactory.createBaseOnRDFClass(qm, parentSections, parentType);
+            parent = JavaCoderFactory.createBaseOnRDFClass(qm, parentSections, parentType);
         }
         HierarchyResult hr = new HierarchyResult();
         hr.p = (JContainer) parent;

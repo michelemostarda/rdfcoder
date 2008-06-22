@@ -172,7 +172,7 @@ public class JenaCodeModel extends SPARQLQuerableCodeModel {
     }
 
     private void checkTriple(String subject, String predicate, String object) {
-         if(RDFCoder.isDEBUG()) {
+         if( RDFCoder.assertions() ) {
             if(subject.length() == 0 ) {
                 throw new CodeModelDebugException("invalid 0 length subject.");
             }

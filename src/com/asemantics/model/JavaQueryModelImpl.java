@@ -35,13 +35,13 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         this.codeModel = codeModel;
     }
 
-    public JAsset getAsset() {
-        return CoderFactory.createJAsset(this);
+    public Asset getAsset() {
+        return JavaCoderFactory.createJAsset(this);
     }
 
     public String[] getLibraries() {
         List<String> result = new ArrayList<String>();
-        TripleIterator ti = codeModel.searchTriples(JavaCodeModel.JASSET, CodeModelBase.CONTAINS_LIBRARY, CodeModel.ALL_MATCH);
+        TripleIterator ti = codeModel.searchTriples(JavaCodeModel.ASSET, CodeModelBase.CONTAINS_LIBRARY, CodeModel.ALL_MATCH);
         try {
             while(ti.next()) {
                 result.add(ti.getObject());
@@ -194,7 +194,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         try {
             while(t1.next()) {
                 try {
-                    packages.add( CoderFactory.createJPackage(this, t1.getSubject()) );
+                    packages.add( JavaCoderFactory.createJPackage(this, t1.getSubject()) );
                 } catch (QueryModelException cme) {
                     throw new RuntimeException(cme);
                 }
@@ -214,7 +214,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         List packages = new ArrayList();
         try {
             while(t1.next()) {
-                packages.add( CoderFactory.createJPackage(this, t1.getObject()) );
+                packages.add( JavaCoderFactory.createJPackage(this, t1.getObject()) );
             } 
         }finally {
             t1.close();
@@ -226,7 +226,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
 //        if( ! packageExists(pathToPackage) ) {
 //            throw new QueryModelException("Package '" + pathToPackage + "' doesn't exist.");
 //        }
-        return CoderFactory.createJPackage(this, pathToPackage);
+        return JavaCoderFactory.createJPackage(this, pathToPackage);
     }
 
     public JInterface[] getAllInterfaces() {
@@ -235,7 +235,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         try {
             while(t1.next()) {
                 try {
-                    classes.add( CoderFactory.createJInterface(this, t1.getSubject()) );
+                    classes.add( JavaCoderFactory.createJInterface(this, t1.getSubject()) );
                 } catch (QueryModelException qme) {
                     throw new RuntimeException(qme);
                 }
@@ -247,7 +247,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     }
 
     public JInterface getInterface(String pathToInterface) throws QueryModelException {
-        return CoderFactory.createJInterface(this, pathToInterface);
+        return JavaCoderFactory.createJInterface(this, pathToInterface);
     }
 
     public JClass[] getAllClasses() {
@@ -256,7 +256,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         try {
             while(t1.next()) {
                 try {
-                    classes.add( CoderFactory.createJClass(this, t1.getSubject()) );
+                    classes.add( JavaCoderFactory.createJClass(this, t1.getSubject()) );
                 } catch (QueryModelException qme) {
                     throw new RuntimeException(qme);
                 }
@@ -268,7 +268,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     }
 
     public JClass getClazz(String pathToClass) throws QueryModelException {
-        return CoderFactory.createJClass(this, pathToClass);
+        return JavaCoderFactory.createJClass(this, pathToClass);
     }
 
     public JInterface[] getInterfacesInto(String pathToContainer) throws QueryModelException {
@@ -281,7 +281,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         try {
             while(t1.next()) {
                 try {
-                    interfaces.add(CoderFactory.createJInterface(this, t1.getObject()) );
+                    interfaces.add(JavaCoderFactory.createJInterface(this, t1.getObject()) );
                 } catch (QueryModelException qme) {
                     throw new RuntimeException(qme);
                 }
@@ -297,7 +297,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         try {
             while(t2.next()) {
                 try {
-                    interfaces.add( CoderFactory.createJInterface( this, t2.getObject()) );
+                    interfaces.add( JavaCoderFactory.createJInterface( this, t2.getObject()) );
                 } catch (QueryModelException qme) {
                     throw new RuntimeException(qme);
                 }
@@ -317,7 +317,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         try {
             while(t1.next()) {
                 try {
-                    classes.add(CoderFactory.createJClass(this, t1.getObject()) );
+                    classes.add(JavaCoderFactory.createJClass(this, t1.getObject()) );
                 } catch (QueryModelException qme) {
                     throw new RuntimeException(qme);
                 }
@@ -333,7 +333,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         try {
             while(t2.next()) {
                 try {
-                    classes.add( CoderFactory.createJClass(this, t2.getObject()) );
+                    classes.add( JavaCoderFactory.createJClass(this, t2.getObject()) );
                 } catch (QueryModelException qme) {
                     throw new RuntimeException(qme);
                 }
@@ -349,7 +349,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         try {
             while(t3.next()) {
                 try {
-                    classes.add( CoderFactory.createJClass(this, t3.getObject()) );
+                    classes.add( JavaCoderFactory.createJClass(this, t3.getObject()) );
                 } catch (QueryModelException qme) {
                     throw new RuntimeException(qme);
                 }
@@ -369,7 +369,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         );
         try {
             while(t1.next()) {
-                attributes.add( CoderFactory.createJAttribute(this, t1.getObject()) );
+                attributes.add( JavaCoderFactory.createJAttribute(this, t1.getObject()) );
             }
         } finally {
             t1.close();
@@ -382,7 +382,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         try {
             while(t2.next()) {
                 try {
-                    attributes.add( CoderFactory.createJAttribute(this, t2.getObject()) );
+                    attributes.add( JavaCoderFactory.createJAttribute(this, t2.getObject()) );
                 } catch (QueryModelException qme) {
                     throw new RuntimeException(qme);
                 }
@@ -398,7 +398,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
 //            throw new QueryModelException("Attribute ' " + pathToAttribute + "' is not defined.");
 //        }
         // Creating the attribute type.
-        return CoderFactory.createJAttribute(
+        return JavaCoderFactory.createJAttribute(
                 this,
                 JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.ATTRIBUTE_PREFIX, pathToAttribute)
         );
@@ -429,7 +429,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         );
         try {
             while(t1.next()) {
-                methods.add( CoderFactory.createJMethod(this, t1.getObject()) );
+                methods.add( JavaCoderFactory.createJMethod(this, t1.getObject()) );
             }
         } finally {
             t1.close();
@@ -441,7 +441,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         );
         try {
             while(t2.next()) {
-                methods.add( CoderFactory.createJMethod(this, t2.getObject()) );
+                methods.add( JavaCoderFactory.createJMethod(this, t2.getObject()) );
             }
         } finally {
             t2.close();
@@ -453,7 +453,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         );
         try {
             while(t3.next()) {
-                methods.add( CoderFactory.createJMethod(this, t3.getObject()) );
+                methods.add( JavaCoderFactory.createJMethod(this, t3.getObject()) );
             }
         } finally {
             t3.close();
@@ -462,7 +462,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     }
 
     public JMethod getMethod(String pathToMethod) throws QueryModelException {
-        return CoderFactory.createJMethod(this, pathToMethod);
+        return JavaCoderFactory.createJMethod(this, pathToMethod);
     }
 
     public JEnumeration[] getEnumerationsInto(String pathToContainer) throws QueryModelException {
@@ -474,7 +474,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         List enumerations = new ArrayList();
         try {
             while(t1.next()) {
-                enumerations.add( CoderFactory.createJEnumeration(this, t1.getObject()) );
+                enumerations.add( JavaCoderFactory.createJEnumeration(this, t1.getObject()) );
             }
         } finally {
             t1.close();
@@ -483,7 +483,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     }
 
     public JEnumeration getEnumeration(String pathToEnumeration) throws QueryModelException {
-        return CoderFactory.createJEnumeration(this, pathToEnumeration);
+        return JavaCoderFactory.createJEnumeration(this, pathToEnumeration);
     }
 
     public String[] getElements(String pathToEnumeration) {
@@ -530,7 +530,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
                         throw new QueryModelException("Cannot find the return type for the method '" + pathToMethod + "'.");
                     }
                     signatures.add(
-                        CoderFactory.createJSignature(
+                        JavaCoderFactory.createJSignature(
                                 this,
                                 t1.getObject(),
                                 ( (JavaCodeModel.JType[]) parametersIntoSignature.toArray(new JavaCodeModel.JType[parametersIntoSignature.size()]) ),
