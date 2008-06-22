@@ -1,20 +1,79 @@
-CodeModelFactory cmf = new JenaCodeModelFactory();
-CodeModel cm = cmf.createCodeModelInstance();
+==================================================
+ Desiderata high level RDFCoder API Usage example
+==================================================
 
-CodeScanner cs = new JavaCodeScanner();
-cs.scan("src/", cm);
+/*
+ * This usage sample wants to show a cross - language application
+ * of RDFCoder.
+ */
 
-cmf.save(cm, "identifier", "./persistence.dat");
+// Creates an RDFCoder instance on a repository.
+RDFCoder coder = new RDFCoder("/path/to/repo");
 
-...
+// Validates generated models over owning ontologies.
+coder.setValidatingModel(true);
+
+// Enables debug controls.
+coder.setDebug(true);
+
+// Register coder profiles.
+coder.registerProfile("java", "pack.to.JavaProfileManifest"); // Loaded by default.
+coder.registerProfile("c"   , "pack.to.CProfileManifest");
+coder.registerProfile("jni" , "pack.to.JNIProfileManifest");
 
 
-CodeModelFactory cmf = new JenaCodeModelFactory();
-CodeModel cm = cmf.createCodeModelInstance();
-cmf.load(cm, "identifier", "./persistence.dat");
+// Creates an model, i.e. a set of libraries.
+Model model = coder.createModel("model_name");
 
-cm.parentPackageOf("p1");
 
-QueryModel qm = CodeModelFactory.createQueryModel(cm);
-qm.getAllPackages();
+// Retrieves a Java profile model.
+JavaProfile jprofile = (JavaProfile) model.getProfile("java");
 
+// Initializes the JRE model if not yet done.
+final String JRE = "/path/to/jre_x.y.z";
+if( ! jprofile.checkJREinit(JRE) ) {
+	JREReport jreReport = jprofile.initJRE(JRE);
+}
+
+// Retrieves the jprofile ontology.
+jprofile.printOntologyOWL(System.out);
+
+// Processes java libraries.
+JStatistics s1 = jprofile.loadSources("jlibname1", "/path/to/src"     );
+JStatistics s2 = jprofile.loadClasses("jlibname2", "/path/to/classes" );
+JStatistics s3 = jprofile.loadJar    ("jlibname3", "/path/to/file.jar");
+
+// Querying java model.
+JavaQueryModel jquery   = model.getQueryModel("java");
+JAttribute[] attributes = jquery.getAttributesInto("pathToClass");
+
+// Java lib Dependency analysis.
+JDependencyIterator dependencies = jquery.findDependences("dependent_lib_name", "dependable_lib_name");
+// --- processing attributes ---
+
+
+// Processes C modules.
+CProfile cprofile = (CProfile) model.getProfile("c");
+// Loads C libraries.
+cprofile.loadModule("clibname1", "/path/to/headers", "/path/to/modules");
+
+// Querying C model.
+CQueryModel cquery = model.getQueryModel("c");
+CFunction function = cquery.getFunctionsInto("module_name");
+
+
+// Retieves a JNI profile for model. 
+JNIProfile jniProfile = (JNIProfile) model.getProfile("jni");
+
+// Processes JNI declarations.
+jniProfile.processJNI("/path/to/file.jni");
+
+
+// Low level cross querying.
+TripleIterator iter = model.sparqlQuery("cross SPARQL query");
+
+// Saves model data.
+model.save();
+
+// Loads an existing model.
+Model. existingModel = model.load("existingModelName");

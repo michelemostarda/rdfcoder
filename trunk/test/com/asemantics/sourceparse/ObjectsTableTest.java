@@ -22,12 +22,6 @@ import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.asemantics.model.CoderFactory;
-import com.asemantics.storage.JenaCoderFactory;
-import com.asemantics.storage.CodeStorage;
 
 /**
  * Test unit of <code>ObjectsTable</code>

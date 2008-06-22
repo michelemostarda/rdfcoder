@@ -16,40 +16,30 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.profile;
 
-import com.asemantics.storage.CodeStorage;
-import com.asemantics.model.ontology.Ontology;
+import com.asemantics.model.CoderFactory;
 
 
-public interface CoderFactory {
-
-    /**
-     * Creates the <i>Code Model Ontology</i>. 
-     *
-     * @return
-     */
-    Ontology createCodeModelOntology();
+/**
+ * A <i>profile descriptor</i> defines
+ * language support features for RDFCoder.
+ *
+ */
+public interface ProfileDescriptor {
 
     /**
-     * Creates a <i>Code Model</i> instance.
-     *
-     * @return
-     */
-    CodeModelBase createCodeModel();
-
-    /**
-     * Creates a <i>Code Storage</i> instance.
-     *
-     * @return
-     */
-    CodeStorage createCodeStorage();
-
-    /**
-     * Creates a <i>Code Handler</i> instance.
+     * Returns a human - language profile description.
      * 
-     * @param model
      * @return
      */
-    CodeHandler createHandlerOnModel(CodeModelBase model);
+    String getProfileDescription();
+
+    /**
+     * Returns the {@link com.asemantics.model.CoderFactory}
+     * for this profile.
+     *
+     * @return
+     */
+    CoderFactory getCoderFactory();
 }

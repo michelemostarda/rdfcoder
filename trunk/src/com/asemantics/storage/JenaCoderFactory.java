@@ -18,8 +18,9 @@
 
 package com.asemantics.storage;
 
-import com.asemantics.model.CoderFactory;
-import com.asemantics.model.SPARQLQuerableCodeModel;
+import com.asemantics.model.*;
+import com.asemantics.model.ontology.Ontology;
+import com.asemantics.model.ontology.ValidatingCodeModel;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
@@ -28,11 +29,12 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
-public class JenaCoderFactory extends CoderFactory {
+public class JenaCoderFactory extends JavaCoderFactory {
 
     public SPARQLQuerableCodeModel createCodeModel() {
         Model model = ModelFactory.createDefaultModel();
-        return new JenaCodeModel(model);
+        SPARQLQuerableCodeModel jcm = new JenaCodeModel(model);
+        return jcm;
     }
 
     public JenaCodeStorage createCodeStorage() {

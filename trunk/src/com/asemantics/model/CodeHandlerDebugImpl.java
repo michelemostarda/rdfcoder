@@ -26,6 +26,7 @@ import com.asemantics.sourceparse.ObjectsTable;
  * printing on System.out all the received events.
  */
 public class CodeHandlerDebugImpl implements CodeHandler {
+
     public void startParsing(String libraryName, String location) {
         System.out.println("Start parsing process of library '" + libraryName + "' at location '" + location + "'");
     }

@@ -18,9 +18,8 @@
 package com.asemantics.sourceparse;
 
 import com.asemantics.model.CodeHandler;
-import com.asemantics.model.JavaCodeModel;
-import com.asemantics.model.CoderFactory;
 import com.asemantics.model.CodeModelBase;
+import com.asemantics.model.CoderFactory;
 import com.asemantics.storage.JenaCoderFactory;
 import junit.framework.TestCase;
 
@@ -38,7 +37,7 @@ public class DirectoryParserTest extends TestCase {
 
     public void testSourceDirParser() {
         JavaSourceFileParser javaSourceFileParser = new JavaSourceFileParser();
-        Statistics statistics = processDir(javaSourceFileParser, new File("./src"));
+        JStatistics statistics = processDir(javaSourceFileParser, new File("./src"));
         System.out.println( statistics.toString() );
         assertTrue( "No classes found.", statistics.getParsedClasses() > 0);
         assertTrue( "No interfaces found.", statistics.getParsedInterfaces() > 0);
@@ -49,14 +48,14 @@ public class DirectoryParserTest extends TestCase {
 
     public void testJavadocDirParser() {
         JavadocFileParser javadocFileParser = new JavadocFileParser();
-        Statistics statistics = processDir(javadocFileParser, new File("./src"));
+        JStatistics statistics = processDir(javadocFileParser, new File("./src"));
         System.out.println( statistics.toString() );
         assertTrue( "No classes found.", statistics.getJavadocEntries() > 0);
         assertTrue( "No methods found.", statistics.getMethodsJavadoc() > 0);
     }
 
-    private Statistics processDir(FileParser fileParser, File dir) {
-        Statistics statistics = new Statistics();
+    public static JStatistics processDir(FileParser fileParser, File dir) {
+        JStatistics statistics = new JStatistics();
         CoderFactory coderFactory = new JenaCoderFactory();
         CodeModelBase codeModel   = coderFactory.createCodeModel();
         CodeHandler codeHandler   = coderFactory.createHandlerOnModel(codeModel);

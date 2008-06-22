@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Statistics {
+public class JStatistics {
 
     /* Statistic fields. */
 
@@ -55,12 +55,12 @@ public class Statistics {
      */
     private List<StatisticsCodeHandler> statisticsCodeHandlers;
 
-    public Statistics() {
+    public JStatistics() {
         errorMessages = new StringBuilder();
         statisticsCodeHandlers = new ArrayList();
     }
 
-    protected Statistics(int e, int pf, int pc, int pi, int pa, int pco, int pm, int pe, int ui, int re, int je, int cj, int mj, String[] u) {
+    protected JStatistics(int e, int pf, int pc, int pi, int pa, int pco, int pm, int pe, int ui, int re, int je, int cj, int mj, String[] u) {
         this();
         
         parseErrors = e;

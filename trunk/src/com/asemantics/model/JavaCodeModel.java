@@ -18,10 +18,7 @@
 
 package com.asemantics.model;
 
-import com.asemantics.RDFCoder;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -604,8 +601,6 @@ public abstract class JavaCodeModel extends CodeModelBase {
 
     /* BEGIN: Ontology terms. */
 
-    public static final String ASSET_KEY        = "jasset";
-
     public static final String PACKAGE_KEY      = "jpackage";
 
     public static final String INTERFACE_KEY    = "jinterface";
@@ -631,8 +626,6 @@ public abstract class JavaCodeModel extends CodeModelBase {
 
     /* BEGIN: RDF classes. */
 
-    public static final String JASSET       = toURI(ASSET_KEY);
-
     public static final String JPACKAGE     = toURI(PACKAGE_KEY);
 
     public static final String JINTERFACE   = toURI(INTERFACE_KEY);
@@ -655,8 +648,6 @@ public abstract class JavaCodeModel extends CodeModelBase {
 
 
     /* BEGIN: Entity prefixes. */
-
-    public static final String JASSET_PREFIX      = toPrefix(ASSET_KEY);
 
     public static final String PACKAGE_PREFIX     = toPrefix(PACKAGE_KEY);
 

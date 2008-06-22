@@ -149,7 +149,7 @@ public class CommandLine {
 
     /* Fields. */
 
-    private CoderFactory coderFactory;
+    private JavaCoderFactory coderFactory;
 
     /**
      * Loaded model handlers.
@@ -280,10 +280,10 @@ public class CommandLine {
             throw new IllegalArgumentException("a model with name " + modelName + " already exists.");   
         }
 
-        CodeModelBase cmb   = coderFactory.createCodeModel();
-        CodeHandler ch      = coderFactory.createHandlerOnModel(cmb);
-        JavaQueryModel qm       = coderFactory.createQueryModel(cmb);
-        ModelHandler mh     = new ModelHandler(cmb, ch, qm);
+        CodeModelBase cmb = coderFactory.createCodeModel();
+        CodeHandler   ch  = coderFactory.createHandlerOnModel(cmb);
+        JavaQueryModel qm = coderFactory.createQueryModel(cmb);
+        ModelHandler mh   = new ModelHandler(cmb, ch, qm);
         modelHandlers.put(modelName, mh);
         return mh;
     }
@@ -565,7 +565,7 @@ public class CommandLine {
 
         // Process arguments.
         ObjectsTable ot = new ObjectsTable();
-        Statistics statistics = new Statistics();
+        JStatistics statistics = new JStatistics();
         CodeHandler statisticsCodeHandler = statistics.createStatisticsCodeHandler( getCodeHandler() );
 
         JavaBytecodeJarParser javaBytecodeJarParser = null;

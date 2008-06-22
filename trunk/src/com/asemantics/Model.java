@@ -16,40 +16,49 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics;
 
-import com.asemantics.storage.CodeStorage;
-import com.asemantics.model.ontology.Ontology;
+import com.asemantics.profile.Profile;
+import com.asemantics.model.JavaQueryModel;
 
 
-public interface CoderFactory {
+/**
+ * Defines an RDF model. 
+ */
+public class Model {
+
+    private RDFCoder coder;
+
+    protected Model(RDFCoder c) {
+        coder = c;
+    }
 
     /**
-     * Creates the <i>Code Model Ontology</i>. 
+     * Returns a profile by name.
      *
+     * @param name
      * @return
      */
-    Ontology createCodeModelOntology();
+    public Profile getProfile(String name) {
+        return coder.getProfile(name);
+    }
 
     /**
-     * Creates a <i>Code Model</i> instance.
+     * Returns the query model fot the specified
+     * <i>profileName</i>.
      *
+     * @param profileName
      * @return
      */
-    CodeModelBase createCodeModel();
+    public JavaQueryModel getQueryModel(String profileName) {
+        //TODO: TBI
+        return null;
+    }
 
     /**
-     * Creates a <i>Code Storage</i> instance.
-     *
-     * @return
+     * Destroies the model content.
      */
-    CodeStorage createCodeStorage();
-
-    /**
-     * Creates a <i>Code Handler</i> instance.
-     * 
-     * @param model
-     * @return
-     */
-    CodeHandler createHandlerOnModel(CodeModelBase model);
+    protected void destroy() {
+        // Empty.
+    }
 }

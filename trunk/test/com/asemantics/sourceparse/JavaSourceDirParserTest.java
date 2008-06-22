@@ -60,7 +60,7 @@ public class JavaSourceDirParserTest extends TestCase {
 
     public void testParse() throws IOException, CodeModelException {
         DirectoryParser jsdp = new DirectoryParser( new JavaSourceFileParser() );
-        Statistics statistics = new Statistics();
+        JStatistics statistics = new JStatistics();
         CodeHandler sch = statistics.createStatisticsCodeHandler(ch);
         jsdp.initialize(sch, ot);
         try {

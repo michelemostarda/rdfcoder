@@ -28,6 +28,7 @@ import com.asemantics.sourceparse.ObjectsTable;
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
+//TODO: rename in JavaCodeHandler.
 public interface CodeHandler extends ParseHandler, JavadocHandler, BackTrackingSupport {
 
     /**

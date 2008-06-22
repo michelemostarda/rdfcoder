@@ -20,7 +20,6 @@ package com.asemantics.storage;
 
 import com.asemantics.RDFCoder;
 import com.asemantics.model.CodeModel;
-import com.asemantics.storage.CodeStorage;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -43,7 +42,7 @@ public class JenaCodeStorage extends CodeStorage {
         }
 
         JenaCodeModel jenaCodeModel = (JenaCodeModel) codeModel;
-        if(RDFCoder.isDEBUG()) {
+        if( RDFCoder.assertions() ) {
             JenaCodeModel.checkModel(jenaCodeModel.getJenaModel());
         }
         FileOutputStream fos = openFileOutputStream(parameters);

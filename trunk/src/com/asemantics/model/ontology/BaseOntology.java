@@ -16,31 +16,24 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.model.ontology;
 
-import java.util.Date;
+import static com.asemantics.model.CodeModelBase.*;
+
+import java.net.URL;
+
 
 /**
- * Represents the Asset of the parsed libraries.
+ * Defines ontology predicates common to every <i>Ontology</i>.
  */
-public class JAsset {
+public abstract class BaseOntology extends DefaultOntology {
 
-    private JavaQueryModel queryModel;
-
-    protected JAsset(JavaQueryModel qm) {
-        queryModel = qm;   
-    }
-
-    public String[] getLibraries() {
-        return queryModel.getLibraries();
-    }
-
-    public String getLibraryLocation(String library) {
-        return queryModel.getLibraryLocation(library);
-    }
-
-    public Date getLibraryDateTime(String library) {
-        return queryModel.getLibraryDateTime(library);
+    protected BaseOntology() {
+        try {
+            defineRelation(ASSET, new URL(CONTAINS_LIBRARY), ASSET_PREFIX);
+        } catch (Exception e) {
+             throw new RuntimeException("Error while defining Base Ontology: " + BaseOntology.class);
+        }
     }
 
 }
