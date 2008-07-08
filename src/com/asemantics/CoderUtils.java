@@ -27,14 +27,34 @@ import java.util.List;
  */
 public class CoderUtils {
 
+    /**
+     * Defines the char separator in a package path.
+     */
     public static final String PACKAGE_SEPARATOR = ".";
 
+    /**
+     * Defines the char sepatator in an archive path.
+     */
     public static final String ARCHIVE_PATH_SEPARATOR = "/";
 
+    /**
+     * Java source extension.
+     */
     public static final String JAVA_SOURCE_FILE_EXT  = ".java";
 
+    /**
+     * Java class extension.
+     */
     public static final String JAVA_SOURCE_CLASS_EXT = ".class";
 
+    /**
+     * Java JAR archive extension.
+     */
+    public static final String JAVA_JAR_EXT = ".jar";
+
+    /**
+     * Filters all java source files inside a dir.
+     */
     public static class JavaSourceFilenameFilter implements FilenameFilter {
         public boolean accept(File dir, String name) {
             File file = new File(dir, name);
@@ -45,6 +65,9 @@ public class CoderUtils {
         }
     }
 
+    /**
+     * Filters all java class files inside a dir.
+     */
     public static class JavaClassFilenameFilter implements FilenameFilter {
         public boolean accept(File dir, String name) {
             File file = new File(dir, name);
@@ -55,6 +78,22 @@ public class CoderUtils {
         }
     }
 
+    /**
+     * Filters all jar archives inside a dir.
+     */
+    public static class JavaJarFilter implements FilenameFilter {
+        public boolean accept(File dir, String name) {
+            File file = new File(dir, name);
+            if( file.isDirectory() || file.isHidden() ) { return false; }
+            String postfix = JAVA_JAR_EXT;
+            int lastIndexOf = name.lastIndexOf(postfix);
+            return lastIndexOf > 0 && lastIndexOf == name.length() - postfix.length();
+        }
+    }
+
+    /**
+     * join method string builder.
+     */
     private static StringBuilder join_sb = new StringBuilder();
 
     public static String join(List list, String separator) {
