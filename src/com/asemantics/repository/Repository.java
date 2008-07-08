@@ -18,12 +18,10 @@
 
 package com.asemantics.repository;
 
-import com.asemantics.repository.RepositoryException;
-
 import java.io.*;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * This class represents a file repository where put code storages.
@@ -33,7 +31,7 @@ public class Repository {
     /**
      * Kinds of resources.
      */
-    protected enum ResourceType {
+    public enum ResourceType {
         BINARY {
 
             String getExtension() {
@@ -97,7 +95,7 @@ public class Repository {
     /**
      * Resource element.
      */
-    protected static class Resource {
+    public class Resource {
 
         /**
          * parent directory containing this resource.
@@ -113,6 +111,18 @@ public class Repository {
          * The resource type.
          */
         private ResourceType type;
+
+        /**
+         * Number of readers of this resource.
+         */
+        private short readersCount = 0;
+
+        /**
+         * Number of writers of this resource.
+         */
+        private int writersCount = 0;
+
+
 
         /**
          * Constructor.
@@ -159,8 +169,40 @@ public class Repository {
          * @return
          * @throws FileNotFoundException
          */
-        public InputStream getInputStream() throws FileNotFoundException {
-            return new FileInputStream( getLocation() );
+        public InputStream getInputStream() throws FileNotFoundException, RepositoryException {
+            if(readersCount > 0) {
+                throw new RepositoryException("Cannot open resource in write mode: there is at least one reader on it");
+            }
+            if(writersCount > 0) {
+                throw new RepositoryException("Cannot open resource in write mode: there is aready a writer on it");
+            }
+
+            // Check there is a single writer.
+            if(writersCount > 0) {
+                throw new RepositoryException("Resource '" + name + "' already accessed in write mode.");
+            }
+            // Creates a lock file for write mode.
+            writersCount++;
+            try {
+                createLockFile(name);
+            } catch (IOException e) {
+                throw new RepositoryException(e);
+            }
+
+            return new FileInputStream( getLocation() ) {
+
+                /**
+                 * Releases the lock file.
+                 *
+                 * @throws IOException
+                 */
+                public void close() throws IOException {
+                    super.close();
+                    writersCount--;
+                    removeLockFile(name);
+                }
+
+            };
         }
 
         /**
@@ -169,8 +211,33 @@ public class Repository {
          * @return
          * @throws FileNotFoundException
          */
-        public OutputStream getOutputStream() throws FileNotFoundException {
-            return new FileOutputStream( getLocation() );
+        public OutputStream getOutputStream() throws FileNotFoundException, RepositoryException {
+            if(writersCount > 0) {
+                throw new RepositoryException("Cannot open resource in read mode: there is a writer on it");
+            }
+
+            readersCount++;
+            return new FileOutputStream( getLocation() ) {
+
+                public void close() throws IOException {
+                    super.close();
+                    readersCount--;
+                }
+                
+            };
+        }
+    }
+
+    /**
+     * Filters all lock files inside a dir.
+     */
+    public static class LockFileFilter implements FilenameFilter {
+        public boolean accept(File dir, String name) {
+            File file = new File(dir, name);
+            if( file.isDirectory() ) { return false; }
+            String postfix = LOCK_FILE_EXT;
+            int lastIndexOf = name.lastIndexOf(postfix);
+            return lastIndexOf > 0 && lastIndexOf == name.length() - postfix.length();
         }
     }
 
@@ -183,6 +250,11 @@ public class Repository {
      * Default repository location.
      */
     public static final String DEFAULT_REPOSITORY_LOCATION = "~";
+
+    /**
+     * Extension of lock files.
+     */
+    private static final String LOCK_FILE_EXT = ".lck";
 
     /**
      * Defualt repository instance.
@@ -232,7 +304,7 @@ public class Repository {
      *
      * @return
      */
-    protected static Map<String,Resource> loadResources(File target) {
+    protected Map<String,Resource> loadResources(File target) {
         if( ! target.exists() ) {
             throw new IllegalArgumentException("target dir doesn't exist: '" + target.getAbsolutePath() + "'");
         }
@@ -287,6 +359,9 @@ public class Repository {
     private Repository(File rl) throws RepositoryException {
         repositoryLocation = rl;
         if( ! checkRepository(rl) ) {
+            // Performs a cleanup of repository.
+            removeLockedResources();
+            // Loads existing resources.
             resources = loadResources(repositoryLocation);
         } else {
             resources = new HashMap<String,Resource>();
@@ -348,6 +423,11 @@ public class Repository {
         if( ! resource.getLocation().delete() ) {
             throw new RepositoryException("Cannot delete resource: '" + resourceName + "'");
         }
+        try {
+            removeLockFile(resourceName);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         resources.remove(resourceName);
     }
 
@@ -379,17 +459,123 @@ public class Repository {
             );
         }
 
-        File file = new File(repositoryLocation, type.getFileName(resourceName));
+        File file    = new File(repositoryLocation, type.getFileName(resourceName));
         try {
             file.createNewFile();
         } catch (IOException e) {
             throw new RepositoryException("Cannot create file: '" + file.getAbsolutePath() + "'");
+        }
+        try {
+            createLockFile(resourceName);
+        } catch (IOException e) {
+            try {
+                file.delete();
+            } catch (Exception ee) {
+                ee.printStackTrace();
+            }
+            throw new RepositoryException("Cannot create lock file for resource: '" + resourceName + "'");
         }
 
         Resource resource = new Resource(repositoryLocation, resourceName, type);
         resources.put(resourceName, resource);
 
         return resource;
+    }
+
+    /**
+     * Returns <code>true</code> if a resource is locked in writing mode,
+     * <code>false</code> otherwise.
+     *
+     * @param resourceName
+     * @return
+     * @throws RepositoryException is resourceName doesn't exist.
+     */
+    public boolean isLocked(String resourceName) throws RepositoryException {
+        if( resources != null && ! containsResource(resourceName) ) {
+            throw new RepositoryException("Repository doesn't contain resource name '" + resourceName + "'");
+        }
+
+        File resourceFileLock = new File(repositoryLocation, getFileLockName(resourceName));
+        return resourceFileLock.exists();
+    }
+
+    /**
+     * Returns the name of the open file lock of a resource.
+     *
+     * @param resourceName
+     * @return
+     */
+    private static String getFileLockName(String resourceName) {
+        return "." + resourceName + LOCK_FILE_EXT;
+    }
+
+    /**
+     * Returns the resource name associated to a given lock file name.
+     *
+     * @param lockFileName
+     * @return
+     */
+    private static String getResourceNameFromLockFile(String lockFileName) {
+        return lockFileName
+                .substring(1) // "."
+                .substring(0, lockFileName.length() - 1 - LOCK_FILE_EXT.length() );
+    }
+
+    /**
+     * Creates a lock file for a resource name.
+     *
+     * @param resourceName
+     */
+    private void createLockFile(String resourceName) throws IOException {
+        File lockFile = new File(repositoryLocation, getFileLockName(resourceName));
+        lockFile.createNewFile();
+    }
+
+    /**
+     * Removes a lock file.
+     * 
+     * @param resourceName
+     */
+    private void removeLockFile(String resourceName) {
+        File lockFile = new File(repositoryLocation, getFileLockName(resourceName) );
+        lockFile.delete();
+    }
+
+    /**
+     * Removes all files that are locked and then inconsistent.
+     */
+    private void removeLockedResources() throws RepositoryException {
+        Map<String,Resource> resources = loadResources(repositoryLocation);
+        for(Resource r : resources.values()) {
+            if( isLocked( r.getName() ) ) {
+                try {
+                    removeLockFile( r.getName());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                File resourceLocation = r.getLocation();
+                try {
+                    resourceLocation.delete();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+//        File[] lockFiles = repositoryLocation.listFiles( new LockFileFilter() );
+//        File resourceFile;
+//        for( File lf : lockFiles ) {            ;
+//            try {
+//                resourceFile.delete();
+//            }catch(Throwable t) {
+//                t.printStackTrace();
+//            }try {
+//                lf.delete();
+//            }catch(Throwable t) {
+//                t.printStackTrace();
+//            }
+//        }
+
     }
 
 }

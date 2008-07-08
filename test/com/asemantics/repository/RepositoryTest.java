@@ -18,13 +18,13 @@
 
 package com.asemantics.repository;
 
+import static com.asemantics.repository.Repository.ResourceType.BINARY;
+import static com.asemantics.repository.Repository.ResourceType.XML;
 import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.IOException;
-
-import static com.asemantics.repository.Repository.ResourceType.BINARY;
-import static com.asemantics.repository.Repository.ResourceType.XML;
+import java.io.InputStream;
 
 public class RepositoryTest extends TestCase {
 
@@ -89,5 +89,22 @@ public class RepositoryTest extends TestCase {
            resourceName = RESOURCE_NAME_PREFIX + i;
            repository.removeResource(resourceName);
         }
+    }
+
+    public void testLockFiles() throws RepositoryException, IOException {
+        testCreate();
+        final String lockedResource = "lockedResource";
+        Repository.Resource resource = repository.createResource(lockedResource, XML);
+        assertNotNull(resource);
+        assertTrue( repository.isLocked( lockedResource ) );
+        InputStream is1 = resource.getInputStream();
+        assertNotNull(is1);
+        assertTrue( repository.isLocked( lockedResource ) );
+        is1.close();
+        assertFalse( repository.isLocked( lockedResource ) );
+        InputStream is2 = resource.getInputStream();
+        assertTrue( repository.isLocked( lockedResource ) );
+        is2.close();
+        assertFalse( repository.isLocked( lockedResource ) );
     }
 }
