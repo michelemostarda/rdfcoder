@@ -18,28 +18,67 @@
 
 package com.asemantics;
 
+import com.asemantics.model.CodeHandler;
+import com.asemantics.model.CodeModelBase;
 import com.asemantics.model.JavaOntology;
 import com.asemantics.profile.Profile;
-import com.asemantics.sourceparse.JStatistics;
+import com.asemantics.repository.Repository;
+import com.asemantics.sourceparse.*;
+import com.asemantics.storage.JenaCoderFactory;
+import com.asemantics.storage.CodeStorage;
+import com.asemantics.storage.JenaCodeModel;
 
-import java.io.PrintStream;
+import java.io.*;
+import java.util.*;
 
 
 public class JavaProfile implements Profile {
 
-    private Model model;
+    /**
+     * The prefix of the resource name associated to a JRE.
+     */
+    private static final String JRE_MODEL_PREFIX = "jre_model_";
 
-    protected JavaProfile( Model m ) {
-        model = m;
-    }
+    /**
+     * JRE lib dir.
+     */
+    private static final String JRE_LIB_DIR = "lib";
+
+    /**
+     * JRE extensions dir.
+     */
+    private static final String JRE_EXT_DIR = "lib" + File.separator + "ext";
+
+    /**
+     * JRE security dir.
+     */
+    private static final String JRE_SEC_DIR = "lib" + File.separator + "security";
 
     /**
      * Related java ontology.
      */
     private JavaOntology javaOntology;
 
-    protected JavaProfile() {
+    /**
+     * Coder model.
+     */
+    private Model model;
+
+    /**
+     * Coder repository.
+     */
+    private Repository repository;
+
+    /**
+     * Constructor.
+     *
+     * @param m
+     * @param r
+     */
+    protected JavaProfile( Model m, Repository r ) {
         javaOntology = new JavaOntology();
+        model      = m;
+        repository = r;
     }
 
     /**
@@ -51,9 +90,120 @@ public class JavaProfile implements Profile {
         javaOntology.toOWL(ps);
     }
 
+    /**
+     * Returns the name of the JRE resource.
+     *
+     * @param jreDirName
+     * @return
+     */
+    private String getJREResourceName(String jreDirName) {
+        return JRE_MODEL_PREFIX + jreDirName;
+    }
+
+    /**
+     * Checks that in the current repository a <i>Java Runtime Environment</i>
+     * model already exists.
+     *
+     * @param pathToJRE
+     * @return
+     */
+    public boolean checkJREInit(File pathToJRE) {
+        if( pathToJRE == null ) {
+            throw new RDFCoderException("pathToJRE cannot be null.");
+        }
+        if( ! pathToJRE.exists() ) {
+            throw new RDFCoderException("specified JRE path: '" + pathToJRE.getAbsolutePath() + "' doesn't exist.");
+        }
+
+        String jreResourceName = getJREResourceName( pathToJRE.getName() );
+        return repository.containsResource(jreResourceName);
+    }
+
+    public JREReport initJRE(File pathToJRE) {
+        if( pathToJRE == null ) {
+            throw new RDFCoderException("pathToJRE cannot be null.");
+        }
+        if( ! pathToJRE.exists() ) {
+            throw new RDFCoderException("specified JRE path: '" + pathToJRE.getAbsolutePath() + "' doesn't exist.");
+        }
+
+        // Prepares jars list.
+        File[] libJars = new File( pathToJRE, JRE_LIB_DIR).listFiles( new CoderUtils.JavaJarFilter() );
+        File[] libExts = new File( pathToJRE, JRE_EXT_DIR).listFiles( new CoderUtils.JavaJarFilter() );
+        File[] libSecs = new File( pathToJRE, JRE_SEC_DIR).listFiles( new CoderUtils.JavaJarFilter() );
+        List<File> files = new ArrayList<File>(libJars.length + libExts.length + libSecs.length);
+        files.addAll( Arrays.asList(libJars) );
+        files.addAll( Arrays.asList(libExts) );
+        files.addAll( Arrays.asList(libSecs) );
+
+        // Creates structures.
+        JStatistics statistics    = new JStatistics();
+        ObjectsTable objectsTable = model.getObjectsTable();
+        CodeModelBase cmb         = model.getCodeModelBase();
+        CodeHandler codeHandler   = model.getCoderFactory().createHandlerOnModel(cmb);
+
+        CodeStorage cs = model.getCoderFactory().createCodeStorage();
+        if( ! cs.supportsFile() ) {
+            throw new IllegalStateException();
+        }
+
+        // Initializes structures.
+        JavaBytecodeJarParser parser = new JavaBytecodeJarParser();
+        CodeHandler statCH = statistics.createStatisticsCodeHandler(codeHandler);
+        parser.initialize(statCH, objectsTable);
+        codeHandler.startParsing( pathToJRE.getName(), pathToJRE.getAbsolutePath() );
+
+        // Does jar parsing.
+        for(File f : files) {
+            try {
+                parser.parseFile(f);
+            } catch (IOException ioe) {
+                if( RDFCoder.assertions() ) {
+                    ioe.printStackTrace();
+                } else {
+                    System.err.println("ERROR: " + ioe.getMessage());
+                }
+            }
+        }
+
+        // Disposes parsing.
+        codeHandler.endParsing();
+        objectsTable.clear();
+        objectsTable = null;
+        parser.dispose();
+        parser = null;
+
+        // Saves model in repository.
+        try {
+
+            Repository.Resource resource = repository.createResource( getJREResourceName(pathToJRE.getName()), Repository.ResourceType.XML );
+            OutputStream os  = resource.getOutputStream();
+            cmb.writeRDF(os);
+            os.close();
+
+        } catch (Exception e) {
+            throw new RDFCoderException("Cannot store model in repository.", e);
+        }
+
+        // Disposes model.
+        cmb.clearAll();
+        cmb = null;
+
+        return new JREReport(pathToJRE ,statistics);
+    }
+
     public JStatistics loadSources(String libName, String srcPath) {
-        //TODO: TBI
-        return null;
+        CodeHandler ch = model.getCoderFactory().createHandlerOnModel( model.getCodeModelBase() );
+
+        DirectoryParser jsdp = new DirectoryParser( new JavaSourceFileParser() );
+        JStatistics statistics = new JStatistics();
+        CodeHandler sch = statistics.createStatisticsCodeHandler(ch);
+        jsdp.initialize(sch, model.getObjectsTable() );
+
+        jsdp.parseDirectory(libName, new File(srcPath) );
+        jsdp.dispose();
+
+        return statistics;
     }
 
     public JStatistics loadClasses(String libName, String clsPath) {
@@ -61,11 +211,25 @@ public class JavaProfile implements Profile {
         return null;
     }
 
-    public JStatistics loadJar(String libName, String pathToJar) {
-        //TODO: TBI
-        return null;
+    public JStatistics loadJar(String libName, String pathToJar) throws IOException {
+        JStatistics statistics = new JStatistics();
+        CodeHandler codeHandler = model.getCoderFactory().createHandlerOnModel( model.getCodeModelBase() );
+
+        JavaBytecodeJarParser parser = new JavaBytecodeJarParser();
+        CodeHandler statCH = statistics.createStatisticsCodeHandler(codeHandler);
+        parser.initialize( statCH, model.getObjectsTable() );
+
+        File lib = new File(pathToJar);
+
+        codeHandler.startParsing(libName, lib.getAbsolutePath());
+        parser.parseFile( new File(pathToJar) );
+        codeHandler.endParsing();
+
+        statistics.reset();
+        parser.dispose();
+        parser = null;
+
+        return statistics;
     }
-
-
 
 }

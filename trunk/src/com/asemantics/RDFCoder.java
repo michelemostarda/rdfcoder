@@ -21,10 +21,13 @@ package com.asemantics;
 import com.asemantics.profile.Profile;
 import com.asemantics.repository.Repository;
 import com.asemantics.repository.RepositoryException;
+import com.asemantics.model.CoderFactory;
+import com.asemantics.storage.JenaCoderFactory;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.reflect.Constructor;
 
 /**
  * This class defines an high - level usage class to work with
@@ -71,21 +74,10 @@ public class RDFCoder {
         return true;
     }
 
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public void setDebug(boolean f) {
-        debug = f;
-    }
-
-    public boolean isValidatingModel() {
-        return validatingModel;
-    }
-
-    public void setValidatingModel(boolean f) {
-        validatingModel = f;
-    }
+    /**
+     * The coder factory instance.
+     */
+    private final CoderFactory coderFactory;
 
     /**
      * The working repository.
@@ -95,7 +87,7 @@ public class RDFCoder {
     /**
      * Coder profiles.
      */
-    private Map<String, Profile> profiles;
+    private Map<String, Class<Profile>> profiles;
 
     /**
      * Models map.
@@ -114,7 +106,28 @@ public class RDFCoder {
         } catch (RepositoryException re) {
             throw new RDFCoderException("Invalid repository path.", re);
         }
+
+        // Factory creation.
+        coderFactory = new JenaCoderFactory();
+        profiles     = new HashMap<String,Class<Profile>>();
+        models       = new HashMap<String,Model>  ();
     }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean f) {
+        debug = f;
+    }
+
+    public boolean isValidatingModel() {
+        return validatingModel;
+    }
+
+    public void setValidatingModel(boolean f) {
+        validatingModel = f;
+    }    
 
     /**
      * Registers a profile into <i>Coder</i>.
@@ -127,31 +140,18 @@ public class RDFCoder {
             throw new RDFCoderException("Invalid profile name");
         }
 
-        // Loading class.
-        Class profileClass;
-        Object instance;
-        Profile profile;
+        // Loads class.
+        Class<Profile> profileClass;
         try {
-             profileClass = this.getClass().getClassLoader().loadClass(clazz);
+             profileClass = (Class<Profile>) this.getClass().getClassLoader().loadClass(clazz);
         } catch (ClassNotFoundException cnfe) {
             throw new RDFCoderException("Cannot load profile class.", cnfe);
-        }
-        try {
-            instance = profileClass.newInstance();
-        } catch (Exception e) {
-            throw new RDFCoderException("Error while instantiating class.", e);
-        }
-        try {
-            profile = (Profile) instance;
         } catch (ClassCastException cce) {
-            throw new RDFCoderException("The specified class: '" + clazz + "' is not a " + Profile.class.getName() + " type", cce );
+            throw new RDFCoderException("Specified class: '" + clazz + "' is not subclass of " + Profile.class);
         }
 
         // Adds profile to map.
-        if(profiles == null) {
-            profiles = new HashMap<String,Profile>();
-        }
-        profiles.put(name, profile);
+        profiles.put(name, profileClass);
     }
 
     /**
@@ -164,12 +164,12 @@ public class RDFCoder {
     }
 
     /**
-     * Returns a profile by name.
+     * Returns a profile type by name.
      *
      * @param name
      * @return
      */
-    protected Profile getProfile(String name) {
+    protected Class<Profile> getProfileType(String name) {
         return profiles.get(name);
     }
 
@@ -186,9 +186,7 @@ public class RDFCoder {
      * Deregisters all defined profiles.
      */
     public void deregisterProfiles() {
-        if(profiles != null) {
-            profiles.clear();
-        }
+        profiles.clear();
     }
 
     /**
@@ -206,7 +204,7 @@ public class RDFCoder {
             throw new RDFCoderException("Model name '" + name + "' already exists.");
         }
 
-        Model model = new Model( this );
+        Model model = new Model( this , coderFactory );
         models.put(name, model);
 
         return model;
@@ -254,6 +252,12 @@ public class RDFCoder {
         return models.keySet().toArray( new String[models.keySet().size()] );
     }
 
-
-    
+    /**
+     * Returns the repository object.
+     * 
+     * @return
+     */
+    protected Object getRepository() {
+        return repository;
+    }
 }
