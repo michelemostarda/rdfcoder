@@ -23,10 +23,7 @@ import com.asemantics.model.*;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * The <code>CodeModel</code> implementation for the Jena backend.
@@ -134,6 +131,11 @@ public class JenaCodeModel extends SPARQLQuerableCodeModel {
 
     public void clearAll() {
         jenaModel.removeAll();
+    }
+
+    public void writeRDF(OutputStream os) {
+        RDFWriter writer = jenaModel.getWriter();
+        writer.write(jenaModel, os, null);
     }
 
     /**

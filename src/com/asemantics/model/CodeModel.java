@@ -18,6 +18,8 @@
 
 package com.asemantics.model;
 
+import java.io.OutputStream;
+
 /**
  * Defines the operations exposed by a generic Code Model.
  *
@@ -110,4 +112,12 @@ public interface CodeModel {
      *  Remove the entire content of the model.
      */
     void clearAll();
+
+    /**
+     * Writes in the given {@link java.io.OutputStream}
+     * the RDF representation of this model.
+     *
+     * @return
+     */
+    public void writeRDF(OutputStream os);
 }
