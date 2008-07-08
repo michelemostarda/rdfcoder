@@ -27,7 +27,7 @@ import java.util.Iterator;
 /**
  * Contains base methods common to every <i>Code Model</i>.
  */
-public abstract class CodeModelBase implements CodeModel, BackTrackingSupport{
+public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
 
 
     /* BEGIN: Asset classes and properties. */

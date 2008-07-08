@@ -18,8 +18,15 @@
 
 package com.asemantics;
 
+import com.asemantics.repository.Repository;
 import com.asemantics.profile.Profile;
 import com.asemantics.model.JavaQueryModel;
+import com.asemantics.model.CodeModelBase;
+import com.asemantics.model.CoderFactory;
+import com.asemantics.model.CodeModel;
+import com.asemantics.sourceparse.ObjectsTable;
+
+import java.lang.reflect.Constructor;
 
 
 /**
@@ -27,10 +34,32 @@ import com.asemantics.model.JavaQueryModel;
  */
 public class Model {
 
+    /**
+     * The root coder object.
+     */
     private RDFCoder coder;
 
-    protected Model(RDFCoder c) {
-        coder = c;
+    /**
+     * The coder factory.
+     */
+    private CoderFactory coderFactory;
+
+    /**
+     * Internal objects table.
+     */
+    private ObjectsTable objectsTable;
+
+    /**
+     * Internal code model.
+     */
+    private CodeModelBase codeModelBase;
+
+    protected Model(RDFCoder c, CoderFactory cf) {
+        coder         = c;
+        coderFactory  = cf;
+
+        objectsTable  = new ObjectsTable();
+        codeModelBase = cf.createCodeModel(); 
     }
 
     /**
@@ -40,7 +69,16 @@ public class Model {
      * @return
      */
     public Profile getProfile(String name) {
-        return coder.getProfile(name);
+        Class<Profile> profileClass = coder.getProfileType(name);
+
+        Object instance;
+        try {
+            Constructor constructor = profileClass.getDeclaredConstructor(Model.class, Repository.class);
+            instance = constructor.newInstance(this, coder.getRepository() );
+        } catch (Exception e) {
+            throw new RDFCoderException("Error while instantiating class.", e);
+        }
+        return (Profile) instance;
     }
 
     /**
@@ -53,6 +91,32 @@ public class Model {
     public JavaQueryModel getQueryModel(String profileName) {
         //TODO: TBI
         return null;
+    }
+
+    /**
+     * Returns the {@link com.asemantics.model.CoderFactory} insstance for this model.
+     *
+     * @return
+     */
+    protected CoderFactory getCoderFactory() {
+        return coderFactory;
+    }
+
+    /**
+     * Returns the objects table associated to this model.
+     *
+     * @return
+     */
+    protected ObjectsTable getObjectsTable() {
+        return objectsTable;
+    }
+
+    /**
+     * Returns the {@link com.asemantics.model.CodeModelBase} common underlying instance.
+     * @return
+     */
+    protected CodeModelBase getCodeModelBase() {
+        return codeModelBase;
     }
 
     /**

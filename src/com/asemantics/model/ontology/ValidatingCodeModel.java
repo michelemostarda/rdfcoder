@@ -20,6 +20,8 @@ package com.asemantics.model.ontology;
 
 import com.asemantics.model.*;
 
+import java.io.OutputStream;
+
 /**
  * This decorator validates addition of model triples over a given
  * ontology.
@@ -85,6 +87,10 @@ public class ValidatingCodeModel extends CodeModelBase {
 
     public void clearAll() {
         decorated.clearAll();
+    }
+
+    public void writeRDF(OutputStream os) {
+        decorated.writeRDF(os);
     }
 
     private RuntimeException createRE(OntologyException oe) {

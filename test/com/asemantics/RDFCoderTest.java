@@ -24,10 +24,13 @@ import com.asemantics.model.QueryModelException;
 import com.asemantics.sourceparse.JStatistics;
 import junit.framework.TestCase;
 
+import java.io.File;
+import java.io.IOException;
+
 
 public class RDFCoderTest extends TestCase {
 
-    public void testHighLevelAPI() throws QueryModelException {
+    public void testHighLevelAPI() throws QueryModelException, IOException {
 
         // Creates an RDFCoder instance on a repository.
         RDFCoder coder = new RDFCoder("target_test/hla_repo");
@@ -48,13 +51,12 @@ public class RDFCoderTest extends TestCase {
         JavaProfile jprofile = (JavaProfile) model.getProfile("java");
 
         // Initializes the JRE model if not yet done.
-        //TODO: implement this section.
-        /*
-        final String JRE = "/path/to/jre_x.y.z";
-        if ( ! jprofile.checkJREinit(JRE)) {
+        final File JRE = new File( "/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home" );
+        if ( ! jprofile.checkJREInit(JRE)) {
             JREReport jreReport = jprofile.initJRE(JRE);
+            System.out.println(jreReport);
         }
-        */
+        
 
         // Retrieves the jprofile ontology.
         jprofile.printOntologyOWL(System.out);
