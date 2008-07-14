@@ -33,7 +33,7 @@ import java.io.*;
 public class JenaCodeModel extends SPARQLQuerableCodeModel {
 
     public static String getURI() {
-        return URI;
+        return CODER_URI;
     }
 
     private static Model m = ModelFactory.createDefaultModel();
@@ -131,11 +131,6 @@ public class JenaCodeModel extends SPARQLQuerableCodeModel {
 
     public void clearAll() {
         jenaModel.removeAll();
-    }
-
-    public void writeRDF(OutputStream os) {
-        RDFWriter writer = jenaModel.getWriter();
-        writer.write(jenaModel, os, null);
     }
 
     /**

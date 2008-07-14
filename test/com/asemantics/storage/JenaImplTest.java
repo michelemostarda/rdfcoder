@@ -66,7 +66,7 @@ public class JenaImplTest extends TestCase {
         cm   = null;
     }
 
-    public void testWrite() throws IOException, CodeModelException {
+    public void testWrite() throws CodeModelException, CodeStorageException {
         // Writes triples with resource objects.
         for(int i = 0; i < RES_OBJ_TRIPLES; i++) {
             cm.addTriple("proto:subject_" + i, "proto:predicate_" + i, "proto:object_" + i);
@@ -78,7 +78,7 @@ public class JenaImplTest extends TestCase {
         cs.saveModel(cm, params);
     }
 
-    public void testRead() throws IOException, CodeModelException {
+    public void testRead() throws IOException, CodeModelException, CodeStorageException {
         testWrite();
 
         FileInputStream fis = new FileInputStream(TEST_FILE);
