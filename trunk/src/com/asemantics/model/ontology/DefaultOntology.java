@@ -48,7 +48,7 @@ public class DefaultOntology implements Ontology {
             if(index == -1) {
                 throw new OntologyException("Invalid term: '" + term + "'");
             }
-            return term.substring(0, index);
+            return term.substring(0, index + 1);
         }
 
         /**
@@ -112,6 +112,10 @@ public class DefaultOntology implements Ontology {
         }
 
         public void validate(String subject, String predicate, String object) throws OntologyException {
+            if( subPrefixStr == null ) {
+                return;
+            }
+            
             String subPrefix = getPrefix(subject);
             if(
                 ! subPrefixStr.equals( subPrefix )
@@ -191,6 +195,10 @@ public class DefaultOntology implements Ontology {
 
         public void validate(String subject, String predicate, String object) throws OntologyException {
             super.validate(subject, predicate, object);
+
+            if(objPrefixStr == null) {
+                return;
+            }
 
             String objPrefix = getPrefix(object); 
             if(
@@ -293,6 +301,26 @@ public class DefaultOntology implements Ontology {
         session++;
     }
 
+    public void defineRelation(URL predicate) throws OntologyException {
+        String predicateStr = predicate.toString();
+
+        List<PropertyBase> properties = predicateIndex.get(predicateStr);
+        if(properties == null) {
+            properties = new ArrayList<PropertyBase>();
+        }
+
+        Property property = new Property(null, predicateStr, null);
+
+        if(properties.contains(property)) {
+            throw new OntologyException("Property redefinition");
+        }
+
+        properties.add(property);
+        predicateIndex.put(predicateStr, properties);
+
+        session++;
+    }
+
     public void undefineRelation(String subjectPrefix, URL predicate) throws OntologyException {
         validatePrefix(subjectPrefix);
 
@@ -357,8 +385,8 @@ public class DefaultOntology implements Ontology {
 
         for(PropertyBase property : properties) {
             try {
-                property.validate(subject, predicate, object);
                 if( literal == property.isLiteral() ) {
+                    property.validate(subject, predicate, object);                    
                     return property;
                 }
             } catch (OntologyException oe) {}

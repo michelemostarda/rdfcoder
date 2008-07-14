@@ -29,7 +29,7 @@ public interface Ontology {
 
     /**
      * Defines a relation <i>Subject</i>, <i>predicate</i>,
-     * <i>object</i> to the ontology.
+     * <i>object</i> in the ontology.
      *
      * @param subjectPrefix
      * @param predicate
@@ -39,12 +39,19 @@ public interface Ontology {
 
     /**
      * Defines a relation <i>Subject</i>, <i>predicate</i>,
-     * <i>literal object</i> to the ontology.
+     * <i>literal object</i> in the ontology.
      *
      * @param subjectPrefix
      * @param predicate
      */
     void defineRelation(String subjectPrefix, URL predicate) throws OntologyException;
+
+    /**
+     * Defines a relation *  , <i>predicate</i> , * in the ontology. 
+     *
+     * @param predicate
+     */
+    void defineRelation(URL predicate) throws OntologyException;
 
     /**
      * Removes an already defined relation from the ontology.
