@@ -18,21 +18,46 @@
 
 package com.asemantics;
 
-import com.asemantics.repository.Repository;
+import com.asemantics.model.*;
+import com.asemantics.model.ontology.ValidatingCodeModel;
 import com.asemantics.profile.Profile;
-import com.asemantics.model.JavaQueryModel;
-import com.asemantics.model.CodeModelBase;
-import com.asemantics.model.CoderFactory;
-import com.asemantics.model.CodeModel;
+import com.asemantics.repository.Repository;
+import com.asemantics.repository.RepositoryException;
 import com.asemantics.sourceparse.ObjectsTable;
+import com.asemantics.storage.CodeStorage;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
  * Defines an RDF model. 
  */
 public class Model {
+
+    /**
+     * <i>Check package discrepancy</i> flag defualt value.
+     */
+    private static boolean DEFAULT_VALIDATING_MODEL = true;
+
+    /**
+     * Check package discrepancy flag.
+     */
+    private boolean validatingModel = DEFAULT_VALIDATING_MODEL;
+
+    /**
+     * The validating code model instance.
+     */
+    private ValidatingCodeModel validatingCodeModel;
+
+    /**
+     * The model name.
+     */
+    private String name;
 
     /**
      * The root coder object.
@@ -45,21 +70,65 @@ public class Model {
     private CoderFactory coderFactory;
 
     /**
-     * Internal objects table.
+     * The map of profile instances.
      */
-    private ObjectsTable objectsTable;
+    private final Map<String, Profile> profileInstances;
 
     /**
-     * Internal code model.
+     * Internal objects table.
      */
-    private CodeModelBase codeModelBase;
+    private final ObjectsTable objectsTable;
 
-    protected Model(RDFCoder c, CoderFactory cf) {
+    /**
+     * The code model base.
+     */
+    private final CodeModelBase codeModelBase;
+
+    /**
+     * The current model.
+     */
+    private CodeModelBase currentModel;
+
+    /**
+     * The code storage instance.
+     */
+    private final CodeStorage codeStorage;
+
+    protected Model(String n, RDFCoder c, CoderFactory cf) {
+        name          = n;
         coder         = c;
         coderFactory  = cf;
 
-        objectsTable  = new ObjectsTable();
-        codeModelBase = cf.createCodeModel(); 
+        profileInstances = new HashMap<String,Profile>();
+        objectsTable     = new ObjectsTable();
+        codeModelBase    = cf.createCodeModel();
+        currentModel     = codeModelBase;
+        codeStorage      = cf.createCodeStorage();
+    }
+
+    public boolean isValidating() {
+        return validatingModel;
+    }
+    
+    public void setValidating(boolean f) {
+        if(f) {
+            if( validatingCodeModel == null) {
+                validatingCodeModel = new ValidatingCodeModel(codeModelBase, new JavaOntology() ); //TODO HIGH geberalize this (ontology is related to profiles)
+            }
+            currentModel = validatingCodeModel;
+        } else {
+            currentModel = codeModelBase;
+        }
+        validatingModel = f;
+    }
+
+    /**
+     * Returns the model name.
+     *
+     * @return
+     */
+    public String getName() {
+        return name;
     }
 
     /**
@@ -69,28 +138,157 @@ public class Model {
      * @return
      */
     public Profile getProfile(String name) {
+        Profile profile = profileInstances.get(name);
+        if(profile != null) {
+            return profile;
+        }
+
         Class<Profile> profileClass = coder.getProfileType(name);
 
-        Object instance;
+        Profile instance;
         try {
-            Constructor constructor = profileClass.getDeclaredConstructor(Model.class, Repository.class);
-            instance = constructor.newInstance(this, coder.getRepository() );
+            Constructor constructor = profileClass.getDeclaredConstructor(Model.class, CodeStorage.class, Repository.class);
+            instance = (Profile) constructor.newInstance(this, codeStorage, coder.getRepository() );
         } catch (Exception e) {
             throw new RDFCoderException("Error while instantiating class.", e);
         }
-        return (Profile) instance;
+        profileInstances.put(name, instance);
+        return instance;
     }
 
     /**
-     * Returns the query model fot the specified
-     * <i>profileName</i>.
-     *
-     * @param profileName
+     * Returns <code>true</code> if this model supports <i>SPARQL</i> queries,
+     * <code>false</code> otherwise.
+     * 
      * @return
      */
-    public JavaQueryModel getQueryModel(String profileName) {
-        //TODO: TBI
-        return null;
+    public boolean supportsSparqlQuery() {
+        return currentModel instanceof SPARQLQuerableCodeModel;
+    }
+
+    /**
+     * Performs a SPARQL query on this model.
+     *
+     * @param sparql
+     * @return
+     * @throws ClassCastException if this model doesn't support <i>SPARQL</i> queries.
+     * @see #supportsSparqlQuery()
+     */
+    public QueryResult sparqlQuery(String sparql) {
+        try {
+            return ( (SPARQLQuerableCodeModel) currentModel).performQuery(sparql);
+        } catch (SPARQLException sparqle) {
+            throw new RDFCoderException("Error while perfoming SPARQL query.", sparqle);
+        }
+    }
+
+    /**
+     * Loads the content of the resource name into the current
+     * <i>Model</i>.
+     *
+     * @param resouceName name of the model containing the resource
+     * @return
+     */
+    public void load(String resouceName) {
+
+        // Retrieve resource.
+        Repository.Resource resource = retrieveResource( resouceName );
+
+        // Load model.
+        InputStream inputStream = null;
+        CodeStorage codeStorage = getCoderFactory().createCodeStorage();
+        try {
+            inputStream = resource.getInputStream();
+            codeStorage.loadModel(currentModel, inputStream);
+        } catch (Exception e) {
+            throw new RDFCoderException("Cannot load model.", e);
+        } finally {
+            if( inputStream != null ) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Saves the content of the current <i>Model</i>
+     * on the underlying <i>repository</i> in a resource with given name.
+     *
+     * @param name the name of the resource in which to store the model.
+     */
+    public void save(String name) {
+
+        // Retrieve resource.
+        Repository.Resource resource = retrieveResource( getModelResourceName( name ) );
+
+        // Save model.
+        OutputStream outputStream = null;
+        CodeStorage codeStorage = getCoderFactory().createCodeStorage();
+        try {
+            outputStream = resource.getOutputStream();
+            codeStorage.saveModel(codeModelBase, outputStream);
+        } catch (Exception e) {
+            throw new RDFCoderException("Cannot save model.", e);
+        } finally {
+            if( outputStream != null ) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Saves the content of the current model
+     * in a resource with the same name of the model.
+     */
+    public void save() {
+        save( getName() );
+    }
+
+    /**
+     * Clears the content of this model.
+     */
+    public void clear() {
+        currentModel.clearAll();
+    }
+
+    /**
+     * Retrieves the resource with the given name.
+     *
+     * @param rn
+     * @return
+     */
+    protected Repository.Resource retrieveResource(String rn) {
+        Repository repository = coder.getRepository();
+        Repository.Resource resource;
+        try {
+            if( repository.containsResource( rn ) ) {
+                resource = repository.getResource( rn );
+            } else {
+                resource = repository.createResource( rn, Repository.ResourceType.XML );
+            }
+        } catch (RepositoryException re) {
+            throw new RDFCoderException("Cannot access resource '" + rn + "'");
+        }
+        return resource;
+    }
+
+    /**
+     * Returns the name of the resource associated to this model.
+     *
+     * @param modelName
+     * @return
+     */
+    protected String getModelResourceName(String modelName) {
+        return  RDFCoder.MODEL_RESOUCE_PREFIX + modelName;
     }
 
     /**
@@ -125,4 +323,5 @@ public class Model {
     protected void destroy() {
         // Empty.
     }
+
 }

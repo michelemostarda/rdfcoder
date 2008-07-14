@@ -22,6 +22,7 @@ import com.asemantics.profile.Profile;
 import com.asemantics.repository.Repository;
 import com.asemantics.repository.RepositoryException;
 import com.asemantics.model.CoderFactory;
+import com.asemantics.model.ontology.ValidatingCodeModel;
 import com.asemantics.storage.JenaCoderFactory;
 
 import java.io.File;
@@ -35,25 +36,21 @@ import java.lang.reflect.Constructor;
  */
 public class RDFCoder {
 
+    /* BEGIN: repository prefixes. */
+
+    protected static final String MODEL_RESOUCE_PREFIX = "model_";
+
+    /* END:   repository prefixes. */
+
     /**
      * Debug flag default value.
      */
     private static boolean DEFAULT_DEBUG = true;
 
     /**
-     * <i>Check package discrepancy</i> flag defualt value.
-     */
-    private static boolean DEFAULT_VALIDATING_MODEL = true;
-
-    /**
      * Debug flag.
      */
     private boolean debug = DEFAULT_DEBUG;
-
-    /**
-     * Check package discrepancy flag.
-     */
-    private boolean validatingModel = DEFAULT_VALIDATING_MODEL;
 
     /**
      * Returns the assertions level.
@@ -120,14 +117,6 @@ public class RDFCoder {
     public void setDebug(boolean f) {
         debug = f;
     }
-
-    public boolean isValidatingModel() {
-        return validatingModel;
-    }
-
-    public void setValidatingModel(boolean f) {
-        validatingModel = f;
-    }    
 
     /**
      * Registers a profile into <i>Coder</i>.
@@ -204,7 +193,7 @@ public class RDFCoder {
             throw new RDFCoderException("Model name '" + name + "' already exists.");
         }
 
-        Model model = new Model( this , coderFactory );
+        Model model = new Model( name, this , coderFactory );
         models.put(name, model);
 
         return model;
@@ -216,7 +205,7 @@ public class RDFCoder {
      * @param name
      */
     public void deleteModel(String name) {
-        Model target = models.get(name);
+        Model target = models.remove(name);
         if( target == null ) {
             throw new RDFCoderException("Cannot delete model '" + name + "'");
         }
@@ -257,7 +246,7 @@ public class RDFCoder {
      * 
      * @return
      */
-    protected Object getRepository() {
+    protected Repository getRepository() {
         return repository;
     }
 }

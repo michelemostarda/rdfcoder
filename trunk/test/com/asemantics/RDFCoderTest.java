@@ -18,9 +18,7 @@
 
 package com.asemantics;
 
-import com.asemantics.model.JAttribute;
-import com.asemantics.model.JavaQueryModel;
-import com.asemantics.model.QueryModelException;
+import com.asemantics.model.*;
 import com.asemantics.sourceparse.JStatistics;
 import junit.framework.TestCase;
 
@@ -30,45 +28,111 @@ import java.io.IOException;
 
 public class RDFCoderTest extends TestCase {
 
+    private static final String JAVA_PROFILE = "java";
+
+    private static final String TEST_MODEL_NAME= "test_model_name";
+
     public void testHighLevelAPI() throws QueryModelException, IOException {
 
         // Creates an RDFCoder instance on a repository.
         RDFCoder coder = new RDFCoder("target_test/hla_repo");
 
-        // Validates generated models over owning ontologies.
-        coder.setValidatingModel(true);
-
         // Enables debug controls.
         coder.setDebug(true);
 
-        // Register coder profiles.
-        coder.registerProfile("java", "com.asemantics.JavaProfile"); // Loaded by default.
+        assertTrue("Cannot set debug flag", coder.isDebug() );
 
-        // Creates an model, i.e. a set of libraries.
-        Model model = coder.createModel("test_model_name");
+        // Registers the Java profile.
+        coder.registerProfile(JAVA_PROFILE, "com.asemantics.JavaProfile"); // Loaded by default.
+
+        String[] profileNames = coder.getProfileNames();
+        assertEquals("Invalid number of profiles.", 1, profileNames.length );
+        assertEquals("Invalid profile name", JAVA_PROFILE, profileNames[0]);
+
+        // Creates a model, i.e. a set of libraries.
+        Model model = coder.createModel(TEST_MODEL_NAME);
+        assertNotNull("Cannot create model" + TEST_MODEL_NAME, model);
+        assertEquals("Invalid model name", TEST_MODEL_NAME, model.getName() );
+
+        // Enables model validation over profile ontologies.
+        model.setValidating(true);
+
+        assertTrue("Cannot set validating model flag", model.isValidating() );
 
         // Retrieves a Java profile model.
-        JavaProfile jprofile = (JavaProfile) model.getProfile("java");
+        JavaProfile jprofile = (JavaProfile) model.getProfile(JAVA_PROFILE);
+        assertNotNull("Cannot instantiate "+  JAVA_PROFILE, jprofile);
 
         // Initializes the JRE model if not yet done.
         final File JRE = new File( "/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home" );
         if ( ! jprofile.checkJREInit(JRE)) {
-            JREReport jreReport = jprofile.initJRE(JRE);
-            System.out.println(jreReport);
+            try {
+                JREReport jreReport = jprofile.initJRE(JRE);
+                System.out.println(jreReport);
+            } catch (Throwable t) {
+                t.printStackTrace();
+                fail("Cannot intitialise JRE");
+            }
         }
         
 
         // Retrieves the jprofile ontology.
-        jprofile.printOntologyOWL(System.out);
+        try {
+            // jprofile.printOntologyOWL(System.out);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail("Cannot print Ontology OWL");
+        }
 
-        // Processes java libraries.
-        JStatistics s1 = jprofile.loadSources("src_lib"  , "src");
-        JStatistics s2 = jprofile.loadClasses("class_lib", "classes");
-        JStatistics s3 = jprofile.loadJar    ("jar_lib"  , "target.jar");
+        // Processes Java libraries.
+        try {
+            JStatistics s1 = jprofile.loadSources("src_lib"  , "src");
+            System.out.println(s1);
+
+            JStatistics s2 = jprofile.loadClasses("class_lib", "classes");
+            System.out.println(s2);
+
+            JStatistics s3 = jprofile.loadJar    ("jar_lib"  , "target_test/target.jar");
+            System.out.println(s3);
+
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail("Cannot process Java libraries");
+        }
 
         // Querying java model.
-        JavaQueryModel jquery = model.getQueryModel("java");
-        JAttribute[] attributes = jquery.getAttributesInto("pathToClass");
+        JavaQueryModel jquery = jprofile.getQueryModel();
+        assertNotNull("Cannot create " + JavaQueryModel.class, jquery);
+
+        // Retries the attributes of java.lang.String
+        JAttribute[] attributes = jquery.getAttributesInto("java.lang.String");
+        assertNotNull(attributes);
+
+        // Low level cross querying.
+        if( model.supportsSparqlQuery() ) {
+            QueryResult result = model.sparqlQuery("SPARQL query");
+            System.out.println(result);
+        }
+
+        // Saves model data.
+        try {
+            model.save();
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail("Cannot save model");
+        }
+        assertTrue("Cannot save model", coder.getRepository().containsResource( TEST_MODEL_NAME ) );
+
+        // Resets the model content.
+        model.clear();
+
+        // Loads existing model data into the current model.
+        try {
+            model.load(TEST_MODEL_NAME);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail("Cannot load model");
+        }
 
     }
 

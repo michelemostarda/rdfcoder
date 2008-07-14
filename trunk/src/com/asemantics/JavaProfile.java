@@ -18,9 +18,7 @@
 
 package com.asemantics;
 
-import com.asemantics.model.CodeHandler;
-import com.asemantics.model.CodeModelBase;
-import com.asemantics.model.JavaOntology;
+import com.asemantics.model.*;
 import com.asemantics.profile.Profile;
 import com.asemantics.repository.Repository;
 import com.asemantics.sourceparse.*;
@@ -57,17 +55,22 @@ public class JavaProfile implements Profile {
     /**
      * Related java ontology.
      */
-    private JavaOntology javaOntology;
+    private final JavaOntology javaOntology;
 
     /**
      * Coder model.
      */
-    private Model model;
+    private final Model model;
 
     /**
      * Coder repository.
      */
-    private Repository repository;
+    private final Repository repository;
+
+    /**
+     * Code storage internal instance.
+     */
+    private final CodeStorage codeStorage;
 
     /**
      * Constructor.
@@ -75,10 +78,12 @@ public class JavaProfile implements Profile {
      * @param m
      * @param r
      */
-    protected JavaProfile( Model m, Repository r ) {
+    protected JavaProfile( Model m, CodeStorage cs, Repository r ) {
         javaOntology = new JavaOntology();
-        model      = m;
-        repository = r;
+
+        model       = m;
+        codeStorage = cs;
+        repository  = r;
     }
 
     /**
@@ -178,7 +183,7 @@ public class JavaProfile implements Profile {
 
             Repository.Resource resource = repository.createResource( getJREResourceName(pathToJRE.getName()), Repository.ResourceType.XML );
             OutputStream os  = resource.getOutputStream();
-            cmb.writeRDF(os);
+            codeStorage.saveModel(cmb, os);
             os.close();
 
         } catch (Exception e) {
@@ -193,22 +198,11 @@ public class JavaProfile implements Profile {
     }
 
     public JStatistics loadSources(String libName, String srcPath) {
-        CodeHandler ch = model.getCoderFactory().createHandlerOnModel( model.getCodeModelBase() );
-
-        DirectoryParser jsdp = new DirectoryParser( new JavaSourceFileParser() );
-        JStatistics statistics = new JStatistics();
-        CodeHandler sch = statistics.createStatisticsCodeHandler(ch);
-        jsdp.initialize(sch, model.getObjectsTable() );
-
-        jsdp.parseDirectory(libName, new File(srcPath) );
-        jsdp.dispose();
-
-        return statistics;
+        return loadJava(libName, srcPath, new JavaSourceFileParser());
     }
 
     public JStatistics loadClasses(String libName, String clsPath) {
-        //TODO: TBI
-        return null;
+        return loadJava(libName, clsPath, new JavaBytecodeFileParser());
     }
 
     public JStatistics loadJar(String libName, String pathToJar) throws IOException {
@@ -232,4 +226,36 @@ public class JavaProfile implements Profile {
         return statistics;
     }
 
+    /**
+     * Loads Java resources.
+     * 
+     * @param libName
+     * @param path
+     * @param fileParser
+     * @return
+     */
+    private JStatistics loadJava(String libName, String path, FileParser fileParser) {
+         CodeHandler ch = model.getCoderFactory().createHandlerOnModel( model.getCodeModelBase() );
+
+        DirectoryParser directoryParser = new DirectoryParser( fileParser, new CoderUtils.JavaSourceFilenameFilter() );
+        JStatistics statistics = new JStatistics();
+        CodeHandler sch = statistics.createStatisticsCodeHandler(ch);
+
+        directoryParser.initialize(sch, model.getObjectsTable() );
+        directoryParser.parseDirectory(libName, new File(path) );
+
+        directoryParser.dispose();
+        ch = null;
+
+        return statistics;
+    }
+
+    private JavaQueryModel jqmInstance;
+
+    public JavaQueryModel getQueryModel() {
+        if( jqmInstance == null ) {
+            jqmInstance = new JavaQueryModelImpl( model.getCodeModelBase() );
+        }
+        return jqmInstance;
+    }
 }

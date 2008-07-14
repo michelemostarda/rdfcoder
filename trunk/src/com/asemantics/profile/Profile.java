@@ -18,6 +18,8 @@
 
 package com.asemantics.profile;
 
+import com.asemantics.model.QueryModel;
+
 
 /**
  * Defines an RDFCoder language profile, i.e. any
@@ -25,6 +27,11 @@ package com.asemantics.profile;
  */
 public interface Profile {
 
-    
+    /**
+     * Returns the query model for this <i>Profile</i>.
+     *
+     * @return
+     */
+    public QueryModel getQueryModel();
 
 }
