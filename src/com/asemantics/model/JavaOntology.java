@@ -34,12 +34,16 @@ public class JavaOntology extends BaseOntology {
      * Package protected class.
      */
     public JavaOntology() {
+        super();
         initJavaOntology();
     }
 
     private void initJavaOntology() {
 
         try {
+
+            // SUBCLASS OF
+            defineRelation( new URL(SUBCLASSOF) );
 
             // CONTAINS_PACKAGE
             defineRelation(PACKAGE_PREFIX, new URL(CONTAINS_PACKAGE), PACKAGE_PREFIX);
@@ -61,7 +65,8 @@ public class JavaOntology extends BaseOntology {
             defineRelation(ENUMERATION_PREFIX, new URL(CONTAINS_ATTRIBUTE), ATTRIBUTE_PREFIX);
 
             // CONTAINS_CONSTRUCTOR
-            defineRelation(CLASS_PREFIX, new URL(CONTAINS_CONSTRUCTOR), CONSTRUCTOR_PREFIX);
+            defineRelation(CLASS_PREFIX,       new URL(CONTAINS_CONSTRUCTOR), CONSTRUCTOR_PREFIX);
+            defineRelation(ENUMERATION_PREFIX, new URL(CONTAINS_CONSTRUCTOR), CONSTRUCTOR_PREFIX);
 
             // ATTRIBUTE_TYPE
             defineRelation(ATTRIBUTE_PREFIX, new URL(ATTRIBUTE_TYPE));
@@ -75,18 +80,20 @@ public class JavaOntology extends BaseOntology {
             defineRelation(ENUMERATION_PREFIX, new URL(CONTAINS_METHOD), METHOD_PREFIX);
 
             // CONTAINS_ENUMERATION
+            defineRelation(PACKAGE_PREFIX,   new URL(CONTAINS_ENUMERATION), ENUMERATION_PREFIX);
             defineRelation(CLASS_PREFIX,     new URL(CONTAINS_ENUMERATION), ENUMERATION_PREFIX);
             defineRelation(INTERFACE_PREFIX, new URL(CONTAINS_ENUMERATION), ENUMERATION_PREFIX);
 
             // CONTAINS_ELEMENT
-            defineRelation(ENUMERATION_PREFIX, new URL(CONTAINS_ELEMENT));
+            defineRelation(ENUMERATION_PREFIX, new URL(CONTAINS_ELEMENT), ELEMENT_PREFIX);
 
             // CONTAINS_SIGNATURE
             defineRelation(CONSTRUCTOR_PREFIX, new URL(CONTAINS_SIGNATURE), SIGNATURE_PREFIX);
             defineRelation(METHOD_PREFIX,      new URL(CONTAINS_SIGNATURE), SIGNATURE_PREFIX);
 
             // CONTAINS_PARAMETER
-            defineRelation(SIGNATURE_PREFIX, new URL(CONTAINS_PARAMETER), PARAMETER_PREFIX);
+            defineRelation(CONSTRUCTOR_PREFIX, new URL(CONTAINS_PARAMETER), PARAMETER_PREFIX);
+            defineRelation(SIGNATURE_PREFIX,   new URL(CONTAINS_PARAMETER), PARAMETER_PREFIX);
 
             // PARAMETER_TYPE
             defineRelation(PARAMETER_PREFIX, new URL(PARAMETER_TYPE));
@@ -107,13 +114,25 @@ public class JavaOntology extends BaseOntology {
             defineRelation(SIGNATURE_PREFIX, new URL(THROWS), CLASS_PREFIX);
 
             // HAS_VISIBILITY
-            defineRelation(METHOD_PREFIX, new URL(HAS_VISIBILITY));
+            defineRelation(CLASS_PREFIX,       new URL(HAS_VISIBILITY));
+            defineRelation(ENUMERATION_PREFIX, new URL(HAS_VISIBILITY));
+            defineRelation(CONSTRUCTOR_PREFIX, new URL(HAS_VISIBILITY));
+            defineRelation(METHOD_PREFIX,      new URL(HAS_VISIBILITY));
+            defineRelation(ATTRIBUTE_PREFIX,   new URL(HAS_VISIBILITY));
 
             // HAS_MODIFIERS
-            defineRelation(METHOD_PREFIX, new URL(HAS_MODIFIERS));
+            defineRelation(CLASS_PREFIX,       new URL(HAS_MODIFIERS));
+            defineRelation(ENUMERATION_PREFIX, new URL(HAS_MODIFIERS));
+            defineRelation(CONSTRUCTOR_PREFIX, new URL(HAS_MODIFIERS));
+            defineRelation(METHOD_PREFIX,      new URL(HAS_MODIFIERS));
+            defineRelation(ATTRIBUTE_PREFIX,   new URL(HAS_MODIFIERS));
+
+            // THROWS
+            defineRelation(CONSTRUCTOR_PREFIX, new URL(THROWS), CLASS_PREFIX);
+            defineRelation(METHOD_PREFIX,      new URL(THROWS), CLASS_PREFIX);
 
         } catch (Exception e) {
-            throw new RuntimeException("Error while defining Java Ontology: " + JavaOntology.class);
+            throw new RuntimeException("Error while defining Java Ontology " + JavaOntology.class, e);
         }
 
     }

@@ -303,6 +303,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
             return toIdentifier(internalRepresentation);
         }
 
+        //TODO: MED - check this.
         private String toIdentifier(String id) {
             return toURI(
                     TYPE_ARRAY_STR + ":" +
@@ -455,7 +456,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
         protected abstract String getInternalIdentifier();
 
         public String getIdentifier() {
-            return toURI(getInternalIdentifier());
+            return getInternalIdentifier();
         }
 
         /**

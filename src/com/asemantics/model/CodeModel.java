@@ -40,7 +40,7 @@ public interface CodeModel {
     /**
      * RDF type prefix URI.
      */
-    static final String URI = "http://www.rdfcoder.org/2007/1.0#";
+    static final String CODER_URI = "http://www.rdfcoder.org/2007/1.0#";
 
     /**
      * Prefix separator definition.
@@ -113,11 +113,4 @@ public interface CodeModel {
      */
     void clearAll();
 
-    /**
-     * Writes in the given {@link java.io.OutputStream}
-     * the RDF representation of this model.
-     *
-     * @return
-     */
-    public void writeRDF(OutputStream os);
 }

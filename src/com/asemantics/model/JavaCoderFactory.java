@@ -46,8 +46,8 @@ public abstract class JavaCoderFactory implements CoderFactory {
         return new JavaQueryModelImpl(model);
     }
 
-    public static final Asset createJAsset(JavaQueryModel qm) {
-        return new Asset(qm);
+    public static final JAsset createJAsset(JavaQueryModel qm) {
+        return new JAsset(qm);
     }
 
     /**
