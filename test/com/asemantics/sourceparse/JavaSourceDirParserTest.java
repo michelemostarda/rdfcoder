@@ -24,6 +24,7 @@ import com.asemantics.storage.CodeStorage;
 import com.asemantics.storage.JenaCodeModel;
 import com.asemantics.storage.JenaCodeStorage;
 import com.asemantics.storage.JenaCoderFactory;
+import com.asemantics.CoderUtils;
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -59,7 +60,7 @@ public class JavaSourceDirParserTest extends TestCase {
     }
 
     public void testParse() throws IOException, CodeModelException {
-        DirectoryParser jsdp = new DirectoryParser( new JavaSourceFileParser() );
+        DirectoryParser jsdp = new DirectoryParser( new JavaSourceFileParser(), new CoderUtils.JavaSourceFilenameFilter() );
         JStatistics statistics = new JStatistics();
         CodeHandler sch = statistics.createStatisticsCodeHandler(ch);
         jsdp.initialize(sch, ot);
