@@ -20,10 +20,11 @@ package com.asemantics.storage;
 
 import com.asemantics.RDFCoder;
 import com.asemantics.model.CodeModel;
+import com.hp.hpl.jena.rdf.model.RDFWriter;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFReader;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Map;
 
 /**
@@ -31,9 +32,42 @@ import java.util.Map;
  */
 public class JenaCodeStorage extends CodeStorage {
 
+    /**
+     * Constructor.
+     */
     protected JenaCodeStorage() {}  // Protecting instantiation.
 
-    public void saveModel(CodeModel codeModel,  Map<String, String> parameters) throws IOException {
+    public void loadModel(CodeModel codeModel, InputStream inputStream) throws CodeStorageException {
+        Model jenaModel;
+        try {
+            jenaModel = ((JenaCodeModel) codeModel).getJenaModel();
+        } catch (ClassCastException cce) {
+            throw new JenaCodeStorageException("Expected " + JenaCodeModel.class + " here", cce);
+        }
+        try {
+            RDFReader reader = jenaModel.getReader();
+            reader.read(jenaModel, inputStream, null);
+        } catch (Exception e) {
+            throw new JenaCodeStorageException("Error while reading model.", e);
+        }
+    }
+
+    public void saveModel(CodeModel codeModel, OutputStream outputStream) throws CodeStorageException {
+        Model jenaModel;
+        try {
+            jenaModel = ((JenaCodeModel) codeModel).getJenaModel();
+        } catch (ClassCastException cce) {
+            throw new JenaCodeStorageException("Expected " + JenaCodeModel.class + " here", cce);
+        }
+        try {
+            RDFWriter writer = jenaModel.getWriter();
+            writer.write(jenaModel, outputStream, null);
+        } catch (Exception e) {
+            throw new JenaCodeStorageException("Error while writing model.", e);
+        }
+    }
+
+    public void saveModel(CodeModel codeModel,  Map<String, String> parameters) {
         if( ! ( codeModel instanceof JenaCodeModel ) ) {
             throw new IllegalArgumentException("codeModel must be instaceof JenaCodeModel");
         }
@@ -46,12 +80,19 @@ public class JenaCodeStorage extends CodeStorage {
             JenaCodeModel.checkModel(jenaCodeModel.getJenaModel());
         }
         FileOutputStream fos = openFileOutputStream(parameters);
+        try {
         jenaCodeModel.getJenaModel().write( fos );
-        fos.close();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
     }
 
 
-    public void loadModel(CodeModel codeModel, Map parameters) throws IOException {
+    public void loadModel(CodeModel codeModel, Map parameters) {
         if( ! ( codeModel instanceof JenaCodeModel ) ) {
             throw new IllegalArgumentException("codeModel must be instaceof JenaCodeModel");
         }
@@ -61,8 +102,16 @@ public class JenaCodeStorage extends CodeStorage {
 
         JenaCodeModel jenaCodeModel = (JenaCodeModel) codeModel;
         FileInputStream fis = openFileInputStream(parameters);
-        jenaCodeModel.getJenaModel().read( fis, null );
-        fis.close();
+        try {
+            jenaCodeModel.getJenaModel().read( fis, null );
+        } finally {
+            try {
+                fis.close();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+
     }
 
     public boolean supportsDatabase() {

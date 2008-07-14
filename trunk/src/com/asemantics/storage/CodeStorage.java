@@ -19,6 +19,7 @@
 package com.asemantics.storage;
 
 import com.asemantics.model.CodeModel;
+import com.asemantics.RDFCoderException;
 
 import java.io.*;
 import java.util.Map;
@@ -39,19 +40,35 @@ public abstract class CodeStorage {
     public static final String DB_PASSWORD = "password";
 
     /**
+     * Loads a model from an {@link InputStream}.
+     *
+     * @param codeModel
+     * @param inputStream
+     */
+    public abstract void loadModel(CodeModel codeModel, InputStream inputStream) throws CodeStorageException;
+
+    /**
+     * Saves a model to an {@link java.io.OutputStream}.
+     * 
+     * @param codeModel
+     * @param outputStream
+     */
+    public abstract void saveModel(CodeModel codeModel, OutputStream outputStream) throws CodeStorageException;
+
+    /**
      * Save a model to a storage specified by given parameters.
      *
      * @param codeModel
      * @param parameters
      */
-    public abstract void saveModel(CodeModel codeModel, Map<String,String> parameters) throws IOException;
+    public abstract void saveModel(CodeModel codeModel, Map<String,String> parameters) throws CodeStorageException;
 
     /**
      * Loads a model from a storage by using given parameters.
      * @param parameters
      * @return
      */
-    public abstract void loadModel(CodeModel codeModel, Map parameters) throws IOException;
+    public abstract void loadModel(CodeModel codeModel, Map parameters) throws CodeStorageException;
 
     /**
      * Returns true if database storage is supported.

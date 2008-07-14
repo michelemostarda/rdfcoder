@@ -99,4 +99,22 @@ public class JenaQueryResult implements QueryResult {
     public void finalize() {
         close();
     }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append( this.getClass().getName() );
+        String[] variables;
+        variables = getVariables();
+        sb.append("{");
+        while ( hasNext() ) {
+            next();
+            for(String v : variables) {
+                sb.append( getVariable(v) );
+                sb.append("\t");
+            }
+            sb.append("\n");
+        }
+        sb.append("}");
+        return sb.toString();
+    }
 }
