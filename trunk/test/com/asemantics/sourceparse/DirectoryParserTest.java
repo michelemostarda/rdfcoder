@@ -21,6 +21,7 @@ import com.asemantics.model.CodeHandler;
 import com.asemantics.model.CodeModelBase;
 import com.asemantics.model.CoderFactory;
 import com.asemantics.storage.JenaCoderFactory;
+import com.asemantics.CoderUtils;
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -62,7 +63,7 @@ public class DirectoryParserTest extends TestCase {
         ObjectsTable objectsTable = new ObjectsTable();
         CodeHandler statisticsCodeHandler = statistics.createStatisticsCodeHandler( codeHandler );
 
-        DirectoryParser directoryParser = new DirectoryParser(fileParser);
+        DirectoryParser directoryParser = new DirectoryParser(fileParser, new CoderUtils.JavaSourceFilenameFilter() );
         directoryParser.initialize( statisticsCodeHandler, objectsTable );
         directoryParser.parseDirectory(dir.getName(), dir );
         return statistics;
