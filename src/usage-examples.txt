@@ -45,7 +45,7 @@ JStatistics s3 = jprofile.loadJar    ("jlibname3", "/path/to/file.jar");
 
 // Querying java model.
 JavaQueryModel jquery   = model.getQueryModel("java");
-JAttribute[] attributes = jquery.getAttributesInto("pathToClass");
+JAttribute[] attributes = jquery.getAttributesInto("path.to.class");
 
 // Java lib Dependency analysis.
 JDependencyIterator dependencies = jquery.findDependences("dependent_lib_name", "dependable_lib_name");
@@ -70,10 +70,13 @@ jniProfile.processJNI("/path/to/file.jni");
 
 
 // Low level cross querying.
-TripleIterator iter = model.sparqlQuery("cross SPARQL query");
+if( model.supportsSparqlQuery() ) {
+    QueryResult result = model.sparqlQuery("SPARQL query");
+    System.out.println(result);
+}
 
 // Saves model data.
 model.save();
 
-// Loads an existing model.
-Model. existingModel = model.load("existingModelName");
+// Loads existing model data into the current model.
+model.load("existingModelName");

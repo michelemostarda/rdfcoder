@@ -22,6 +22,7 @@ import com.asemantics.model.*;
 import com.asemantics.sourceparse.*;
 import com.asemantics.storage.JenaCoderFactory;
 import com.asemantics.storage.CodeStorage;
+import com.asemantics.storage.CodeStorageException;
 import jline.*;
 import org.apache.commons.jexl.Expression;
 import org.apache.commons.jexl.ExpressionFactory;
@@ -581,15 +582,15 @@ public class CommandLine {
                 javaBytecodeJarParser.initialize( statisticsCodeHandler, ot );
 
                 JavaSourceFileParser javaSourceFileParser = new JavaSourceFileParser();
-                sourceDirectoryParser = new DirectoryParser(javaSourceFileParser);
+                sourceDirectoryParser = new DirectoryParser(javaSourceFileParser, new CoderUtils.JavaSourceFilenameFilter() );
                 sourceDirectoryParser.initialize( statisticsCodeHandler, ot );
 
                 JavadocFileParser javadocFileParser = new JavadocFileParser();
-                javadocDirectoryParser = new DirectoryParser(javadocFileParser);
+                javadocDirectoryParser = new DirectoryParser(javadocFileParser, new CoderUtils.JavaSourceFilenameFilter() );
                 javadocDirectoryParser.initialize( statisticsCodeHandler, ot );
 
                 JavaBytecodeFileParser javaBytecodeFileParser = new JavaBytecodeFileParser();
-                classDirectoryParser = new DirectoryParser(javaBytecodeFileParser);
+                classDirectoryParser = new DirectoryParser(javaBytecodeFileParser, new CoderUtils.JavaClassFilenameFilter() );
                 classDirectoryParser.initialize( statisticsCodeHandler, ot );
 
                 if( libraries.get(i).type == LibraryType.JAR_FILE ) {
@@ -660,7 +661,7 @@ public class CommandLine {
      * @param parameters
      * @throws IOException
      */
-    private void saveModel(Map parameters) throws IOException {
+    private void saveModel(Map parameters) throws CodeStorageException {
         CodeStorage codeStorage = coderFactory.createCodeStorage();
         codeStorage.saveModel( getCodeModel(), parameters );
 
@@ -673,7 +674,7 @@ public class CommandLine {
      * @param parameters
      * @throws IOException
      */
-    private void loadModel(Map parameters) throws IOException {
+    private void loadModel(Map parameters) throws CodeStorageException {
         CodeStorage codeStorage = coderFactory.createCodeStorage();
         codeStorage.loadModel( getCodeModel(), parameters );
     }
@@ -1156,7 +1157,7 @@ public class CommandLine {
      * @param args
      * @throws IOException
      */
-    public void command_savemodel(String[] args) throws IOException {
+    public void command_savemodel(String[] args) throws CodeStorageException {
         if(args.length < 1) {
             throw new IllegalArgumentException("at least storage name must be specified");
         }
@@ -1193,7 +1194,7 @@ public class CommandLine {
      * @param args
      * @throws IOException
      */
-    public void command_loadmodel(String[] args) throws IOException {
+    public void command_loadmodel(String[] args) throws CodeStorageException {
         if(args.length < 1) {
             throw new IllegalArgumentException("at least storage name must be specified");
         }

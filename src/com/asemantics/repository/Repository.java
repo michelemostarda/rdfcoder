@@ -208,16 +208,17 @@ public class Repository {
         /**
          * Opens an output stream on the resource.
          *
+         * @param append append flag
          * @return
          * @throws FileNotFoundException
          */
-        public OutputStream getOutputStream() throws FileNotFoundException, RepositoryException {
+        public OutputStream getOutputStream(boolean append) throws FileNotFoundException, RepositoryException {
             if(writersCount > 0) {
                 throw new RepositoryException("Cannot open resource in read mode: there is a writer on it");
             }
 
             readersCount++;
-            return new FileOutputStream( getLocation() ) {
+            return new FileOutputStream( getLocation(), append ) {
 
                 public void close() throws IOException {
                     super.close();
@@ -225,6 +226,17 @@ public class Repository {
                 }
                 
             };
+        }
+
+        /**
+         *  Opens an output stream on the resource.
+         *
+         * @return
+         * @throws FileNotFoundException
+         * @throws RepositoryException
+         */
+        public OutputStream getOutputStream() throws FileNotFoundException, RepositoryException {
+            return getOutputStream(false);
         }
     }
 
