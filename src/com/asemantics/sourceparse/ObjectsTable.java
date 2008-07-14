@@ -135,7 +135,7 @@ public class ObjectsTable {
      */
     public void addObject(String objectPackage, String objectName) {
         if(
-            objectPackage == null || objectPackage.trim().length() == 0
+            objectPackage == null
                 ||
             objectName    == null || objectName.trim().length()    == 0
         ) {
@@ -166,8 +166,9 @@ public class ObjectsTable {
         int i = fullyQualifiedName.lastIndexOf(CodeHandler.PACKAGE_SEPARATOR);
         if(i == -1) {
             addObject("", fullyQualifiedName); // Default package.
+        } else {
+            addObject( fullyQualifiedName.substring(0, i), fullyQualifiedName.substring(i + 1 ) );
         }
-        addObject( fullyQualifiedName.substring(0, i), fullyQualifiedName.substring(i + 1 ) );
     }
 
     /**

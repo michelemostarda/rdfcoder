@@ -23,6 +23,7 @@ import com.asemantics.model.CodeHandler;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.FilenameFilter;
 import java.util.*;
 
 /**
@@ -41,13 +42,19 @@ public class DirectoryParser extends CodeParser {
     private FileParser fileParser;
 
     /**
+     * Filename filter.
+     */
+    private FilenameFilter filenameFilter;
+
+    /**
      * Constructor.
      *
      * @param fs
      */
-    public DirectoryParser(FileParser fs) {
+    public DirectoryParser(FileParser fs, FilenameFilter ff) {
         dirStack = new Stack<File>();
         fileParser = fs;
+        filenameFilter = ff;
     }
 
     /**
@@ -107,7 +114,7 @@ public class DirectoryParser extends CodeParser {
             }
         }
 
-        File[] javaFiles = dir.listFiles( new CoderUtils.JavaSourceFilenameFilter() );
+        File[] javaFiles = dir.listFiles( filenameFilter );
         for(int f = 0; f < javaFiles.length; f++) {
             try {
                 fileParser.parse(javaFiles[f]);
