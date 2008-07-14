@@ -112,6 +112,7 @@ public class JavaBytecodeFileParser extends FileParser {
             JavaCodeModel.JModifier[] modifiers = extractModifiers(javaClass);
 
             if( javaClass.isEnum() ) { // Enumeration.
+                //TODO: MED - Check this solution.
                 for(int i = 0; i < fields.length - 1; i++) {   // Skip last element containing $VALUE
                     if( fields[i].getType().toString().equals( javaClass.getClassName() ) ) { // Excluding real enumElements.
                         enumElements.add( fields[i].getName() );
@@ -260,15 +261,15 @@ public class JavaBytecodeFileParser extends FileParser {
         if( containersStack.size() == 0 ) {
             throw new IllegalStateException();
         }
-        if( containersStack.size() == 1 ) {
-            return containersStack.peek().getPackageName();  
-        }
+        return containersStack.peek().getClassName();  
+        /*
         StringBuilder pack = new StringBuilder();
         pack.append( containersStack.get(0).getPackageName() );
         for(int i = 1; i < containersStack.size(); i++) {
             pack.append( containersStack.get(i).getClassName() );
         }
         return pack.toString();
+        */
     }
 
     private String toQualifiedClassName(JavaClass javaClass) {
@@ -410,7 +411,7 @@ public class JavaBytecodeFileParser extends FileParser {
         String[] names = new String[type.length];
         String designedName;
         for(int i = 0; i < type.length; i++) {
-            designedName = toParameterName( type[i] );
+            designedName = toParameterName( type[i] ).toLowerCase();
             Integer occurrences = namesMap.get(designedName);
             if(occurrences == null) { occurrences = new Integer(0); }
             occurrences++;
