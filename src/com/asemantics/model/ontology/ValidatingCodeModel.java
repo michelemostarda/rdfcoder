@@ -20,8 +20,6 @@ package com.asemantics.model.ontology;
 
 import com.asemantics.model.*;
 
-import java.io.OutputStream;
-
 /**
  * This decorator validates addition of model triples over a given
  * ontology.
@@ -63,7 +61,7 @@ public class ValidatingCodeModel extends CodeModelBase {
         try {
             ontology.validateTriple(subject, predicate, object);
         } catch (OntologyException oe) {
-            throw createRE(oe);
+            throw createRuntimeException(oe, subject, predicate, object);
         }
         decorated.addTriple(subject, predicate, object);
     }
@@ -76,7 +74,7 @@ public class ValidatingCodeModel extends CodeModelBase {
         try {
             ontology.validateTripleLiteral(subject, predicate);
         } catch (OntologyException oe) {
-            throw createRE(oe);
+            throw createRuntimeException(oe, subject, predicate, literal);
         }
         decorated.addTripleLiteral(subject, predicate, literal);
     }
@@ -89,11 +87,7 @@ public class ValidatingCodeModel extends CodeModelBase {
         decorated.clearAll();
     }
 
-    public void writeRDF(OutputStream os) {
-        decorated.writeRDF(os);
-    }
-
-    private RuntimeException createRE(OntologyException oe) {
-        return new RuntimeException(VALIDATION_ERROR + ": " + oe.getMessage(), oe);
+    private RuntimeException createRuntimeException(OntologyException oe, String s, String p, String o) {
+        return new RuntimeException(VALIDATION_ERROR + ": " + oe.getMessage() + " in triple <" + s + "," + p + "," + o + ">", oe);
     }
 }

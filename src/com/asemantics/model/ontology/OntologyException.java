@@ -26,6 +26,25 @@ public class OntologyException extends Exception {
 
     /**
      * Constructor.
+     *
+     * @param cause
+     */
+    public OntologyException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param message
+     * @param cause
+     */
+    public OntologyException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * Constructor.
      * 
      * @param msg
      */

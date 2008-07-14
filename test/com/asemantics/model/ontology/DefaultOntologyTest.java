@@ -51,7 +51,7 @@ public class DefaultOntologyTest extends TestCase {
 
     public void testPopulate() throws OntologyException, MalformedURLException {
        for(int i = 0; i < SIZE; i++) {
-           ontology.defineRelation(SUB_PREFIX + i, new URL(PREDICATE + (i % 2) ), OBJ_PREFIX + i);
+           ontology.defineRelation(SUB_PREFIX + i + CodeModel.PREFIX_SEPARATOR, new URL(PREDICATE + (i % 2) ), OBJ_PREFIX + i + CodeModel.PREFIX_SEPARATOR);
        }
        assertEquals(ontology.getRelationsCount(), SIZE);
     }

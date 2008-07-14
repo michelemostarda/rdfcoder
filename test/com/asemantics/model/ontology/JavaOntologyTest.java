@@ -8,6 +8,7 @@ import com.asemantics.sourceparse.JavaBytecodeFileParser;
 import com.asemantics.sourceparse.ObjectsTable;
 import com.asemantics.sourceparse.JStatistics;
 import com.asemantics.storage.JenaCoderFactory;
+import com.asemantics.CoderUtils;
 import junit.framework.TestCase;
 
 import java.io.File;/*
@@ -36,9 +37,9 @@ public class JavaOntologyTest extends TestCase {
     protected void tearDown() throws Exception {
     }
 
-    public void testCreate() {
-        final File dir = new File("./src");
-        JStatistics statistics = new JStatistics();
+    public void testApplyOntology() {
+        final File dir = new File("./classes");
+        JStatistics statistics    = new JStatistics();
         CoderFactory coderFactory = new JenaCoderFactory();
         CodeModelBase codeModel   = coderFactory.createCodeModel();
         ValidatingCodeModel vcm   = new ValidatingCodeModel( codeModel, coderFactory.createCodeModelOntology() );
@@ -46,8 +47,12 @@ public class JavaOntologyTest extends TestCase {
         ObjectsTable objectsTable = new ObjectsTable();
         CodeHandler statisticsCodeHandler = statistics.createStatisticsCodeHandler( codeHandler );
 
-        DirectoryParser directoryParser = new DirectoryParser(new JavaBytecodeFileParser());
+        DirectoryParser directoryParser = new DirectoryParser( new JavaBytecodeFileParser(), new CoderUtils.JavaClassFilenameFilter() );
         directoryParser.initialize( statisticsCodeHandler, objectsTable );
         directoryParser.parseDirectory(dir.getName(), dir );
+
+        assertTrue("Cannot find classes", statistics.getParsedClasses() > 0);
+
+        System.out.println(statistics);
     }
 }
