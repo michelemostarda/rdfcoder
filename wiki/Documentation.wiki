@@ -5,4 +5,4 @@ You can find the project documentation [http://code.google.com/p/rdfcoder/source
 
 To check out the documentation use:
 
-{{{ svn co http://rdfcoder.googlecode.com/svn/trunk/doc/htmldoc rdfcoder-doc }}}
+{{{ svn co http://rdfcoder.googlecode.com/svn/trunk/doc/htmldoc rdfcoder-doc-RO }}}
