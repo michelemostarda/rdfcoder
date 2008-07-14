@@ -77,7 +77,7 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
      * @return
      */
     protected static String toURI(String prop) {
-        return URI + prop;
+        return CODER_URI + prop;
     }
 
     /**
@@ -143,10 +143,10 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
      * @return
      */
     protected static String getPrefixFromRDFType(String rdfType) {
-        if(rdfType.indexOf(URI) < 0) {
+        if(rdfType.indexOf(CODER_URI) < 0) {
             throw new IllegalArgumentException("Invalid rdfType: '" + rdfType + "'");
         }
-        return rdfType.substring(URI.length()) + CodeModel.PREFIX_SEPARATOR;
+        return rdfType.substring(CODER_URI.length()) + CodeModel.PREFIX_SEPARATOR;
     }
 
     /**
@@ -157,7 +157,7 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
      * @return
      */
     protected static String prefixFullyQualifiedName(String prefix, String path) {
-        if(prefix == null || prefix.trim().length() == 0 || path == null || path.trim().length() == 0) {
+        if(prefix == null || prefix.trim().length() == 0 || path == null) {
             throw new IllegalArgumentException();
         }
 

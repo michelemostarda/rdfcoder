@@ -20,15 +20,25 @@ package com.asemantics.model;
 
 import java.util.Date;
 
-/**
- * Represents the Asset of the parsed libraries.
- */
-public interface Asset {
 
-    public String[] getLibraries();
+public class JAsset implements Asset {
 
-    public String getLibraryLocation(String library);
+    private JavaQueryModel javaQueryModel;
 
-    public Date getLibraryDateTime(String library);
+    protected JAsset(JavaQueryModel qm) {
+        javaQueryModel = qm;
+    }
 
+    public String[] getLibraries() {
+        return javaQueryModel.getLibraries();
+    }
+
+    public String getLibraryLocation(String library) {
+        return javaQueryModel.getLibraryLocation(library);
+    }
+
+    public Date getLibraryDateTime(String library) {
+        return javaQueryModel.getLibraryDateTime(library);
+    }
+    
 }

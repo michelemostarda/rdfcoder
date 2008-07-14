@@ -267,7 +267,7 @@ public class CodeHandlerImpl implements CodeHandler {
         String prefPTC = JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.CLASS_PREFIX, pathToClass);
         model.addTriple(prefPTC, CodeModel.SUBCLASSOF, JavaCodeModel.JCLASS);
         model.addTripleLiteral(prefPTC, JavaCodeModel.HAS_MODIFIERS, JavaCodeModel.JModifier.toByte(modifiers).toString() );
-        model.addTriple(prefPTC, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
+        model.addTripleLiteral(prefPTC, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         if(extededClass != null) {
             model.addTriple(
                     prefPTC,
@@ -290,11 +290,11 @@ public class CodeHandlerImpl implements CodeHandler {
     }
 
     public void endClass() {
-        if(containersStack.isEmpty()) {
+        if( containersStack.isEmpty() ) {
             throw new CodeHandlerException("No class to end.");
+        } else {
+            popClassOrInterface();
         }
-
-        popClassOrInterface();
     }
 
     public void startEnumeration(
@@ -303,7 +303,7 @@ public class CodeHandlerImpl implements CodeHandler {
             String pathToEnumeration,
             String[] elements
     ) {
-        if(modifiers == null || visibility == null || pathToEnumeration == null || elements == null || elements.length == 0) {
+        if(modifiers == null || visibility == null || pathToEnumeration == null || elements == null) {
             throw new IllegalArgumentException();
         }
 
@@ -312,7 +312,7 @@ public class CodeHandlerImpl implements CodeHandler {
         String prefPTE = JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.ENUMERATION_PREFIX, pathToEnumeration);
         model.addTriple(prefPTE, CodeModel.SUBCLASSOF, JavaCodeModel.JENUMERATION);
         model.addTripleLiteral(prefPTE, JavaCodeModel.HAS_MODIFIERS, JavaCodeModel.JModifier.toByte(modifiers).toString() );
-        model.addTriple(prefPTE, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
+        model.addTripleLiteral(prefPTE, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         for(int i = 0; i < elements.length; i++) {
             model.addTriple(
                 prefPTE,
@@ -351,10 +351,11 @@ public class CodeHandlerImpl implements CodeHandler {
         String prefPTA = JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.ATTRIBUTE_PREFIX, pathToAttribute);
         model.addTriple(prefPTA, SUBCLASSOF, JavaCodeModel.JATTRIBUTE);
         model.addTripleLiteral(prefPTA, JavaCodeModel.HAS_MODIFIERS, JavaCodeModel.JModifier.toByte(modifiers).toString() );
-        model.addTriple(prefPTA, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
-        model.addTriple(prefPTA, JavaCodeModel.ATTRIBUTE_TYPE,  type.getIdentifier());
+        model.addTripleLiteral(prefPTA, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
+        //TODO: MED - don't use triple literal but define a validation logic for a generic type.
+        model.addTripleLiteral(prefPTA, JavaCodeModel.ATTRIBUTE_TYPE,  type.getIdentifier());
         if(value != null) { // Default value defined.
-            model.addTriple(prefPTA, JavaCodeModel.ATTRIBUTE_VALUE, value);
+            model.addTripleLiteral(prefPTA, JavaCodeModel.ATTRIBUTE_VALUE, value);
         }
         String parentClass = peekContainer();
         model.addTriple(parentClass, JavaCodeModel.CONTAINS_ATTRIBUTE, prefPTA);
@@ -390,12 +391,13 @@ public class CodeHandlerImpl implements CodeHandler {
         String prefPTCO =  JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.CONSTRUCTOR_PREFIX, pathToClass) + "_" + overloadIndex;
         model.addTriple(prefPTCO, CodeModel.SUBCLASSOF, JavaCodeModel.JCONSTRUCTOR);
         model.addTripleLiteral(prefPTCO, JavaCodeModel.HAS_MODIFIERS, JavaCodeModel.JModifier.toByte(modifiers).toString() );
-        model.addTriple(prefPTCO, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
+        model.addTripleLiteral(prefPTCO, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         String qualifiedParameter;
         for(int i = 0; i < paramNamesSize; i++) {
             qualifiedParameter = qualifyParameterName( pathToClass, parameterNames[i]);
             model.addTriple( qualifiedParameter, CodeModel.SUBCLASSOF, JavaCodeModel.JPARAMETER);
-            model.addTriple( qualifiedParameter, JavaCodeModel.PARAMETER_TYPE, parameterTypes[i].getIdentifier());
+            // TODO - MED : improve this.
+            model.addTripleLiteral( qualifiedParameter, JavaCodeModel.PARAMETER_TYPE, parameterTypes[i].getIdentifier());
             model.addTriple( prefPTCO, JavaCodeModel.CONTAINS_PARAMETER, qualifiedParameter);
         }
         for(int i = 0; i < exceptionsSize; i++) {
@@ -435,17 +437,17 @@ public class CodeHandlerImpl implements CodeHandler {
         // Creating structure.
         model.addTriple(prefPTM, SUBCLASSOF, JavaCodeModel.JMETHOD);
         model.addTripleLiteral(prefPTM, JavaCodeModel.HAS_MODIFIERS, JavaCodeModel.JModifier.toByte(modifiers).toString() );
-        model.addTriple(prefPTM, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
+        model.addTripleLiteral(prefPTM, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         String signature = JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.SIGNATURE_PREFIX, pathToMethod) + "_" + overloadIndex;
         model.addTriple(signature, SUBCLASSOF, JavaCodeModel.JSIGNATURE);
         String qualifiedParameter; 
         for(int i = 0; i < paramNamesSize; i++) {
             qualifiedParameter = qualifyParameterName( prefPTM, parameterNames[i]);
             model.addTriple( qualifiedParameter, SUBCLASSOF, JavaCodeModel.JPARAMETER);
-            model.addTriple( qualifiedParameter, JavaCodeModel.PARAMETER_TYPE, parameterTypes[i].getIdentifier());
+            model.addTripleLiteral( qualifiedParameter, JavaCodeModel.PARAMETER_TYPE, parameterTypes[i].getIdentifier() );
             model.addTriple( signature, JavaCodeModel.CONTAINS_PARAMETER, qualifiedParameter);
         }
-        model.addTriple(signature, JavaCodeModel.RETURN_TYPE, returnType.getIdentifier());
+        model.addTripleLiteral(signature, JavaCodeModel.RETURN_TYPE, returnType.getIdentifier());
         model.addTriple(prefPTM, JavaCodeModel.CONTAINS_SIGNATURE, signature);
         for(int i = 0; i < exceptionsSize; i++) {
             model.addTriple(prefPTM, JavaCodeModel.THROWS, exceptions[i].getIdentifier());
