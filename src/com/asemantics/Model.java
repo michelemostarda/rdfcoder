@@ -163,7 +163,7 @@ public class Model {
      * @return
      */
     public boolean supportsSparqlQuery() {
-        return currentModel instanceof SPARQLQuerableCodeModel;
+        return codeModelBase instanceof SPARQLQuerableCodeModel;
     }
 
     /**
@@ -176,7 +176,7 @@ public class Model {
      */
     public QueryResult sparqlQuery(String sparql) {
         try {
-            return ( (SPARQLQuerableCodeModel) currentModel).performQuery(sparql);
+            return ( (SPARQLQuerableCodeModel) codeModelBase).performQuery(sparql);
         } catch (SPARQLException sparqle) {
             throw new RDFCoderException("Error while perfoming SPARQL query.", sparqle);
         }
@@ -192,14 +192,14 @@ public class Model {
     public void load(String resouceName) {
 
         // Retrieve resource.
-        Repository.Resource resource = retrieveResource( resouceName );
+        Repository.Resource resource = retrieveResource( getModelResourceName(resouceName) );
 
         // Load model.
         InputStream inputStream = null;
         CodeStorage codeStorage = getCoderFactory().createCodeStorage();
         try {
             inputStream = resource.getInputStream();
-            codeStorage.loadModel(currentModel, inputStream);
+            codeStorage.loadModel(codeModelBase, inputStream);
         } catch (Exception e) {
             throw new RDFCoderException("Cannot load model.", e);
         } finally {
@@ -246,6 +246,16 @@ public class Model {
     }
 
     /**
+     * Returns the name of the resource in {@link com.asemantics.repository.Repository}
+     * for this model.
+     *
+     * @return
+     */
+    public String getModelResourceName() {
+       return getModelResourceName(name);
+    }
+
+    /**
      * Saves the content of the current model
      * in a resource with the same name of the model.
      */
@@ -257,7 +267,7 @@ public class Model {
      * Clears the content of this model.
      */
     public void clear() {
-        currentModel.clearAll();
+        codeModelBase.clearAll();
     }
 
     /**
