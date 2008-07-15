@@ -110,7 +110,7 @@ public class RDFCoderTest extends TestCase {
 
         // Low level cross querying.
         if( model.supportsSparqlQuery() ) {
-            QueryResult result = model.sparqlQuery("SPARQL query");
+            QueryResult result = model.sparqlQuery("select ?a ?b ?c where{?a ?b ?c}");
             System.out.println(result);
         }
 
@@ -121,14 +121,14 @@ public class RDFCoderTest extends TestCase {
             t.printStackTrace();
             fail("Cannot save model");
         }
-        assertTrue("Cannot save model", coder.getRepository().containsResource( TEST_MODEL_NAME ) );
+        assertTrue("Cannot save model", coder.getRepository().containsResource( model.getModelResourceName() ) );
 
         // Resets the model content.
         model.clear();
 
         // Loads existing model data into the current model.
         try {
-            model.load(TEST_MODEL_NAME);
+            model.load( TEST_MODEL_NAME );
         } catch (Throwable t) {
             t.printStackTrace();
             fail("Cannot load model");
