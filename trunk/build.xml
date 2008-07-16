@@ -36,6 +36,7 @@
   	<property name="src.dir"     value="${basedir}/src"/>
 	<property name="classes.dir" value="${basedir}/classes"/>
   	<property name="javadoc.dir" value="${basedir}/javadoc"/>
+  	<property name="umldoc.dir"  value="${basedir}/uml"/>
   	<property name="lib.dir"     value="${basedir}/lib"/>
   	<property name="parent.dir"  value="${basedir}/../"/>
 
@@ -183,6 +184,7 @@
 		<delete dir="${classes.dir}"/>
 		<delete dir="${dist.dir}"/>
 		<delete dir="${javadoc.dir}"/>
+		<delete dir="${umldoc.dir}"/>		
 
         <delete dir="target_test/classes"/>
 		<delete dir="target_test/out"/>
@@ -216,6 +218,36 @@
             <link href="http://jena.sourceforge.net/javadoc/"/>
         </javadoc>
 	</target>
+	
+	<target 
+		name        = "uml" 
+		description = "Generates UML documentation."
+	>
+		<mkdir dir="${umldoc.dir}"/>
+		<javadoc 
+			sourcepath="${src.dir}" 
+			packagenames="com.asemantics.*" 
+			destdir="${umldoc.dir}" 
+	        private="true"
+		>
+	    	<doclet 
+				name="org.umlgraph.doclet.UmlGraphDoc" 
+				path="${lib.dir}/UMLGraph.jar"
+			>
+	        	<param name="-inferrel"/>
+	            <param name="-inferdep"/>
+	            <param name="-hide" value="java.*"/>
+	            <param name="-collpackages" value="java.util.*"/>
+	            <param name="-qualify"/>
+	            <param name="-postfixpackage"/>
+	            <param name="-nodefontsize" value="9"/>
+	            <param name="-nodefontpackagesize" value="7"/>
+	            <param name="-link" value="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec"/>
+	            <param name="-link" value="http://java.sun.com/j2se/1.5/docs/api"/>
+			</doclet>
+			</javadoc>
+	</target>
+
 
  	<target
         name        = "prepare.test"
