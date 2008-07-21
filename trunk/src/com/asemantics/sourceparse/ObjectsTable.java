@@ -32,8 +32,6 @@ import java.util.jar.JarFile;
 /**
  * This class defines a table to resolve objects.
  *
- * //TODO: LOW - integrate use of preloading.
- *
  * //TODO: LOW - implement serialization / deserialization of UnresolvedFileEntry(es). 
  */
 public class ObjectsTable {
@@ -234,7 +232,6 @@ public class ObjectsTable {
     }
 
     public void clear() {
-        //TODO: LOW - clean single elements.
         packagesToContents.clear();
         unresolvedTypeEntries.clear();
     }

@@ -56,7 +56,6 @@ public class RDFCoder {
      * Returns the assertions level.
      * 
      * @return
-     * //TODO: replace with isDebug()
      */
     public static boolean assertions() {
         return true;

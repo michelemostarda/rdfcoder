@@ -653,6 +653,14 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         throw new QueryModelException("Cannot find the full qualification of entity : '" + pathToEntity + "'.");
     }
 
+    public String toString() {
+        return JavaQueryModelImpl.class.getName() + "{ " +
+                "packages: "   + getAllPackages().length  + ", " +
+                "classes: "    + getAllClasses().length   + ", " +
+                "interfaces: " + getAllInterfaces().length       +
+                "}";
+    }
+
     /**
      * Returns the RDF type of the prefixed entity if exists, <code>null</code>otherwise.
      *

@@ -200,20 +200,6 @@ public interface CodeHandler extends ParseHandler, JavadocHandler, BackTrackingS
     public void preloadObjectsFromModel(ObjectsTable objectsTable);
 
     /**
-     * Serializes the unresolved entities of the object table to make them persistent into the model.
-     *
-     * @param objectTable
-     */
-    public void serializeUnresolvedTypeEntries(ObjectsTable objectTable);
-
-    /**
-     * Deserializes the unresolved entities from the model and populates with them the objects table.
-     *
-     * @param objectTable
-     */
-    public void deserializeUnresolvedTypeEntries(ObjectsTable objectTable);
-
-    /**
      * Adds an error listener to the code handler.
      * @param errorListener
      */

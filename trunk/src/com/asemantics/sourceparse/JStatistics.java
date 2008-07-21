@@ -368,16 +368,6 @@ public class JStatistics {
             wrapped.preloadObjectsFromModel(objectsTable);
         }
 
-        public void serializeUnresolvedTypeEntries(ObjectsTable objectTable) {
-            if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.serializeUnresolvedTypeEntries(objectTable);
-        }
-
-        public void deserializeUnresolvedTypeEntries(ObjectsTable objectTable) {
-            if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.deserializeUnresolvedTypeEntries(objectTable);
-        }
-
         public void addErrorListener(ErrorListener errorListener) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.addErrorListener(errorListener);
