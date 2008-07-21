@@ -25,7 +25,6 @@ import java.io.IOException;
 
 /**
  * Test unit of <code>ObjectsTable</code>
- * //TODO: LOW - integrate testModelPreloading somewhere.
  */
 public class ObjectsTableTest extends TestCase {
 

@@ -326,7 +326,6 @@ public class CodeHandlerImpl implements CodeHandler {
     }
 
     public void endEnumeration() {
-        //TODO: check if the peek element is an enumeration.
         if(containersStack.isEmpty()) {
             throw new CodeHandlerException("No enumeration to end.");
         }
@@ -496,14 +495,6 @@ public class CodeHandlerImpl implements CodeHandler {
         } finally {
             t2.close();
         }
-    }
-
-    public void serializeUnresolvedTypeEntries(ObjectsTable objectTable) {
-        //TODO: LOW - TBI
-    }
-
-    public void deserializeUnresolvedTypeEntries(ObjectsTable objectTable) {
-        //TODO: LOW - TBI
     }
 
     public void addErrorListener(ErrorListener errorListener) {

@@ -639,7 +639,7 @@ public class JavadocFileParser extends FileParser {
                 } 
 
                 // Handles begin comment.
-                if("/**".equals(bufferContent.trim())) {  //TODO: improve this check by removing trim() !
+                if("/**".equals(bufferContent.trim())) {
                     tokensPipe.addToken( new JDOpenComment(row, col) );
                     //System.out.println("OPEN COMMENT TOKEN");
                     return;
