@@ -20,16 +20,86 @@ package com.asemantics;
 import junit.framework.TestCase;
 
 import java.lang.reflect.InvocationTargetException;
-import java.io.File;
+import java.io.*;
+import java.util.List;
+import java.util.ArrayList;
 
 
 public class CommandLineTest extends TestCase {
 
+    class PrintStreamWrapper {
+
+        private StringBuilder sb;
+
+        private List<String> lines;
+
+        PrintStreamWrapper() {
+            sb    = new StringBuilder();
+            lines = new ArrayList<String>();
+        }
+
+        PrintStream getPrintStream(OutputStream os) {
+            return new PrintStream(os) {
+
+                public void write(byte b[]) throws IOException {
+                    super.write(b);
+                    sb.append(b);
+                }
+
+                public void write(int b) {
+                    super.write(b);
+                    sb.append(b);
+                }
+
+                public void write(byte buf[], int off, int len) {
+                    super.write(buf, off, len);
+                    String s;
+                    try {
+                        s = new String(buf, off, len, "ISO-8859-1");
+                    } catch (UnsupportedEncodingException uee) {
+                        throw new RuntimeException(uee);
+                    }
+                    sb.append(s);
+                }
+
+                public void println() {
+                    super.println();
+                    lines.add( sb.toString() );
+                    sb.delete(0, sb.length());
+                }
+            };
+        }
+
+        void dumpLines(PrintStream ps) {
+            if( lines.isEmpty() ) {
+                ps.println("[buffer] " + sb.toString());
+                return;
+            }
+
+            int i = 0;
+            for(String s : lines) {
+                ps.println("[" + i++ + "] " + s);
+            }
+        }
+
+        void dumpLines() {
+            dumpLines(System.err);
+        }
+
+    }
+
+    private PrintStreamWrapper printStreamWrapper;
+
     private CommandLine commandLine;
+
+    public CommandLineTest() {
+        printStreamWrapper = new PrintStreamWrapper();
+    }
 
     protected void setUp() throws Exception {
         System.out.println(">" + new File(".").getAbsolutePath());
         commandLine = new CommandLine(new File("."));
+        System.setOut( printStreamWrapper.getPrintStream(System.out) );
     }
 
     protected void tearDown() throws Exception {
@@ -39,10 +109,16 @@ public class CommandLineTest extends TestCase {
     public void testLoadSources() throws IllegalAccessException, InvocationTargetException {
         String[] command = new String[]{"loadclasspath", "sources", "src:src"};
         assertTrue( commandLine.processCommand(command) );
+        printStreamWrapper.dumpLines();
     }
 
    public void testLoadClasses() throws IllegalAccessException, InvocationTargetException {
         String[] command = new String[]{"loadclasspath", "classes", "class:classes"};
+        assertTrue( commandLine.processCommand(command) );
+    }
+
+    public void testInspectModel() throws IllegalAccessException, InvocationTargetException {
+        String[] command = new String[]{"inspectmodel", "model"};
         assertTrue( commandLine.processCommand(command) );
     }
 }
