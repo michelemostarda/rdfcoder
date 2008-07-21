@@ -50,6 +50,13 @@
 
 	<property name="jrefactory.dir"  value="${basedir}/jrefactory-2.9.19-full"/>
 	<property name="jrefactory.lib"  value="jrefactory-2.9.19-rdfc-0.5.jar"/>
+	
+	<!-- Echoing properties. -->
+	<echoproperties>
+		<propertyset>
+	    	<propertyref regex=".*dir"/>
+		</propertyset>
+	</echoproperties>
 	  
   	<!-- =================================================================== -->
   	<!-- Classpaths.				                                         -->
