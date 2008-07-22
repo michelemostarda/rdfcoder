@@ -22,7 +22,7 @@ import com.asemantics.storage.JenaCoderFactory;
 import junit.framework.TestCase;
 
 /**
- * Basic test.
+ * Basic test on {@link com.asemantics.model.JavaCodeModel}.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  *
@@ -45,7 +45,10 @@ public class JavaCodeModelTest extends TestCase {
     }
 
     public void tearDown() {
-
+        jcmf = null;
+        cmb  = null;
+        jch  = null;
+        qm   = null;
     }
 
     public void testHandler() throws QueryModelException {
