@@ -161,16 +161,15 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
             throw new IllegalArgumentException();
         }
 
-        int prefLocation = path.indexOf(prefix);
-        if(prefLocation == -1) { // Not pefixed.
-            return prefix + path;
-        } else if(prefLocation == 0) { // Already prefixed.
-            return path;
-        } else {
-            throw new IllegalArgumentException(
-                    "Something wrong in path '" + path + "' in applying prefix '" + prefix + "'"
-            );
+        int prefixSeparatorIndex = path.indexOf(PREFIX_SEPARATOR);
+        if(prefixSeparatorIndex == 0) { // Invalid path: prefix is ""
+            throw new IllegalArgumentException("Invalid path: '" + path + "'");
         }
+        if(prefixSeparatorIndex > 0) { // Removes last prefix.
+            path = path.substring(prefixSeparatorIndex + 1);
+        }
+
+        return prefix + path;
     }
 
     /**
