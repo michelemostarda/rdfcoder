@@ -19,13 +19,12 @@
 package com.asemantics.repository;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class represents a file repository where put code storages.
  */
+//TODO: improve lock management.
 public class Repository {
 
     /**
@@ -113,14 +112,14 @@ public class Repository {
         private ResourceType type;
 
         /**
-         * Number of readers of this resource.
+         * List of readers of this resource.
          */
-        private short readersCount = 0;
+        private List<OutputStream> writers;
 
         /**
-         * Number of writers of this resource.
+         * List of writers of this resource.
          */
-        private int writersCount = 0;
+        private List<InputStream> readers;
 
 
 
@@ -134,6 +133,9 @@ public class Repository {
             root = r;
             name = n;
             type = rt;
+
+            writers = new ArrayList<OutputStream>();
+            readers = new ArrayList<InputStream>();
         }
 
         /**
@@ -170,39 +172,32 @@ public class Repository {
          * @throws FileNotFoundException
          */
         public InputStream getInputStream() throws FileNotFoundException, RepositoryException {
-            if(readersCount > 0) {
-                throw new RepositoryException("Cannot open resource in write mode: there is at least one reader on it");
-            }
-            if(writersCount > 0) {
-                throw new RepositoryException("Cannot open resource in write mode: there is aready a writer on it");
-            }
-
-            // Check there is a single writer.
-            if(writersCount > 0) {
-                throw new RepositoryException("Resource '" + name + "' already accessed in write mode.");
-            }
-            // Creates a lock file for write mode.
-            writersCount++;
-            try {
-                createLockFile(name);
-            } catch (IOException e) {
-                throw new RepositoryException(e);
-            }
-
-            return new FileInputStream( getLocation() ) {
-
-                /**
-                 * Releases the lock file.
-                 *
-                 * @throws IOException
-                 */
-                public void close() throws IOException {
-                    super.close();
-                    writersCount--;
-                    removeLockFile(name);
+            synchronized (lock) {
+                if(writers.size() > 0) {
+                    throw new RepositoryException("Cannot open resource in read mode: there is at least a reader on it");
                 }
 
-            };
+                // Check there is a single writer.
+                if(readers.size() > 0) {
+                    throw new RepositoryException("Resource '" + name + "' already accessed in write mode.");
+                }
+
+                InputStream is = new FileInputStream( getLocation() ) {
+    
+                    /**
+                     * Releases the lock file.
+                     *
+                     * @throws IOException
+                     */
+                    public void close() throws IOException {
+                        super.close();
+                        readers.remove(this);
+                    }
+
+                };
+                readers.add(is);
+                return is;
+            }
         }
 
         /**
@@ -213,19 +208,34 @@ public class Repository {
          * @throws FileNotFoundException
          */
         public OutputStream getOutputStream(boolean append) throws FileNotFoundException, RepositoryException {
-            if(writersCount > 0) {
-                throw new RepositoryException("Cannot open resource in read mode: there is a writer on it");
-            }
-
-            readersCount++;
-            return new FileOutputStream( getLocation(), append ) {
-
-                public void close() throws IOException {
-                    super.close();
-                    readersCount--;
+            synchronized (lock) {
+                if(writers.size() > 0) {
+                    throw new RepositoryException("Cannot open resource in write mode: there is anoter writer on it");
                 }
-                
-            };
+                if(readers.size() > 0) {
+                    throw new RepositoryException("Cannot open resource in write mode: there is al least a reader on it");
+                }
+
+                // Creates a lock file for write mode.
+                try {
+                    createLockFile(name);
+                } catch (IOException e) {
+                    throw new RepositoryException(e);
+                }
+
+                OutputStream os = new FileOutputStream( getLocation(), append ) {
+
+                    public void close() throws IOException {
+                        super.close();
+                        writers.remove(this);
+                        removeLockFile(name);
+                        
+                    }
+
+                };
+                writers.add(os);
+                return os;
+            }
         }
 
         /**
@@ -237,6 +247,24 @@ public class Repository {
          */
         public OutputStream getOutputStream() throws FileNotFoundException, RepositoryException {
             return getOutputStream(false);
+        }
+
+        /**
+         * Deletes the current resource closing first all input and output streams.
+         */
+        public void delete() {
+            for(InputStream is : readers) {
+                try {
+                    is.close();
+                } catch (Exception e) {}
+            }
+            for(OutputStream os : writers) {
+                try {
+                    os.close();
+                } catch (Exception e) {}
+            }
+            getLocation().delete();
+
         }
     }
 
@@ -272,6 +300,11 @@ public class Repository {
      * Defualt repository instance.
      */
     private static Repository _defaultRepositoryInstance;
+
+    /**
+     * Resource reference lock.
+     */
+    private final Object lock = new Object();
 
     /**
      * Repository root;

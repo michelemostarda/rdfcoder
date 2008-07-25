@@ -25,6 +25,7 @@ import com.asemantics.model.JavaCodeModel;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -34,7 +35,7 @@ import java.util.jar.JarFile;
  *
  * //TODO: LOW - implement serialization / deserialization of UnresolvedFileEntry(es). 
  */
-public class ObjectsTable {
+public class ObjectsTable implements Serializable {
 
     private final int BLOCK_SIZE = 100;
 
@@ -42,7 +43,7 @@ public class ObjectsTable {
      * Contains in a memory optimized way the
      * list of type entries inside a package.
      */
-    protected class PackageEntry {
+    protected class PackageEntry implements Serializable {
 
         String[] objects = new String[BLOCK_SIZE];
 
@@ -81,7 +82,7 @@ public class ObjectsTable {
      * Contains the name of the unresolved type
      * and the relative import context.
      */
-    public class UnresolvedTypeEntry {
+    protected class UnresolvedTypeEntry implements Serializable {
 
         /**
          * The name of the unresolved type.
@@ -320,6 +321,20 @@ public class ObjectsTable {
         for(File jarFile : classPath.jarFiles) {
             preloadJar(jarFile);
         }
+    }
+
+    /**
+     * Loads the content of an object table into another.
+     *
+     * @param other
+     */
+    public void load(ObjectsTable other) {
+        if( other == null ) {
+            throw new NullPointerException();
+        }
+
+        packagesToContents.putAll   ( other.packagesToContents    );
+        unresolvedTypeEntries.addAll( other.unresolvedTypeEntries );
     }
 
     private void recursivePreload(final FilenameFilter ff, final int rootLength, final int extSize, Stack<File> stack) {

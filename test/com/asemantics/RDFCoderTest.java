@@ -26,7 +26,8 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class RDFCoderTest extends TestCase {
+public class
+        RDFCoderTest extends TestCase {
 
     private static final String JAVA_PROFILE = "java";
 
@@ -73,11 +74,19 @@ public class RDFCoderTest extends TestCase {
                 t.printStackTrace();
                 fail("Cannot intitialise JRE");
             }
+        } else {
+            try {
+            jprofile.loadJRE(JRE);
+            } catch (Throwable t) {
+                t.printStackTrace();
+                fail("Cannot load JRE");
+            }
         }
         
 
         // Retrieves the jprofile ontology.
         try {
+            //TODO: activate this
             // jprofile.printOntologyOWL(System.out);
         } catch (Throwable t) {
             t.printStackTrace();
