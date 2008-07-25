@@ -21,10 +21,9 @@ package com.asemantics;
 import com.asemantics.model.*;
 import com.asemantics.profile.Profile;
 import com.asemantics.repository.Repository;
+import com.asemantics.repository.RepositoryException;
 import com.asemantics.sourceparse.*;
-import com.asemantics.storage.JenaCoderFactory;
 import com.asemantics.storage.CodeStorage;
-import com.asemantics.storage.JenaCodeModel;
 
 import java.io.*;
 import java.util.*;
@@ -33,9 +32,14 @@ import java.util.*;
 public class JavaProfile implements Profile {
 
     /**
-     * The prefix of the resource name associated to a JRE.
+     * The prefix of the resource name associated to the JRE CodeModel.
      */
     private static final String JRE_MODEL_PREFIX = "jre_model_";
+
+    /**
+     * The prefix of the resource name associated to the JRE Object Table.
+     */
+    private static final String JRE_OBJECT_TABLE_PREFIX = "jre_ot_";
 
     /**
      * JRE lib dir.
@@ -96,13 +100,23 @@ public class JavaProfile implements Profile {
     }
 
     /**
-     * Returns the name of the JRE resource.
+     * Returns the name of the JRE Model resource.
      *
      * @param jreDirName
      * @return
      */
-    private String getJREResourceName(String jreDirName) {
+    private String getJREModelResourceName(String jreDirName) {
         return JRE_MODEL_PREFIX + jreDirName;
+    }
+
+    /**
+     * Returns the name of the JRE Object Table resource.
+     *
+     * @param jreDirName
+     * @return
+     */
+    private String getJREObjectTableResourceName(String jreDirName) {
+        return JRE_OBJECT_TABLE_PREFIX + jreDirName;
     }
 
     /**
@@ -120,7 +134,7 @@ public class JavaProfile implements Profile {
             throw new RDFCoderException("specified JRE path: '" + pathToJRE.getAbsolutePath() + "' doesn't exist.");
         }
 
-        String jreResourceName = getJREResourceName( pathToJRE.getName() );
+        String jreResourceName = getJREModelResourceName( pathToJRE.getName() );
         return repository.containsResource(jreResourceName);
     }
 
@@ -153,10 +167,11 @@ public class JavaProfile implements Profile {
         }
 
         // Initializes structures.
+        final String jreName = pathToJRE.getName();
         JavaBytecodeJarParser parser = new JavaBytecodeJarParser();
         CodeHandler statCH = statistics.createStatisticsCodeHandler(codeHandler);
         parser.initialize(statCH, objectsTable);
-        codeHandler.startParsing( pathToJRE.getName(), pathToJRE.getAbsolutePath() );
+        codeHandler.startParsing( jreName, pathToJRE.getAbsolutePath() );
 
         // Does jar parsing.
         for(File f : files) {
@@ -173,20 +188,28 @@ public class JavaProfile implements Profile {
 
         // Disposes parsing.
         codeHandler.endParsing();
-        objectsTable.clear();
+
+        // Stores the objects table content.
+        try {
+            serializeJREObjectsTable(jreName, objectsTable);
+        } catch (Exception e) {
+            throw new RDFCoderException("Cannot serialize Object Table in repository.", e);   
+        }
+
         objectsTable = null;
         parser.dispose();
         parser = null;
 
         // Saves model in repository.
+        OutputStream os = null;
+        Repository.Resource resource = null;
         try {
-
-            Repository.Resource resource = repository.createResource( getJREResourceName(pathToJRE.getName()), Repository.ResourceType.XML );
-            OutputStream os  = resource.getOutputStream();
+            resource = repository.createResource( getJREModelResourceName(pathToJRE.getName()), Repository.ResourceType.XML );
+            os  = resource.getOutputStream();
             codeStorage.saveModel(cmb, os);
             os.close();
-
         } catch (Exception e) {
+            resource.delete();
             throw new RDFCoderException("Cannot store model in repository.", e);
         }
 
@@ -195,6 +218,19 @@ public class JavaProfile implements Profile {
         cmb = null;
 
         return new JREReport(pathToJRE ,statistics);
+    }
+
+    /**
+     * Loads an existing JRE data.
+     *
+     * @param pathToJRE
+     */
+    public void loadJRE(File pathToJRE) {
+        try {
+            model.getObjectsTable().load( deserializeJREObjectsTable( pathToJRE.getName() ) );
+        } catch (Exception e) {
+            throw new RDFCoderException("Cannot deserialize Object Table from repository.", e);
+        }
     }
 
     public JStatistics loadSources(String libName, String srcPath) {
@@ -248,6 +284,47 @@ public class JavaProfile implements Profile {
         ch = null;
 
         return statistics;
+    }
+
+    /**
+     * Serializes the content of the JRE {@link com.asemantics.sourceparse.ObjectsTable}
+     * into the repository.
+     *
+     * @param objectsTable
+     */
+    private void serializeJREObjectsTable(String jreName, ObjectsTable objectsTable) throws RepositoryException, IOException {
+        Repository.Resource resource = repository.createResource( getJREObjectTableResourceName( jreName ), Repository.ResourceType.BINARY );
+        OutputStream os = resource.getOutputStream();
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(os);
+            oos.writeObject( objectsTable );
+        } finally {
+            if(oos != null) { oos.close(); }
+        }
+    }
+
+    /**
+     * Deserializes the content of the JRE {@link com.asemantics.sourceparse.ObjectsTable}
+     * from the repository.
+     * 
+     * @param jreName
+     * @return
+     * @throws RepositoryException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private ObjectsTable deserializeJREObjectsTable(String jreName) throws RepositoryException, IOException, ClassNotFoundException {
+        Repository.Resource resource = repository.getResource( getJREObjectTableResourceName( jreName ) );
+        InputStream is = resource.getInputStream();
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(is);
+            ObjectsTable ot = (ObjectsTable) ois.readObject();
+            return ot;
+        } finally {
+            if(ois != null) { ois.close(); }
+        }
     }
 
     private JavaQueryModel jqmInstance;
