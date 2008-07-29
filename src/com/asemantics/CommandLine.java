@@ -23,11 +23,8 @@ import com.asemantics.sourceparse.*;
 import com.asemantics.storage.JenaCoderFactory;
 import com.asemantics.storage.CodeStorage;
 import com.asemantics.storage.CodeStorageException;
+import com.asemantics.inspector.Inspector;
 import jline.*;
-import org.apache.commons.jexl.Expression;
-import org.apache.commons.jexl.ExpressionFactory;
-import org.apache.commons.jexl.JexlContext;
-import org.apache.commons.jexl.JexlHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -161,6 +158,11 @@ public class CommandLine {
      * Currently selected model.
      */
     private String selectedModel;
+
+    /**
+     * Inspector common instance.
+     */
+    private Inspector inspector;
 
     /**
      * Debug mode flag.
@@ -388,11 +390,13 @@ public class CommandLine {
         ModelHandler mh = modelHandlers.get(modelName);
         JavaQueryModel qm = mh.queryModel;
 
+        if( inspector == null) {
+            inspector = new Inspector();
+            inspector.addToContext(INSPECTION_MODEL_NAME, qm);
+        }
+
         try {
-            Expression expression = ExpressionFactory.createExpression( qry );
-            JexlContext jc = JexlHelper.createContext();
-            jc.getVars().put(INSPECTION_MODEL_NAME, qm);
-            Object o = expression.evaluate(jc);
+            Object o = inspector.inspect(qry);
             ps.println(o);
         } catch (Exception e) {
             throw new IllegalArgumentException("Cannot perform inspection query.", e);
@@ -406,6 +410,42 @@ public class CommandLine {
      */
     private void inspectModel(String qry, PrintStream ps) {
         inspectModel(selectedModel, qry, ps);
+    }
+
+    /**
+     * Describes the specified model.
+     * @param modelName
+     * @param qry
+     * @param ps
+     */
+    private void describeModel(String modelName, String qry, PrintStream ps) {
+        if( ! modelHandlers.containsKey(modelName) ) {
+            throw new IllegalArgumentException("model with name '" + modelName + "' doesn't exist.");
+        }
+
+        ModelHandler mh = modelHandlers.get(modelName);
+        JavaQueryModel qm = mh.queryModel;
+
+        if( inspector == null) {
+            inspector = new Inspector();
+            inspector.addToContext(INSPECTION_MODEL_NAME, qm);
+        }
+
+        try {
+            String description = inspector.describe(qry);
+            ps.println(description);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Cannot perform inspection query.", e);
+        }
+    }
+
+    /**
+     * Describes the active code model.
+     * @param qry
+     * @param ps
+     */
+    private void describeModel(String qry, PrintStream ps) {
+        describeModel(selectedModel, qry, ps);
     }
 
     /**
@@ -1050,7 +1090,7 @@ public class CommandLine {
                 "\n\tperforms the given query on the current query model.";
     }
 
-    public void command_inspectmodel(String[] args) {
+    public void command_inspect(String[] args) {
        if( args.length != 1 ) {
             throw new IllegalArgumentException();
         }
@@ -1058,15 +1098,34 @@ public class CommandLine {
         inspectModel(qry, System.out);
     }
 
-    public String __command_inspectmodel() {
+    public String __command_inspect() {
         return "allows to inspect the active model";
     }
 
-    public String ___command_inspectmodel() {
+    public String ___command_inspect() {
         return
-                __command_inspectmodel() +
-                "\nsyntax: inspectmodel <inspection_query>" +
+                __command_inspect() +
+                "\nsyntax: inspect <inspection_query>" +
                 "\n\tperforms an inspection on the current query model";        
+    }
+
+    public void command_describe(String[] args) {
+       if( args.length != 1 ) {
+            throw new IllegalArgumentException();
+        }
+        String qry = args[0];
+        describeModel(qry, System.out);
+    }
+
+    public String __command_describe() {
+        return "describes the object referenced by the given path";
+    }
+
+    public String ___command_describe() {
+        return
+                __command_describe() +
+                "\nsyntax: describe <inspection_query>" +
+                "\n\tperforms an inspection on the current query model";
     }
 
     /**
@@ -1308,9 +1367,12 @@ public class CommandLine {
     private void handleIllegalArgumentException(IllegalArgumentException iae, String cmd) {
         System.out.println("ERROR: '" + iae.getMessage() + "'");
         if(debug) { iae.printStackTrace(); }
-        if(iae.getCause() != null) {
-            System.out.println(" with cause: '" + iae.getCause().getMessage() + "'");
+        Throwable cause = iae.getCause();
+        int causeLevel = 0;
+        while(cause != null) {
+            System.out.println("[" + (causeLevel++) + "] with cause: '" + iae.getCause().getMessage() + "'");
             if(debug) { iae.getCause().printStackTrace(); }
+            cause = cause.getCause();
         }
 
         try {
