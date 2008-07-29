@@ -118,7 +118,7 @@ public class CommandLineTest extends TestCase {
     }
 
     public void testInspectModel() throws IllegalAccessException, InvocationTargetException {
-        String[] command = new String[]{"inspectmodel", "model"};
+        String[] command = new String[]{"inspect", "model"};
         assertTrue( commandLine.processCommand(command) );
     }
 }
