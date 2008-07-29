@@ -510,16 +510,6 @@ public class Repository {
         } catch (IOException e) {
             throw new RepositoryException("Cannot create file: '" + file.getAbsolutePath() + "'");
         }
-        try {
-            createLockFile(resourceName);
-        } catch (IOException e) {
-            try {
-                file.delete();
-            } catch (Exception ee) {
-                ee.printStackTrace();
-            }
-            throw new RepositoryException("Cannot create lock file for resource: '" + resourceName + "'");
-        }
 
         Resource resource = new Resource(repositoryLocation, resourceName, type);
         resources.put(resourceName, resource);
@@ -606,20 +596,6 @@ public class Repository {
                 }
             }
         }
-
-//        File[] lockFiles = repositoryLocation.listFiles( new LockFileFilter() );
-//        File resourceFile;
-//        for( File lf : lockFiles ) {            ;
-//            try {
-//                resourceFile.delete();
-//            }catch(Throwable t) {
-//                t.printStackTrace();
-//            }try {
-//                lf.delete();
-//            }catch(Throwable t) {
-//                t.printStackTrace();
-//            }
-//        }
 
     }
 
