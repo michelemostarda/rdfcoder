@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public class RepositoryTest extends TestCase {
 
@@ -96,15 +97,16 @@ public class RepositoryTest extends TestCase {
         final String lockedResource = "lockedResource";
         Repository.Resource resource = repository.createResource(lockedResource, XML);
         assertNotNull(resource);
-        assertTrue( repository.isLocked( lockedResource ) );
-        InputStream is1 = resource.getInputStream();
-        assertNotNull(is1);
-        assertTrue( repository.isLocked( lockedResource ) );
-        is1.close();
         assertFalse( repository.isLocked( lockedResource ) );
-        InputStream is2 = resource.getInputStream();
+
+        InputStream is = resource.getInputStream();
+        assertNotNull(is);
+        assertFalse( repository.isLocked( lockedResource ) );
+        is.close();
+
+        OutputStream os = resource.getOutputStream();
         assertTrue( repository.isLocked( lockedResource ) );
-        is2.close();
+        os.close();
         assertFalse( repository.isLocked( lockedResource ) );
     }
 }
