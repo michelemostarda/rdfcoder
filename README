@@ -1,0 +1,37 @@
+==================
+ RDF Coder README
+==================
+
+A source code RDF modeler
+
+Author: Michele Mostarda ( michele.mostarda@gmail.com )
+
+
+Introduction
+------------
+
+RDF Coder is a tool able to generate RDF models of code libraries.
+
+RDF Coder is written in Java.
+
+RDF Coder can be used to perform multi level code inspection, create code dependency graphs, generate custom documentation.
+
+Currently the only Java language processing is supported.
+
+
+Download
+--------
+
+The RDF Coder source code, examples and documentation can be downloaded here.
+
+   svn co http://code.google.com/p/rdfcoder/source/browse/trunk rdfcoder
+
+
+Project Resources
+-----------------
+
+RDF Coder is mantained here:
+
+	http://code.google.com/p/rdfcoder/
+
+
