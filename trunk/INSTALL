@@ -1,0 +1,21 @@
+--------
+INSTALL
+--------
+
+To download RDFCoder see instructions in DOWNLOAD file.
+
+Prerequisites
+-------------
+
+  * JDK  1.5 (>)
+  * Apache Ant 1.7.0 (>)  
+
+Compile and run
+---------------
+
+To compile and run the interactive shell go to trunk 
+dir and incoke the following command:
+
+   rdfcoder/trunk $ ant clean dist && bin/rdfcoder
+
+ 
