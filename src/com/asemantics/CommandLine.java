@@ -18,13 +18,31 @@
 
 package com.asemantics;
 
-import com.asemantics.model.*;
-import com.asemantics.sourceparse.*;
+import com.asemantics.model.CodeHandler;
+import com.asemantics.model.CodeModel;
+import com.asemantics.model.CodeModelBase;
+import com.asemantics.model.JavaCoderFactory;
+import com.asemantics.model.JavaQueryModel;
+import com.asemantics.model.QueryResult;
+import com.asemantics.model.SPARQLException;
+import com.asemantics.model.SPARQLQuerableCodeModel;
+import com.asemantics.sourceparse.DirectoryParser;
+import com.asemantics.sourceparse.JStatistics;
+import com.asemantics.sourceparse.JavaBytecodeFileParser;
+import com.asemantics.sourceparse.JavaBytecodeJarParser;
+import com.asemantics.sourceparse.JavaSourceFileParser;
+import com.asemantics.sourceparse.JavadocFileParser;
+import com.asemantics.sourceparse.ObjectsTable;
 import com.asemantics.storage.JenaCoderFactory;
 import com.asemantics.storage.CodeStorage;
 import com.asemantics.storage.CodeStorageException;
 import com.asemantics.inspector.Inspector;
-import jline.*;
+import jline.ArgumentCompletor;
+import jline.CandidateListCompletionHandler;
+import jline.ConsoleReader;
+import jline.FileNameCompletor;
+import jline.History;
+import jline.SimpleCompletor;
 
 import java.io.File;
 import java.io.IOException;
@@ -1546,7 +1564,8 @@ public class CommandLine {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    public static void main(String[] args) throws IOException, IllegalAccessException, InvocationTargetException {
+    public static void main(String[] args)
+    throws IOException, IllegalAccessException, InvocationTargetException {
         CommandLine commandLine = new CommandLine(new File("."));
         commandLine.mainCycle();
     }
