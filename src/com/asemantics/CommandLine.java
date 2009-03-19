@@ -131,7 +131,7 @@ public class CommandLine {
     /**
      * Command shell history file.
      */
-    protected static final File HISTORY_FILE = new File("/Users/michele/.rdfcoder");
+    protected static final File HISTORY_FILE = new File( new File(System.getProperty("user.home") ), ".rdfcoder");
 
     /* Private constants. */
 
