@@ -1,6 +1,5 @@
 
-
-== This page shows how to use _RDFCoder_ programmatically ==
+===This page shows how to use _RDFCoder_ programmatically===
 
 {{{
 
