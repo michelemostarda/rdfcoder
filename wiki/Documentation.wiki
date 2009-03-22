@@ -1,7 +1,7 @@
 #labels rdfcoder,documentation
 == Welcome to the RDFCoder Documentation ==
 
-You can find the project documentation [http://code.google.com/p/rdfcoder/source/browse/trunk/doc/htmldoc/ here]
+You can find the project documentation [http://rdfcoder.googlecode.com/svn/trunk/doc/htmldoc/index.html here]
 
 To check out the documentation use:
 
