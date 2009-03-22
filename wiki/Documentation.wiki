@@ -1,8 +1,9 @@
 #labels rdfcoder,documentation
-== Welcome to the RDFCoder Documentation ==
 
 The project documentation is [http://rdfcoder.googlecode.com/svn/trunk/doc/htmldoc/index.html here]
 
 To check out the documentation use:
 
 {{{ svn co http://rdfcoder.googlecode.com/svn/trunk/doc/htmldoc rdfcoder-doc-RO }}}
+
+The Javadoc is accessible [http://rdfcoder.googlecode.com/svn/trunk/javadoc/index.html here].
