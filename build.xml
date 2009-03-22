@@ -212,12 +212,11 @@
 		>
             <fileset dir="${src.dir}">
 				<include name="**/*.java"/>
-				<include name="**/*.html"/>
 			</fileset>
 			<classpath refid = "build.classpath"/>
             <doctitle><![CDATA[<h1>${Name} API</h1>]]></doctitle>
-			<bottom><![CDATA[<i>Copyright &#169; 2008 Michele Mostarda. All Rights Reserved.</i>]]></bottom>
-			<group title="CommandLine" packages="org.asemantics.*"/>
+			<bottom><![CDATA[<i>Copyright &#169; 2008 Michele Mostarda. All Rights Reserved.</i>]]></bottom>	
+		    <group title="CommandLine" packages="org.asemantics.*"/>
 			<group title="Model API Packages" packages="org.asemantics.model.*"/>
 			<group title="Model Implementation Packages" packages="org.asemantics.modelimpl.*"/>
 		    <group title="Parsing Packages" packages="org.asemantics.sourceparse.*"/>
