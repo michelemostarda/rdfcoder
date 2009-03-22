@@ -1,6 +1,6 @@
 # RDF Coder usage examples.
 
-= This page shows how to use _RDFCoder_ =
+= This page shows how to use _RDFCoder_ programmatically =
 
 {{{
 
