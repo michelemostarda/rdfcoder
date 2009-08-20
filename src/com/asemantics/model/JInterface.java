@@ -27,10 +27,11 @@ public class JInterface extends JObject {
 
     /**
      * Check if an interface exists.
+     *
      * @param qm
      * @param name
      * @param index
-     * @return
+     * @return <code>true</code> if exists.
      */
     public static boolean exists(JavaQueryModel qm, final String name[], int index) {
        return qm.interfaceExists( concatenate(name, index) );
@@ -69,7 +70,8 @@ public class JInterface extends JObject {
     /**
      * Returns <code>true</code> if this is a inner interface,
      * false otherwise.
-     * @return
+     *
+     * @return <code>true</code> if inner.
      */
     public boolean isInnerInterface() {
         return parent instanceof JClass || parent instanceof JInterface;
@@ -78,7 +80,8 @@ public class JInterface extends JObject {
     /**
      * Return the parent class if this is an inner class
      * or <code>null</code> otherwise.
-     * @return
+     *
+     * @return the parent class.
      */
     public JClass getParentClass() {
         if(parent instanceof JClass) {
@@ -90,7 +93,8 @@ public class JInterface extends JObject {
     /**
      * Return the parent package if this is first level class
      * or <code>null</code> otherwise.
-     * @return
+     *
+     * @return the parent package.
      */
 
     public JPackage getParentPackage() {
@@ -104,7 +108,7 @@ public class JInterface extends JObject {
         return parent.toString() + CodeHandler.PACKAGE_SEPARATOR + super.toString();
     }
 
-    protected String getHyerarchyElemType() {
+    protected String getHierarchyElemType() {
         return this.getClass().getSimpleName();
     }
 }

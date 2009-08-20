@@ -27,21 +27,21 @@ public interface CoderFactory {
     /**
      * Creates the <i>Code Model Ontology</i>. 
      *
-     * @return
+     * @return the ontology instance.
      */
     Ontology createCodeModelOntology();
 
     /**
      * Creates a <i>Code Model</i> instance.
      *
-     * @return
+     * @return the  code model instance.
      */
     CodeModelBase createCodeModel();
 
     /**
      * Creates a <i>Code Storage</i> instance.
      *
-     * @return
+     * @return the code storage instance.
      */
     CodeStorage createCodeStorage();
 
@@ -49,7 +49,7 @@ public interface CoderFactory {
      * Creates a <i>Code Handler</i> instance.
      * 
      * @param model
-     * @return
+     * @return the code handler instance.
      */
     CodeHandler createHandlerOnModel(CodeModelBase model);
 }

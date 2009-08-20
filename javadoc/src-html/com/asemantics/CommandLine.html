@@ -272,7 +272,7 @@
 <FONT color="green">269</FONT>        /**<a name="line.269"></a>
 <FONT color="green">270</FONT>         * Returns the current location.<a name="line.270"></a>
 <FONT color="green">271</FONT>         * <a name="line.271"></a>
-<FONT color="green">272</FONT>         * @return<a name="line.272"></a>
+<FONT color="green">272</FONT>         * @return file representing the current location.<a name="line.272"></a>
 <FONT color="green">273</FONT>         */<a name="line.273"></a>
 <FONT color="green">274</FONT>        public File getCurrentDirectory() {<a name="line.274"></a>
 <FONT color="green">275</FONT>            return currentDirectory;<a name="line.275"></a>
@@ -283,7 +283,7 @@
 <FONT color="green">280</FONT>         * otherwise a concatenation of #currentDirectory and the relative path is<a name="line.280"></a>
 <FONT color="green">281</FONT>         * returned.<a name="line.281"></a>
 <FONT color="green">282</FONT>         *  <a name="line.282"></a>
-<FONT color="green">283</FONT>         * @return<a name="line.283"></a>
+<FONT color="green">283</FONT>         * @return create file.<a name="line.283"></a>
 <FONT color="green">284</FONT>         */<a name="line.284"></a>
 <FONT color="green">285</FONT>        protected File toAbsolutePath(String in) {<a name="line.285"></a>
 <FONT color="green">286</FONT>            File inFile = new File(in);<a name="line.286"></a>
@@ -1477,7 +1477,7 @@
 <FONT color="green">1474</FONT>        /**<a name="line.1474"></a>
 <FONT color="green">1475</FONT>         * Generates the prompt string.<a name="line.1475"></a>
 <FONT color="green">1476</FONT>         *<a name="line.1476"></a>
-<FONT color="green">1477</FONT>         * @return<a name="line.1477"></a>
+<FONT color="green">1477</FONT>         * @return the prompts string.<a name="line.1477"></a>
 <FONT color="green">1478</FONT>         */<a name="line.1478"></a>
 <FONT color="green">1479</FONT>        protected String getPrompt() {<a name="line.1479"></a>
 <FONT color="green">1480</FONT>            return getCurrentDirectory().getName() + "~" + selectedModel + "&gt; ";<a name="line.1480"></a>
@@ -1514,7 +1514,7 @@
 <FONT color="green">1511</FONT>         * Extracts arguments from a command line input.<a name="line.1511"></a>
 <FONT color="green">1512</FONT>         *<a name="line.1512"></a>
 <FONT color="green">1513</FONT>         * @param cl<a name="line.1513"></a>
-<FONT color="green">1514</FONT>         * @return<a name="line.1514"></a>
+<FONT color="green">1514</FONT>         * @return the list of arguments.<a name="line.1514"></a>
 <FONT color="green">1515</FONT>         */<a name="line.1515"></a>
 <FONT color="green">1516</FONT>        protected static String[] extractArgs(String cl) {<a name="line.1516"></a>
 <FONT color="green">1517</FONT>            commands.clear();<a name="line.1517"></a>

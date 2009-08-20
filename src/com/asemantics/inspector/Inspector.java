@@ -46,7 +46,7 @@ public class Inspector {
      *
      * @param expression
      * @param bean
-     * @return
+     * @return result of inspection.
      * @throws PatternException
      * @throws InspectorParserException
      */
@@ -63,7 +63,7 @@ public class Inspector {
      * Inspects the internal context.
      *
      * @param expression
-     * @return
+     * @return result of inspection.
      * @throws PatternException
      * @throws InspectorParserException
      */
@@ -98,7 +98,7 @@ public class Inspector {
      * Describes the bean addressed by the given expression on the given bean context.
      *
      * @param expression
-     * @return
+     * @return the description.
      */
     public String describe(String expression, Object bean) throws PatternException, InspectorParserException {
         Object obj = inspect(expression, bean);
@@ -109,7 +109,7 @@ public class Inspector {
      * Describes the bean addressed by the given expression on the default context.
      *
      * @param expression
-     * @return
+     * @return the description.
      */
     public String describe(String expression) throws InspectorParserException, PatternException {
         return describe(expression, context);

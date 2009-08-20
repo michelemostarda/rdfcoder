@@ -74,7 +74,7 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
      * URI-fier method.
      *
      * @param prop
-     * @return
+     * @return the URI form as string.
      */
     protected static String toURI(String prop) {
         return CODER_URI + prop;
@@ -83,7 +83,7 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
     /**
      * Prefix-fier method.
      * @param pref
-     * @return
+     * @return the prefix.
      */
     protected static final String toPrefix(String pref) {
         return pref + PREFIX_SEPARATOR;
@@ -106,7 +106,7 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
      * otherwise.
      *
      * @param path the path to check.
-     * @return
+     * @return <code>true</code> if the path is prefixed.
      */
     protected static boolean isPrefixed(String path) {
          return path.indexOf(CodeModel.PREFIX_SEPARATOR) != -1;
@@ -117,7 +117,7 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
      * 
      * @param prefix
      * @param parameter
-     * @return
+     * @return the prefixed string.
      */
     protected static String prefixParameter(String prefix, String parameter) {
         if(prefix == null || prefix.trim().length() == 0 || parameter == null || parameter.trim().length() == 0) {
@@ -140,7 +140,7 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
      * Returns the prefix associated to a <i>RDF</i> type.
      *
      * @param rdfType
-     * @return
+     * @return the prefix string.
      */
     protected static String getPrefixFromRDFType(String rdfType) {
         if(rdfType.indexOf(CODER_URI) < 0) {
@@ -154,7 +154,7 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
      *
      * @param prefix
      * @param path
-     * @return
+     * @return the prefixed string.
      */
     protected static String prefixFullyQualifiedName(String prefix, String path) {
         if(prefix == null || prefix.trim().length() == 0 || path == null) {
@@ -177,7 +177,7 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
      *
      * @param identifier
      * @param qualifiedType
-     * @return
+     * @return the number of replaced identifiers.
      * @see #generateTempUniqueIdentifier()
      */
     public int replaceIdentifierWithQualifiedType(final String identifier, final String qualifiedType) {

@@ -269,7 +269,7 @@ public class CommandLine {
     /**
      * Returns the current location.
      * 
-     * @return
+     * @return file representing the current location.
      */
     public File getCurrentDirectory() {
         return currentDirectory;
@@ -280,7 +280,7 @@ public class CommandLine {
      * otherwise a concatenation of #currentDirectory and the relative path is
      * returned.
      *  
-     * @return
+     * @return create file.
      */
     protected File toAbsolutePath(String in) {
         File inFile = new File(in);
@@ -1474,7 +1474,7 @@ public class CommandLine {
     /**
      * Generates the prompt string.
      *
-     * @return
+     * @return the prompts string.
      */
     protected String getPrompt() {
         return getCurrentDirectory().getName() + "~" + selectedModel + "> ";
@@ -1511,7 +1511,7 @@ public class CommandLine {
      * Extracts arguments from a command line input.
      *
      * @param cl
-     * @return
+     * @return the list of arguments.
      */
     protected static String[] extractArgs(String cl) {
         commands.clear();

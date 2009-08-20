@@ -77,7 +77,7 @@
 <FONT color="green">074</FONT>         * URI-fier method.<a name="line.74"></a>
 <FONT color="green">075</FONT>         *<a name="line.75"></a>
 <FONT color="green">076</FONT>         * @param prop<a name="line.76"></a>
-<FONT color="green">077</FONT>         * @return<a name="line.77"></a>
+<FONT color="green">077</FONT>         * @return the URI form as string.<a name="line.77"></a>
 <FONT color="green">078</FONT>         */<a name="line.78"></a>
 <FONT color="green">079</FONT>        protected static String toURI(String prop) {<a name="line.79"></a>
 <FONT color="green">080</FONT>            return CODER_URI + prop;<a name="line.80"></a>
@@ -86,7 +86,7 @@
 <FONT color="green">083</FONT>        /**<a name="line.83"></a>
 <FONT color="green">084</FONT>         * Prefix-fier method.<a name="line.84"></a>
 <FONT color="green">085</FONT>         * @param pref<a name="line.85"></a>
-<FONT color="green">086</FONT>         * @return<a name="line.86"></a>
+<FONT color="green">086</FONT>         * @return the prefix.<a name="line.86"></a>
 <FONT color="green">087</FONT>         */<a name="line.87"></a>
 <FONT color="green">088</FONT>        protected static final String toPrefix(String pref) {<a name="line.88"></a>
 <FONT color="green">089</FONT>            return pref + PREFIX_SEPARATOR;<a name="line.89"></a>
@@ -109,7 +109,7 @@
 <FONT color="green">106</FONT>         * otherwise.<a name="line.106"></a>
 <FONT color="green">107</FONT>         *<a name="line.107"></a>
 <FONT color="green">108</FONT>         * @param path the path to check.<a name="line.108"></a>
-<FONT color="green">109</FONT>         * @return<a name="line.109"></a>
+<FONT color="green">109</FONT>         * @return &lt;code&gt;true&lt;/code&gt; if the path is prefixed.<a name="line.109"></a>
 <FONT color="green">110</FONT>         */<a name="line.110"></a>
 <FONT color="green">111</FONT>        protected static boolean isPrefixed(String path) {<a name="line.111"></a>
 <FONT color="green">112</FONT>             return path.indexOf(CodeModel.PREFIX_SEPARATOR) != -1;<a name="line.112"></a>
@@ -120,7 +120,7 @@
 <FONT color="green">117</FONT>         * <a name="line.117"></a>
 <FONT color="green">118</FONT>         * @param prefix<a name="line.118"></a>
 <FONT color="green">119</FONT>         * @param parameter<a name="line.119"></a>
-<FONT color="green">120</FONT>         * @return<a name="line.120"></a>
+<FONT color="green">120</FONT>         * @return the prefixed string.<a name="line.120"></a>
 <FONT color="green">121</FONT>         */<a name="line.121"></a>
 <FONT color="green">122</FONT>        protected static String prefixParameter(String prefix, String parameter) {<a name="line.122"></a>
 <FONT color="green">123</FONT>            if(prefix == null || prefix.trim().length() == 0 || parameter == null || parameter.trim().length() == 0) {<a name="line.123"></a>
@@ -143,7 +143,7 @@
 <FONT color="green">140</FONT>         * Returns the prefix associated to a &lt;i&gt;RDF&lt;/i&gt; type.<a name="line.140"></a>
 <FONT color="green">141</FONT>         *<a name="line.141"></a>
 <FONT color="green">142</FONT>         * @param rdfType<a name="line.142"></a>
-<FONT color="green">143</FONT>         * @return<a name="line.143"></a>
+<FONT color="green">143</FONT>         * @return the prefix string.<a name="line.143"></a>
 <FONT color="green">144</FONT>         */<a name="line.144"></a>
 <FONT color="green">145</FONT>        protected static String getPrefixFromRDFType(String rdfType) {<a name="line.145"></a>
 <FONT color="green">146</FONT>            if(rdfType.indexOf(CODER_URI) &lt; 0) {<a name="line.146"></a>
@@ -157,7 +157,7 @@
 <FONT color="green">154</FONT>         *<a name="line.154"></a>
 <FONT color="green">155</FONT>         * @param prefix<a name="line.155"></a>
 <FONT color="green">156</FONT>         * @param path<a name="line.156"></a>
-<FONT color="green">157</FONT>         * @return<a name="line.157"></a>
+<FONT color="green">157</FONT>         * @return the prefixed string.<a name="line.157"></a>
 <FONT color="green">158</FONT>         */<a name="line.158"></a>
 <FONT color="green">159</FONT>        protected static String prefixFullyQualifiedName(String prefix, String path) {<a name="line.159"></a>
 <FONT color="green">160</FONT>            if(prefix == null || prefix.trim().length() == 0 || path == null) {<a name="line.160"></a>
@@ -180,7 +180,7 @@
 <FONT color="green">177</FONT>         *<a name="line.177"></a>
 <FONT color="green">178</FONT>         * @param identifier<a name="line.178"></a>
 <FONT color="green">179</FONT>         * @param qualifiedType<a name="line.179"></a>
-<FONT color="green">180</FONT>         * @return<a name="line.180"></a>
+<FONT color="green">180</FONT>         * @return the number of replaced identifiers.<a name="line.180"></a>
 <FONT color="green">181</FONT>         * @see #generateTempUniqueIdentifier()<a name="line.181"></a>
 <FONT color="green">182</FONT>         */<a name="line.182"></a>
 <FONT color="green">183</FONT>        public int replaceIdentifierWithQualifiedType(final String identifier, final String qualifiedType) {<a name="line.183"></a>

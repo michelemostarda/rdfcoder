@@ -144,7 +144,7 @@
 <FONT color="green">141</FONT>            /**<a name="line.141"></a>
 <FONT color="green">142</FONT>             * Returns the resource name.<a name="line.142"></a>
 <FONT color="green">143</FONT>             *<a name="line.143"></a>
-<FONT color="green">144</FONT>             * @return<a name="line.144"></a>
+<FONT color="green">144</FONT>             * @return the resource name.<a name="line.144"></a>
 <FONT color="green">145</FONT>             */<a name="line.145"></a>
 <FONT color="green">146</FONT>            public String getName() {<a name="line.146"></a>
 <FONT color="green">147</FONT>                return name;<a name="line.147"></a>
@@ -153,7 +153,7 @@
 <FONT color="green">150</FONT>            /**<a name="line.150"></a>
 <FONT color="green">151</FONT>             * Returns the resource type.<a name="line.151"></a>
 <FONT color="green">152</FONT>             * <a name="line.152"></a>
-<FONT color="green">153</FONT>             * @return<a name="line.153"></a>
+<FONT color="green">153</FONT>             * @return the type of the resource.<a name="line.153"></a>
 <FONT color="green">154</FONT>             */<a name="line.154"></a>
 <FONT color="green">155</FONT>            public ResourceType getType() {<a name="line.155"></a>
 <FONT color="green">156</FONT>                return type;<a name="line.156"></a>
@@ -162,7 +162,7 @@
 <FONT color="green">159</FONT>            /**<a name="line.159"></a>
 <FONT color="green">160</FONT>             * Returns the resource location.<a name="line.160"></a>
 <FONT color="green">161</FONT>             *<a name="line.161"></a>
-<FONT color="green">162</FONT>             * @return<a name="line.162"></a>
+<FONT color="green">162</FONT>             * @return the resource location.<a name="line.162"></a>
 <FONT color="green">163</FONT>             */<a name="line.163"></a>
 <FONT color="green">164</FONT>            public File getLocation() {<a name="line.164"></a>
 <FONT color="green">165</FONT>                return new File(root, name + "." + type.getExtension());<a name="line.165"></a>
@@ -171,7 +171,7 @@
 <FONT color="green">168</FONT>            /**<a name="line.168"></a>
 <FONT color="green">169</FONT>             * Opens an input stream on the resource.<a name="line.169"></a>
 <FONT color="green">170</FONT>             *<a name="line.170"></a>
-<FONT color="green">171</FONT>             * @return<a name="line.171"></a>
+<FONT color="green">171</FONT>             * @return the input stream to read the resource.<a name="line.171"></a>
 <FONT color="green">172</FONT>             * @throws FileNotFoundException<a name="line.172"></a>
 <FONT color="green">173</FONT>             */<a name="line.173"></a>
 <FONT color="green">174</FONT>            public InputStream getInputStream() throws FileNotFoundException, RepositoryException {<a name="line.174"></a>
@@ -207,8 +207,8 @@
 <FONT color="green">204</FONT>             * Opens an output stream on the resource.<a name="line.204"></a>
 <FONT color="green">205</FONT>             *<a name="line.205"></a>
 <FONT color="green">206</FONT>             * @param append append flag<a name="line.206"></a>
-<FONT color="green">207</FONT>             * @return<a name="line.207"></a>
-<FONT color="green">208</FONT>             * @throws FileNotFoundException<a name="line.208"></a>
+<FONT color="green">207</FONT>             * @return the output stream to write the resource.<a name="line.207"></a>
+<FONT color="green">208</FONT>             * @throws FileNotFoundException if the resource file cannot be found or opened.<a name="line.208"></a>
 <FONT color="green">209</FONT>             */<a name="line.209"></a>
 <FONT color="green">210</FONT>            public OutputStream getOutputStream(boolean append) throws FileNotFoundException, RepositoryException {<a name="line.210"></a>
 <FONT color="green">211</FONT>                synchronized (lock) {<a name="line.211"></a>
@@ -244,7 +244,7 @@
 <FONT color="green">241</FONT>            /**<a name="line.241"></a>
 <FONT color="green">242</FONT>             *  Opens an output stream on the resource.<a name="line.242"></a>
 <FONT color="green">243</FONT>             *<a name="line.243"></a>
-<FONT color="green">244</FONT>             * @return<a name="line.244"></a>
+<FONT color="green">244</FONT>             * @return the resource output stream.<a name="line.244"></a>
 <FONT color="green">245</FONT>             * @throws FileNotFoundException<a name="line.245"></a>
 <FONT color="green">246</FONT>             * @throws RepositoryException<a name="line.246"></a>
 <FONT color="green">247</FONT>             */<a name="line.247"></a>
@@ -323,7 +323,7 @@
 <FONT color="green">320</FONT>         * Returns a repository at a given location.<a name="line.320"></a>
 <FONT color="green">321</FONT>         *<a name="line.321"></a>
 <FONT color="green">322</FONT>         * @param location<a name="line.322"></a>
-<FONT color="green">323</FONT>         * @return<a name="line.323"></a>
+<FONT color="green">323</FONT>         * @return the new repository instance.<a name="line.323"></a>
 <FONT color="green">324</FONT>         */<a name="line.324"></a>
 <FONT color="green">325</FONT>        public static final Repository getRepository(File location) throws RepositoryException {<a name="line.325"></a>
 <FONT color="green">326</FONT>            return new Repository(location);<a name="line.326"></a>
@@ -332,7 +332,7 @@
 <FONT color="green">329</FONT>        /**<a name="line.329"></a>
 <FONT color="green">330</FONT>         * Returns the repository unique instance.<a name="line.330"></a>
 <FONT color="green">331</FONT>         *<a name="line.331"></a>
-<FONT color="green">332</FONT>         * @return<a name="line.332"></a>
+<FONT color="green">332</FONT>         * @return unique repository instance.<a name="line.332"></a>
 <FONT color="green">333</FONT>         */<a name="line.333"></a>
 <FONT color="green">334</FONT>        public static final Repository getDefaultRepository() throws RepositoryException {<a name="line.334"></a>
 <FONT color="green">335</FONT>            if(_defaultRepositoryInstance == null) {<a name="line.335"></a>
@@ -350,7 +350,7 @@
 <FONT color="green">347</FONT>         * Loads the resources defined in the &lt;i&gt;target&lt;/i&gt;<a name="line.347"></a>
 <FONT color="green">348</FONT>         * dir.<a name="line.348"></a>
 <FONT color="green">349</FONT>         *<a name="line.349"></a>
-<FONT color="green">350</FONT>         * @return<a name="line.350"></a>
+<FONT color="green">350</FONT>         * @return the map of loaded resources.<a name="line.350"></a>
 <FONT color="green">351</FONT>         */<a name="line.351"></a>
 <FONT color="green">352</FONT>        protected Map&lt;String,Resource&gt; loadResources(File target) {<a name="line.352"></a>
 <FONT color="green">353</FONT>            if( ! target.exists() ) {<a name="line.353"></a>
@@ -419,7 +419,7 @@
 <FONT color="green">416</FONT>        /**<a name="line.416"></a>
 <FONT color="green">417</FONT>         * Returns the repository root.<a name="line.417"></a>
 <FONT color="green">418</FONT>         * <a name="line.418"></a>
-<FONT color="green">419</FONT>         * @return<a name="line.419"></a>
+<FONT color="green">419</FONT>         * @return the respository location.<a name="line.419"></a>
 <FONT color="green">420</FONT>         */<a name="line.420"></a>
 <FONT color="green">421</FONT>        public File getRepositoryLocation() {<a name="line.421"></a>
 <FONT color="green">422</FONT>            return repositoryLocation;<a name="line.422"></a>
@@ -428,7 +428,7 @@
 <FONT color="green">425</FONT>        /**<a name="line.425"></a>
 <FONT color="green">426</FONT>         * Returns the list of available resources.<a name="line.426"></a>
 <FONT color="green">427</FONT>         *<a name="line.427"></a>
-<FONT color="green">428</FONT>         * @return<a name="line.428"></a>
+<FONT color="green">428</FONT>         * @return list of resources in the repository.<a name="line.428"></a>
 <FONT color="green">429</FONT>         */<a name="line.429"></a>
 <FONT color="green">430</FONT>        public Resource[] getResources() {<a name="line.430"></a>
 <FONT color="green">431</FONT>            Collection&lt;Resource&gt; resourceValues = resources.values();<a name="line.431"></a>
@@ -439,8 +439,8 @@
 <FONT color="green">436</FONT>         * Returns &lt;code&gt;true&lt;/code&gt; if the repository contains the given resource name,<a name="line.436"></a>
 <FONT color="green">437</FONT>         * &lt;code&gt;false&lt;/code&gt; otherwise.<a name="line.437"></a>
 <FONT color="green">438</FONT>         *<a name="line.438"></a>
-<FONT color="green">439</FONT>         * @param resourceName<a name="line.439"></a>
-<FONT color="green">440</FONT>         * @return<a name="line.440"></a>
+<FONT color="green">439</FONT>         * @param resourceName name of resource to find.<a name="line.439"></a>
+<FONT color="green">440</FONT>         * @return &lt;code&gt;true&lt;/code&gt; if found.<a name="line.440"></a>
 <FONT color="green">441</FONT>         */<a name="line.441"></a>
 <FONT color="green">442</FONT>        public boolean containsResource(String resourceName) {<a name="line.442"></a>
 <FONT color="green">443</FONT>            return resources.containsKey(resourceName);<a name="line.443"></a>
@@ -450,159 +450,160 @@
 <FONT color="green">447</FONT>         * Returns an existing resource.<a name="line.447"></a>
 <FONT color="green">448</FONT>         *<a name="line.448"></a>
 <FONT color="green">449</FONT>         * @param resourceName<a name="line.449"></a>
-<FONT color="green">450</FONT>         * @return<a name="line.450"></a>
-<FONT color="green">451</FONT>         */<a name="line.451"></a>
-<FONT color="green">452</FONT>        public Resource getResource(String resourceName) throws RepositoryException {<a name="line.452"></a>
-<FONT color="green">453</FONT>            Resource resource = resources.get(resourceName);<a name="line.453"></a>
-<FONT color="green">454</FONT>            if(resource == null) {<a name="line.454"></a>
-<FONT color="green">455</FONT>                throw new RepositoryException("Required resource '" + resourceName + "' doesn't exist.");<a name="line.455"></a>
-<FONT color="green">456</FONT>            }<a name="line.456"></a>
-<FONT color="green">457</FONT>            return resource;<a name="line.457"></a>
-<FONT color="green">458</FONT>        }<a name="line.458"></a>
-<FONT color="green">459</FONT>    <a name="line.459"></a>
-<FONT color="green">460</FONT>        /**<a name="line.460"></a>
-<FONT color="green">461</FONT>         * Removes the specified resource.<a name="line.461"></a>
-<FONT color="green">462</FONT>         *<a name="line.462"></a>
-<FONT color="green">463</FONT>         * @param resourceName<a name="line.463"></a>
-<FONT color="green">464</FONT>         * @throws RepositoryException<a name="line.464"></a>
-<FONT color="green">465</FONT>         */<a name="line.465"></a>
-<FONT color="green">466</FONT>        public void removeResource(String resourceName) throws RepositoryException {<a name="line.466"></a>
-<FONT color="green">467</FONT>            Resource resource = getResource(resourceName);<a name="line.467"></a>
-<FONT color="green">468</FONT>            if( ! resource.getLocation().delete() ) {<a name="line.468"></a>
-<FONT color="green">469</FONT>                throw new RepositoryException("Cannot delete resource: '" + resourceName + "'");<a name="line.469"></a>
-<FONT color="green">470</FONT>            }<a name="line.470"></a>
-<FONT color="green">471</FONT>            try {<a name="line.471"></a>
-<FONT color="green">472</FONT>                removeLockFile(resourceName);<a name="line.472"></a>
-<FONT color="green">473</FONT>            } catch(Exception e) {<a name="line.473"></a>
-<FONT color="green">474</FONT>                e.printStackTrace();<a name="line.474"></a>
-<FONT color="green">475</FONT>            }<a name="line.475"></a>
-<FONT color="green">476</FONT>            resources.remove(resourceName);<a name="line.476"></a>
-<FONT color="green">477</FONT>        }<a name="line.477"></a>
-<FONT color="green">478</FONT>    <a name="line.478"></a>
-<FONT color="green">479</FONT>        /**<a name="line.479"></a>
-<FONT color="green">480</FONT>         * Check if the resource name is valid.<a name="line.480"></a>
-<FONT color="green">481</FONT>         *<a name="line.481"></a>
-<FONT color="green">482</FONT>         * @param rn<a name="line.482"></a>
-<FONT color="green">483</FONT>         */<a name="line.483"></a>
-<FONT color="green">484</FONT>        static void checkResourceName(String rn) throws RepositoryException {<a name="line.484"></a>
-<FONT color="green">485</FONT>            if(rn == null || rn.trim().length() == 0) {<a name="line.485"></a>
-<FONT color="green">486</FONT>                throw new RepositoryException("Invalid resource name: '"+ rn + "'");<a name="line.486"></a>
-<FONT color="green">487</FONT>            }<a name="line.487"></a>
-<FONT color="green">488</FONT>        }<a name="line.488"></a>
-<FONT color="green">489</FONT>    <a name="line.489"></a>
-<FONT color="green">490</FONT>        /**<a name="line.490"></a>
-<FONT color="green">491</FONT>         * Creates a new resource into the repository.<a name="line.491"></a>
-<FONT color="green">492</FONT>         *<a name="line.492"></a>
-<FONT color="green">493</FONT>         * @param resourceName<a name="line.493"></a>
-<FONT color="green">494</FONT>         * @param type<a name="line.494"></a>
-<FONT color="green">495</FONT>         * @return<a name="line.495"></a>
-<FONT color="green">496</FONT>         * @throws RepositoryException<a name="line.496"></a>
-<FONT color="green">497</FONT>         */<a name="line.497"></a>
-<FONT color="green">498</FONT>        public Resource createResource(String resourceName, ResourceType type) throws RepositoryException {<a name="line.498"></a>
-<FONT color="green">499</FONT>            checkResourceName(resourceName);<a name="line.499"></a>
-<FONT color="green">500</FONT>    <a name="line.500"></a>
-<FONT color="green">501</FONT>            if( containsResource(resourceName) ) {<a name="line.501"></a>
-<FONT color="green">502</FONT>                throw new RepositoryException(<a name="line.502"></a>
-<FONT color="green">503</FONT>                        "Cannot create resource '" + resourceName + "', a resouce with the same name already exists."<a name="line.503"></a>
-<FONT color="green">504</FONT>                );<a name="line.504"></a>
-<FONT color="green">505</FONT>            }<a name="line.505"></a>
-<FONT color="green">506</FONT>    <a name="line.506"></a>
-<FONT color="green">507</FONT>            File file    = new File(repositoryLocation, type.getFileName(resourceName));<a name="line.507"></a>
-<FONT color="green">508</FONT>            try {<a name="line.508"></a>
-<FONT color="green">509</FONT>                file.createNewFile();<a name="line.509"></a>
-<FONT color="green">510</FONT>            } catch (IOException e) {<a name="line.510"></a>
-<FONT color="green">511</FONT>                throw new RepositoryException("Cannot create file: '" + file.getAbsolutePath() + "'");<a name="line.511"></a>
-<FONT color="green">512</FONT>            }<a name="line.512"></a>
-<FONT color="green">513</FONT>    <a name="line.513"></a>
-<FONT color="green">514</FONT>            Resource resource = new Resource(repositoryLocation, resourceName, type);<a name="line.514"></a>
-<FONT color="green">515</FONT>            resources.put(resourceName, resource);<a name="line.515"></a>
-<FONT color="green">516</FONT>    <a name="line.516"></a>
-<FONT color="green">517</FONT>            return resource;<a name="line.517"></a>
-<FONT color="green">518</FONT>        }<a name="line.518"></a>
-<FONT color="green">519</FONT>    <a name="line.519"></a>
-<FONT color="green">520</FONT>        /**<a name="line.520"></a>
-<FONT color="green">521</FONT>         * Returns &lt;code&gt;true&lt;/code&gt; if a resource is locked in writing mode,<a name="line.521"></a>
-<FONT color="green">522</FONT>         * &lt;code&gt;false&lt;/code&gt; otherwise.<a name="line.522"></a>
-<FONT color="green">523</FONT>         *<a name="line.523"></a>
-<FONT color="green">524</FONT>         * @param resourceName<a name="line.524"></a>
-<FONT color="green">525</FONT>         * @return<a name="line.525"></a>
-<FONT color="green">526</FONT>         * @throws RepositoryException is resourceName doesn't exist.<a name="line.526"></a>
-<FONT color="green">527</FONT>         */<a name="line.527"></a>
-<FONT color="green">528</FONT>        public boolean isLocked(String resourceName) throws RepositoryException {<a name="line.528"></a>
-<FONT color="green">529</FONT>            if( resources != null &amp;&amp; ! containsResource(resourceName) ) {<a name="line.529"></a>
-<FONT color="green">530</FONT>                throw new RepositoryException("Repository doesn't contain resource name '" + resourceName + "'");<a name="line.530"></a>
-<FONT color="green">531</FONT>            }<a name="line.531"></a>
-<FONT color="green">532</FONT>    <a name="line.532"></a>
-<FONT color="green">533</FONT>            File resourceFileLock = new File(repositoryLocation, getFileLockName(resourceName));<a name="line.533"></a>
-<FONT color="green">534</FONT>            return resourceFileLock.exists();<a name="line.534"></a>
-<FONT color="green">535</FONT>        }<a name="line.535"></a>
-<FONT color="green">536</FONT>    <a name="line.536"></a>
-<FONT color="green">537</FONT>        /**<a name="line.537"></a>
-<FONT color="green">538</FONT>         * Returns the name of the open file lock of a resource.<a name="line.538"></a>
-<FONT color="green">539</FONT>         *<a name="line.539"></a>
-<FONT color="green">540</FONT>         * @param resourceName<a name="line.540"></a>
-<FONT color="green">541</FONT>         * @return<a name="line.541"></a>
-<FONT color="green">542</FONT>         */<a name="line.542"></a>
-<FONT color="green">543</FONT>        private static String getFileLockName(String resourceName) {<a name="line.543"></a>
-<FONT color="green">544</FONT>            return "." + resourceName + LOCK_FILE_EXT;<a name="line.544"></a>
-<FONT color="green">545</FONT>        }<a name="line.545"></a>
-<FONT color="green">546</FONT>    <a name="line.546"></a>
-<FONT color="green">547</FONT>        /**<a name="line.547"></a>
-<FONT color="green">548</FONT>         * Returns the resource name associated to a given lock file name.<a name="line.548"></a>
-<FONT color="green">549</FONT>         *<a name="line.549"></a>
-<FONT color="green">550</FONT>         * @param lockFileName<a name="line.550"></a>
-<FONT color="green">551</FONT>         * @return<a name="line.551"></a>
-<FONT color="green">552</FONT>         */<a name="line.552"></a>
-<FONT color="green">553</FONT>        private static String getResourceNameFromLockFile(String lockFileName) {<a name="line.553"></a>
-<FONT color="green">554</FONT>            return lockFileName<a name="line.554"></a>
-<FONT color="green">555</FONT>                    .substring(1) // "."<a name="line.555"></a>
-<FONT color="green">556</FONT>                    .substring(0, lockFileName.length() - 1 - LOCK_FILE_EXT.length() );<a name="line.556"></a>
-<FONT color="green">557</FONT>        }<a name="line.557"></a>
-<FONT color="green">558</FONT>    <a name="line.558"></a>
-<FONT color="green">559</FONT>        /**<a name="line.559"></a>
-<FONT color="green">560</FONT>         * Creates a lock file for a resource name.<a name="line.560"></a>
-<FONT color="green">561</FONT>         *<a name="line.561"></a>
-<FONT color="green">562</FONT>         * @param resourceName<a name="line.562"></a>
-<FONT color="green">563</FONT>         */<a name="line.563"></a>
-<FONT color="green">564</FONT>        private void createLockFile(String resourceName) throws IOException {<a name="line.564"></a>
-<FONT color="green">565</FONT>            File lockFile = new File(repositoryLocation, getFileLockName(resourceName));<a name="line.565"></a>
-<FONT color="green">566</FONT>            lockFile.createNewFile();<a name="line.566"></a>
-<FONT color="green">567</FONT>        }<a name="line.567"></a>
-<FONT color="green">568</FONT>    <a name="line.568"></a>
-<FONT color="green">569</FONT>        /**<a name="line.569"></a>
-<FONT color="green">570</FONT>         * Removes a lock file.<a name="line.570"></a>
-<FONT color="green">571</FONT>         * <a name="line.571"></a>
-<FONT color="green">572</FONT>         * @param resourceName<a name="line.572"></a>
-<FONT color="green">573</FONT>         */<a name="line.573"></a>
-<FONT color="green">574</FONT>        private void removeLockFile(String resourceName) {<a name="line.574"></a>
-<FONT color="green">575</FONT>            File lockFile = new File(repositoryLocation, getFileLockName(resourceName) );<a name="line.575"></a>
-<FONT color="green">576</FONT>            lockFile.delete();<a name="line.576"></a>
-<FONT color="green">577</FONT>        }<a name="line.577"></a>
-<FONT color="green">578</FONT>    <a name="line.578"></a>
-<FONT color="green">579</FONT>        /**<a name="line.579"></a>
-<FONT color="green">580</FONT>         * Removes all files that are locked and then inconsistent.<a name="line.580"></a>
-<FONT color="green">581</FONT>         */<a name="line.581"></a>
-<FONT color="green">582</FONT>        private void removeLockedResources() throws RepositoryException {<a name="line.582"></a>
-<FONT color="green">583</FONT>            Map&lt;String,Resource&gt; resources = loadResources(repositoryLocation);<a name="line.583"></a>
-<FONT color="green">584</FONT>            for(Resource r : resources.values()) {<a name="line.584"></a>
-<FONT color="green">585</FONT>                if( isLocked( r.getName() ) ) {<a name="line.585"></a>
-<FONT color="green">586</FONT>                    try {<a name="line.586"></a>
-<FONT color="green">587</FONT>                        removeLockFile( r.getName());<a name="line.587"></a>
-<FONT color="green">588</FONT>                    } catch (Exception e) {<a name="line.588"></a>
-<FONT color="green">589</FONT>                        e.printStackTrace();<a name="line.589"></a>
-<FONT color="green">590</FONT>                    }<a name="line.590"></a>
-<FONT color="green">591</FONT>                    File resourceLocation = r.getLocation();<a name="line.591"></a>
-<FONT color="green">592</FONT>                    try {<a name="line.592"></a>
-<FONT color="green">593</FONT>                        resourceLocation.delete();<a name="line.593"></a>
-<FONT color="green">594</FONT>                    } catch (Exception e) {<a name="line.594"></a>
-<FONT color="green">595</FONT>                        e.printStackTrace();<a name="line.595"></a>
-<FONT color="green">596</FONT>                    }<a name="line.596"></a>
-<FONT color="green">597</FONT>                }<a name="line.597"></a>
-<FONT color="green">598</FONT>            }<a name="line.598"></a>
-<FONT color="green">599</FONT>    <a name="line.599"></a>
-<FONT color="green">600</FONT>        }<a name="line.600"></a>
-<FONT color="green">601</FONT>    <a name="line.601"></a>
-<FONT color="green">602</FONT>    }<a name="line.602"></a>
+<FONT color="green">450</FONT>         * @return the resource found.<a name="line.450"></a>
+<FONT color="green">451</FONT>         * @throws RepositoryException if the resource doens't exist.<a name="line.451"></a>
+<FONT color="green">452</FONT>         */<a name="line.452"></a>
+<FONT color="green">453</FONT>        public Resource getResource(String resourceName) throws RepositoryException {<a name="line.453"></a>
+<FONT color="green">454</FONT>            Resource resource = resources.get(resourceName);<a name="line.454"></a>
+<FONT color="green">455</FONT>            if(resource == null) {<a name="line.455"></a>
+<FONT color="green">456</FONT>                throw new RepositoryException("Required resource '" + resourceName + "' doesn't exist.");<a name="line.456"></a>
+<FONT color="green">457</FONT>            }<a name="line.457"></a>
+<FONT color="green">458</FONT>            return resource;<a name="line.458"></a>
+<FONT color="green">459</FONT>        }<a name="line.459"></a>
+<FONT color="green">460</FONT>    <a name="line.460"></a>
+<FONT color="green">461</FONT>        /**<a name="line.461"></a>
+<FONT color="green">462</FONT>         * Removes the specified resource.<a name="line.462"></a>
+<FONT color="green">463</FONT>         *<a name="line.463"></a>
+<FONT color="green">464</FONT>         * @param resourceName<a name="line.464"></a>
+<FONT color="green">465</FONT>         * @throws RepositoryException if the resource cannot be found.<a name="line.465"></a>
+<FONT color="green">466</FONT>         */<a name="line.466"></a>
+<FONT color="green">467</FONT>        public void removeResource(String resourceName) throws RepositoryException {<a name="line.467"></a>
+<FONT color="green">468</FONT>            Resource resource = getResource(resourceName);<a name="line.468"></a>
+<FONT color="green">469</FONT>            if( ! resource.getLocation().delete() ) {<a name="line.469"></a>
+<FONT color="green">470</FONT>                throw new RepositoryException("Cannot delete resource: '" + resourceName + "'");<a name="line.470"></a>
+<FONT color="green">471</FONT>            }<a name="line.471"></a>
+<FONT color="green">472</FONT>            try {<a name="line.472"></a>
+<FONT color="green">473</FONT>                removeLockFile(resourceName);<a name="line.473"></a>
+<FONT color="green">474</FONT>            } catch(Exception e) {<a name="line.474"></a>
+<FONT color="green">475</FONT>                e.printStackTrace();<a name="line.475"></a>
+<FONT color="green">476</FONT>            }<a name="line.476"></a>
+<FONT color="green">477</FONT>            resources.remove(resourceName);<a name="line.477"></a>
+<FONT color="green">478</FONT>        }<a name="line.478"></a>
+<FONT color="green">479</FONT>    <a name="line.479"></a>
+<FONT color="green">480</FONT>        /**<a name="line.480"></a>
+<FONT color="green">481</FONT>         * Check if the resource name is valid.<a name="line.481"></a>
+<FONT color="green">482</FONT>         *<a name="line.482"></a>
+<FONT color="green">483</FONT>         * @param rn<a name="line.483"></a>
+<FONT color="green">484</FONT>         */<a name="line.484"></a>
+<FONT color="green">485</FONT>        static void checkResourceName(String rn) throws RepositoryException {<a name="line.485"></a>
+<FONT color="green">486</FONT>            if(rn == null || rn.trim().length() == 0) {<a name="line.486"></a>
+<FONT color="green">487</FONT>                throw new RepositoryException("Invalid resource name: '"+ rn + "'");<a name="line.487"></a>
+<FONT color="green">488</FONT>            }<a name="line.488"></a>
+<FONT color="green">489</FONT>        }<a name="line.489"></a>
+<FONT color="green">490</FONT>    <a name="line.490"></a>
+<FONT color="green">491</FONT>        /**<a name="line.491"></a>
+<FONT color="green">492</FONT>         * Creates a new resource into the repository.<a name="line.492"></a>
+<FONT color="green">493</FONT>         *<a name="line.493"></a>
+<FONT color="green">494</FONT>         * @param resourceName<a name="line.494"></a>
+<FONT color="green">495</FONT>         * @param type<a name="line.495"></a>
+<FONT color="green">496</FONT>         * @return the created resource.<a name="line.496"></a>
+<FONT color="green">497</FONT>         * @throws RepositoryException if a resurce with the same name exists or the file cannot be created.<a name="line.497"></a>
+<FONT color="green">498</FONT>         */<a name="line.498"></a>
+<FONT color="green">499</FONT>        public Resource createResource(String resourceName, ResourceType type) throws RepositoryException {<a name="line.499"></a>
+<FONT color="green">500</FONT>            checkResourceName(resourceName);<a name="line.500"></a>
+<FONT color="green">501</FONT>    <a name="line.501"></a>
+<FONT color="green">502</FONT>            if( containsResource(resourceName) ) {<a name="line.502"></a>
+<FONT color="green">503</FONT>                throw new RepositoryException(<a name="line.503"></a>
+<FONT color="green">504</FONT>                        "Cannot create resource '" + resourceName + "', a resouce with the same name already exists."<a name="line.504"></a>
+<FONT color="green">505</FONT>                );<a name="line.505"></a>
+<FONT color="green">506</FONT>            }<a name="line.506"></a>
+<FONT color="green">507</FONT>    <a name="line.507"></a>
+<FONT color="green">508</FONT>            File file    = new File(repositoryLocation, type.getFileName(resourceName));<a name="line.508"></a>
+<FONT color="green">509</FONT>            try {<a name="line.509"></a>
+<FONT color="green">510</FONT>                file.createNewFile();<a name="line.510"></a>
+<FONT color="green">511</FONT>            } catch (IOException e) {<a name="line.511"></a>
+<FONT color="green">512</FONT>                throw new RepositoryException("Cannot create file: '" + file.getAbsolutePath() + "'");<a name="line.512"></a>
+<FONT color="green">513</FONT>            }<a name="line.513"></a>
+<FONT color="green">514</FONT>    <a name="line.514"></a>
+<FONT color="green">515</FONT>            Resource resource = new Resource(repositoryLocation, resourceName, type);<a name="line.515"></a>
+<FONT color="green">516</FONT>            resources.put(resourceName, resource);<a name="line.516"></a>
+<FONT color="green">517</FONT>    <a name="line.517"></a>
+<FONT color="green">518</FONT>            return resource;<a name="line.518"></a>
+<FONT color="green">519</FONT>        }<a name="line.519"></a>
+<FONT color="green">520</FONT>    <a name="line.520"></a>
+<FONT color="green">521</FONT>        /**<a name="line.521"></a>
+<FONT color="green">522</FONT>         * Returns &lt;code&gt;true&lt;/code&gt; if a resource is locked in writing mode,<a name="line.522"></a>
+<FONT color="green">523</FONT>         * &lt;code&gt;false&lt;/code&gt; otherwise.<a name="line.523"></a>
+<FONT color="green">524</FONT>         *<a name="line.524"></a>
+<FONT color="green">525</FONT>         * @param resourceName<a name="line.525"></a>
+<FONT color="green">526</FONT>         * @return &lt;code&gt;true&lt;/code&gt; if the resource is locked.<a name="line.526"></a>
+<FONT color="green">527</FONT>         * @throws RepositoryException is resourceName doesn't exist.<a name="line.527"></a>
+<FONT color="green">528</FONT>         */<a name="line.528"></a>
+<FONT color="green">529</FONT>        public boolean isLocked(String resourceName) throws RepositoryException {<a name="line.529"></a>
+<FONT color="green">530</FONT>            if( resources != null &amp;&amp; ! containsResource(resourceName) ) {<a name="line.530"></a>
+<FONT color="green">531</FONT>                throw new RepositoryException("Repository doesn't contain resource name '" + resourceName + "'");<a name="line.531"></a>
+<FONT color="green">532</FONT>            }<a name="line.532"></a>
+<FONT color="green">533</FONT>    <a name="line.533"></a>
+<FONT color="green">534</FONT>            File resourceFileLock = new File(repositoryLocation, getFileLockName(resourceName));<a name="line.534"></a>
+<FONT color="green">535</FONT>            return resourceFileLock.exists();<a name="line.535"></a>
+<FONT color="green">536</FONT>        }<a name="line.536"></a>
+<FONT color="green">537</FONT>    <a name="line.537"></a>
+<FONT color="green">538</FONT>        /**<a name="line.538"></a>
+<FONT color="green">539</FONT>         * Returns the name of the open file lock of a resource.<a name="line.539"></a>
+<FONT color="green">540</FONT>         *<a name="line.540"></a>
+<FONT color="green">541</FONT>         * @param resourceName<a name="line.541"></a>
+<FONT color="green">542</FONT>         * @return<a name="line.542"></a>
+<FONT color="green">543</FONT>         */<a name="line.543"></a>
+<FONT color="green">544</FONT>        private static String getFileLockName(String resourceName) {<a name="line.544"></a>
+<FONT color="green">545</FONT>            return "." + resourceName + LOCK_FILE_EXT;<a name="line.545"></a>
+<FONT color="green">546</FONT>        }<a name="line.546"></a>
+<FONT color="green">547</FONT>    <a name="line.547"></a>
+<FONT color="green">548</FONT>        /**<a name="line.548"></a>
+<FONT color="green">549</FONT>         * Returns the resource name associated to a given lock file name.<a name="line.549"></a>
+<FONT color="green">550</FONT>         *<a name="line.550"></a>
+<FONT color="green">551</FONT>         * @param lockFileName<a name="line.551"></a>
+<FONT color="green">552</FONT>         * @return<a name="line.552"></a>
+<FONT color="green">553</FONT>         */<a name="line.553"></a>
+<FONT color="green">554</FONT>        private static String getResourceNameFromLockFile(String lockFileName) {<a name="line.554"></a>
+<FONT color="green">555</FONT>            return lockFileName<a name="line.555"></a>
+<FONT color="green">556</FONT>                    .substring(1) // "."<a name="line.556"></a>
+<FONT color="green">557</FONT>                    .substring(0, lockFileName.length() - 1 - LOCK_FILE_EXT.length() );<a name="line.557"></a>
+<FONT color="green">558</FONT>        }<a name="line.558"></a>
+<FONT color="green">559</FONT>    <a name="line.559"></a>
+<FONT color="green">560</FONT>        /**<a name="line.560"></a>
+<FONT color="green">561</FONT>         * Creates a lock file for a resource name.<a name="line.561"></a>
+<FONT color="green">562</FONT>         *<a name="line.562"></a>
+<FONT color="green">563</FONT>         * @param resourceName<a name="line.563"></a>
+<FONT color="green">564</FONT>         */<a name="line.564"></a>
+<FONT color="green">565</FONT>        private void createLockFile(String resourceName) throws IOException {<a name="line.565"></a>
+<FONT color="green">566</FONT>            File lockFile = new File(repositoryLocation, getFileLockName(resourceName));<a name="line.566"></a>
+<FONT color="green">567</FONT>            lockFile.createNewFile();<a name="line.567"></a>
+<FONT color="green">568</FONT>        }<a name="line.568"></a>
+<FONT color="green">569</FONT>    <a name="line.569"></a>
+<FONT color="green">570</FONT>        /**<a name="line.570"></a>
+<FONT color="green">571</FONT>         * Removes a lock file.<a name="line.571"></a>
+<FONT color="green">572</FONT>         * <a name="line.572"></a>
+<FONT color="green">573</FONT>         * @param resourceName<a name="line.573"></a>
+<FONT color="green">574</FONT>         */<a name="line.574"></a>
+<FONT color="green">575</FONT>        private void removeLockFile(String resourceName) {<a name="line.575"></a>
+<FONT color="green">576</FONT>            File lockFile = new File(repositoryLocation, getFileLockName(resourceName) );<a name="line.576"></a>
+<FONT color="green">577</FONT>            lockFile.delete();<a name="line.577"></a>
+<FONT color="green">578</FONT>        }<a name="line.578"></a>
+<FONT color="green">579</FONT>    <a name="line.579"></a>
+<FONT color="green">580</FONT>        /**<a name="line.580"></a>
+<FONT color="green">581</FONT>         * Removes all files that are locked and then inconsistent.<a name="line.581"></a>
+<FONT color="green">582</FONT>         */<a name="line.582"></a>
+<FONT color="green">583</FONT>        private void removeLockedResources() throws RepositoryException {<a name="line.583"></a>
+<FONT color="green">584</FONT>            Map&lt;String,Resource&gt; resources = loadResources(repositoryLocation);<a name="line.584"></a>
+<FONT color="green">585</FONT>            for(Resource r : resources.values()) {<a name="line.585"></a>
+<FONT color="green">586</FONT>                if( isLocked( r.getName() ) ) {<a name="line.586"></a>
+<FONT color="green">587</FONT>                    try {<a name="line.587"></a>
+<FONT color="green">588</FONT>                        removeLockFile( r.getName());<a name="line.588"></a>
+<FONT color="green">589</FONT>                    } catch (Exception e) {<a name="line.589"></a>
+<FONT color="green">590</FONT>                        e.printStackTrace();<a name="line.590"></a>
+<FONT color="green">591</FONT>                    }<a name="line.591"></a>
+<FONT color="green">592</FONT>                    File resourceLocation = r.getLocation();<a name="line.592"></a>
+<FONT color="green">593</FONT>                    try {<a name="line.593"></a>
+<FONT color="green">594</FONT>                        resourceLocation.delete();<a name="line.594"></a>
+<FONT color="green">595</FONT>                    } catch (Exception e) {<a name="line.595"></a>
+<FONT color="green">596</FONT>                        e.printStackTrace();<a name="line.596"></a>
+<FONT color="green">597</FONT>                    }<a name="line.597"></a>
+<FONT color="green">598</FONT>                }<a name="line.598"></a>
+<FONT color="green">599</FONT>            }<a name="line.599"></a>
+<FONT color="green">600</FONT>    <a name="line.600"></a>
+<FONT color="green">601</FONT>        }<a name="line.601"></a>
+<FONT color="green">602</FONT>    <a name="line.602"></a>
+<FONT color="green">603</FONT>    }<a name="line.603"></a>
 
 
 

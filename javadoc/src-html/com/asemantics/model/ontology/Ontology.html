@@ -76,24 +76,24 @@
 <FONT color="green">073</FONT>        /**<a name="line.73"></a>
 <FONT color="green">074</FONT>         * Validates a triple over the current ontology.<a name="line.74"></a>
 <FONT color="green">075</FONT>         *<a name="line.75"></a>
-<FONT color="green">076</FONT>         * @param subject <a name="line.76"></a>
-<FONT color="green">077</FONT>         * @param predicate <a name="line.77"></a>
-<FONT color="green">078</FONT>         * @param object <a name="line.78"></a>
+<FONT color="green">076</FONT>         * @param subject the triple subject. <a name="line.76"></a>
+<FONT color="green">077</FONT>         * @param predicate the triple predicate.<a name="line.77"></a>
+<FONT color="green">078</FONT>         * @param object the triple object.<a name="line.78"></a>
 <FONT color="green">079</FONT>         */<a name="line.79"></a>
 <FONT color="green">080</FONT>        void validateTriple(String subject, String predicate, String object) throws OntologyException;<a name="line.80"></a>
 <FONT color="green">081</FONT>    <a name="line.81"></a>
 <FONT color="green">082</FONT>        /**<a name="line.82"></a>
 <FONT color="green">083</FONT>         * Validates a triple literal over the current ontology.<a name="line.83"></a>
 <FONT color="green">084</FONT>         *<a name="line.84"></a>
-<FONT color="green">085</FONT>         * @param subject<a name="line.85"></a>
-<FONT color="green">086</FONT>         * @param predicate<a name="line.86"></a>
+<FONT color="green">085</FONT>         * @param subject the triple subject.<a name="line.85"></a>
+<FONT color="green">086</FONT>         * @param predicate the triple object.<a name="line.86"></a>
 <FONT color="green">087</FONT>         */<a name="line.87"></a>
 <FONT color="green">088</FONT>        void validateTripleLiteral(String subject, String predicate) throws OntologyException;<a name="line.88"></a>
 <FONT color="green">089</FONT>    <a name="line.89"></a>
 <FONT color="green">090</FONT>        /**<a name="line.90"></a>
 <FONT color="green">091</FONT>         * Returns the number of relations defined in the ontology.<a name="line.91"></a>
 <FONT color="green">092</FONT>         *<a name="line.92"></a>
-<FONT color="green">093</FONT>         * @return<a name="line.93"></a>
+<FONT color="green">093</FONT>         * @return a positive number.<a name="line.93"></a>
 <FONT color="green">094</FONT>         */<a name="line.94"></a>
 <FONT color="green">095</FONT>        int getRelationsCount();<a name="line.95"></a>
 <FONT color="green">096</FONT>    <a name="line.96"></a>
@@ -102,7 +102,7 @@
 <FONT color="green">099</FONT>         * &lt;code&gt;false&lt;/code&gt; otherwise.<a name="line.99"></a>
 <FONT color="green">100</FONT>         * <a name="line.100"></a>
 <FONT color="green">101</FONT>         * @param i<a name="line.101"></a>
-<FONT color="green">102</FONT>         * @return<a name="line.102"></a>
+<FONT color="green">102</FONT>         * @return &lt;code&gt;true&lt;code&gt; if literal.<a name="line.102"></a>
 <FONT color="green">103</FONT>         */<a name="line.103"></a>
 <FONT color="green">104</FONT>        boolean isLiteralRelation(int i);<a name="line.104"></a>
 <FONT color="green">105</FONT>    <a name="line.105"></a>
@@ -110,7 +110,7 @@
 <FONT color="green">107</FONT>         * Returns the relation i-th subject prefix.<a name="line.107"></a>
 <FONT color="green">108</FONT>         *<a name="line.108"></a>
 <FONT color="green">109</FONT>         * @param i<a name="line.109"></a>
-<FONT color="green">110</FONT>         * @return<a name="line.110"></a>
+<FONT color="green">110</FONT>         * @return the subject prefix string.<a name="line.110"></a>
 <FONT color="green">111</FONT>         */<a name="line.111"></a>
 <FONT color="green">112</FONT>        String getRelationSubjectPrefix(int i);<a name="line.112"></a>
 <FONT color="green">113</FONT>    <a name="line.113"></a>
@@ -118,15 +118,15 @@
 <FONT color="green">115</FONT>         * Returns the relation i-th predicate.<a name="line.115"></a>
 <FONT color="green">116</FONT>          *<a name="line.116"></a>
 <FONT color="green">117</FONT>         * @param i<a name="line.117"></a>
-<FONT color="green">118</FONT>         * @return<a name="line.118"></a>
+<FONT color="green">118</FONT>         * @return the predicate.<a name="line.118"></a>
 <FONT color="green">119</FONT>         */<a name="line.119"></a>
 <FONT color="green">120</FONT>        URL getRelationPredicate(int i);<a name="line.120"></a>
 <FONT color="green">121</FONT>    <a name="line.121"></a>
 <FONT color="green">122</FONT>        /**<a name="line.122"></a>
 <FONT color="green">123</FONT>         * Returns the relation i-th object prefix.<a name="line.123"></a>
 <FONT color="green">124</FONT>         *<a name="line.124"></a>
-<FONT color="green">125</FONT>         * @param i<a name="line.125"></a>
-<FONT color="green">126</FONT>         * @return<a name="line.126"></a>
+<FONT color="green">125</FONT>         * @param i index discriminative of the object.<a name="line.125"></a>
+<FONT color="green">126</FONT>         * @return the prefix.<a name="line.126"></a>
 <FONT color="green">127</FONT>         */<a name="line.127"></a>
 <FONT color="green">128</FONT>        String getRelationObjectPrefix(int i);<a name="line.128"></a>
 <FONT color="green">129</FONT>    <a name="line.129"></a>

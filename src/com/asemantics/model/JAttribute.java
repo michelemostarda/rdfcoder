@@ -60,7 +60,7 @@ public class JAttribute extends JModifiable {
     /**
      * Returns the attribute parent class.
      *
-     * @return
+     * @return the parent class.
      */
     public JClass getParentClass() {
         return (JClass) getParent();
@@ -68,9 +68,10 @@ public class JAttribute extends JModifiable {
 
     /**
      * Returns the hierachy element name.
-     * @return
+     *
+     * @return the name of the element.
      */
-    public String getHyerarchyElemType() {
+    public String getHierarchyElemType() {
         return this.getClass().getName();
     }
 
@@ -78,7 +79,7 @@ public class JAttribute extends JModifiable {
      * Check wheter the attribute exists.
      * @param name
      * @param index
-     * @return
+     * @return <code>true</code> if exists.
      */
     public boolean exists(final String[] name, int index) {
         return exists(getQueryModel(), concatenate(name, index));

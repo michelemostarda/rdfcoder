@@ -28,21 +28,21 @@ public interface QueryModel {
     /**
      * Returns the Code Model asset.
      *
-     * @return
+     * @return the asset instance.
      */
     public Asset getAsset();
 
     /**
      * Returns the asset libraries.
      *
-     * @return
+     * @return list of libraries.
      */
     public String[] getLibraries();
 
     /**
      * Returns the library location.
      *
-     * @return
+     * @return list of locations as absolute paths.
      */
     public String getLibraryLocation(String library);
 
@@ -50,7 +50,7 @@ public interface QueryModel {
      * Returns the library datetime.
      *
      * @param library
-     * @return
+     * @return the date.
      */
     public Date getLibraryDateTime(String library);
     

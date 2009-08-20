@@ -73,7 +73,8 @@ public abstract class JBase {
 
     /**
      * Returns the relative name of the hierarchy element.
-     * @return
+     *
+     * @return name of element.
      */
     public String getName() {
         return name;
@@ -81,15 +82,17 @@ public abstract class JBase {
 
     /**
      * Returns the full name of the yerarchy element.
-     * @return
+     *
+     * @return full name of element.
      */
     public String getFullName() {
         return parent.getPathAsString() + CodeHandler.PACKAGE_SEPARATOR + name;
     }
 
     /**
-     * Returns the associated query org.asemantics.model.
-     * @return
+     * Returns the associated query model.
+     *
+     * @return model instance.
      */
     public JavaQueryModel getQueryModel() {
         return queryModel;
@@ -97,7 +100,8 @@ public abstract class JBase {
 
     /**
      * Returns the element parent if any.
-     * @return
+     *
+     * @return the parent, <code>null</code> if none.
      */
     public JContainer getParent() {
         return parent;
@@ -105,16 +109,18 @@ public abstract class JBase {
 
     /**
      * Check the existence of an entity named with 'name[0]. ... name[index]'.
+     *
      * @param name
-     * @return
+     * @return <code>true</code> if exists.
      */
     public abstract boolean exists(final String[] name, int index);
 
     /**
      * Return the hierarchy element type.
-     * @return
+     * 
+     * @return the name of the type.
      */
-    protected abstract String getHyerarchyElemType();
+    protected abstract String getHierarchyElemType();
 
     /**
      * Validates the sections value.
@@ -146,7 +152,7 @@ public abstract class JBase {
      * Concatenate the sections from 0 to index in a string package separated.
      * @param sections
      * @param index
-     * @return
+     * @return the concatenated string.
      */
     public static final String concatenate(final String[] sections, final int index) {
         StringBuilder sb = new StringBuilder();
@@ -162,8 +168,9 @@ public abstract class JBase {
 
     /**
      * Splits the container path into sections.
+     *
      * @param path
-     * @return
+     * @return the splitted sections.
      */
     public static final String[] splitPath(String path) {
         int psi = path.indexOf(CodeModel.PREFIX_SEPARATOR); // Ignoring prefix identifier if any.
@@ -184,7 +191,7 @@ public abstract class JBase {
      * Creates a hierarchy result on given org.asemantics.model and sections.
      * @param qm
      * @param sections
-     * @return
+     * @return  the created hierarchy.
      */
     protected final HierarchyResult makeHierarchy(JavaQueryModel qm, String[] sections)
     throws QueryModelException {
@@ -204,7 +211,7 @@ public abstract class JBase {
     }
 
     public String toString() {
-        return  getParent().getPathAsString() + CodeHandler.PACKAGE_SEPARATOR +  getName() + ":" + getHyerarchyElemType();
+        return  getParent().getPathAsString() + CodeHandler.PACKAGE_SEPARATOR +  getName() + ":" + getHierarchyElemType();
     }
 
 }

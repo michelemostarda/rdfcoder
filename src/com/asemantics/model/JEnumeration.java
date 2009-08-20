@@ -53,7 +53,8 @@ public class JEnumeration extends JObject {
 
     /**
      *  No enumerations can be defined inside an enumeration.
-     * @return
+     *
+     * @return the list of enumerations.
      * @throws QueryModelException
      */
      public JEnumeration[] getEnumerations() throws QueryModelException {
@@ -62,7 +63,8 @@ public class JEnumeration extends JObject {
 
     /**
      * Returns the elements defined into this enumeration.
-     * @return
+     *
+     * @return list of elements.
      */
      public String[] getElements() {
          return getQueryModel().getElements( getFullName() );   
@@ -72,7 +74,7 @@ public class JEnumeration extends JObject {
          return exists(getQueryModel(), concatenate(name, index));
      }
 
-     protected String getHyerarchyElemType() {
+     protected String getHierarchyElemType() {
          return this.getClass().getSimpleName();
      }
 

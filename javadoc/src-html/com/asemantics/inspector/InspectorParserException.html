@@ -78,26 +78,27 @@
 <FONT color="green">075</FONT>    <a name="line.75"></a>
 <FONT color="green">076</FONT>        /**<a name="line.76"></a>
 <FONT color="green">077</FONT>         * Returns &lt;code&gt;true&lt;/code&gt; if error location is well known.<a name="line.77"></a>
-<FONT color="green">078</FONT>         * @return<a name="line.78"></a>
-<FONT color="green">079</FONT>         */<a name="line.79"></a>
-<FONT color="green">080</FONT>        public boolean hasErrorLocation() {<a name="line.80"></a>
-<FONT color="green">081</FONT>            return errorLocation != NO_LOCATION;<a name="line.81"></a>
-<FONT color="green">082</FONT>        }<a name="line.82"></a>
-<FONT color="green">083</FONT>    <a name="line.83"></a>
-<FONT color="green">084</FONT>        /**<a name="line.84"></a>
-<FONT color="green">085</FONT>         * Returns the error location.<a name="line.85"></a>
-<FONT color="green">086</FONT>         * <a name="line.86"></a>
-<FONT color="green">087</FONT>         * @return<a name="line.87"></a>
-<FONT color="green">088</FONT>         */<a name="line.88"></a>
-<FONT color="green">089</FONT>        public int getErrorLocation() {<a name="line.89"></a>
-<FONT color="green">090</FONT>            return errorLocation;<a name="line.90"></a>
-<FONT color="green">091</FONT>        }<a name="line.91"></a>
-<FONT color="green">092</FONT>    <a name="line.92"></a>
-<FONT color="green">093</FONT>        public String toString() {<a name="line.93"></a>
-<FONT color="green">094</FONT>            return super.toString() + ( hasErrorLocation() ? " location: " + errorLocation : "" ); <a name="line.94"></a>
-<FONT color="green">095</FONT>        }<a name="line.95"></a>
-<FONT color="green">096</FONT>    <a name="line.96"></a>
-<FONT color="green">097</FONT>    }<a name="line.97"></a>
+<FONT color="green">078</FONT>         *<a name="line.78"></a>
+<FONT color="green">079</FONT>         * @return &lt;code&gt;true&lt;/code&gt; if error location is supported.<a name="line.79"></a>
+<FONT color="green">080</FONT>         */<a name="line.80"></a>
+<FONT color="green">081</FONT>        public boolean hasErrorLocation() {<a name="line.81"></a>
+<FONT color="green">082</FONT>            return errorLocation != NO_LOCATION;<a name="line.82"></a>
+<FONT color="green">083</FONT>        }<a name="line.83"></a>
+<FONT color="green">084</FONT>    <a name="line.84"></a>
+<FONT color="green">085</FONT>        /**<a name="line.85"></a>
+<FONT color="green">086</FONT>         * Returns the error location.<a name="line.86"></a>
+<FONT color="green">087</FONT>         * <a name="line.87"></a>
+<FONT color="green">088</FONT>         * @return line number of the error.<a name="line.88"></a>
+<FONT color="green">089</FONT>         */<a name="line.89"></a>
+<FONT color="green">090</FONT>        public int getErrorLocation() {<a name="line.90"></a>
+<FONT color="green">091</FONT>            return errorLocation;<a name="line.91"></a>
+<FONT color="green">092</FONT>        }<a name="line.92"></a>
+<FONT color="green">093</FONT>    <a name="line.93"></a>
+<FONT color="green">094</FONT>        public String toString() {<a name="line.94"></a>
+<FONT color="green">095</FONT>            return super.toString() + ( hasErrorLocation() ? " location: " + errorLocation : "" ); <a name="line.95"></a>
+<FONT color="green">096</FONT>        }<a name="line.96"></a>
+<FONT color="green">097</FONT>    <a name="line.97"></a>
+<FONT color="green">098</FONT>    }<a name="line.98"></a>
 
 
 

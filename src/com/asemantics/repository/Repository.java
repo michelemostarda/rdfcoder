@@ -141,7 +141,7 @@ public class Repository {
         /**
          * Returns the resource name.
          *
-         * @return
+         * @return the resource name.
          */
         public String getName() {
             return name;
@@ -150,7 +150,7 @@ public class Repository {
         /**
          * Returns the resource type.
          * 
-         * @return
+         * @return the type of the resource.
          */
         public ResourceType getType() {
             return type;
@@ -159,7 +159,7 @@ public class Repository {
         /**
          * Returns the resource location.
          *
-         * @return
+         * @return the resource location.
          */
         public File getLocation() {
             return new File(root, name + "." + type.getExtension());
@@ -168,7 +168,7 @@ public class Repository {
         /**
          * Opens an input stream on the resource.
          *
-         * @return
+         * @return the input stream to read the resource.
          * @throws FileNotFoundException
          */
         public InputStream getInputStream() throws FileNotFoundException, RepositoryException {
@@ -204,8 +204,8 @@ public class Repository {
          * Opens an output stream on the resource.
          *
          * @param append append flag
-         * @return
-         * @throws FileNotFoundException
+         * @return the output stream to write the resource.
+         * @throws FileNotFoundException if the resource file cannot be found or opened.
          */
         public OutputStream getOutputStream(boolean append) throws FileNotFoundException, RepositoryException {
             synchronized (lock) {
@@ -241,7 +241,7 @@ public class Repository {
         /**
          *  Opens an output stream on the resource.
          *
-         * @return
+         * @return the resource output stream.
          * @throws FileNotFoundException
          * @throws RepositoryException
          */
@@ -320,7 +320,7 @@ public class Repository {
      * Returns a repository at a given location.
      *
      * @param location
-     * @return
+     * @return the new repository instance.
      */
     public static final Repository getRepository(File location) throws RepositoryException {
         return new Repository(location);
@@ -329,7 +329,7 @@ public class Repository {
     /**
      * Returns the repository unique instance.
      *
-     * @return
+     * @return unique repository instance.
      */
     public static final Repository getDefaultRepository() throws RepositoryException {
         if(_defaultRepositoryInstance == null) {
@@ -347,7 +347,7 @@ public class Repository {
      * Loads the resources defined in the <i>target</i>
      * dir.
      *
-     * @return
+     * @return the map of loaded resources.
      */
     protected Map<String,Resource> loadResources(File target) {
         if( ! target.exists() ) {
@@ -416,7 +416,7 @@ public class Repository {
     /**
      * Returns the repository root.
      * 
-     * @return
+     * @return the respository location.
      */
     public File getRepositoryLocation() {
         return repositoryLocation;
@@ -425,7 +425,7 @@ public class Repository {
     /**
      * Returns the list of available resources.
      *
-     * @return
+     * @return list of resources in the repository.
      */
     public Resource[] getResources() {
         Collection<Resource> resourceValues = resources.values();
@@ -436,8 +436,8 @@ public class Repository {
      * Returns <code>true</code> if the repository contains the given resource name,
      * <code>false</code> otherwise.
      *
-     * @param resourceName
-     * @return
+     * @param resourceName name of resource to find.
+     * @return <code>true</code> if found.
      */
     public boolean containsResource(String resourceName) {
         return resources.containsKey(resourceName);
@@ -447,7 +447,8 @@ public class Repository {
      * Returns an existing resource.
      *
      * @param resourceName
-     * @return
+     * @return the resource found.
+     * @throws RepositoryException if the resource doens't exist.
      */
     public Resource getResource(String resourceName) throws RepositoryException {
         Resource resource = resources.get(resourceName);
@@ -461,7 +462,7 @@ public class Repository {
      * Removes the specified resource.
      *
      * @param resourceName
-     * @throws RepositoryException
+     * @throws RepositoryException if the resource cannot be found.
      */
     public void removeResource(String resourceName) throws RepositoryException {
         Resource resource = getResource(resourceName);
@@ -492,8 +493,8 @@ public class Repository {
      *
      * @param resourceName
      * @param type
-     * @return
-     * @throws RepositoryException
+     * @return the created resource.
+     * @throws RepositoryException if a resurce with the same name exists or the file cannot be created.
      */
     public Resource createResource(String resourceName, ResourceType type) throws RepositoryException {
         checkResourceName(resourceName);
@@ -522,7 +523,7 @@ public class Repository {
      * <code>false</code> otherwise.
      *
      * @param resourceName
-     * @return
+     * @return <code>true</code> if the resource is locked.
      * @throws RepositoryException is resourceName doesn't exist.
      */
     public boolean isLocked(String resourceName) throws RepositoryException {

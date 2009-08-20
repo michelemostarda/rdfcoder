@@ -33,7 +33,7 @@ public class BeanAccessor {
      *
      * @param bean
      * @param propertyName
-     * @return
+     * @return the property of the bean.
      */
     public static Object getProperty(Object bean, String propertyName) throws PatternException {
         if(bean == null) {
@@ -60,10 +60,10 @@ public class BeanAccessor {
     }
 
     /**
-     * Descrives a given <i>bean</i>.
+     * Describes a given <i>bean</i>.
      * 
      * @param bean
-     * @return
+     * @return the bean description of the bean.
      * @throws PatternException
      */
     public static String describeBean(Object bean) throws PatternException {

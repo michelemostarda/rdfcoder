@@ -34,20 +34,23 @@ public interface TripleIterator {
 
     /**
      * Returns the subject of the current statement.
-     * @return
+     *
+     * @return triple subejct string.
      */
     String getSubject();
 
     /**
      * Returns the predicate of the current statement.
-     * @return
+     *
+     * @return triple predicate string.
      */
 
     String getPredicate();
 
     /**
      * Returns the object of the current statement.
-     * @return
+     *
+     * @return triple object string.
      */
     String getObject();
 

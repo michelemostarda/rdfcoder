@@ -30,7 +30,7 @@ public interface Profile {
     /**
      * Returns the query model for this <i>Profile</i>.
      *
-     * @return
+     * @return the query model instance.
      */
     public QueryModel getQueryModel();
 

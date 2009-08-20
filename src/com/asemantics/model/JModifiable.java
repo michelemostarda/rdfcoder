@@ -48,7 +48,7 @@ public abstract class JModifiable extends JBase {
     /**
      * Returns the <i>entity</i> visibility.
      *
-     * @return
+     * @return visibility.
      * @throws QueryModelException
      */
     public JavaCodeModel.JVisibility getVisibility() throws QueryModelException {
@@ -57,7 +57,8 @@ public abstract class JModifiable extends JBase {
 
     /**
      * Returns the <i>entity</i> modifiers.
-     * @return
+     * 
+     * @return  the modifiers.
      * @throws QueryModelException
      */
     public JavaCodeModel.JModifier[] getModifiers() throws QueryModelException {
