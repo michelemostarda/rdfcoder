@@ -124,7 +124,7 @@ public class JavaProfile implements Profile {
      * model already exists.
      *
      * @param pathToJRE
-     * @return
+     * @return <code>true</code> if the resource is already defined.
      */
     public boolean checkJREInit(File pathToJRE) {
         if( pathToJRE == null ) {

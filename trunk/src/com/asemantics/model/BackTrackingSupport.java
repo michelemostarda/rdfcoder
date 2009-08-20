@@ -27,7 +27,8 @@ public interface BackTrackingSupport {
 
     /**
      * Generates a temporary unique identifier to substitute an unknown type.
-     * @return
+     *
+     * @return a string representing the identifier.
      */
     public String generateTempUniqueIdentifier();
 

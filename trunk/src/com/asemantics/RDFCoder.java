@@ -18,17 +18,15 @@
 
 package com.asemantics;
 
+import com.asemantics.model.CoderFactory;
 import com.asemantics.profile.Profile;
 import com.asemantics.repository.Repository;
 import com.asemantics.repository.RepositoryException;
-import com.asemantics.model.CoderFactory;
-import com.asemantics.model.ontology.ValidatingCodeModel;
 import com.asemantics.storage.JenaCoderFactory;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.lang.reflect.Constructor;
 
 /**
  * This class defines an high - level usage class to work with
@@ -55,7 +53,7 @@ public class RDFCoder {
     /**
      * Returns the assertions level.
      * 
-     * @return
+     * @return <code>true</code> if assertions are enabled.
      */
     public static boolean assertions() {
         return true;
@@ -64,7 +62,7 @@ public class RDFCoder {
     /**
      * Returns the package discrepancy check flag.
      *
-     * @return
+     * @return <code>true</code> if package check is enabled.
      */
     public static boolean checkPackageDiscrepancy() {
         return true;
@@ -145,7 +143,7 @@ public class RDFCoder {
     /**
      * Returns the profile names.
      *
-     * @return
+     * @return list of profile names.
      */
     public String[] getProfileNames() {
         return profiles.keySet().toArray( new String[profiles.keySet().size()] );
@@ -155,7 +153,7 @@ public class RDFCoder {
      * Returns a profile type by name.
      *
      * @param name
-     * @return
+     * @return class of profile.
      */
     protected Class<Profile> getProfileType(String name) {
         return profiles.get(name);
@@ -181,7 +179,7 @@ public class RDFCoder {
      * Creates a model with the specified name.
      *
      * @param name
-     * @return
+     * @return the created model.
      */
     public Model createModel(String name) {
         if(name == null || name.trim().length() == 0) {
@@ -216,7 +214,7 @@ public class RDFCoder {
      * Returns <code>true<code> if model <i>name</i> exists, false otherwise.
      * 
      * @param name
-     * @return
+     * @return <code>true</code> exists.
      */
     public boolean modelExists(String name) {
         return models.containsKey(name);
@@ -225,7 +223,7 @@ public class RDFCoder {
     /**
      * Returns the numer of aailable models.
      *
-     * @return
+     * @return number of models.
      */
     public int modelsCount() {
         return models.size();
@@ -234,7 +232,7 @@ public class RDFCoder {
     /**
      * Returns the list of model names.
      *
-     * @return
+     * @return list of model names.
      */
     public String[] getModelNames() {
         return models.keySet().toArray( new String[models.keySet().size()] );
@@ -243,7 +241,7 @@ public class RDFCoder {
     /**
      * Returns the repository object.
      * 
-     * @return
+     * @return repository instance.
      */
     protected Repository getRepository() {
         return repository;

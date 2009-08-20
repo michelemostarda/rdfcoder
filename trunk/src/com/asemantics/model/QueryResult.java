@@ -27,19 +27,22 @@ public interface QueryResult {
 
     /**
      * Returns all the variables involved in the query.
-     * @return
+     *
+     * @return list of variables.
      */
     String[] getVariables();
 
     /**
      * Returns the original query.
-     * @return
+     *
+     * @return the query string.
      */
     String getQuery();
 
     /**
      * True if the result set contains other entries.
-     * @return
+     *
+     * @return <code>true</code> if has a next element.
      */
     public boolean hasNext();
 
@@ -50,8 +53,9 @@ public interface QueryResult {
 
     /**
      * Returns the value associated to the variable v.
+     *
      * @param v
-     * @return
+     * @return the next variable.
      */
     public String getVariable(String v);
 

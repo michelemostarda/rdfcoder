@@ -27,9 +27,10 @@ public class JPackage extends JContainer {
 
     /**
      * Check wether a package exists.
+     *
      * @param qm
      * @param pathToPackege
-     * @return
+     * @return <code>true</code> if exists.
      */
     public static boolean exists(JavaQueryModel qm,  String pathToPackege) {
         return qm.packageExists( pathToPackege );
@@ -37,6 +38,7 @@ public class JPackage extends JContainer {
 
     /**
      * Constructor.
+     *
      * @param codeModel
      * @param packageSections
      */
@@ -47,6 +49,7 @@ public class JPackage extends JContainer {
 
     /**
      * Constructor.
+     * 
      * @param codeModel
      * @param name
      */
@@ -59,7 +62,7 @@ public class JPackage extends JContainer {
         return exists(getQueryModel(), concatenate(name, index));
     }
 
-    protected String getHyerarchyElemType() {
+    protected String getHierarchyElemType() {
         return this.getClass().getSimpleName();
     }
 

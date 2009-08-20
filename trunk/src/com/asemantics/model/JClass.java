@@ -27,9 +27,10 @@ public class JClass extends JObject {
 
     /**
      * Check if a class exists.
+     *
      * @param qm
      * @param pathToClass
-     * @return
+     * @return <code>true</code> if exists.
      */
     public static boolean exists(JavaQueryModel qm, final String pathToClass) {
        return qm.classExists(pathToClass);
@@ -64,16 +65,18 @@ public class JClass extends JObject {
     /**
      * Returns <code>true</code> if this is an inner class,
      * false otherwise.
-     * @return
+     *
+     * @return <code>true</code> if inner.
      */
     public boolean isInnerClass() {
         return parent instanceof JClass || parent instanceof JInterface;
     }
 
     /**
-     * Return the parent class if this is an inner class
+     * Return the parent class if this is an inner class.
+     *
      * or <code>null</code> otherwise.
-     * @return
+     * @return the class of the parent.
      */
     public JClass getParentClass() {
         if(parent instanceof JClass) {
@@ -85,7 +88,8 @@ public class JClass extends JObject {
     /**
      * Return the parent package if this is firs level class
      * or <code>null</code> otherwise.
-     * @return
+     *
+     * @return the package of the parent.
      */
 
     public JPackage getParentPackage() {
@@ -99,7 +103,7 @@ public class JClass extends JObject {
         return parent.toString() + CodeHandler.PACKAGE_SEPARATOR + super.toString();
     }
 
-    protected String getHyerarchyElemType() {
+    protected String getHierarchyElemType() {
         return this.getClass().getSimpleName();
     }
 }

@@ -125,7 +125,7 @@ public class Model {
     /**
      * Returns the model name.
      *
-     * @return
+     * @return name.
      */
     public String getName() {
         return name;
@@ -135,7 +135,7 @@ public class Model {
      * Returns a profile by name.
      *
      * @param name
-     * @return
+     * @return profile object.
      */
     public Profile getProfile(String name) {
         Profile profile = profileInstances.get(name);
@@ -160,7 +160,7 @@ public class Model {
      * Returns <code>true</code> if this model supports <i>SPARQL</i> queries,
      * <code>false</code> otherwise.
      * 
-     * @return
+     * @return <code>true</code> if supported.
      */
     public boolean supportsSparqlQuery() {
         return codeModelBase instanceof SPARQLQuerableCodeModel;
@@ -170,7 +170,7 @@ public class Model {
      * Performs a SPARQL query on this model.
      *
      * @param sparql
-     * @return
+     * @return result of the query.
      * @throws ClassCastException if this model doesn't support <i>SPARQL</i> queries.
      * @see #supportsSparqlQuery()
      */
@@ -187,7 +187,6 @@ public class Model {
      * <i>Model</i>.
      *
      * @param resouceName name of the model containing the resource
-     * @return
      */
     public void load(String resouceName) {
 
@@ -249,7 +248,7 @@ public class Model {
      * Returns the name of the resource in {@link com.asemantics.repository.Repository}
      * for this model.
      *
-     * @return
+     * @return model resource name.
      */
     public String getModelResourceName() {
        return getModelResourceName(name);
@@ -274,7 +273,7 @@ public class Model {
      * Retrieves the resource with the given name.
      *
      * @param rn
-     * @return
+     * @return retrieved resource.
      */
     protected Repository.Resource retrieveResource(String rn) {
         Repository repository = coder.getRepository();
@@ -295,7 +294,7 @@ public class Model {
      * Returns the name of the resource associated to this model.
      *
      * @param modelName
-     * @return
+     * @return model resource name.
      */
     protected String getModelResourceName(String modelName) {
         return  RDFCoder.MODEL_RESOUCE_PREFIX + modelName;
@@ -304,7 +303,7 @@ public class Model {
     /**
      * Returns the {@link com.asemantics.model.CoderFactory} insstance for this model.
      *
-     * @return
+     * @return coder factory instance.
      */
     protected CoderFactory getCoderFactory() {
         return coderFactory;
@@ -313,7 +312,7 @@ public class Model {
     /**
      * Returns the objects table associated to this model.
      *
-     * @return
+     * @return table instance.
      */
     protected ObjectsTable getObjectsTable() {
         return objectsTable;
@@ -321,7 +320,8 @@ public class Model {
 
     /**
      * Returns the {@link com.asemantics.model.CodeModelBase} common underlying instance.
-     * @return
+     *
+     * @return internal code model.
      */
     protected CodeModelBase getCodeModelBase() {
         return codeModelBase;

@@ -63,7 +63,7 @@
 <FONT color="green">060</FONT>        /**<a name="line.60"></a>
 <FONT color="green">061</FONT>         * Returns the attribute parent class.<a name="line.61"></a>
 <FONT color="green">062</FONT>         *<a name="line.62"></a>
-<FONT color="green">063</FONT>         * @return<a name="line.63"></a>
+<FONT color="green">063</FONT>         * @return the parent class.<a name="line.63"></a>
 <FONT color="green">064</FONT>         */<a name="line.64"></a>
 <FONT color="green">065</FONT>        public JClass getParentClass() {<a name="line.65"></a>
 <FONT color="green">066</FONT>            return (JClass) getParent();<a name="line.66"></a>
@@ -71,23 +71,24 @@
 <FONT color="green">068</FONT>    <a name="line.68"></a>
 <FONT color="green">069</FONT>        /**<a name="line.69"></a>
 <FONT color="green">070</FONT>         * Returns the hierachy element name.<a name="line.70"></a>
-<FONT color="green">071</FONT>         * @return<a name="line.71"></a>
-<FONT color="green">072</FONT>         */<a name="line.72"></a>
-<FONT color="green">073</FONT>        public String getHyerarchyElemType() {<a name="line.73"></a>
-<FONT color="green">074</FONT>            return this.getClass().getName();<a name="line.74"></a>
-<FONT color="green">075</FONT>        }<a name="line.75"></a>
-<FONT color="green">076</FONT>    <a name="line.76"></a>
-<FONT color="green">077</FONT>        /**<a name="line.77"></a>
-<FONT color="green">078</FONT>         * Check wheter the attribute exists.<a name="line.78"></a>
-<FONT color="green">079</FONT>         * @param name<a name="line.79"></a>
-<FONT color="green">080</FONT>         * @param index<a name="line.80"></a>
-<FONT color="green">081</FONT>         * @return<a name="line.81"></a>
-<FONT color="green">082</FONT>         */<a name="line.82"></a>
-<FONT color="green">083</FONT>        public boolean exists(final String[] name, int index) {<a name="line.83"></a>
-<FONT color="green">084</FONT>            return exists(getQueryModel(), concatenate(name, index));<a name="line.84"></a>
-<FONT color="green">085</FONT>        }<a name="line.85"></a>
-<FONT color="green">086</FONT>    <a name="line.86"></a>
-<FONT color="green">087</FONT>    }<a name="line.87"></a>
+<FONT color="green">071</FONT>         *<a name="line.71"></a>
+<FONT color="green">072</FONT>         * @return the name of the element.<a name="line.72"></a>
+<FONT color="green">073</FONT>         */<a name="line.73"></a>
+<FONT color="green">074</FONT>        public String getHierarchyElemType() {<a name="line.74"></a>
+<FONT color="green">075</FONT>            return this.getClass().getName();<a name="line.75"></a>
+<FONT color="green">076</FONT>        }<a name="line.76"></a>
+<FONT color="green">077</FONT>    <a name="line.77"></a>
+<FONT color="green">078</FONT>        /**<a name="line.78"></a>
+<FONT color="green">079</FONT>         * Check wheter the attribute exists.<a name="line.79"></a>
+<FONT color="green">080</FONT>         * @param name<a name="line.80"></a>
+<FONT color="green">081</FONT>         * @param index<a name="line.81"></a>
+<FONT color="green">082</FONT>         * @return &lt;code&gt;true&lt;/code&gt; if exists.<a name="line.82"></a>
+<FONT color="green">083</FONT>         */<a name="line.83"></a>
+<FONT color="green">084</FONT>        public boolean exists(final String[] name, int index) {<a name="line.84"></a>
+<FONT color="green">085</FONT>            return exists(getQueryModel(), concatenate(name, index));<a name="line.85"></a>
+<FONT color="green">086</FONT>        }<a name="line.86"></a>
+<FONT color="green">087</FONT>    <a name="line.87"></a>
+<FONT color="green">088</FONT>    }<a name="line.88"></a>
 
 
 

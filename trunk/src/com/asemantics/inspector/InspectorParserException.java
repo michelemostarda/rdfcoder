@@ -75,7 +75,8 @@ public class InspectorParserException extends Exception {
 
     /**
      * Returns <code>true</code> if error location is well known.
-     * @return
+     *
+     * @return <code>true</code> if error location is supported.
      */
     public boolean hasErrorLocation() {
         return errorLocation != NO_LOCATION;
@@ -84,7 +85,7 @@ public class InspectorParserException extends Exception {
     /**
      * Returns the error location.
      * 
-     * @return
+     * @return line number of the error.
      */
     public int getErrorLocation() {
         return errorLocation;

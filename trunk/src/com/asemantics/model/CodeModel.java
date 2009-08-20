@@ -18,8 +18,6 @@
 
 package com.asemantics.model;
 
-import java.io.OutputStream;
-
 /**
  * Defines the operations exposed by a generic Code Model.
  *
@@ -62,7 +60,7 @@ public interface CodeModel {
      * @param subject
      * @param predicate
      * @param object
-     * @return
+     * @return the iterator to access the search result.
      */
     TripleIterator searchTriples(String subject, String predicate, String object);
 

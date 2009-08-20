@@ -36,7 +36,7 @@
 <FONT color="green">033</FONT>         * this pattern, &lt;code&gt;false&lt;/code&gt; otherwise.<a name="line.33"></a>
 <FONT color="green">034</FONT>         *<a name="line.34"></a>
 <FONT color="green">035</FONT>         * @param part<a name="line.35"></a>
-<FONT color="green">036</FONT>         * @return<a name="line.36"></a>
+<FONT color="green">036</FONT>         * @return &lt;code&gt;true&lt;/code&gt; if the pattern is applicable on the part.<a name="line.36"></a>
 <FONT color="green">037</FONT>         */<a name="line.37"></a>
 <FONT color="green">038</FONT>        abstract boolean isApplicable(String part);<a name="line.38"></a>
 <FONT color="green">039</FONT>    <a name="line.39"></a>
@@ -51,7 +51,7 @@
 <FONT color="green">048</FONT>         * Implementation of specific accessor.<a name="line.48"></a>
 <FONT color="green">049</FONT>         *<a name="line.49"></a>
 <FONT color="green">050</FONT>         * @param in<a name="line.50"></a>
-<FONT color="green">051</FONT>         * @return<a name="line.51"></a>
+<FONT color="green">051</FONT>         * @return result of application.<a name="line.51"></a>
 <FONT color="green">052</FONT>         */<a name="line.52"></a>
 <FONT color="green">053</FONT>        abstract protected Object internalApply(Object in) throws Exception;<a name="line.53"></a>
 <FONT color="green">054</FONT>    <a name="line.54"></a>
@@ -60,7 +60,7 @@
 <FONT color="green">057</FONT>         * returning a result. Returns NO_MATCH if nothing found.<a name="line.57"></a>
 <FONT color="green">058</FONT>         *<a name="line.58"></a>
 <FONT color="green">059</FONT>         * @param in<a name="line.59"></a>
-<FONT color="green">060</FONT>         * @return<a name="line.60"></a>
+<FONT color="green">060</FONT>         * @return result of operation.<a name="line.60"></a>
 <FONT color="green">061</FONT>         * @throws PatternException if an error occurs.<a name="line.61"></a>
 <FONT color="green">062</FONT>         */<a name="line.62"></a>
 <FONT color="green">063</FONT>         public Object applyPattern(Object in) throws PatternException {<a name="line.63"></a>

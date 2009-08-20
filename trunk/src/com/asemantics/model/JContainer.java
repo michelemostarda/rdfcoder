@@ -41,7 +41,8 @@ public abstract class JContainer extends JModifiable {
 
     /**
      * Returns the parent hierarchy.
-     * @return
+     *
+     * @return the list of containers.
      */
     public JContainer[] getPath() {
         List list = new ArrayList();
@@ -57,12 +58,13 @@ public abstract class JContainer extends JModifiable {
     /**
      * Generates the debug path of a container path.
      * @param path
-     * @return
+     *
+     * @return the absolute path.
      */
     public static String getDebugPath(JContainer[] path) {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < path.length; i++) {
-            sb.append(path[i].getName()).append(":").append(path[i].getHyerarchyElemType());
+            sb.append(path[i].getName()).append(":").append(path[i].getHierarchyElemType());
             if(i < path.length -1) {
                 sb.append(CodeHandler.PACKAGE_SEPARATOR);
             }
@@ -72,7 +74,8 @@ public abstract class JContainer extends JModifiable {
 
     /**
      * Generates the debug path of this container.
-     * @return
+     *
+     * @return the path as absolute path.
      */
     public String getDebugPath() {
         return getDebugPath(getPath());
@@ -80,7 +83,8 @@ public abstract class JContainer extends JModifiable {
 
     /**
      * Joins the container hierarchy to a path string.
-     * @return
+     *
+     * @return string of paths.
      */
     public static String getPathAsString(JContainer[] path) {
         StringBuilder sb = new StringBuilder();

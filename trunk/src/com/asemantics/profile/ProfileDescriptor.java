@@ -29,9 +29,9 @@ import com.asemantics.model.CoderFactory;
 public interface ProfileDescriptor {
 
     /**
-     * Returns a human - language profile description.
+     * Returns a human readable profile description.
      * 
-     * @return
+     * @return a string containing a description.
      */
     String getProfileDescription();
 
@@ -39,7 +39,7 @@ public interface ProfileDescriptor {
      * Returns the {@link com.asemantics.model.CoderFactory}
      * for this profile.
      *
-     * @return
+     * @return the factory instance.
      */
     CoderFactory getCoderFactory();
 }

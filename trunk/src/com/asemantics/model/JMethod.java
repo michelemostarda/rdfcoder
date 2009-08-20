@@ -53,7 +53,8 @@ public class JMethod extends JModifiable {
 
     /**
      * Returns the signatures of a method.
-     * @return
+     *
+     * @return list of signatures.
      * @throws CodeModelException
      */
     public JSignature[] getSignatures() throws QueryModelException {
@@ -62,15 +63,16 @@ public class JMethod extends JModifiable {
 
     /**
      * Check wether a method exists.
+     *
      * @param name
      * @param index
-     * @return
+     * @return <code>true</code> if exists.
      */
     public boolean exists( String[] name, int index) {
         return exists(getQueryModel(), concatenate(name, index));
     }
 
-    protected String getHyerarchyElemType() {
+    protected String getHierarchyElemType() {
         return this.getClass().getSimpleName();
     }
 

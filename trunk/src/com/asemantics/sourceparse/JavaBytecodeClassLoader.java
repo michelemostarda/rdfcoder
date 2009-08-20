@@ -41,7 +41,7 @@ public interface JavaBytecodeClassLoader {
      * Loads a <i>JavaClass</i> object.
      *
      * @param pathToClass
-     * @return
+     * @return the loaded class object representation.
      * @throws IOException
      */
      JavaClass loadClass(String pathToClass) throws IOException;
@@ -81,7 +81,7 @@ public interface JavaBytecodeClassLoader {
          * Loads a Java class representation on the given path to class.
          *
          * @param pathToClass
-         * @return
+         * @return the loaded class object representation.
          * @throws IOException
          */
         public JavaClass loadClass(String pathToClass) throws IOException {
@@ -140,7 +140,7 @@ public interface JavaBytecodeClassLoader {
          * Loads a class file into a directory.
          * 
          * @param pathToClass
-         * @return
+         * @return the loaded class object representation.
          * @throws IOException
          */
         public JavaClass loadClass(String pathToClass) throws IOException {

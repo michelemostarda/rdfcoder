@@ -37,9 +37,10 @@ public class JSignature extends JBase {
 
     /**
      * Check wether a signaure exists.
+     *
      * @param qm
      * @param pathToSignature
-     * @return
+     * @return <code>true</code> if exists.
      */
     public static boolean exists( JavaQueryModel qm, String pathToSignature) {
         return qm.signatureExists(pathToSignature);
@@ -107,7 +108,7 @@ public class JSignature extends JBase {
         return exists( getQueryModel(), concatenate(name, index) );
     }
 
-    protected String getHyerarchyElemType() {
+    protected String getHierarchyElemType() {
         return this.getClass().getSimpleName();
     }
 }

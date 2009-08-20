@@ -172,9 +172,10 @@ public class ObjectsTable implements Serializable {
 
     /**
      * Checks if an object name is defined inside a package.
-     * @param objectPackage
-     * @param type
-     * @return
+     *
+     * @param objectPackage the package containing the object.
+     * @param type the object type.
+     * @return <code>true</code> if found.
      */
     public boolean checkObject(String objectPackage, String type) {
         PackageEntry pe = packagesToContents.get(objectPackage);
@@ -186,8 +187,9 @@ public class ObjectsTable implements Serializable {
 
     /**
      * Registes a type as unresolved.
-     * @param type
-     * @param ic
+     *
+     * @param type the unresolved type name.
+     * @param ic context of imports.
      */
     public void addUnresolvedType(String tn, JavaCodeModel.JType type, ImportsContext ic) {
         if(tn == null || tn.trim().length() == 0 || type == null || ic == null) {
@@ -197,17 +199,24 @@ public class ObjectsTable implements Serializable {
         unresolvedTypeEntries.add( new UnresolvedTypeEntry(tn, type, ic) );
     }
 
+    /**
+     * @return the list of unresolved types.
+     */
     public UnresolvedTypeEntry[] getUnresolvedTypeEntries() {
         return unresolvedTypeEntries.toArray( new UnresolvedTypeEntry[unresolvedTypeEntries.size()] );
     }
 
+    /**
+     * @return the number of unresolved types.
+     */
     public int unresolvedCount() {
         return unresolvedTypeEntries.size();
     }
 
     /**
      * Processes all the unresolved identifiers.
-     * @param ch
+     *
+     * @param ch the code handler user to process the identifiers.
      */
     public Set<String> processTemporaryIdentifiers(CodeHandler ch) {
         Iterator<UnresolvedTypeEntry> uei = unresolvedTypeEntries.iterator();
@@ -232,6 +241,9 @@ public class ObjectsTable implements Serializable {
         return definitivelyUnresolved;
     }
 
+    /**
+     * Clears the content of the object table.
+     */
     public void clear() {
         packagesToContents.clear();
         unresolvedTypeEntries.clear();
@@ -240,7 +252,7 @@ public class ObjectsTable implements Serializable {
     /**
      * Preloads the Objects table with the object symbols found into the sourceDir directory.
      *
-     * @param sourceDir
+     * @param sourceDir source directory.
      */
     public void preloadSourceDir(File sourceDir) {
         if(sourceDir == null || ! sourceDir.exists() ) {

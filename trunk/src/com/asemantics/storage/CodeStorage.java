@@ -19,9 +19,12 @@
 package com.asemantics.storage;
 
 import com.asemantics.model.CodeModel;
-import com.asemantics.RDFCoderException;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Map;
 
 /**
@@ -65,20 +68,20 @@ public abstract class CodeStorage {
 
     /**
      * Loads a model from a storage by using given parameters.
+     * @param codeModel
      * @param parameters
-     * @return
      */
     public abstract void loadModel(CodeModel codeModel, Map parameters) throws CodeStorageException;
 
     /**
      * Returns true if database storage is supported.
-     * @return
+     * @return <code>true</code> if database is supported.
      */
     public abstract boolean supportsDatabase();
 
     /**
      * Returns true if filesystem storage is supported.
-     * @return
+     * @return <code>true</code> if filesystem is supported.
      */
     public abstract boolean supportsFile();
 

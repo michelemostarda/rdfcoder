@@ -18,13 +18,16 @@
 
 package com.asemantics.sourceparse;
 
-import com.asemantics.CoderUtils;
 import com.asemantics.model.CodeHandler;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.FilenameFilter;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  * Scans a given directory.
@@ -60,8 +63,8 @@ public class DirectoryParser extends CodeParser {
     /**
      * Parses a directory content.
      *
-     * @param d
-     * @return
+     * @param d directory in which the library is located.
+     * @return the number of unresolved objects.
      */
     public int parseDirectory(String libraryName, File d) {
         dirStack.clear();
@@ -137,7 +140,7 @@ public class DirectoryParser extends CodeParser {
     /**
      * Post scan operation handler.
      * 
-     * @return
+     * @return number of unresolved objects.
      */
     public int postScan() {
         CodeHandler codeHandler = (CodeHandler) getParseHandler();

@@ -120,8 +120,7 @@ public class CodeHandlerImpl implements CodeHandler {
     }
 
     /**
-     * Returns the underlying org.asemantics.model.
-     * @return
+     * @return the underlying model.
      */
     protected CodeModel getModel() {
         return model;
@@ -547,7 +546,8 @@ public class CodeHandlerImpl implements CodeHandler {
 
     /**
      * Retrieves last package without pop it.
-     * @return
+     *
+     * @return the peek package string.
      */
     protected String peekPackage() {
         if(packagesStack.isEmpty()) {
@@ -573,7 +573,8 @@ public class CodeHandlerImpl implements CodeHandler {
 
     /**
      * Peeks the on top class, interface or enumeration.
-     * @return
+     *
+     * @return the peek type. 
      */
     protected String peekContainer() {
         if( containersStack.isEmpty() ) {
@@ -585,9 +586,11 @@ public class CodeHandlerImpl implements CodeHandler {
 
     /**
      * Qualifies a parameter name.
+     *
      * @param pathToMethod
      * @param parameterName
-     * @return
+     * @return the qualified parameter name.
+     * @throws IllegalArgumentException
      */
     private String qualifyParameterName(String pathToMethod, String parameterName) {
         if(parameterName.indexOf(CodeHandler.PACKAGE_SEPARATOR) != -1) {

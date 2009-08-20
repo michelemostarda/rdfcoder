@@ -33,7 +33,7 @@ public abstract class Pattern {
      * this pattern, <code>false</code> otherwise.
      *
      * @param part
-     * @return
+     * @return <code>true</code> if the pattern is applicable on the part.
      */
     abstract boolean isApplicable(String part);
 
@@ -48,7 +48,7 @@ public abstract class Pattern {
      * Implementation of specific accessor.
      *
      * @param in
-     * @return
+     * @return result of application.
      */
     abstract protected Object internalApply(Object in) throws Exception;
 
@@ -57,7 +57,7 @@ public abstract class Pattern {
      * returning a result. Returns NO_MATCH if nothing found.
      *
      * @param in
-     * @return
+     * @return result of operation.
      * @throws PatternException if an error occurs.
      */
      public Object applyPattern(Object in) throws PatternException {

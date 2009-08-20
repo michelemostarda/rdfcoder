@@ -373,7 +373,7 @@ public class DefaultOntology implements Ontology {
      * @param predicate
      * @param object
      * @param literal
-     * @return
+     * @return the property base applicable on validation.
      * @throws OntologyException
      */
     protected PropertyBase validateTerms(String subject, String predicate, String object, boolean literal) throws OntologyException {

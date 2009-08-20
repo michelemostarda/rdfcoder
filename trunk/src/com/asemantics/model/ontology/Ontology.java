@@ -73,24 +73,24 @@ public interface Ontology {
     /**
      * Validates a triple over the current ontology.
      *
-     * @param subject 
-     * @param predicate 
-     * @param object 
+     * @param subject the triple subject. 
+     * @param predicate the triple predicate.
+     * @param object the triple object.
      */
     void validateTriple(String subject, String predicate, String object) throws OntologyException;
 
     /**
      * Validates a triple literal over the current ontology.
      *
-     * @param subject
-     * @param predicate
+     * @param subject the triple subject.
+     * @param predicate the triple object.
      */
     void validateTripleLiteral(String subject, String predicate) throws OntologyException;
 
     /**
      * Returns the number of relations defined in the ontology.
      *
-     * @return
+     * @return a positive number.
      */
     int getRelationsCount();
 
@@ -99,7 +99,7 @@ public interface Ontology {
      * <code>false</code> otherwise.
      * 
      * @param i
-     * @return
+     * @return <code>true<code> if literal.
      */
     boolean isLiteralRelation(int i);
 
@@ -107,7 +107,7 @@ public interface Ontology {
      * Returns the relation i-th subject prefix.
      *
      * @param i
-     * @return
+     * @return the subject prefix string.
      */
     String getRelationSubjectPrefix(int i);
 
@@ -115,15 +115,15 @@ public interface Ontology {
      * Returns the relation i-th predicate.
       *
      * @param i
-     * @return
+     * @return the predicate.
      */
     URL getRelationPredicate(int i);
 
     /**
      * Returns the relation i-th object prefix.
      *
-     * @param i
-     * @return
+     * @param i index discriminative of the object.
+     * @return the prefix.
      */
     String getRelationObjectPrefix(int i);
 

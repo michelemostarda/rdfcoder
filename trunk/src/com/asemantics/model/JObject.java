@@ -38,7 +38,8 @@ public abstract class JObject extends JContainer {
 
     /**
      * Returns the inner classes inside the object.
-     * @return
+     *
+     * @return list of inner objects.
      * @throws QueryModelException
      */
     public JClass[] getInnerClasses() throws QueryModelException {
@@ -48,7 +49,8 @@ public abstract class JObject extends JContainer {
 
     /**
      * Returns the methods inside the object.
-     * @return
+     *
+     * @return list of methods.
      * @throws QueryModelException
      */
     public JMethod[] getMethods() throws QueryModelException {
@@ -58,7 +60,8 @@ public abstract class JObject extends JContainer {
 
     /**
      * Returns the attributes inside the object.
-     * @return
+     *
+     * @return list of attributes.
      */
     public JAttribute[] getAttributes() throws QueryModelException {
         JavaQueryModel qm = getQueryModel();
@@ -67,7 +70,8 @@ public abstract class JObject extends JContainer {
 
     /**
      * Returns the enumerations inside the object.
-     * @return
+     *
+     * @return list of enumerations.
      * @throws QueryModelException
      */
     public JEnumeration[] getEnumerations() throws QueryModelException {

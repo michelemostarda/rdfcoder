@@ -461,8 +461,9 @@ public abstract class JavaCodeModel extends CodeModelBase {
 
         /**
          * Converts a JVisibility string to an enumerated value.
+         *
          * @param s
-         * @return
+         * @return the converted type.
          */
         public static JVisibility toJVisibility(String s) {
             for(JVisibility v : JVisibility.values() ) {
