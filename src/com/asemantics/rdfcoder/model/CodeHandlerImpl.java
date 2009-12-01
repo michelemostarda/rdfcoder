@@ -19,6 +19,7 @@
 package com.asemantics.rdfcoder.model;
 
 import com.asemantics.rdfcoder.RDFCoder;
+import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 import com.asemantics.rdfcoder.sourceparse.JavadocEntry;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -111,7 +112,7 @@ public class CodeHandlerImpl implements CodeHandler {
      * 
      * @param cmb the code model to use to store handler data.
      */
-    protected CodeHandlerImpl(CodeModelBase cmb) {
+    public CodeHandlerImpl(CodeModelBase cmb) {
         if(cmb == null) {
             throw new NullPointerException();
         }

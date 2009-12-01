@@ -20,7 +20,7 @@ package com.asemantics.rdfcoder.sourceparse;
 
 import com.asemantics.rdfcoder.CoderUtils;
 import com.asemantics.rdfcoder.model.CodeHandler;
-import com.asemantics.rdfcoder.model.JavadocHandler;
+import com.asemantics.rdfcoder.model.java.JavadocHandler;
 
 import java.io.*;
 import java.util.*;

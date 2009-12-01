@@ -16,36 +16,44 @@
  */
 
 
-package com.asemantics.rdfcoder.model;
+package com.asemantics.rdfcoder.model.java;
+
+import com.asemantics.rdfcoder.model.QueryModelException;
+import com.asemantics.rdfcoder.model.CodeHandler;
 
 /**
- * Represents a <i>Java</i> class.
+ * Represents a <i>Java</i> interface.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
-public class JClass extends JObject {
+public class JInterface extends JObject {
 
     /**
-     * Check if a class exists.
+     * Check if an interface exists.
      *
      * @param qm
-     * @param pathToClass
+     * @param name
+     * @param index
      * @return <code>true</code> if exists.
      */
-    public static boolean exists(JavaQueryModel qm, final String pathToClass) {
-       return qm.classExists(pathToClass);
+    public static boolean exists(JavaQueryModel qm, final String name[], int index) {
+       return qm.interfaceExists( concatenate(name, index) );
     }
 
     /**
      * Constructor by path.
      * @param queryModel
-     * @param pathToClass
-     * @throws QueryModelException
+     * @param pathToInterface
+     * @throws com.asemantics.rdfcoder.model.QueryModelException
      */
-    protected JClass(JavaQueryModel queryModel, String pathToClass)
+    protected JInterface(JavaQueryModel queryModel, String pathToInterface)
     throws QueryModelException {
 
-        super(queryModel, pathToClass);
+        super(queryModel, pathToInterface);
+    }
+
+    public JavaCodeModel.JVisibility getVisibility() throws QueryModelException {
+        return JavaCodeModel.JVisibility.PUBLIC;
     }
 
     /**
@@ -54,29 +62,29 @@ public class JClass extends JObject {
      * @param sections
      * @throws QueryModelException
      */
-    protected JClass(JavaQueryModel qm, String[] sections) throws QueryModelException {
+    protected JInterface(JavaQueryModel qm, String[] sections) throws QueryModelException {
         super(qm, sections);
     }
 
     public boolean exists(final String[] name, int index) {
-        return exists(getQueryModel(), concatenate(name, index) );
+        return exists(getQueryModel(), name, index);
     }
 
     /**
-     * Returns <code>true</code> if this is an inner class,
+     * Returns <code>true</code> if this is a inner interface,
      * false otherwise.
      *
      * @return <code>true</code> if inner.
      */
-    public boolean isInnerClass() {
+    public boolean isInnerInterface() {
         return parent instanceof JClass || parent instanceof JInterface;
     }
 
     /**
-     * Return the parent class if this is an inner class.
-     *
+     * Return the parent class if this is an inner class
      * or <code>null</code> otherwise.
-     * @return the class of the parent.
+     *
+     * @return the parent class.
      */
     public JClass getParentClass() {
         if(parent instanceof JClass) {
@@ -86,10 +94,10 @@ public class JClass extends JObject {
     }
 
     /**
-     * Return the parent package if this is firs level class
+     * Return the parent package if this is first level class
      * or <code>null</code> otherwise.
      *
-     * @return the package of the parent.
+     * @return the parent package.
      */
 
     public JPackage getParentPackage() {

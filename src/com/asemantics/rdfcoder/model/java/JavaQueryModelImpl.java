@@ -16,14 +16,21 @@
  */
 
 
-package com.asemantics.rdfcoder.model;
+package com.asemantics.rdfcoder.model.java;
+
+import com.asemantics.rdfcoder.model.CodeModel;
+import com.asemantics.rdfcoder.model.Asset;
+import com.asemantics.rdfcoder.model.TripleIterator;
+import com.asemantics.rdfcoder.model.CodeModelBase;
+import com.asemantics.rdfcoder.model.CodeHandlerImpl;
+import com.asemantics.rdfcoder.model.QueryModelException;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Default implementation of {@link com.asemantics.rdfcoder.model.JavaQueryModel}.
+ * Default implementation of {@link JavaQueryModel}.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */

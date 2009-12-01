@@ -16,7 +16,9 @@
  */
 
 
-package com.asemantics.rdfcoder.model;
+package com.asemantics.rdfcoder.model.java;
+
+import com.asemantics.rdfcoder.model.Asset;
 
 import java.util.Date;
 

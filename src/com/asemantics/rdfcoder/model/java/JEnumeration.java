@@ -16,7 +16,9 @@
  */
 
 
-package com.asemantics.rdfcoder.model;
+package com.asemantics.rdfcoder.model.java;
+
+import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
  * Represents a <i>Java</i> enumeration.
@@ -31,7 +33,7 @@ public class JEnumeration extends JObject {
       * Constructor by sections.
       * @param queryModel
       * @param sections
-      * @throws CodeModelException
+      * @throws com.asemantics.rdfcoder.model.CodeModelException
       */
      protected JEnumeration(JavaQueryModel queryModel, String[] sections)
              throws QueryModelException {
@@ -42,7 +44,7 @@ public class JEnumeration extends JObject {
       * Constructor by path.
       * @param queryModel
       * @param pathToMethod
-      * @throws CodeModelException
+      * @throws com.asemantics.rdfcoder.model.CodeModelException
       */
      protected JEnumeration(JavaQueryModel queryModel, String pathToMethod)
              throws QueryModelException {

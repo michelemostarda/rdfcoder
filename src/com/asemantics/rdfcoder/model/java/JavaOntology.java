@@ -16,10 +16,10 @@
  */
 
 
-package com.asemantics.rdfcoder.model;
+package com.asemantics.rdfcoder.model.java;
 
 
-import static com.asemantics.rdfcoder.model.JavaCodeModel.*;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.*;
 import com.asemantics.rdfcoder.model.ontology.BaseOntology;
 
 import java.net.URL;

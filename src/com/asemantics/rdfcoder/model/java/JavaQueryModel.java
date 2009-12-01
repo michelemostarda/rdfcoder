@@ -16,7 +16,10 @@
  */
 
 
-package com.asemantics.rdfcoder.model;
+package com.asemantics.rdfcoder.model.java;
+
+import com.asemantics.rdfcoder.model.QueryModel;
+import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
  * Defines the query model for the <i>Java</i> language.
@@ -95,7 +98,7 @@ public interface JavaQueryModel extends QueryModel {
      *
      * @param pack
      * @return the package.
-     * @throws QueryModelException
+     * @throws com.asemantics.rdfcoder.model.QueryModelException
      */
     public JPackage getPackage(String pack) throws QueryModelException;
 
