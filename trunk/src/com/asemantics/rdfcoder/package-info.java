@@ -5,4 +5,4 @@
  * and the High Level API interface ( {@link com.asemantics.rdfcoder.RDFCoder} ).
  * </p>
  */
-package com.asemantics;
+package com.asemantics.rdfcoder;
