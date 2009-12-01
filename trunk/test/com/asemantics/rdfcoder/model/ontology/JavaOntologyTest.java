@@ -1,14 +1,14 @@
-package com.asemantics.model.ontology;
+package com.asemantics.rdfcoder.model.ontology;
 
 import com.asemantics.model.CodeHandler;
 import com.asemantics.model.CodeModelBase;
 import com.asemantics.model.CoderFactory;
-import com.asemantics.sourceparse.DirectoryParser;
-import com.asemantics.sourceparse.JavaBytecodeFileParser;
-import com.asemantics.sourceparse.ObjectsTable;
-import com.asemantics.sourceparse.JStatistics;
-import com.asemantics.storage.JenaCoderFactory;
-import com.asemantics.CoderUtils;
+import com.asemantics.rdfcoder.sourceparse.DirectoryParser;
+import com.asemantics.rdfcoder.sourceparse.JavaBytecodeFileParser;
+import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
+import com.asemantics.rdfcoder.sourceparse.JStatistics;
+import com.asemantics.rdfcoder.storage.JenaCoderFactory;
+import com.asemantics.rdfcoder.CoderUtils;
 import junit.framework.TestCase;
 
 import java.io.File;/*

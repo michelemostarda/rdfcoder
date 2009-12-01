@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.storage;
+package com.asemantics.rdfcoder.storage;
 
 import junit.framework.TestCase;
 import com.asemantics.model.*;

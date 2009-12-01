@@ -16,12 +16,12 @@
  */
 
 
-package com.asemantics.sourceparse;
+package com.asemantics.rdfcoder.sourceparse;
 
 import junit.framework.TestCase;
 import com.asemantics.model.CodeHandler;
-import com.asemantics.storage.JenaCodeModel;
-import com.asemantics.storage.JenaCoderFactory;
+import com.asemantics.rdfcoder.storage.JenaCodeModel;
+import com.asemantics.rdfcoder.storage.JenaCoderFactory;
 
 import java.io.File;
 import java.io.IOException;

@@ -16,10 +16,14 @@
  */
 
 
-package com.asemantics;
+package com.asemantics.rdfcoder;
 
 import com.asemantics.model.*;
-import com.asemantics.sourceparse.JStatistics;
+import com.asemantics.rdfcoder.sourceparse.JStatistics;
+import com.asemantics.rdfcoder.JavaProfile;
+import com.asemantics.rdfcoder.JREReport;
+import com.asemantics.rdfcoder.Model;
+import com.asemantics.rdfcoder.RDFCoder;
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -44,7 +48,7 @@ public class
         assertTrue("Cannot set debug flag", coder.isDebug() );
 
         // Registers the Java profile.
-        coder.registerProfile(JAVA_PROFILE, "com.asemantics.JavaProfile"); // Loaded by default.
+        coder.registerProfile(JAVA_PROFILE, "com.asemantics.rdfcoder.JavaProfile"); // Loaded by default.
 
         String[] profileNames = coder.getProfileNames();
         assertEquals("Invalid number of profiles.", 1, profileNames.length );

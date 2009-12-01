@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.asemantics;
+package com.asemantics.rdfcoder;
 
 import junit.framework.TestCase;
 
@@ -23,6 +23,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
+
+import com.asemantics.rdfcoder.CommandLine;
 
 
 public class CommandLineTest extends TestCase {

@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package com.asemantics.sourceparse;
+package com.asemantics.rdfcoder.sourceparse;
 
 import com.asemantics.model.CodeHandler;
 import com.asemantics.model.CodeModelBase;
 import com.asemantics.model.CoderFactory;
-import com.asemantics.storage.JenaCoderFactory;
-import com.asemantics.CoderUtils;
+import com.asemantics.rdfcoder.storage.JenaCoderFactory;
+import com.asemantics.rdfcoder.CoderUtils;
 import junit.framework.TestCase;
 
 import java.io.File;

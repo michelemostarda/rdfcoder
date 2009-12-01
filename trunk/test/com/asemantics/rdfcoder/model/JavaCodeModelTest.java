@@ -16,9 +16,22 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
-import com.asemantics.storage.JenaCoderFactory;
+import com.asemantics.rdfcoder.storage.JenaCoderFactory;
+import com.asemantics.model.CodeModelBase;
+import com.asemantics.model.CodeHandler;
+import com.asemantics.model.JavaQueryModel;
+import com.asemantics.model.QueryModelException;
+import com.asemantics.model.JavaCodeModel;
+import com.asemantics.model.Asset;
+import com.asemantics.model.JPackage;
+import com.asemantics.model.JClass;
+import com.asemantics.model.JMethod;
+import com.asemantics.model.JSignature;
+import com.asemantics.model.JAttribute;
+import com.asemantics.model.JInterface;
+import com.asemantics.model.JEnumeration;
 import junit.framework.TestCase;
 
 /**

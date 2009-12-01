@@ -16,7 +16,10 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
+
+import com.asemantics.model.JavaQueryModel;
+import com.asemantics.model.JPackage;
 
 import java.io.IOException;
 

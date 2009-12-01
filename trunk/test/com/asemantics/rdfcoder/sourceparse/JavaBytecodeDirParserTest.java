@@ -16,15 +16,15 @@
  */
 
 
-package com.asemantics.sourceparse;
+package com.asemantics.rdfcoder.sourceparse;
 
 import com.asemantics.model.CodeHandler;
 import com.asemantics.model.CodeModelException;
-import com.asemantics.storage.CodeStorage;
-import com.asemantics.storage.JenaCodeModel;
-import com.asemantics.storage.JenaCodeStorage;
-import com.asemantics.storage.JenaCoderFactory;
-import com.asemantics.CoderUtils;
+import com.asemantics.rdfcoder.storage.CodeStorage;
+import com.asemantics.rdfcoder.storage.JenaCodeModel;
+import com.asemantics.rdfcoder.storage.JenaCodeStorage;
+import com.asemantics.rdfcoder.storage.JenaCoderFactory;
+import com.asemantics.rdfcoder.CoderUtils;
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -33,19 +33,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * JUnit test for {@link JavadocFileParser} on directory.
+ * Unit test of JavadocSourceDirParser.
  */
-public class JavadocDirParserTest extends TestCase {
+public class JavaBytecodeDirParserTest extends TestCase {
 
-    private ObjectsTable ot;
-    private JenaCoderFactory jcf;
-    private JenaCodeModel jcm;
-    private JenaCodeStorage jcs;
-    private CodeHandler ch;
+    ObjectsTable ot;
+    JenaCoderFactory jcf;
+    JenaCodeModel jcm;
+    JenaCodeStorage jcs;
+    CodeHandler ch;
 
     public void setUp() {
         ot   = new ObjectsTable();
-        jcf  = new JenaCoderFactory();
+        jcf = new JenaCoderFactory();
         jcm  = (JenaCodeModel) jcf.createCodeModel();
         jcs  = jcf.createCodeStorage();
         ch   = jcf.createHandlerOnModel(jcm);
@@ -54,21 +54,21 @@ public class JavadocDirParserTest extends TestCase {
      public void tearDown() {
         ot.clear();
         ot   = null;
-        jcf  = null;
+        jcf = null;
         jcm  = null;
         ch   = null;
     }
 
     public void testParse() throws IOException, CodeModelException {
-        DirectoryParser jsdp = new DirectoryParser( new JavadocFileParser(), new CoderUtils.JavaSourceFilenameFilter() );
+        DirectoryParser jsdp = new DirectoryParser( new JavaBytecodeFileParser(), new CoderUtils.JavaClassFilenameFilter() );
         JStatistics statistics = new JStatistics();
         CodeHandler sch = statistics.createStatisticsCodeHandler(ch);
+        jsdp.initialize(sch, ot);
         try {
-            jsdp.initialize(sch, ot);
-            jsdp.parseDirectory("http://www.rdfcoder.org/2007/1.0#src", new File("src") );
+            jsdp.parseDirectory("classes", new File("classes") );
             jsdp.dispose();
             Map<String,String> params = new HashMap();
-            params.put(CodeStorage.FS_FILENAME, "target_test/out/src.xml");
+            params.put(CodeStorage.FS_FILENAME, "target_test/out/test_scan_classes_dir.xml");
             jcs.saveModel(jcm, params);
         } catch (Exception e) {
             e.printStackTrace();
