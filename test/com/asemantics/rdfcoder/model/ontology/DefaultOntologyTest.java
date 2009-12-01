@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.model.ontology;
+package com.asemantics.rdfcoder.model.ontology;
 
 import junit.framework.TestCase;
 
@@ -26,11 +26,10 @@ import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.asemantics.model.JavaCodeModel;
 import com.asemantics.model.CodeModel;
 
 /**
- * JUnit test of class {@link com.asemantics.model.ontology.DefaultOntology}
+ * JUnit test of class {@link com.asemantics.rdfcoder.model.ontology.DefaultOntology}
  */
 public class DefaultOntologyTest extends TestCase {
 

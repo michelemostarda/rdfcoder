@@ -16,13 +16,20 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import junit.framework.TestCase;
-import com.asemantics.sourceparse.JStatistics;
-import com.asemantics.sourceparse.JavaBytecodeJarParser;
-import com.asemantics.sourceparse.ObjectsTable;
-import com.asemantics.storage.JenaCoderFactory;
+import com.asemantics.rdfcoder.sourceparse.JStatistics;
+import com.asemantics.rdfcoder.sourceparse.JavaBytecodeJarParser;
+import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
+import com.asemantics.rdfcoder.storage.JenaCoderFactory;
+import com.asemantics.model.CodeModelBase;
+import com.asemantics.model.JavaQueryModel;
+import com.asemantics.model.CoderFactory;
+import com.asemantics.model.CodeHandler;
+import com.asemantics.model.QueryModel;
+import com.asemantics.model.Asset;
+import com.asemantics.model.JavaQueryModelImpl;
 
 import java.io.File;
 import java.io.IOException;

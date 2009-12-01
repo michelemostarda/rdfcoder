@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.inspector;
+package com.asemantics.rdfcoder.inspector;
 
 import junit.framework.TestCase;
 

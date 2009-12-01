@@ -16,10 +16,10 @@
  */
 
 
-package com.asemantics.repository;
+package com.asemantics.rdfcoder.repository;
 
-import static com.asemantics.repository.Repository.ResourceType.BINARY;
-import static com.asemantics.repository.Repository.ResourceType.XML;
+import static com.asemantics.rdfcoder.repository.Repository.ResourceType.BINARY;
+import static com.asemantics.rdfcoder.repository.Repository.ResourceType.XML;
 import junit.framework.TestCase;
 
 import java.io.File;

@@ -16,15 +16,15 @@
  */
 
 
-package com.asemantics;
+package com.asemantics.rdfcoder;
 
 import junit.framework.TestSuite;
 import junit.framework.Test;
 
-import com.asemantics.model.JavaCodeModelTest;
-import com.asemantics.storage.JenaImplTest;
-import com.asemantics.sourceparse.*;
-import com.asemantics.sourceparse.JavaSourceFileParserTest;
+import com.asemantics.rdfcoder.model.JavaCodeModelTest;
+import com.asemantics.rdfcoder.storage.JenaImplTest;
+import com.asemantics.rdfcoder.sourceparse.*;
+import com.asemantics.rdfcoder.sourceparse.JavaSourceFileParserTest;
 
 /**
  * This class calls all the unit tests defined into the project.

@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.sourceparse;
+package com.asemantics.rdfcoder.sourceparse;
 
 import junit.framework.TestCase;
 
