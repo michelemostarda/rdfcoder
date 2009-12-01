@@ -16,10 +16,10 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Represents an Java class.
+ * Represents a <i>Java</i> class.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */

@@ -19,8 +19,8 @@
 package com.asemantics.rdfcoder.sourceparse;
 
 import com.asemantics.rdfcoder.CoderUtils;
-import com.asemantics.model.CodeHandler;
-import com.asemantics.model.JavadocHandler;
+import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.JavadocHandler;
 
 import java.io.*;
 import java.util.*;

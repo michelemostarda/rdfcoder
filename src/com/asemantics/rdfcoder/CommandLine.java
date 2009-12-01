@@ -18,14 +18,15 @@
 
 package com.asemantics.rdfcoder;
 
-import com.asemantics.model.CodeHandler;
-import com.asemantics.model.CodeModel;
-import com.asemantics.model.CodeModelBase;
-import com.asemantics.model.JavaCoderFactory;
-import com.asemantics.model.JavaQueryModel;
-import com.asemantics.model.QueryResult;
-import com.asemantics.model.SPARQLException;
-import com.asemantics.model.SPARQLQuerableCodeModel;
+import com.asemantics.rdfcoder.inspector.Inspector;
+import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.CodeModel;
+import com.asemantics.rdfcoder.model.CodeModelBase;
+import com.asemantics.rdfcoder.model.JavaCoderFactory;
+import com.asemantics.rdfcoder.model.JavaQueryModel;
+import com.asemantics.rdfcoder.model.QueryResult;
+import com.asemantics.rdfcoder.model.SPARQLException;
+import com.asemantics.rdfcoder.model.SPARQLQuerableCodeModel;
 import com.asemantics.rdfcoder.sourceparse.DirectoryParser;
 import com.asemantics.rdfcoder.sourceparse.JStatistics;
 import com.asemantics.rdfcoder.sourceparse.JavaBytecodeFileParser;
@@ -33,11 +34,9 @@ import com.asemantics.rdfcoder.sourceparse.JavaBytecodeJarParser;
 import com.asemantics.rdfcoder.sourceparse.JavaSourceFileParser;
 import com.asemantics.rdfcoder.sourceparse.JavadocFileParser;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
-import com.asemantics.rdfcoder.storage.JenaCoderFactory;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.CodeStorageException;
-import com.asemantics.rdfcoder.inspector.Inspector;
-import com.asemantics.rdfcoder.CoderUtils;
+import com.asemantics.rdfcoder.storage.JenaCoderFactory;
 import jline.ArgumentCompletor;
 import jline.CandidateListCompletionHandler;
 import jline.ConsoleReader;
@@ -46,9 +45,9 @@ import jline.History;
 import jline.SimpleCompletor;
 
 import java.io.File;
+import java.io.FilePermission;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.FilePermission;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

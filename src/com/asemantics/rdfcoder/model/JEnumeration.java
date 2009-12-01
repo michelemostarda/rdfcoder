@@ -16,10 +16,10 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Represents an enumeration.
+ * Represents a <i>Java</i> enumeration.
  */
 public class JEnumeration extends JObject {
 

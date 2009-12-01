@@ -18,7 +18,7 @@
 
 package com.asemantics.rdfcoder.model.ontology;
 
-import static com.asemantics.model.CodeModelBase.*;
+import static com.asemantics.rdfcoder.model.CodeModelBase.*;
 
 import java.net.URL;
 

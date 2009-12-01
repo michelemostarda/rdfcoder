@@ -16,13 +16,13 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Represents a model to query a {@link com.asemantics.model.JavaCodeModel}.
+ * Defines the query model for the <i>Java</i> language.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
- * @see com.asemantics.model.QueryModel
+ * @see com.asemantics.rdfcoder.model.QueryModel
  * @see JavaCodeModel
  */
 public interface JavaQueryModel extends QueryModel {

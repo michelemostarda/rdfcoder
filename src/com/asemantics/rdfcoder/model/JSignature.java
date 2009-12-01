@@ -16,10 +16,10 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Represents a method signature.
+ * Represents a <i>Java</i> method signature.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */

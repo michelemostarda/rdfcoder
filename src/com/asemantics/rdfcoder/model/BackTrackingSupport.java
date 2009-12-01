@@ -16,11 +16,11 @@
  */
 
 
- package com.asemantics.model;
+ package com.asemantics.rdfcoder.model;
 
 /**
  * This class extends <code>CodeHandler</code>
- * to provide a back tracing mechaninm able to
+ * to provide a back tracing mechanism able to
  * accept unresolved types and fix it in a second time.
  */
 public interface BackTrackingSupport {

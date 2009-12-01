@@ -17,12 +17,12 @@
 
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * This class represents the base class for both <code>JInterface</code>
- * and <code>JClass</code>. inside it there are some  methods to access
- * classes and interfaces common entities.
+ * The base class for both <code>JInterface</code>
+ * and <code>JClass</code>, and defines some methods useful to access
+ * classes, interfaces and common entities.
  */
 public abstract class JObject extends JContainer {
 

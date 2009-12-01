@@ -16,11 +16,13 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import java.util.Date;
 
-
+/**
+ * Defines a <i>Java</i> asset.
+ */
 public class JAsset implements Asset {
 
     private JavaQueryModel javaQueryModel;

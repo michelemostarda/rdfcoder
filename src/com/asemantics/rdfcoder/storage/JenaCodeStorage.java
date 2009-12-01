@@ -19,12 +19,16 @@
 package com.asemantics.rdfcoder.storage;
 
 import com.asemantics.rdfcoder.RDFCoder;
-import com.asemantics.model.CodeModel;
+import com.asemantics.rdfcoder.model.CodeModel;
 import com.hp.hpl.jena.rdf.model.RDFWriter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFReader;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Map;
 
 /**

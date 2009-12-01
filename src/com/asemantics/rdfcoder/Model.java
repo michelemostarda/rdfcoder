@@ -18,17 +18,22 @@
 
 package com.asemantics.rdfcoder;
 
-import com.asemantics.model.*;
+import com.asemantics.rdfcoder.model.CodeModelBase;
+import com.asemantics.rdfcoder.model.CoderFactory;
+import com.asemantics.rdfcoder.model.JavaOntology;
+import com.asemantics.rdfcoder.model.QueryResult;
+import com.asemantics.rdfcoder.model.SPARQLException;
+import com.asemantics.rdfcoder.model.SPARQLQuerableCodeModel;
 import com.asemantics.rdfcoder.model.ontology.ValidatingCodeModel;
-import com.asemantics.profile.Profile;
+import com.asemantics.rdfcoder.profile.Profile;
 import com.asemantics.rdfcoder.repository.Repository;
 import com.asemantics.rdfcoder.repository.RepositoryException;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
@@ -301,7 +306,7 @@ public class Model {
     }
 
     /**
-     * Returns the {@link com.asemantics.model.CoderFactory} insstance for this model.
+     * Returns the {@link com.asemantics.rdfcoder.model.CoderFactory} insstance for this model.
      *
      * @return coder factory instance.
      */
@@ -319,7 +324,7 @@ public class Model {
     }
 
     /**
-     * Returns the {@link com.asemantics.model.CodeModelBase} common underlying instance.
+     * Returns the {@link com.asemantics.rdfcoder.model.CodeModelBase} common underlying instance.
      *
      * @return internal code model.
      */

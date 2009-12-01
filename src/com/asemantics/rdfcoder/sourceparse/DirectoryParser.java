@@ -18,7 +18,7 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import com.asemantics.model.CodeHandler;
+import com.asemantics.rdfcoder.model.CodeHandler;
 
 import java.io.File;
 import java.io.FilenameFilter;

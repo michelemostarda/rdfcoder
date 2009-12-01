@@ -18,8 +18,8 @@
 
 package com.asemantics.rdfcoder;
 
-import com.asemantics.model.CoderFactory;
-import com.asemantics.profile.Profile;
+import com.asemantics.rdfcoder.model.CoderFactory;
+import com.asemantics.rdfcoder.profile.Profile;
 import com.asemantics.rdfcoder.repository.Repository;
 import com.asemantics.rdfcoder.repository.RepositoryException;
 import com.asemantics.rdfcoder.storage.JenaCoderFactory;

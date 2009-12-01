@@ -16,12 +16,12 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import com.asemantics.rdfcoder.sourceparse.JavadocEntry;
 
 /**
- * Defines a consumer of Javadoc parsing events.
+ * Defines a consumer for <i>Javadoc</i> parsing events.
  */
 public interface JavadocHandler extends ParseHandler {
 

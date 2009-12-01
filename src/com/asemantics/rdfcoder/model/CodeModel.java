@@ -16,10 +16,11 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Defines the operations exposed by a generic Code Model.
+ * Defines the <i>Code Model</i>, that is a graph representing
+ * the <i>Kabbalah</i> model. 
  *
  * @author Michele Mostarda
  */
@@ -51,7 +52,7 @@ public interface CodeModel {
     public static final String TEMPORARY_TYPE_ID_PREFIX = "tmpTID_";
 
     /**
-     * No elemente specified.
+     * No element specified.
      */
     public static final String ALL_MATCH = null;
 

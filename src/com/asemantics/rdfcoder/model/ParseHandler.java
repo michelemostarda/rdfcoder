@@ -16,10 +16,10 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Defines the interface exposeb by any parse events handler.
+ * Defines the interface exposed by any <i>Parse Handler</i>.
  */
 public interface ParseHandler {
 

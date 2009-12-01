@@ -16,10 +16,10 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * This class allows to collect errors and warnings occurred during the parsing process.
+ * Error listener meant to collect errors and warnings occurred during the parsing process.
  */
 public interface ErrorListener {
 

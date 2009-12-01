@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import com.asemantics.rdfcoder.RDFCoder;
 import com.asemantics.rdfcoder.sourceparse.JavadocEntry;
@@ -31,7 +31,8 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * The <code>CodeHandler</code> standard implementation.
+ * The {@link com.asemantics.rdfcoder.model.CodeHandler}
+ * default implementation.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */

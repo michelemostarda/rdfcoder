@@ -16,14 +16,13 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import com.asemantics.rdfcoder.model.ontology.Ontology;
 
 
 /**
- * A <code>CoderFactory</code> allows to create a code model and every
- * related object.
+ * The <i>Java</i> specific Coder Factory.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */

@@ -16,19 +16,36 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import java.util.Date;
 
 /**
- * Represents the Asset of the parsed libraries.
+ * An asset represents a logic set of related libraries.
  */
 public interface Asset {
 
+    /**
+     * Retuns the list of libraries within the asset.
+     *
+     * @return the list of library names constituting the asset.
+     */
     public String[] getLibraries();
 
+    /**
+     * Returns the location path of a library.
+     *
+     * @param library library name.
+     * @return the location of a library.
+     */
     public String getLibraryLocation(String library);
 
+    /**
+     * Returns the date of parsing of a library.
+     *
+     * @param library library name.
+     * @return date of parsing of the library.
+     */
     public Date getLibraryDateTime(String library);
 
 }

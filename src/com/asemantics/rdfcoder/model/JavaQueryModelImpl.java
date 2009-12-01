@@ -16,14 +16,14 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Represents a method signature.
+ * Default implementation of {@link com.asemantics.rdfcoder.model.JavaQueryModel}.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
@@ -191,11 +191,14 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     public JPackage[] getAllPackages() {
         TripleIterator t1 = codeModel.searchTriples(JavaCodeModel.ALL_MATCH, JavaCodeModel.SUBCLASSOF, JavaCodeModel.JPACKAGE);
         List packages = new ArrayList();
+        String subject;
         try {
             while(t1.next()) {
+                subject = t1.getSubject();
                 try {
-                    packages.add( JavaCoderFactory.createJPackage(this, t1.getSubject()) );
+                    packages.add( JavaCoderFactory.createJPackage(this, subject) );
                 } catch (QueryModelException cme) {
+                    System.out.println("subject " + subject);
                     throw new RuntimeException(cme);
                 }
             }

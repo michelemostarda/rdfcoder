@@ -16,11 +16,11 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Exception raised by {@link com.asemantics.model.SPARQLQuerableCodeModel} if any
- * error occurs during <i>SPARQL</i> query performing.
+ * Exception raised by {@link com.asemantics.rdfcoder.model.SPARQLQuerableCodeModel} if any
+ * error occurs during the execution of the <i>SPARQL</i> query.
  */
 public class SPARQLException extends Exception {
 

@@ -16,10 +16,10 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Represents any entity class with visibility and modifiers.
+ * Represents any <i>Java</i> entity class with visibility and modifiers.
  */
 public abstract class JModifiable extends JBase {
 

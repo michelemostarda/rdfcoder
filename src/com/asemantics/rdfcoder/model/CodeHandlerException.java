@@ -16,10 +16,10 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Exception raised by the <code>CodeHandler</code>.
+ * Exception raised by the {@link com.asemantics.rdfcoder.model.CodeHandler}.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */

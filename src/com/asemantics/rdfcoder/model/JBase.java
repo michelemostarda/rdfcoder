@@ -16,13 +16,14 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Represents the base class to represent every code entity.
+ * Defines the base class for any code entity.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
+//TODO: extract the Base class.
 public abstract class JBase {
 
     /**
