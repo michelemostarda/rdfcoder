@@ -16,17 +16,17 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 
-import static com.asemantics.model.JavaCodeModel.*;
+import static com.asemantics.rdfcoder.model.JavaCodeModel.*;
 import com.asemantics.rdfcoder.model.ontology.BaseOntology;
 
 import java.net.URL;
 
 
 /**
- * Defines the Java ontology.
+ * Defines the <i>Java</i> ontology.
  */
 public class JavaOntology extends BaseOntology {
 

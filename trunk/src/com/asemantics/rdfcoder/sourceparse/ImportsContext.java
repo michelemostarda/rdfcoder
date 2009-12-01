@@ -18,7 +18,7 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import com.asemantics.model.CodeHandler;
+import com.asemantics.rdfcoder.model.CodeHandler;
 
 import java.util.ArrayList;
 import java.util.Iterator;

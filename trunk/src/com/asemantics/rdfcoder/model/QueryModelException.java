@@ -16,10 +16,10 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Defines any exception raised by the <code>QueryModel</code>
+ * Defines any exception raised by the {@link com.asemantics.rdfcoder.model.QueryModel}.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */

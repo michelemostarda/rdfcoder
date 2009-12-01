@@ -16,10 +16,11 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Exception raised by the <code>CodeModel</code>.
+ * Exception raised by {@link com.asemantics.rdfcoder.model.CodeModel}
+ * when a generic error occurs.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */

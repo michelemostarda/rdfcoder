@@ -16,14 +16,14 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 /**
- * Represents every entity able to contain other entities.
+ * Represents every <i>Java</i> entity able to contain other entities.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */

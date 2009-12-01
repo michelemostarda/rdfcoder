@@ -18,7 +18,7 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import com.asemantics.model.ParseHandler;
+import com.asemantics.rdfcoder.model.ParseHandler;
 
 /**
  * Base class for any <code>CodeParser</code> implementation. 

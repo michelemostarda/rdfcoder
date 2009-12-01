@@ -18,13 +18,15 @@
 
 package com.asemantics.rdfcoder.model.ontology;
 
-import com.asemantics.model.*;
+import com.asemantics.rdfcoder.model.CodeModel;
+import com.asemantics.rdfcoder.model.CodeModelBase;
+import com.asemantics.rdfcoder.model.TripleIterator;
 
 /**
  * This decorator validates addition of model triples over a given
  * ontology.
  *
- * @see com.asemantics.model.CodeModel
+ * @see com.asemantics.rdfcoder.model.CodeModel
  * @see com.asemantics.rdfcoder.model.ontology.Ontology
  */
 public class ValidatingCodeModel extends CodeModelBase {

@@ -16,17 +16,17 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Represents a code package.
+ * Represents a <i>Java</i> package.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
 public class JPackage extends JContainer {
 
     /**
-     * Check wether a package exists.
+     * Check whether a package exists.
      *
      * @param qm
      * @param pathToPackege

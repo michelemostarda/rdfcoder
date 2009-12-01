@@ -16,14 +16,13 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import com.asemantics.rdfcoder.sourceparse.JavadocEntry;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
 
 /**
- * A <code>CodeHandler</code> implementation
- * printing on System.out all the received events.
+ * A <code>CodeHandler</code> implementation used to perform debugging.
  */
 public class CodeHandlerDebugImpl implements CodeHandler {
 

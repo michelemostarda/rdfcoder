@@ -16,14 +16,13 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Represents any exception related to the <code>CodeModel</code> and raised by a debug
- * control.
+ * Defines an exception raised by a {@link com.asemantics.rdfcoder.model.CodeModel}
+ * implementation whilst a debug control fails.
  */
 public class CodeModelDebugException extends RuntimeException {
-
 
     public CodeModelDebugException() {
         super();
@@ -40,4 +39,5 @@ public class CodeModelDebugException extends RuntimeException {
     public CodeModelDebugException(Throwable cause) {
         super(cause);
     }
+    
 }

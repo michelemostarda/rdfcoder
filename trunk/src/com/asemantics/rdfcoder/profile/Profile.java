@@ -16,9 +16,9 @@
  */
 
 
-package com.asemantics.profile;
+package com.asemantics.rdfcoder.profile;
 
-import com.asemantics.model.QueryModel;
+import com.asemantics.rdfcoder.model.QueryModel;
 
 
 /**

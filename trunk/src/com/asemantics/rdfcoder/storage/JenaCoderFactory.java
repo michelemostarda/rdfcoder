@@ -18,7 +18,8 @@
 
 package com.asemantics.rdfcoder.storage;
 
-import com.asemantics.model.*;
+import com.asemantics.rdfcoder.model.JavaCoderFactory;
+import com.asemantics.rdfcoder.model.SPARQLQuerableCodeModel;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 

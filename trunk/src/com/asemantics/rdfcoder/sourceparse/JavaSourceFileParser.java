@@ -18,9 +18,35 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import com.asemantics.model.CodeHandler;
-import com.asemantics.model.JavaCodeModel;
-import net.sourceforge.jrefactory.ast.*;
+import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.JavaCodeModel;
+import net.sourceforge.jrefactory.ast.ASTClassDeclaration;
+import net.sourceforge.jrefactory.ast.ASTClassOrInterfaceType;
+import net.sourceforge.jrefactory.ast.ASTCompilationUnit;
+import net.sourceforge.jrefactory.ast.ASTConstructorDeclaration;
+import net.sourceforge.jrefactory.ast.ASTEnumDeclaration;
+import net.sourceforge.jrefactory.ast.ASTEnumElement;
+import net.sourceforge.jrefactory.ast.ASTFieldDeclaration;
+import net.sourceforge.jrefactory.ast.ASTFormalParameter;
+import net.sourceforge.jrefactory.ast.ASTGenericNameList;
+import net.sourceforge.jrefactory.ast.ASTIdentifier;
+import net.sourceforge.jrefactory.ast.ASTImportDeclaration;
+import net.sourceforge.jrefactory.ast.ASTInterfaceDeclaration;
+import net.sourceforge.jrefactory.ast.ASTMethodDeclaration;
+import net.sourceforge.jrefactory.ast.ASTMethodDeclarator;
+import net.sourceforge.jrefactory.ast.ASTName;
+import net.sourceforge.jrefactory.ast.ASTNameList;
+import net.sourceforge.jrefactory.ast.ASTPackageDeclaration;
+import net.sourceforge.jrefactory.ast.ASTPrimitiveType;
+import net.sourceforge.jrefactory.ast.ASTReferenceType;
+import net.sourceforge.jrefactory.ast.ASTResultType;
+import net.sourceforge.jrefactory.ast.ASTUnmodifiedClassDeclaration;
+import net.sourceforge.jrefactory.ast.ASTUnmodifiedInterfaceDeclaration;
+import net.sourceforge.jrefactory.ast.ASTVariableDeclaratorId;
+import net.sourceforge.jrefactory.ast.AccessNode;
+import net.sourceforge.jrefactory.ast.NamedNode;
+import net.sourceforge.jrefactory.ast.Node;
+import net.sourceforge.jrefactory.ast.SimpleNode;
 import net.sourceforge.jrefactory.parser.JavaParser;
 import net.sourceforge.jrefactory.parser.ParseException;
 

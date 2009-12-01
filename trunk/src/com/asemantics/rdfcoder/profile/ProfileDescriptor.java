@@ -16,9 +16,9 @@
  */
 
 
-package com.asemantics.profile;
+package com.asemantics.rdfcoder.profile;
 
-import com.asemantics.model.CoderFactory;
+import com.asemantics.rdfcoder.model.CoderFactory;
 
 
 /**
@@ -36,7 +36,7 @@ public interface ProfileDescriptor {
     String getProfileDescription();
 
     /**
-     * Returns the {@link com.asemantics.model.CoderFactory}
+     * Returns the {@link com.asemantics.rdfcoder.model.CoderFactory}
      * for this profile.
      *
      * @return the factory instance.

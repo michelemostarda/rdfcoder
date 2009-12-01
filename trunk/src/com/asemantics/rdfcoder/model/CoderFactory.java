@@ -16,12 +16,14 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.model.ontology.Ontology;
 
-
+/**
+ * Factory class allowing the creation of main library objects. 
+ */
 public interface CoderFactory {
 
     /**

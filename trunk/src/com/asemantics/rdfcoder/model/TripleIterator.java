@@ -16,10 +16,10 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Represents a method signature.
+ * Defines an iterator over triples.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */

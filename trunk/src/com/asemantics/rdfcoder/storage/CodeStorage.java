@@ -18,7 +18,7 @@
 
 package com.asemantics.rdfcoder.storage;
 
-import com.asemantics.model.CodeModel;
+import com.asemantics.rdfcoder.model.CodeModel;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

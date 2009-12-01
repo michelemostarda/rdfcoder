@@ -16,13 +16,13 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This abstract class describes a code org.asemantics.model.
+ * This abstract class describes a <i>Java Code Model</i>.
  *
  * A code org.asemantics.model is a rapresentation of a code structure
  * containing packages, classes, attributes methods and so on.

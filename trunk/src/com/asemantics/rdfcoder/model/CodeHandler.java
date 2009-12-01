@@ -16,23 +16,23 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
 
 /**
- * This interface represents a code handler.
+ * This interface represents the <i> Java Code Handler</i>.
  *
- * An handler is domething able to receive code analysis
- * events and use it to perform some analysis.
+ * An handler is responsible of receiving code analysis
+ * events and transform it in a usable format.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
-//TODO: rename in JavaCodeHandler.
+//TODO: introduce concepts of CodeHander and JavaCodeHandler.
 public interface CodeHandler extends ParseHandler, JavadocHandler, BackTrackingSupport {
 
     /**
-     * Expected format of the library datetime.
+     * Expected format of the library date-time.
      */
     public static final String LIBRARY_DATETIME_FORMAT = "yyyy_MM_dd__HH_mm_ss";
 
@@ -42,10 +42,10 @@ public interface CodeHandler extends ParseHandler, JavadocHandler, BackTrackingS
     public static final String PACKAGE_SEPARATOR = ".";
 
     /**
-     * Nofifies the begin of a package parsing.
+     * Notifies the begin of a package parsing.
      * The package is expected to be FULLY QUALIFIED.
      *
-     * @param pathToPackage the abosoute path to the package.
+     * @param pathToPackage the absolute path to the package.
      */
     public void startPackage(String pathToPackage);
 
@@ -142,7 +142,7 @@ public interface CodeHandler extends ParseHandler, JavadocHandler, BackTrackingS
      * @param overloadIndex the overload index for the constructor.
      * @param parameterNames the array of parameter names.
      * @param parameterTypes the array of parameter types.
-     * @param exceptions exceptions raised by the contructor.
+     * @param exceptions exceptions raised by the constructor.
      *
      */
     public void constructor(

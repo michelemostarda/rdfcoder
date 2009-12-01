@@ -16,11 +16,10 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 /**
- * Represents a <code>CodeModel</code> that can
- * be queried by SPARQL queries.
+ * Represents a {@link com.asemantics.rdfcoder.model.CodeModel} exposing a <i>SPARQL</i> endpoint.
  */
 public abstract class SPARQLQuerableCodeModel extends CodeModelBase {
 

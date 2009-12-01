@@ -19,11 +19,30 @@
 package com.asemantics.rdfcoder.storage;
 
 import com.asemantics.rdfcoder.RDFCoder;
-import com.asemantics.model.*;
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.asemantics.rdfcoder.model.CodeModel;
+import com.asemantics.rdfcoder.model.CodeModelDebugException;
+import com.asemantics.rdfcoder.model.QueryResult;
+import com.asemantics.rdfcoder.model.SPARQLException;
+import com.asemantics.rdfcoder.model.SPARQLQuerableCodeModel;
+import com.asemantics.rdfcoder.model.TripleIterator;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.SimpleSelector;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * The <code>CodeModel</code> implementation for the Jena backend.

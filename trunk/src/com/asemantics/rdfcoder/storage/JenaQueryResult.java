@@ -18,8 +18,12 @@
 
 package com.asemantics.rdfcoder.storage;
 
-import com.asemantics.model.QueryResult;
-import com.hp.hpl.jena.query.*;
+import com.asemantics.rdfcoder.model.QueryResult;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 
 import java.io.PrintStream;
 import java.util.List;

@@ -16,12 +16,13 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import java.io.PrintStream;
 
 /**
- * Defines the result type of a <code>QuerableCodeModel</code>
+ * Defines the result object of a
+ * {@link com.asemantics.rdfcoder.model.SPARQLQuerableCodeModel}.
  */
 public interface QueryResult {
 

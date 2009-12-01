@@ -21,7 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents a bean inspector able to process inspection strings.
+ * Processes inspection strings. An inspection string is a path
+ * defining a resource in an object graph.
  */
 public class Inspector {
 

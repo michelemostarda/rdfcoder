@@ -16,12 +16,12 @@
  */
 
 
-package com.asemantics.model;
+package com.asemantics.rdfcoder.model;
 
 import java.util.Date;
 
 /**
- * Represents a model to query {@link com.asemantics.model.CodeModel}s.
+ * Represents a model to query the {@link com.asemantics.rdfcoder.model.CodeModel}s.
  */
 public interface QueryModel {
 

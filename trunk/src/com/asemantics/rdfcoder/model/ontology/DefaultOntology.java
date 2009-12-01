@@ -18,7 +18,7 @@
 
 package com.asemantics.rdfcoder.model.ontology;
 
-import com.asemantics.model.CodeModel;
+import com.asemantics.rdfcoder.model.CodeModel;
 
 import java.net.URL;
 import java.net.MalformedURLException;

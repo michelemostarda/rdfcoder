@@ -18,7 +18,7 @@
 package com.asemantics.rdfcoder.inspector;
 
 /**
- * Defines an exception occurring while inspecting a bean graph.
+ * Exception that can occur while inspecting a bean graph.
  */
 public class InspectorParserException extends Exception {
 

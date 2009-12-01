@@ -18,20 +18,33 @@
 
 package com.asemantics.rdfcoder;
 
-import com.asemantics.model.*;
-import com.asemantics.profile.Profile;
+import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.CodeModelBase;
+import com.asemantics.rdfcoder.model.JavaOntology;
+import com.asemantics.rdfcoder.model.JavaQueryModel;
+import com.asemantics.rdfcoder.model.JavaQueryModelImpl;
+import com.asemantics.rdfcoder.profile.Profile;
 import com.asemantics.rdfcoder.repository.Repository;
 import com.asemantics.rdfcoder.repository.RepositoryException;
-import com.asemantics.rdfcoder.sourceparse.*;
+import com.asemantics.rdfcoder.sourceparse.DirectoryParser;
+import com.asemantics.rdfcoder.sourceparse.FileParser;
+import com.asemantics.rdfcoder.sourceparse.JStatistics;
+import com.asemantics.rdfcoder.sourceparse.JavaBytecodeFileParser;
+import com.asemantics.rdfcoder.sourceparse.JavaBytecodeJarParser;
+import com.asemantics.rdfcoder.sourceparse.JavaSourceFileParser;
+import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
 import com.asemantics.rdfcoder.storage.CodeStorage;
-import com.asemantics.rdfcoder.CoderUtils;
-import com.asemantics.rdfcoder.Model;
-import com.asemantics.rdfcoder.RDFCoderException;
-import com.asemantics.rdfcoder.JREReport;
-import com.asemantics.rdfcoder.RDFCoder;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class JavaProfile implements Profile {
