@@ -20,9 +20,9 @@ package com.asemantics.rdfcoder;
 
 import com.asemantics.rdfcoder.model.CodeHandler;
 import com.asemantics.rdfcoder.model.CodeModelBase;
-import com.asemantics.rdfcoder.model.JavaOntology;
-import com.asemantics.rdfcoder.model.JavaQueryModel;
-import com.asemantics.rdfcoder.model.JavaQueryModelImpl;
+import com.asemantics.rdfcoder.model.java.JavaOntology;
+import com.asemantics.rdfcoder.model.java.JavaQueryModel;
+import com.asemantics.rdfcoder.model.java.JavaQueryModelImpl;
 import com.asemantics.rdfcoder.profile.Profile;
 import com.asemantics.rdfcoder.repository.Repository;
 import com.asemantics.rdfcoder.repository.RepositoryException;

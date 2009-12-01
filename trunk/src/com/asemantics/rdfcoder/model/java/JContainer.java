@@ -16,7 +16,10 @@
  */
 
 
-package com.asemantics.rdfcoder.model;
+package com.asemantics.rdfcoder.model.java;
+
+import com.asemantics.rdfcoder.model.QueryModelException;
+import com.asemantics.rdfcoder.model.CodeHandler;
 
 import java.util.ArrayList;
 import java.util.List;

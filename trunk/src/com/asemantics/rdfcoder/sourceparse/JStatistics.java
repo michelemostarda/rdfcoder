@@ -20,7 +20,7 @@ package com.asemantics.rdfcoder.sourceparse;
 
 import com.asemantics.rdfcoder.model.CodeHandler;
 import com.asemantics.rdfcoder.model.ErrorListener;
-import com.asemantics.rdfcoder.model.JavaCodeModel;
+import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 
 import java.util.ArrayList;
 import java.util.Iterator;

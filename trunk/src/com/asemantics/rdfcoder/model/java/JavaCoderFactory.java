@@ -16,9 +16,15 @@
  */
 
 
-package com.asemantics.rdfcoder.model;
+package com.asemantics.rdfcoder.model.java;
 
 import com.asemantics.rdfcoder.model.ontology.Ontology;
+import com.asemantics.rdfcoder.model.CoderFactory;
+import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.CodeModelBase;
+import com.asemantics.rdfcoder.model.CodeHandlerImpl;
+import com.asemantics.rdfcoder.model.CodeModel;
+import com.asemantics.rdfcoder.model.QueryModelException;
 
 
 /**
@@ -167,7 +173,7 @@ public abstract class JavaCoderFactory implements CoderFactory {
      * @param parameterTypes
      * @param returnType
      * @return the created object.
-     * @throws CodeModelException
+     * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
     public static final JSignature createJSignature(
              JavaQueryModel qm,
@@ -186,7 +192,7 @@ public abstract class JavaCoderFactory implements CoderFactory {
      * @param parameterTypes
      * @param returnType
      * @return the created object.
-     * @throws CodeModelException
+     * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
     public static final JSignature createJSignature(
              JavaQueryModel qm,

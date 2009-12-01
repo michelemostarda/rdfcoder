@@ -16,7 +16,9 @@
  */
 
 
-package com.asemantics.rdfcoder.model;
+package com.asemantics.rdfcoder.model.java;
+
+import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
  * Represents a <i>Java</i> method.
@@ -33,7 +35,7 @@ public class JMethod extends JModifiable {
      * Constructor by sections.
      * @param queryModel
      * @param sections
-     * @throws CodeModelException
+     * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
     protected JMethod(JavaQueryModel queryModel, String[] sections)
             throws QueryModelException {
@@ -44,7 +46,7 @@ public class JMethod extends JModifiable {
      * Constructor by path.
      * @param queryModel
      * @param pathToMethod
-     * @throws CodeModelException
+     * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
     protected JMethod(JavaQueryModel queryModel, String pathToMethod)
             throws QueryModelException {
@@ -55,7 +57,7 @@ public class JMethod extends JModifiable {
      * Returns the signatures of a method.
      *
      * @return list of signatures.
-     * @throws CodeModelException
+     * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
     public JSignature[] getSignatures() throws QueryModelException {
         return getQueryModel().getSignatures(super.getFullName());

@@ -19,7 +19,7 @@
 package com.asemantics.rdfcoder.sourceparse;
 
 import com.asemantics.rdfcoder.model.CodeHandler;
-import com.asemantics.rdfcoder.model.JavaCodeModel;
+import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 import org.apache.bcel.Constants;
 import org.apache.bcel.classfile.*;
 

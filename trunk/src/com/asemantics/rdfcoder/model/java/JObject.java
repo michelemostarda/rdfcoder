@@ -16,8 +16,9 @@
  */
 
 
+package com.asemantics.rdfcoder.model.java;
 
-package com.asemantics.rdfcoder.model;
+import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
  * The base class for both <code>JInterface</code>

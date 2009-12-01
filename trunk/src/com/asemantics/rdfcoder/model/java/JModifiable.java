@@ -16,7 +16,9 @@
  */
 
 
-package com.asemantics.rdfcoder.model;
+package com.asemantics.rdfcoder.model.java;
+
+import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
  * Represents any <i>Java</i> entity class with visibility and modifiers.
@@ -28,7 +30,7 @@ public abstract class JModifiable extends JBase {
      *
      * @param qm
      * @param sections
-     * @throws QueryModelException
+     * @throws com.asemantics.rdfcoder.model.QueryModelException
      */
     protected JModifiable(JavaQueryModel qm, String[] sections) throws QueryModelException {
         super(qm, sections);

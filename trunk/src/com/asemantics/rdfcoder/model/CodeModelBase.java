@@ -19,6 +19,7 @@
 package com.asemantics.rdfcoder.model;
 
 import com.asemantics.rdfcoder.RDFCoder;
+import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -102,61 +103,13 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
     }
 
     /**
-     * Returns <code>true</code> if the path is already prefixed, <code>false</code>
-     * otherwise.
-     *
-     * @param path the path to check.
-     * @return <code>true</code> if the path is prefixed.
-     */
-    protected static boolean isPrefixed(String path) {
-         return path.indexOf(CodeModel.PREFIX_SEPARATOR) != -1;
-    }
-
-    /**
-     * Prefixes a parameter with the given prefix validating both first.
-     * 
-     * @param prefix
-     * @param parameter
-     * @return the prefixed string.
-     */
-    protected static String prefixParameter(String prefix, String parameter) {
-        if(prefix == null || prefix.trim().length() == 0 || parameter == null || parameter.trim().length() == 0) {
-            throw new IllegalArgumentException();
-        }
-
-        int prefLocation = parameter.indexOf(prefix);
-        if(prefLocation == -1) { // Not pefixed.
-            return prefix + parameter;
-        } else if(prefLocation == 0) { // Already prefixed.
-            return parameter;
-        } else {
-            throw new IllegalArgumentException(
-                "Something wrong in parameter '" + parameter + "' in applying prefix '" + prefix + "'"
-            );
-        }
-    }
-
-    /**
-     * Returns the prefix associated to a <i>RDF</i> type.
-     *
-     * @param rdfType
-     * @return the prefix string.
-     */
-    protected static String getPrefixFromRDFType(String rdfType) {
-        if(rdfType.indexOf(CODER_URI) < 0) {
-            throw new IllegalArgumentException("Invalid rdfType: '" + rdfType + "'");
-        }
-        return rdfType.substring(CODER_URI.length()) + CodeModel.PREFIX_SEPARATOR;
-    }
-
-    /**
      * Prefixes a full qualifier with the given prefix validating both first.
      *
      * @param prefix
      * @param path
      * @return the prefixed string.
      */
-    protected static String prefixFullyQualifiedName(String prefix, String path) {
+    public static String prefixFullyQualifiedName(String prefix, String path) {
         if(prefix == null || prefix.trim().length() == 0 || path == null) {
             throw new IllegalArgumentException();
         }
@@ -182,9 +135,6 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
      */
     public int replaceIdentifierWithQualifiedType(final String identifier, final String qualifiedType) {
         int effectedTriples;
-
-//        System.out.println("indentifier: " + identifier);
-//        System.out.println("qualified type: " + qualifiedType);
 
         if( RDFCoder.assertions() && identifier.indexOf(CodeModel.PREFIX_SEPARATOR) == -1) {
             throw new IllegalArgumentException("identifier: " + identifier + " qualified type: " + qualifiedType);
@@ -241,4 +191,53 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
 
         return effectedTriples;
     }
+
+    /**
+     * Returns the prefix associated to a <i>RDF</i> type.
+     *
+     * @param rdfType
+     * @return the prefix string.
+     */
+    public static String getPrefixFromRDFType(String rdfType) {
+        if(rdfType.indexOf(CODER_URI) < 0) {
+            throw new IllegalArgumentException("Invalid rdfType: '" + rdfType + "'");
+        }
+        return rdfType.substring(CODER_URI.length()) + CodeModel.PREFIX_SEPARATOR;
+    }
+
+    /**
+     * Returns <code>true</code> if the path is already prefixed, <code>false</code>
+     * otherwise.
+     *
+     * @param path the path to check.
+     * @return <code>true</code> if the path is prefixed.
+     */
+    protected static boolean isPrefixed(String path) {
+         return path.indexOf(CodeModel.PREFIX_SEPARATOR) != -1;
+    }
+
+    /**
+     * Prefixes a parameter with the given prefix validating both first.
+     *
+     * @param prefix
+     * @param parameter
+     * @return the prefixed string.
+     */
+    protected static String prefixParameter(String prefix, String parameter) {
+        if(prefix == null || prefix.trim().length() == 0 || parameter == null || parameter.trim().length() == 0) {
+            throw new IllegalArgumentException();
+        }
+
+        int prefLocation = parameter.indexOf(prefix);
+        if(prefLocation == -1) { // Not pefixed.
+            return prefix + parameter;
+        } else if(prefLocation == 0) { // Already prefixed.
+            return parameter;
+        } else {
+            throw new IllegalArgumentException(
+                "Something wrong in parameter '" + parameter + "' in applying prefix '" + prefix + "'"
+            );
+        }
+    }
+
 }

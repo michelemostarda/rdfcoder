@@ -16,7 +16,9 @@
  */
 
 
-package com.asemantics.rdfcoder.model;
+package com.asemantics.rdfcoder.model.java;
+
+import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
  * Represents a <i>Java</i> attribute.
@@ -39,7 +41,7 @@ public class JAttribute extends JModifiable {
      * Constructor.
      * @param qm
      * @param sections
-     * @throws CodeModelException
+     * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
     protected JAttribute(JavaQueryModel qm, String[] sections)
     throws QueryModelException {
@@ -50,7 +52,7 @@ public class JAttribute extends JModifiable {
      * Constructor.
      * @param qm
      * @param pathToAttribute
-     * @throws CodeModelException
+     * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
     protected JAttribute(JavaQueryModel qm, String pathToAttribute)
     throws QueryModelException {
