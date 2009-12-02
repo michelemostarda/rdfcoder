@@ -19,23 +19,19 @@
 package com.asemantics.rdfcoder.model;
 
 import com.asemantics.rdfcoder.storage.JenaCoderFactory;
-import com.asemantics.model.CodeModelBase;
-import com.asemantics.model.CodeHandler;
-import com.asemantics.model.JavaQueryModel;
-import com.asemantics.model.QueryModelException;
-import com.asemantics.model.JavaCodeModel;
-import com.asemantics.model.Asset;
-import com.asemantics.model.JPackage;
-import com.asemantics.model.JClass;
-import com.asemantics.model.JMethod;
-import com.asemantics.model.JSignature;
-import com.asemantics.model.JAttribute;
-import com.asemantics.model.JInterface;
-import com.asemantics.model.JEnumeration;
+import com.asemantics.rdfcoder.model.java.JAttribute;
+import com.asemantics.rdfcoder.model.java.JavaCodeModel;
+import com.asemantics.rdfcoder.model.java.JavaQueryModel;
+import com.asemantics.rdfcoder.model.java.JClass;
+import com.asemantics.rdfcoder.model.java.JEnumeration;
+import com.asemantics.rdfcoder.model.java.JInterface;
+import com.asemantics.rdfcoder.model.java.JMethod;
+import com.asemantics.rdfcoder.model.java.JPackage;
+import com.asemantics.rdfcoder.model.java.JSignature;
 import junit.framework.TestCase;
 
 /**
- * Basic test on {@link com.asemantics.model.JavaCodeModel}.
+ * Basic test on {@link com.asemantics.rdfcoder.model.java.JavaCodeModel}.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  *

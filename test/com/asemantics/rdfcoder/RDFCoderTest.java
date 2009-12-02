@@ -18,12 +18,11 @@
 
 package com.asemantics.rdfcoder;
 
-import com.asemantics.model.*;
+import com.asemantics.rdfcoder.model.java.JAttribute;
+import com.asemantics.rdfcoder.model.java.JavaQueryModel;
+import com.asemantics.rdfcoder.model.QueryModelException;
+import com.asemantics.rdfcoder.model.QueryResult;
 import com.asemantics.rdfcoder.sourceparse.JStatistics;
-import com.asemantics.rdfcoder.JavaProfile;
-import com.asemantics.rdfcoder.JREReport;
-import com.asemantics.rdfcoder.Model;
-import com.asemantics.rdfcoder.RDFCoder;
 import junit.framework.TestCase;
 
 import java.io.File;

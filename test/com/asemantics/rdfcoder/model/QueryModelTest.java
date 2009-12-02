@@ -18,18 +18,13 @@
 
 package com.asemantics.rdfcoder.model;
 
-import junit.framework.TestCase;
 import com.asemantics.rdfcoder.sourceparse.JStatistics;
 import com.asemantics.rdfcoder.sourceparse.JavaBytecodeJarParser;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
 import com.asemantics.rdfcoder.storage.JenaCoderFactory;
-import com.asemantics.model.CodeModelBase;
-import com.asemantics.model.JavaQueryModel;
-import com.asemantics.model.CoderFactory;
-import com.asemantics.model.CodeHandler;
-import com.asemantics.model.QueryModel;
-import com.asemantics.model.Asset;
-import com.asemantics.model.JavaQueryModelImpl;
+import com.asemantics.rdfcoder.model.java.JavaQueryModel;
+import com.asemantics.rdfcoder.model.java.JavaQueryModelImpl;
+import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +39,7 @@ public class QueryModelTest extends TestCase {
      * Creates a query model by parsing target.jar.
      * @throws IOException
      */
-    private CodeModelBase createQueryModel() throws IOException {
+    protected static CodeModelBase createQueryModel() throws IOException {
         JStatistics statistics = new JStatistics();
         CoderFactory coderFactory = new JenaCoderFactory();
         CodeModelBase codeModelBase = coderFactory.createCodeModel();
@@ -72,6 +67,14 @@ public class QueryModelTest extends TestCase {
         codeModelBase = createQueryModel();
     }
 
+    protected void setUp() throws Exception {
+         javaQueryModel = new JavaQueryModelImpl(codeModelBase);
+    }
+
+    protected void tearDown() throws Exception {
+        javaQueryModel = null;
+    }
+
     public void testQueryModel() {
         final String EXPECTED_LIBRARY = "asset:test_model";
 
@@ -88,19 +91,6 @@ public class QueryModelTest extends TestCase {
         assertNotNull("Cannot retrieve library date",  queryModel.getLibraryDateTime(EXPECTED_LIBRARY));
 
         assertNotNull("Cannot retrieve library location",  queryModel.getLibraryLocation(EXPECTED_LIBRARY));
-    }
-
-    protected void setUp() throws Exception {
-         javaQueryModel = new JavaQueryModelImpl(codeModelBase);
-
-    }
-
-    protected void tearDown() throws Exception {
-        javaQueryModel = null;
-    }
-
-    protected JavaQueryModel getJavaQueryModel() {
-        return javaQueryModel;
     }
 
 }
