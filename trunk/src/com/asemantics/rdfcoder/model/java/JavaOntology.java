@@ -19,7 +19,37 @@
 package com.asemantics.rdfcoder.model.java;
 
 
-import static com.asemantics.rdfcoder.model.java.JavaCodeModel.*;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.ATTRIBUTE_PREFIX;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.ATTRIBUTE_TYPE;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.ATTRIBUTE_VALUE;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.CLASS_PREFIX;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.CONSTRUCTOR_PREFIX;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.CONTAINS_ATTRIBUTE;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.CONTAINS_CLASS;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.CONTAINS_CONSTRUCTOR;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.CONTAINS_ELEMENT;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.CONTAINS_ENUMERATION;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.CONTAINS_INTERFACE;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.CONTAINS_METHOD;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.CONTAINS_PACKAGE;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.CONTAINS_PARAMETER;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.CONTAINS_SIGNATURE;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.ELEMENT_PREFIX;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.ENUMERATION_PREFIX;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.EXTENDS_CLASS;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.EXTENDS_INT;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.HAS_MODIFIERS;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.HAS_VISIBILITY;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.IMPLEMENTS_INT;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.INTERFACE_PREFIX;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.METHOD_PREFIX;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.PACKAGE_PREFIX;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.PARAMETER_PREFIX;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.PARAMETER_TYPE;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.RETURN_TYPE;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.SIGNATURE_PREFIX;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.SUBCLASSOF;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.THROWS;
 import com.asemantics.rdfcoder.model.ontology.BaseOntology;
 
 import java.net.URL;

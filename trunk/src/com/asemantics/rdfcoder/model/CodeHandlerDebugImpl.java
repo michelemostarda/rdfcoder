@@ -18,9 +18,9 @@
 
 package com.asemantics.rdfcoder.model;
 
+import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 import com.asemantics.rdfcoder.sourceparse.JavadocEntry;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
-import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 
 /**
  * A <code>CodeHandler</code> implementation used to perform debugging.

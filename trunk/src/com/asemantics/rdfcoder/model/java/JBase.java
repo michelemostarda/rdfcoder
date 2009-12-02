@@ -18,9 +18,9 @@
 
 package com.asemantics.rdfcoder.model.java;
 
-import com.asemantics.rdfcoder.model.QueryModelException;
 import com.asemantics.rdfcoder.model.CodeHandler;
 import com.asemantics.rdfcoder.model.CodeModel;
+import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
  * Defines the base class for any code entity.

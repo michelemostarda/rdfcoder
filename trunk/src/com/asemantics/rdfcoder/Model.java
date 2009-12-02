@@ -20,10 +20,10 @@ package com.asemantics.rdfcoder;
 
 import com.asemantics.rdfcoder.model.CodeModelBase;
 import com.asemantics.rdfcoder.model.CoderFactory;
-import com.asemantics.rdfcoder.model.java.JavaOntology;
 import com.asemantics.rdfcoder.model.QueryResult;
 import com.asemantics.rdfcoder.model.SPARQLException;
 import com.asemantics.rdfcoder.model.SPARQLQuerableCodeModel;
+import com.asemantics.rdfcoder.model.java.JavaOntology;
 import com.asemantics.rdfcoder.model.ontology.ValidatingCodeModel;
 import com.asemantics.rdfcoder.profile.Profile;
 import com.asemantics.rdfcoder.repository.Repository;

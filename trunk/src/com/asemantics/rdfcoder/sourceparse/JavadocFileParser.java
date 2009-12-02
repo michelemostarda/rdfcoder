@@ -22,8 +22,18 @@ import com.asemantics.rdfcoder.CoderUtils;
 import com.asemantics.rdfcoder.model.CodeHandler;
 import com.asemantics.rdfcoder.model.java.JavadocHandler;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Stack;
 
 /**
  * The Javadoc file parser.

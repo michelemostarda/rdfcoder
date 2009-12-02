@@ -18,8 +18,8 @@
 
 package com.asemantics.rdfcoder.model;
 
-import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.model.ontology.Ontology;
+import com.asemantics.rdfcoder.storage.CodeStorage;
 
 /**
  * Factory class allowing the creation of main library objects. 

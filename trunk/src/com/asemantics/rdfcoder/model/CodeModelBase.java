@@ -21,9 +21,9 @@ package com.asemantics.rdfcoder.model;
 import com.asemantics.rdfcoder.RDFCoder;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Contains base methods common to every <i>Code Model</i>.

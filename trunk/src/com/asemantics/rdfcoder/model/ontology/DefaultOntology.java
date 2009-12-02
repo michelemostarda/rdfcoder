@@ -20,11 +20,15 @@ package com.asemantics.rdfcoder.model.ontology;
 
 import com.asemantics.rdfcoder.model.CodeModel;
 
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Default implementation of {@link com.asemantics.rdfcoder.model.ontology.Ontology} interface.
