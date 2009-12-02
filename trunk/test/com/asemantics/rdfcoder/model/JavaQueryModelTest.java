@@ -18,21 +18,25 @@
 
 package com.asemantics.rdfcoder.model;
 
-import com.asemantics.model.JavaQueryModel;
-import com.asemantics.model.JPackage;
+import junit.framework.TestCase;
 
 import java.io.IOException;
 
-public class JavaQueryModelTest extends QueryModelTest {
+import com.asemantics.rdfcoder.model.java.JavaQueryModel;
+import com.asemantics.rdfcoder.model.java.JavaQueryModelImpl;
+import com.asemantics.rdfcoder.model.java.JPackage;
+
+public class JavaQueryModelTest extends TestCase {
 
     public JavaQueryModelTest() throws IOException {
         super();
     }
 
-    public void testJavaQueryModel() {
-        JavaQueryModel javaQueryModel = getJavaQueryModel();
+    public void testJavaQueryModel() throws IOException {
+        JavaQueryModel javaQueryModel = new JavaQueryModelImpl( QueryModelTest.createQueryModel() );
 
         JPackage[] packages = javaQueryModel.getAllPackages();
+        assertTrue("Unespected number of packages.", packages.length > 0 );
     }
 
 }

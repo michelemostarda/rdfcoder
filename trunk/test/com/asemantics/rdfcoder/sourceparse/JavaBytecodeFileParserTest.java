@@ -19,8 +19,8 @@
 package com.asemantics.rdfcoder.sourceparse;
 
 import junit.framework.TestCase;
-import com.asemantics.model.CodeHandler;
-import com.asemantics.model.CodeHandlerDebugImpl;
+import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.CodeHandlerDebugImpl;
 
 import java.io.File;
 import java.io.IOException;

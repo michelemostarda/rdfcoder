@@ -1,8 +1,8 @@
 package com.asemantics.rdfcoder.model.ontology;
 
-import com.asemantics.model.CodeHandler;
-import com.asemantics.model.CodeModelBase;
-import com.asemantics.model.CoderFactory;
+import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.CodeModelBase;
+import com.asemantics.rdfcoder.model.CoderFactory;
 import com.asemantics.rdfcoder.sourceparse.DirectoryParser;
 import com.asemantics.rdfcoder.sourceparse.JavaBytecodeFileParser;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
@@ -39,6 +39,11 @@ public class JavaOntologyTest extends TestCase {
 
     public void testApplyOntology() {
         final File dir = new File("./classes");
+        if( ! dir.exists() ) {
+            throw new RuntimeException(
+                String.format("It is expected to find the classes dir at location %s", dir.getAbsolutePath())
+            );
+        }
         JStatistics statistics    = new JStatistics();
         CoderFactory coderFactory = new JenaCoderFactory();
         CodeModelBase codeModel   = coderFactory.createCodeModel();

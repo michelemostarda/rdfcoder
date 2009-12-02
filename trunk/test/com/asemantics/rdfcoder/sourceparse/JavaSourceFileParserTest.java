@@ -19,7 +19,7 @@
 package com.asemantics.rdfcoder.sourceparse;
 
 import junit.framework.TestCase;
-import com.asemantics.model.CodeHandlerDebugImpl;
+import com.asemantics.rdfcoder.model.CodeHandlerDebugImpl;
 import net.sourceforge.jrefactory.parser.ParseException;
 
 import java.io.IOException;

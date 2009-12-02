@@ -18,15 +18,14 @@
 
 package com.asemantics.rdfcoder.model.ontology;
 
+import com.asemantics.rdfcoder.model.CodeModel;
 import junit.framework.TestCase;
 
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.asemantics.model.CodeModel;
 
 /**
  * JUnit test of class {@link com.asemantics.rdfcoder.model.ontology.DefaultOntology}

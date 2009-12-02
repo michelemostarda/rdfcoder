@@ -18,8 +18,8 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import com.asemantics.model.CodeHandler;
-import com.asemantics.model.CodeModelException;
+import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.CodeModelException;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.JenaCodeModel;
 import com.asemantics.rdfcoder.storage.JenaCodeStorage;

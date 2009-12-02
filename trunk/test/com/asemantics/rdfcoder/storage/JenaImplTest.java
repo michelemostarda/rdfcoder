@@ -19,7 +19,12 @@
 package com.asemantics.rdfcoder.storage;
 
 import junit.framework.TestCase;
-import com.asemantics.model.*;
+import com.asemantics.rdfcoder.model.CodeModelException;
+import com.asemantics.rdfcoder.model.java.JavaCodeModel;
+import com.asemantics.rdfcoder.model.QueryResult;
+import com.asemantics.rdfcoder.model.SPARQLException;
+import com.asemantics.rdfcoder.model.SPARQLQuerableCodeModel;
+import com.asemantics.rdfcoder.model.TripleIterator;
 
 import java.io.FileInputStream;
 import java.io.IOException;

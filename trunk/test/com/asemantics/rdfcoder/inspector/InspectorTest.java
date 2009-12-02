@@ -25,6 +25,9 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Test case for {@link com.asemantics.rdfcoder.inspector.Inspector} class.
+ */
 public class InspectorTest extends TestCase {
 
     class TargetIn {

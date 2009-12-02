@@ -17,9 +17,9 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import com.asemantics.model.CodeHandler;
-import com.asemantics.model.CodeModelBase;
-import com.asemantics.model.CoderFactory;
+import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.CodeModelBase;
+import com.asemantics.rdfcoder.model.CoderFactory;
 import com.asemantics.rdfcoder.storage.JenaCoderFactory;
 import com.asemantics.rdfcoder.CoderUtils;
 import junit.framework.TestCase;

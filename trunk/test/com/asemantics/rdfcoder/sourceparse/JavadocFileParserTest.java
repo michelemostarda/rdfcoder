@@ -18,13 +18,13 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
+import com.asemantics.rdfcoder.model.java.JavadocHandler;
 import junit.framework.TestCase;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.util.*;
-
-import com.asemantics.model.JavadocHandler;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Test unit of <code>JavadocFileParser</code>.
