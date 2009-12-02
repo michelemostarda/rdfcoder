@@ -18,7 +18,11 @@
 
 package com.asemantics.rdfcoder.model.ontology;
 
-import static com.asemantics.rdfcoder.model.CodeModelBase.*;
+import static com.asemantics.rdfcoder.model.CodeModelBase.ASSET;
+import static com.asemantics.rdfcoder.model.CodeModelBase.ASSET_PREFIX;
+import static com.asemantics.rdfcoder.model.CodeModelBase.CONTAINS_LIBRARY;
+import static com.asemantics.rdfcoder.model.CodeModelBase.LIBRARY_DATETIME;
+import static com.asemantics.rdfcoder.model.CodeModelBase.LIBRARY_LOCATION;
 
 import java.net.URL;
 

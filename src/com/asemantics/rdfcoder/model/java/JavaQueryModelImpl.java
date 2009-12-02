@@ -18,12 +18,12 @@
 
 package com.asemantics.rdfcoder.model.java;
 
-import com.asemantics.rdfcoder.model.CodeModel;
 import com.asemantics.rdfcoder.model.Asset;
-import com.asemantics.rdfcoder.model.TripleIterator;
-import com.asemantics.rdfcoder.model.CodeModelBase;
 import com.asemantics.rdfcoder.model.CodeHandlerImpl;
+import com.asemantics.rdfcoder.model.CodeModel;
+import com.asemantics.rdfcoder.model.CodeModelBase;
 import com.asemantics.rdfcoder.model.QueryModelException;
+import com.asemantics.rdfcoder.model.TripleIterator;
 
 import java.util.ArrayList;
 import java.util.Date;

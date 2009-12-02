@@ -18,8 +18,8 @@
 
 package com.asemantics.rdfcoder.model.java;
 
-import com.asemantics.rdfcoder.model.QueryModelException;
 import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
  * Represents a <i>Java</i> class.
