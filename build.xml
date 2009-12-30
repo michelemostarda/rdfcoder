@@ -92,7 +92,7 @@
 
   	<path id="test.build.classpath">
 	    <path        refid = "build.classpath"/>
-		<pathelement path  = "${lib.dir}/junit.jar"/>
+		<pathelement path  = "${lib.dir}/junit-4.4.jar"/>
     </path>
 
     <path id="test.classpath">
