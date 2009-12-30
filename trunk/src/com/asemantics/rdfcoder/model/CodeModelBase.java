@@ -18,7 +18,6 @@
 
 package com.asemantics.rdfcoder.model;
 
-import com.asemantics.rdfcoder.RDFCoder;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 
 import java.util.ArrayList;
@@ -98,8 +97,11 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
     /**
      * Generates a temporary unique identifier.
      */
-    public String generateTempUniqueIdentifier() {
-        return TEMPORARY_TYPE_ID_PREFIX + System.currentTimeMillis() + "_" + _counter++;
+    public Identifier generateTempUniqueIdentifier() {
+        return IdentifierBuilder
+                .create()
+                .pushFragment(System.currentTimeMillis() + "_" + _counter++, TEMPORARY_TYPE_ID_PREFIX)
+                .build();
     }
 
     /**
@@ -115,10 +117,12 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
         }
 
         int prefixSeparatorIndex = path.indexOf(PREFIX_SEPARATOR);
-        if(prefixSeparatorIndex == 0) { // Invalid path: prefix is ""
+        // Invalid path: prefix is ""
+        if(prefixSeparatorIndex == 0) {
             throw new IllegalArgumentException("Invalid path: '" + path + "'");
         }
-        if(prefixSeparatorIndex > 0) { // Removes last prefix.
+        // Removes the last prefix.
+        if(prefixSeparatorIndex > 0) {
             path = path.substring(prefixSeparatorIndex + 1);
         }
 
@@ -133,12 +137,16 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
      * @return the number of replaced identifiers.
      * @see #generateTempUniqueIdentifier()
      */
-    public int replaceIdentifierWithQualifiedType(final String identifier, final String qualifiedType) {
+    public int replaceIdentifierWithQualifiedType(final Identifier identifier, final Identifier qualifiedType) {
         int effectedTriples;
 
+        /*
         if( RDFCoder.assertions() && identifier.indexOf(CodeModel.PREFIX_SEPARATOR) == -1) {
             throw new IllegalArgumentException("identifier: " + identifier + " qualified type: " + qualifiedType);
         }
+        */
+
+        final String identifierStr = identifier.getIdentifier();
 
         List newTriples = new ArrayList();
         String[] nextTriple;
@@ -146,7 +154,7 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
         // Replacing all subjects.
 
         // Creates new triples image.
-        TripleIterator ti = searchTriples(identifier, CodeModel.ALL_MATCH, JavaCodeModel.ALL_MATCH);
+        TripleIterator ti = searchTriples(identifierStr, CodeModel.ALL_MATCH, JavaCodeModel.ALL_MATCH);
         while(ti.next()) {
             newTriples.add( new String[] { ti.getPredicate(), ti.getObject() } );
         }
@@ -156,13 +164,13 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
         Iterator<String[]> newTriplesIter = newTriples.iterator();
         while(newTriplesIter.hasNext()) {
             nextTriple = newTriplesIter.next();
-            removeTriple( identifier, nextTriple[0], nextTriple[1] );
+            removeTriple( identifierStr, nextTriple[0], nextTriple[1] );
         }
         // Add new ones.
         newTriplesIter = newTriples.iterator();
         while(newTriplesIter.hasNext()) {
             nextTriple = newTriplesIter.next();
-            removeTriple( identifier, nextTriple[0], nextTriple[1] );
+            removeTriple( identifierStr, nextTriple[0], nextTriple[1] );
         }
 
         // Replacing all objects.
@@ -170,7 +178,7 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
         newTriples.clear();
 
         // Creates new triples image.
-        ti = searchTriples(CodeModel.ALL_MATCH, CodeModel.ALL_MATCH, identifier);
+        ti = searchTriples(CodeModel.ALL_MATCH, CodeModel.ALL_MATCH, identifierStr);
         while(ti.next()) {
             newTriples.add( new String[] {ti.getSubject(), ti.getPredicate() } );
         }
@@ -180,13 +188,13 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
         newTriplesIter = newTriples.iterator();
         while(newTriplesIter.hasNext()) {
             nextTriple = newTriplesIter.next();
-            removeTriple( nextTriple[0], nextTriple[1], identifier );
+            removeTriple( nextTriple[0], nextTriple[1], identifierStr );
         }
         // Add new ones.
         newTriplesIter = newTriples.iterator();
         while(newTriplesIter.hasNext()) {
             nextTriple = newTriplesIter.next();
-            removeTriple( nextTriple[0], nextTriple[1], qualifiedType );
+            removeTriple( nextTriple[0], nextTriple[1], qualifiedType.getIdentifier() );
         }
 
         return effectedTriples;
@@ -223,7 +231,8 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
      * @param parameter
      * @return the prefixed string.
      */
-    protected static String prefixParameter(String prefix, String parameter) {
+    // TODO: HIGH : remove it.
+    public static String prefixParameter(String prefix, String parameter) {
         if(prefix == null || prefix.trim().length() == 0 || parameter == null || parameter.trim().length() == 0) {
             throw new IllegalArgumentException();
         }
@@ -239,5 +248,6 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
             );
         }
     }
+
 
 }

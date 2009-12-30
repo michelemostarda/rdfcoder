@@ -18,34 +18,40 @@
 
 package com.asemantics.rdfcoder.model;
 
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
+
 /**
  * Error listener meant to collect errors and warnings occurred during the parsing process.
  */
 public interface ErrorListener {
 
     /**
-     * Notifies if a class decleres a package different from the package it belongs to.
+     * Notifies if a class declares a package different from the package it belongs to.
      *
-     * @param codeHandler
+     * @param javaCodeHandler
      * @param processedPackage
      * @param declaredContainerPackage
      */
-    public void packageDiscrepancy(CodeHandler codeHandler, String processedPackage, String declaredContainerPackage);
+    public void packageDiscrepancy(
+            JavaCodeHandler javaCodeHandler,
+            String processedPackage,
+            String declaredContainerPackage
+    );
 
     /**
      * Notifies parse errors during the compilation process.
      *
-     * @param codeHandler
+     * @param javaCodeHandler
      * @param location
      * @param description
      */
-    public void parseError(CodeHandler codeHandler, String location, String description);
+    public void parseError(JavaCodeHandler javaCodeHandler, String location, String description);
 
     /**
      * Notifies the list of the unresolved types.
      *
-     * @param codeHandler
+     * @param javaCodeHandler
      * @param types
      */
-    public void unresolvedTypes(CodeHandler codeHandler, String[] types);
+    public void unresolvedTypes(JavaCodeHandler javaCodeHandler, String[] types);
 }

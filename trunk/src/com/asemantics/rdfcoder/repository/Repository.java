@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class represents a file repository where put code storages.
+ * A basic Repository based on filesystem where to store code metadata.
  */
 //TODO: improve lock management.
 public class Repository {

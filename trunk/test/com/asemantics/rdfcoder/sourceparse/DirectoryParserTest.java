@@ -17,54 +17,65 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.CoderUtils;
 import com.asemantics.rdfcoder.model.CodeModelBase;
 import com.asemantics.rdfcoder.model.CoderFactory;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.storage.JenaCoderFactory;
-import com.asemantics.rdfcoder.CoderUtils;
-import junit.framework.TestCase;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 
+/**
+ * Test case for the {@link com.asemantics.rdfcoder.sourceparse.DirectoryParser}.
+ */
+public class DirectoryParserTest {
 
-public class DirectoryParserTest extends TestCase {
+    private static final Logger logger = Logger.getLogger(DirectoryParserTest.class);
 
-
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() {
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() {
     }
 
+    @Test
     public void testSourceDirParser() {
         JavaSourceFileParser javaSourceFileParser = new JavaSourceFileParser();
         JStatistics statistics = processDir(javaSourceFileParser, new File("./src"));
-        System.out.println( statistics.toString() );
-        assertTrue( "No classes found.", statistics.getParsedClasses() > 0);
-        assertTrue( "No interfaces found.", statistics.getParsedInterfaces() > 0);
-        assertTrue( "No methods found.", statistics.getParsedMethods() > 0);
-        assertTrue( "No enumerations found.", statistics.getParsedEnumerations() > 0);
-        assertTrue( "No attributes found.", statistics.getParsedAttributes() > 0);
+        logger.info( "Source parsing statistics: " + statistics.toString() );
+        Assert.assertTrue( "No classes found.", statistics.getParsedClasses() > 0);
+        Assert.assertTrue( "No interfaces found.", statistics.getParsedInterfaces() > 0);
+        Assert.assertTrue( "No methods found.", statistics.getParsedMethods() > 0);
+        Assert.assertTrue( "No enumerations found.", statistics.getParsedEnumerations() > 0);
+        Assert.assertTrue( "No attributes found.", statistics.getParsedAttributes() > 0);
     }
 
+    @Test
     public void testJavadocDirParser() {
         JavadocFileParser javadocFileParser = new JavadocFileParser();
         JStatistics statistics = processDir(javadocFileParser, new File("./src"));
-        System.out.println( statistics.toString() );
-        assertTrue( "No classes found.", statistics.getJavadocEntries() > 0);
-        assertTrue( "No methods found.", statistics.getMethodsJavadoc() > 0);
+        logger.info( "Javadoc parsing statistics: " + statistics.toString() );
+        Assert.assertTrue( "No classes found.", statistics.getJavadocEntries() > 0);
+        Assert.assertTrue( "No methods found.", statistics.getMethodsJavadoc() > 0);
     }
 
     public static JStatistics processDir(FileParser fileParser, File dir) {
         JStatistics statistics = new JStatistics();
-        CoderFactory coderFactory = new JenaCoderFactory();
+        CoderFactory<JavaCodeHandler> coderFactory = new JenaCoderFactory();
         CodeModelBase codeModel   = coderFactory.createCodeModel();
-        CodeHandler codeHandler   = coderFactory.createHandlerOnModel(codeModel);
+        JavaCodeHandler javaCodeHandler = coderFactory.createHandlerOnModel(codeModel);
         ObjectsTable objectsTable = new ObjectsTable();
-        CodeHandler statisticsCodeHandler = statistics.createStatisticsCodeHandler( codeHandler );
+        JavaCodeHandler statisticsJavaCodeHandler = statistics.createStatisticsCodeHandler(javaCodeHandler);
 
         DirectoryParser directoryParser = new DirectoryParser(fileParser, new CoderUtils.JavaSourceFilenameFilter() );
-        directoryParser.initialize( statisticsCodeHandler, objectsTable );
+        directoryParser.initialize(statisticsJavaCodeHandler, objectsTable );
         directoryParser.parseDirectory(dir.getName(), dir );
         return statistics;
     }

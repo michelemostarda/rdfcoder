@@ -89,6 +89,7 @@ public class ValidatingCodeModel extends CodeModelBase {
         decorated.clearAll();
     }
 
+    // TODO: improve replace the RuntimeException wih OntologyException.
     private RuntimeException createRuntimeException(OntologyException oe, String s, String p, String o) {
         return new RuntimeException(VALIDATION_ERROR + ": " + oe.getMessage() + " in triple <" + s + "," + p + "," + o + ">", oe);
     }

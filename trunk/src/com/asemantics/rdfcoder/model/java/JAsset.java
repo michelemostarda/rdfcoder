@@ -27,20 +27,38 @@ import java.util.Date;
  */
 public class JAsset implements Asset {
 
+    /**
+     * Query model associated to the asset.
+     */
     private JavaQueryModel javaQueryModel;
 
     protected JAsset(JavaQueryModel qm) {
         javaQueryModel = qm;
     }
 
+    /**
+     * @return the list of libraries constituting this asset.
+     */
     public String[] getLibraries() {
         return javaQueryModel.getLibraries();
     }
 
+    /**
+     * Returns the location of a specified library.
+     *
+     * @param library library name.
+     * @return library location.
+     */
     public String getLibraryLocation(String library) {
         return javaQueryModel.getLibraryLocation(library);
     }
 
+    /**
+     * Returns the parsing date of a library.
+     *
+     * @param library library name.
+     * @return last time that <i>library</i> has been parsed.
+     */
     public Date getLibraryDateTime(String library) {
         return javaQueryModel.getLibraryDateTime(library);
     }

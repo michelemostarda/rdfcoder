@@ -18,7 +18,7 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.Stack;
 
 /**
- * Scans a given directory.
+ * Defines a scanner to parse content of entire directories.
  */
 public class DirectoryParser extends CodeParser {
 
@@ -143,14 +143,14 @@ public class DirectoryParser extends CodeParser {
      * @return number of unresolved objects.
      */
     public int postScan() {
-        CodeHandler codeHandler = (CodeHandler) getParseHandler();
-        Set<String> unresolved = getObjectsTable().processTemporaryIdentifiers( codeHandler );
+        JavaCodeHandler javaCodeHandler = (JavaCodeHandler) getParseHandler();
+        Set<String> unresolved = getObjectsTable().processTemporaryIdentifiers(javaCodeHandler);
         List<String> unresolvedList = new ArrayList(unresolved);
         unresolved.clear();
         Collections.sort(unresolvedList);
         String[] unresolvedTypes = unresolvedList.toArray( new String[unresolvedList.size()] );
         try {
-            codeHandler.unresolvedTypes(unresolvedTypes);
+            javaCodeHandler.unresolvedTypes(unresolvedTypes);
         } catch (Throwable t) {
             t.printStackTrace();
         }

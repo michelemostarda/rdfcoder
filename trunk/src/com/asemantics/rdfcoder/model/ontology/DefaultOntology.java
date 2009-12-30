@@ -124,7 +124,9 @@ public class DefaultOntology implements Ontology {
             if(
                 ! subPrefixStr.equals( subPrefix )
             ) {
-                throw new OntologyException("Invalid subject prefix: '" + subPrefix + "' for predicate: " + predicateStr + "'");
+                throw new OntologyException(
+                    String.format("Invalid subject prefix: '%s' for predicate: '%s'", subPrefix, predicateStr) 
+                );
             }
         }
 
@@ -208,7 +210,9 @@ public class DefaultOntology implements Ontology {
             if(
                 ! objPrefix.equals( objPrefixStr )
             ) {
-                throw new OntologyException("Invalid object prefix: '" + objPrefixStr + "' for predicate: " + predicate + "'");
+                throw new OntologyException(
+                    String.format("Invalid object prefix: '%s' for predicate: '%s'", objPrefixStr, predicate)
+                );
             }
         }
 
@@ -256,7 +260,7 @@ public class DefaultOntology implements Ontology {
 
     protected void validatePrefix(String prefix) throws OntologyException {
         if( prefix == null ) {
-            throw new OntologyException("invalid prefix: '" + prefix + "'");
+            throw new OntologyException( String.format("invalid prefix: '%s'", prefix) );
         }
     }
 
@@ -333,7 +337,9 @@ public class DefaultOntology implements Ontology {
         List<PropertyBase> properties = predicateIndex.get(predicateStr);
 
         if(properties == null) {
-           throw new OntologyException("Cannot undefine relation '" + predicateStr + "' bacause is not defined.");
+           throw new OntologyException(
+                   String.format("Cannot undefine relation '%s' bacause is not defined.", predicateStr)
+           );
         }
 
         for(PropertyBase base : properties) {
@@ -353,7 +359,9 @@ public class DefaultOntology implements Ontology {
         List<PropertyBase> properties = predicateIndex.get(predicateStr);
 
         if(properties == null) {
-           throw new OntologyException("Cannot undefine relation '" + predicateStr + "' bacause is not defined.");
+           throw new OntologyException(
+                   String.format("Cannot undefine relation '%s' because is not defined.", predicateStr)
+           );
         }
 
         for(PropertyBase base : properties) {
@@ -380,11 +388,12 @@ public class DefaultOntology implements Ontology {
      * @return the property base applicable on validation.
      * @throws OntologyException
      */
-    protected PropertyBase validateTerms(String subject, String predicate, String object, boolean literal) throws OntologyException {
+    protected PropertyBase validateTerms(String subject, String predicate, String object, boolean literal)
+    throws OntologyException {
         List<PropertyBase> properties = predicateIndex.get(predicate);
 
         if(properties == null) {
-            throw new OntologyException("predicate '" + predicate + "' is not defined.");
+            throw new OntologyException( String.format("predicate '%s' is not defined.", predicate) );
         }
 
         for(PropertyBase property : properties) {
@@ -395,7 +404,9 @@ public class DefaultOntology implements Ontology {
                 }
             } catch (OntologyException oe) {}
         }
-        throw new OntologyException("No property matches spceified terms for predicate: '" + predicate + "'");
+        throw new OntologyException(
+                String.format("No property matches specified terms for predicate: '%s'", predicate)
+        );
     }
 
     public void validateTriple(String subject, String predicate, String object) throws OntologyException {

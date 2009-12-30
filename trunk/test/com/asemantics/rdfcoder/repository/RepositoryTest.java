@@ -20,14 +20,20 @@ package com.asemantics.rdfcoder.repository;
 
 import static com.asemantics.rdfcoder.repository.Repository.ResourceType.BINARY;
 import static com.asemantics.rdfcoder.repository.Repository.ResourceType.XML;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class RepositoryTest extends TestCase {
+/**
+ * Test case for the {@link com.asemantics.rdfcoder.repository.Repository} class.
+ */
+public class RepositoryTest {
 
     private static final String REPOSITORY_TEST_LOCATION = "./target_test/repository";
 
@@ -37,11 +43,10 @@ public class RepositoryTest extends TestCase {
 
     private static final int RESOURCES_COUNT = 1000;
 
-
-
     private Repository repository;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         System.out.println("Removing location...");
         File[] content = location.listFiles();
         if(content == null) {
@@ -53,12 +58,16 @@ public class RepositoryTest extends TestCase {
         location.delete();
     }
 
-    protected void tearDown() throws Exception {}
+    @After
+    public void tearDown() {
+    }
 
+    @Test
     public void testCreate() throws RepositoryException {
         repository = Repository.getRepository( new File(REPOSITORY_TEST_LOCATION) );
     }
 
+    @Test
     public void testAddResource() throws RepositoryException {
         testCreate();
         for(int i = 0; i < RESOURCES_COUNT; i++ ) {
@@ -66,23 +75,25 @@ public class RepositoryTest extends TestCase {
         }
     }
 
+    @Test
     public void testCheckResource() throws RepositoryException, IOException {
         testAddResource();
         String resourceName;
         Repository.Resource resource;
         for(int i = 0; i < RESOURCES_COUNT; i++) {
             resourceName = RESOURCE_NAME_PREFIX + i;
-            assertTrue( repository.containsResource(resourceName) );
+            Assert.assertTrue( repository.containsResource(resourceName) );
             resource = repository.getResource(resourceName);
-            assertEquals( resource.getName(), resourceName);
-            assertEquals( resource.getType(), i % 2 == 0 ? BINARY : XML);
-            assertEquals(
+            Assert.assertEquals( resource.getName(), resourceName);
+            Assert.assertEquals( resource.getType(), i % 2 == 0 ? BINARY : XML);
+            Assert.assertEquals(
                     resource.getLocation().getCanonicalPath(),
                     new File(location, resource.getType().getFileName(resourceName)).getCanonicalPath()
             );
         }
     }
 
+    @Test
     public void testRemoveResource() throws RepositoryException {
         testAddResource();
         String resourceName;
@@ -92,21 +103,23 @@ public class RepositoryTest extends TestCase {
         }
     }
 
+    @Test
     public void testLockFiles() throws RepositoryException, IOException {
         testCreate();
         final String lockedResource = "lockedResource";
         Repository.Resource resource = repository.createResource(lockedResource, XML);
-        assertNotNull(resource);
-        assertFalse( repository.isLocked( lockedResource ) );
+        Assert.assertNotNull(resource);
+        Assert.assertFalse( repository.isLocked( lockedResource ) );
 
         InputStream is = resource.getInputStream();
-        assertNotNull(is);
-        assertFalse( repository.isLocked( lockedResource ) );
+        Assert.assertNotNull(is);
+        Assert.assertFalse( repository.isLocked( lockedResource ) );
         is.close();
 
         OutputStream os = resource.getOutputStream();
-        assertTrue( repository.isLocked( lockedResource ) );
+        Assert.assertTrue( repository.isLocked( lockedResource ) );
         os.close();
-        assertFalse( repository.isLocked( lockedResource ) );
+        Assert.assertFalse( repository.isLocked( lockedResource ) );
     }
+    
 }

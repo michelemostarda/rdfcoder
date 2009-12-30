@@ -37,9 +37,14 @@ public interface CodeModel {
     static final String SUBCLASSOF = RDF_SCHEMA_URI + "subClassOf";
 
     /**
+     * The separator used for URI prefixes.
+     */
+    static final String URI_PREFIX_SEPARATOR = "#";
+
+    /**
      * RDF type prefix URI.
      */
-    static final String CODER_URI = "http://www.rdfcoder.org/2007/1.0#";
+    static final String CODER_URI = "http://www.rdfcoder.org/2007/1.0" + URI_PREFIX_SEPARATOR;
 
     /**
      * Prefix separator definition.

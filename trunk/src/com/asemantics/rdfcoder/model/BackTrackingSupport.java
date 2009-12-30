@@ -30,7 +30,7 @@ public interface BackTrackingSupport {
      *
      * @return a string representing the identifier.
      */
-    public String generateTempUniqueIdentifier();
+    public Identifier generateTempUniqueIdentifier();
 
     /**
      * Replaces the remporary identifier with the qualified type.
@@ -38,6 +38,6 @@ public interface BackTrackingSupport {
      * @param qualifiedType the qualified type.
      * @return number of effected triples.
      */
-    public int replaceIdentifierWithQualifiedType(String identifier, String qualifiedType);
+    public int replaceIdentifierWithQualifiedType(Identifier identifier, Identifier qualifiedType);
 
 }

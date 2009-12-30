@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The <code>ClassPath</code> class represents the class path of a parse Asset (a group of related libraries)
+ * This class represents the class path of a parse Asset (a group of related libraries)
  * to be parsed in block.
  */
 public class ClassPath {

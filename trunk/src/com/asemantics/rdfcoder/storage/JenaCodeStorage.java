@@ -32,7 +32,8 @@ import java.io.OutputStream;
 import java.util.Map;
 
 /**
- * Represents a <code>CodeStorage</code> for the Jena <code>CodeModel</code>.
+ * Represents a {@link com.asemantics.rdfcoder.storage.CodeStorage}
+ * for the Jena {@link com.asemantics.rdfcoder.model.CodeModel}.
  */
 public class JenaCodeStorage extends CodeStorage {
 

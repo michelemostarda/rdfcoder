@@ -18,8 +18,8 @@
 
 package com.asemantics.rdfcoder.model.java;
 
-import com.asemantics.rdfcoder.model.CodeHandler;
 import com.asemantics.rdfcoder.model.CodeModel;
+import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
@@ -38,60 +38,33 @@ public abstract class JBase {
     /**
      * The parent container.
      */
-    protected JContainer parent;
+    protected JBase parent;
 
     /**
      * The name of the container.
      */
-    private String name;
+    private Identifier identifier;
 
     /**
      * Construction by sections.
      * @param qm
-     * @param sections
+     * @param identifier
      */
-    protected JBase(JavaQueryModel qm, String[] sections) throws QueryModelException {
+    protected JBase(JavaQueryModel qm, Identifier identifier) throws QueryModelException {
         if(qm == null) {
             throw new NullPointerException("qm cannot be null");
         }
-        if(sections == null) {
-            throw new NullPointerException("name cannot be null.");
-        }
-        if(sections.length == 0) {
-            throw new IllegalArgumentException("sections length cannot be 0.");
+        if(identifier == null) {
+            throw new NullPointerException("identifier cannot be null.");
         }
 
         queryModel = qm;
-        HierarchyResult hr = makeHierarchy(qm, sections);
-        parent    = hr.p;
-        name      = hr.n;
+        this.identifier = identifier;
+        parent = makeHierarchy(qm, identifier);
     }
 
-    /**
-     * Constructions by path.
-     * @param qm
-     * @param path
-     */
-    public JBase(JavaQueryModel qm, String path) throws QueryModelException {
-        this( qm , splitPath(path) );
-    }
-
-    /**
-     * Returns the relative name of the hierarchy element.
-     *
-     * @return name of element.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns the full name of the yerarchy element.
-     *
-     * @return full name of element.
-     */
-    public String getFullName() {
-        return parent.getPathAsString() + CodeHandler.PACKAGE_SEPARATOR + name;
+    public Identifier getIdentifier() {
+        return identifier;
     }
 
     /**
@@ -109,16 +82,16 @@ public abstract class JBase {
      * @return the parent, <code>null</code> if none.
      */
     public JContainer getParent() {
-        return parent;
+        return (JContainer) parent;
     }
 
     /**
-     * Check the existence of an entity named with 'name[0]. ... name[index]'.
+     * Check the existence of an entity.
      *
-     * @param name
+     * @param identifier
      * @return <code>true</code> if exists.
      */
-    public abstract boolean exists(final String[] name, int index);
+    protected abstract boolean exists(Identifier identifier);
 
     /**
      * Return the hierarchy element type.
@@ -129,27 +102,17 @@ public abstract class JBase {
 
     /**
      * Validates the sections value.
-     * @param sections
+     * 
+     * @param identifier
      */
-    protected final void validateAndCheckName(final String[] sections, int index)
+    protected final void validateAndCheckName(final Identifier identifier, int index)
     throws QueryModelException {
-        if(sections == null) {
-            throw new NullPointerException("sections cannot be null.");
-        }
-        if(sections.length == 0) {
+        Identifier sections = identifier.getSections(index);
+        if(sections.size() == 0) {
             throw  new IllegalArgumentException("sections length must be > 0");
         }
-
-        if( ! Character.isJavaIdentifierStart( sections[index].charAt(0) ) ) {
-            throw new IllegalArgumentException("Invalid char into section '" + sections[index] + "' at position 0.");
-        }
-        for(int i = 1; i < sections[index].length(); i++) {
-            if( ! Character.isJavaIdentifierPart( sections[index].charAt(i) ) ) {
-                throw new IllegalArgumentException("Invalid char into section '" + sections[index] + "' at position " + i + ".");
-            }
-        }
-        if( ! exists(sections, index) ) {
-            throw new QueryModelException("entity '" + concatenate(sections, index) + "' doesn't exist.");
+        if( ! exists(sections) ) {
+            throw new QueryModelException("entity '" + sections + "' doesn't exist.");
         }
     }
 
@@ -164,7 +127,7 @@ public abstract class JBase {
         for(int s = 0; s <= index; s++) {
             sb.append(sections[s]);
             if(s != index) {
-                sb.append(CodeHandler.PACKAGE_SEPARATOR);
+                sb.append(JavaCodeHandler.PACKAGE_SEPARATOR);
             }
         }
         return sb.toString();
@@ -175,48 +138,35 @@ public abstract class JBase {
      * Splits the container path into sections.
      *
      * @param path
-     * @return the splitted sections.
+     * @return the split sections.
      */
     public static final String[] splitPath(String path) {
         int psi = path.indexOf(CodeModel.PREFIX_SEPARATOR); // Ignoring prefix identifier if any.
         String subPath = path.substring(psi + 1);
-        String[] sectionNames = subPath.split("\\" + CodeHandler.PACKAGE_SEPARATOR);
+        String[] sectionNames = subPath.split("\\" + JavaCodeHandler.PACKAGE_SEPARATOR);
         return sectionNames;
-    }
-
-    /**
-     * Contains a hierarchy result.
-     */
-    private class HierarchyResult {
-        JContainer p;
-        String n;
     }
 
     /**
      * Creates a hierarchy result on given org.asemantics.model and sections.
      * @param qm
-     * @param sections
+     * @param entity
      * @return  the created hierarchy.
      */
-    protected final HierarchyResult makeHierarchy(JavaQueryModel qm, String[] sections)
+    protected final JBase makeHierarchy(JavaQueryModel qm, Identifier entity)
     throws QueryModelException {
-
-        JBase parent = null;
-        validateAndCheckName(sections, sections.length -1);
-        if(sections.length > 1) {
-            String parentType  = qm.getRDFType( concatenate(sections, sections.length - 2) );
-            String[] parentSections = new String[sections.length -1];
-            System.arraycopy(sections, 0, parentSections, 0, sections.length -1);
-            parent = JavaCoderFactory.createBaseOnRDFClass(qm, parentSections, parentType);
+        Identifier parentIdentifier = entity.getPreTail();
+        if(parentIdentifier.size() == 0) {
+            return null;
         }
-        HierarchyResult hr = new HierarchyResult();
-        hr.p = (JContainer) parent;
-        hr.n = sections[sections.length - 1];
-        return hr;
+        JBase parent = JavaCoderFactory.createBaseOnRDFClass( qm, parentIdentifier);
+        //HierarchyResult hr = new HierarchyResult();
+        //hr.p = (JContainer) parent;
+        return parent;
     }
 
     public String toString() {
-        return  getParent().getPathAsString() + CodeHandler.PACKAGE_SEPARATOR +  getName() + ":" + getHierarchyElemType();
+        return identifier.toString();
     }
 
 }

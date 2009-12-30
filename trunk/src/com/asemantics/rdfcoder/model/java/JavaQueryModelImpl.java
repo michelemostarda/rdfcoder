@@ -19,9 +19,10 @@
 package com.asemantics.rdfcoder.model.java;
 
 import com.asemantics.rdfcoder.model.Asset;
-import com.asemantics.rdfcoder.model.CodeHandlerImpl;
 import com.asemantics.rdfcoder.model.CodeModel;
 import com.asemantics.rdfcoder.model.CodeModelBase;
+import com.asemantics.rdfcoder.model.Identifier;
+import com.asemantics.rdfcoder.model.IdentifierReader;
 import com.asemantics.rdfcoder.model.QueryModelException;
 import com.asemantics.rdfcoder.model.TripleIterator;
 
@@ -36,6 +37,8 @@ import java.util.List;
  */
 public class JavaQueryModelImpl implements JavaQueryModel {
 
+    private static final JavaCodeModel.JModifier[] EMPTY_MODIFIERS_LIST = new JavaCodeModel.JModifier[0];
+
     private CodeModel codeModel;
 
     public JavaQueryModelImpl(CodeModel codeModel) {  // Protecting creation.
@@ -48,7 +51,12 @@ public class JavaQueryModelImpl implements JavaQueryModel {
 
     public String[] getLibraries() {
         List<String> result = new ArrayList<String>();
-        TripleIterator ti = codeModel.searchTriples(JavaCodeModel.ASSET, CodeModelBase.CONTAINS_LIBRARY, CodeModel.ALL_MATCH);
+        TripleIterator ti = codeModel.searchTriples(
+                JavaCodeModel.ASSET,
+                CodeModelBase.CONTAINS_LIBRARY,
+                CodeModel.ALL_MATCH
+
+        );
         try {
             while(ti.next()) {
                 result.add(ti.getObject());
@@ -75,7 +83,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         TripleIterator ti = codeModel.searchTriples(library, JavaCodeModel.LIBRARY_DATETIME, CodeModel.ALL_MATCH);
         try {
             if(ti.next()) {
-                return CodeHandlerImpl.parseLibraryDatetime(ti.getObject());
+                return JavaCodeHandlerImpl.parseLibraryDatetime(ti.getObject());
             }
         } finally {
             ti.close();
@@ -83,169 +91,155 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         return null;
     }
 
-    public boolean packageExists(String pathToPackage) {
+    public boolean packageExists(Identifier pathToPackage) {
         TripleIterator ti = codeModel.searchTriples(
-                CodeModelBase.prefixFullyQualifiedName( JavaCodeModel.PACKAGE_PREFIX, pathToPackage),
+                pathToPackage.getIdentifier(),
                 CodeModel.SUBCLASSOF,
                 JavaCodeModel.JPACKAGE
         );
         try {
-            if( ti.next() ) {
-                return true;
-            }
-            return false;
+            return ti.next();
         } finally {
             ti.close();
         }
     }
 
-    public boolean classExists(String pathToClass) {
+    public boolean classExists(Identifier pathToClass) {
         TripleIterator ti = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName( JavaCodeModel.CLASS_PREFIX, pathToClass),
+                pathToClass.getIdentifier(),
                 JavaCodeModel.SUBCLASSOF,
                 JavaCodeModel.JCLASS
         );
         try {
-            if( ti.next() ) {
-                return true;
-            }
-            return false;
+            return ti.next();
         } finally {
             ti.close();
         }
     }
 
-    public boolean interfaceExists(String pathToInterface) {
+    public boolean interfaceExists(Identifier pathToInterface) {
         TripleIterator ti = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName( JavaCodeModel.INTERFACE_PREFIX, pathToInterface),
+                pathToInterface.getIdentifier(),
                 JavaCodeModel.SUBCLASSOF,
                 JavaCodeModel.JINTERFACE
         );
         try {
-            if( ti.next() ) {
-                return true;
-            }
-            return false;
+            return ti.next();
         } finally {
             ti.close();
         }
     }
 
-    public boolean attributeExists(String pathToAttribute) {
+    public boolean attributeExists(Identifier pathToAttribute) {
         TripleIterator ti = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName( JavaCodeModel.ATTRIBUTE_PREFIX, pathToAttribute),
+                pathToAttribute.getIdentifier(),
                 JavaCodeModel.SUBCLASSOF,
                 JavaCodeModel.JATTRIBUTE
         );
         try {
-            if( ti.next() ) {
-                return true;
-            }
-            return false;
+            return ti.next();
         } finally {
             ti.close();
         }
     }
 
-    public boolean methodExists(String pathToMethod) {
+    public boolean methodExists(Identifier pathToMethod) {
         TripleIterator ti = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName( JavaCodeModel.METHOD_PREFIX, pathToMethod),
+                pathToMethod.getIdentifier(),
                 JavaCodeModel.SUBCLASSOF,
                 JavaCodeModel.JMETHOD
         );
         try {
-            if( ti.next() ) {
-                return true;
-            }
-            return false;
+            return ti.next();
         } finally {
             ti.close();
         }
     }
 
-    public boolean signatureExists(String pathToSignature) {
+    public boolean signatureExists(Identifier pathToSignature) {
         TripleIterator ti = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName( JavaCodeModel.SIGNATURE_PREFIX, pathToSignature),
+                pathToSignature.getIdentifier(),
                 JavaCodeModel.SUBCLASSOF,
                 JavaCodeModel.JSIGNATURE
         );
         try {
-            if( ti.next() ) {
-                return true;
-            }
-            return false;
+            return ti.next();
         } finally {
             ti.close();
         }
     }
 
-    public boolean enumerationExists(String pathToEnumeration) {
+    public boolean enumerationExists(Identifier pathToEnumeration) {
         TripleIterator ti = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName( JavaCodeModel.ENUMERATION_PREFIX, pathToEnumeration),
+                pathToEnumeration.getIdentifier(),
                 JavaCodeModel.SUBCLASSOF,
                 JavaCodeModel.JENUMERATION
         );
         try {
-            if( ti.next() ) {
-                return true;
-            }
-            return false;
+            return ti.next();
         } finally {
             ti.close();
         }
     }
 
     public JPackage[] getAllPackages() {
-        TripleIterator t1 = codeModel.searchTriples(JavaCodeModel.ALL_MATCH, JavaCodeModel.SUBCLASSOF, JavaCodeModel.JPACKAGE);
-        List packages = new ArrayList();
+        TripleIterator t1 = codeModel.searchTriples(
+                JavaCodeModel.ALL_MATCH,
+                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.JPACKAGE
+        );
+        List<JPackage> packages = new ArrayList<JPackage>();
         String subject;
         try {
             while(t1.next()) {
                 subject = t1.getSubject();
                 try {
-                    packages.add( JavaCoderFactory.createJPackage(this, subject) );
+                    packages.add( JavaCoderFactory.createJPackage(this, IdentifierReader.readIdentifier( subject) ));
                 } catch (QueryModelException cme) {
-                    System.out.println("subject " + subject);
-                    throw new RuntimeException(cme);
+                    throw new RuntimeException("Error while retrieving packages.", cme);
                 }
             }
         } finally {
             t1.close();
         }
-        return (JPackage[]) packages.toArray( new JPackage[packages.size()] );
+        return packages.toArray( new JPackage[packages.size()] );
     }
 
-    public JPackage[] getPackagesInto( String pathToPackage) throws QueryModelException {
+    public JPackage[] getPackagesInto(Identifier pathToPackage) throws QueryModelException {
         TripleIterator t1 = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.PACKAGE_PREFIX, pathToPackage),
+                pathToPackage.getIdentifier(),
                 JavaCodeModel.CONTAINS_PACKAGE,
                 JavaCodeModel.ALL_MATCH
         );
-        List packages = new ArrayList();
+        List<JPackage> packages = new ArrayList<JPackage>();
         try {
             while(t1.next()) {
-                packages.add( JavaCoderFactory.createJPackage(this, t1.getObject()) );
+                packages.add( JavaCoderFactory.createJPackage(this, IdentifierReader.readIdentifier( t1.getObject()) ));
             } 
         }finally {
             t1.close();
         }
-        return (JPackage[]) packages.toArray( new Package[packages.size()] );
+        return packages.toArray( new JPackage[ packages.size() ] );
     }
 
-    public JPackage getPackage(String pathToPackage) throws QueryModelException {
-//        if( ! packageExists(pathToPackage) ) {
-//            throw new QueryModelException("Package '" + pathToPackage + "' doesn't exist.");
-//        }
+    public JPackage getPackage(Identifier pathToPackage) throws QueryModelException {
         return JavaCoderFactory.createJPackage(this, pathToPackage);
     }
 
     public JInterface[] getAllInterfaces() {
-        TripleIterator t1 = codeModel.searchTriples(JavaCodeModel.ALL_MATCH, JavaCodeModel.SUBCLASSOF, JavaCodeModel.JINTERFACE);
-        List classes = new ArrayList();
+        TripleIterator t1 = codeModel.searchTriples(
+                JavaCodeModel.ALL_MATCH,
+                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.JINTERFACE
+        );
+        List<JInterface> interfaces = new ArrayList<JInterface>();
         try {
             while(t1.next()) {
                 try {
-                    classes.add( JavaCoderFactory.createJInterface(this, t1.getSubject()) );
+                    interfaces.add( JavaCoderFactory.createJInterface(
+                            this,
+                            IdentifierReader.readIdentifier( t1.getSubject() ))
+                    );
                 } catch (QueryModelException qme) {
                     throw new RuntimeException(qme);
                 }
@@ -253,20 +247,24 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         } finally {
             t1.close();
         }
-        return (JInterface[]) classes.toArray( new JInterface[classes.size()] );
+        return interfaces.toArray( new JInterface[interfaces.size()] );
     }
 
-    public JInterface getInterface(String pathToInterface) throws QueryModelException {
+    public JInterface getInterface(Identifier pathToInterface) throws QueryModelException {
         return JavaCoderFactory.createJInterface(this, pathToInterface);
     }
 
     public JClass[] getAllClasses() {
-        TripleIterator t1 = codeModel.searchTriples(JavaCodeModel.ALL_MATCH, JavaCodeModel.SUBCLASSOF, JavaCodeModel.JCLASS);
-        List classes = new ArrayList();
+        TripleIterator t1 = codeModel.searchTriples(
+                JavaCodeModel.ALL_MATCH,
+                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.JCLASS
+        );
+        List<JClass> classes = new ArrayList<JClass>();
         try {
             while(t1.next()) {
                 try {
-                    classes.add( JavaCoderFactory.createJClass(this, t1.getSubject()) );
+                    classes.add( JavaCoderFactory.createJClass(this, IdentifierReader.readIdentifier( t1.getSubject() )));
                 } catch (QueryModelException qme) {
                     throw new RuntimeException(qme);
                 }
@@ -274,24 +272,26 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         } finally {
             t1.close();
         }
-        return (JClass[]) classes.toArray( new JClass[classes.size()] );
+        return classes.toArray( new JClass[classes.size()] );
     }
 
-    public JClass getClazz(String pathToClass) throws QueryModelException {
+    public JClass getClazz(Identifier pathToClass) throws QueryModelException {
         return JavaCoderFactory.createJClass(this, pathToClass);
     }
 
-    public JInterface[] getInterfacesInto(String pathToContainer) throws QueryModelException {
-        List interfaces = new ArrayList();
+    public JInterface[] getInterfacesInto(Identifier pathToContainer) throws QueryModelException {
+        List<JInterface> interfaces = new ArrayList<JInterface>();
         TripleIterator t1 = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName( JavaCodeModel.PACKAGE_PREFIX, pathToContainer),
+                pathToContainer.getIdentifier(),
                 JavaCodeModel.CONTAINS_INTERFACE,
                 JavaCodeModel.ALL_MATCH
         );
         try {
             while(t1.next()) {
                 try {
-                    interfaces.add(JavaCoderFactory.createJInterface(this, t1.getObject()) );
+                    interfaces.add(
+                            JavaCoderFactory.createJInterface(this, IdentifierReader.readIdentifier( t1.getObject() ))
+                    );
                 } catch (QueryModelException qme) {
                     throw new RuntimeException(qme);
                 }
@@ -299,35 +299,20 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         } finally {
             t1.close();
         }
-        TripleIterator t2 = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.CLASS_PREFIX, pathToContainer),
-                JavaCodeModel.CONTAINS_INTERFACE,
-                JavaCodeModel.ALL_MATCH
-        );
-        try {
-            while(t2.next()) {
-                try {
-                    interfaces.add( JavaCoderFactory.createJInterface( this, t2.getObject()) );
-                } catch (QueryModelException qme) {
-                    throw new RuntimeException(qme);
-                }
-            }
-        } finally {
-            t2.close();
-        }
-        return (JInterface[]) interfaces.toArray( new JClass[interfaces.size()] );    }
+        return interfaces.toArray( new JInterface[interfaces.size()] );
+    }
 
-    public JClass[] getClassesInto(String pathToContainer) {
-        List classes = new ArrayList();
+    public JClass[] getClassesInto(Identifier pathToContainer) {
+        List<JClass> classes = new ArrayList<JClass>();
         TripleIterator t1 = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName( JavaCodeModel.PACKAGE_PREFIX, pathToContainer),
+                pathToContainer.getIdentifier(),
                 JavaCodeModel.CONTAINS_CLASS,
                 JavaCodeModel.ALL_MATCH
         );
         try {
             while(t1.next()) {
                 try {
-                    classes.add(JavaCoderFactory.createJClass(this, t1.getObject()) );
+                    classes.add(JavaCoderFactory.createJClass(this, IdentifierReader.readIdentifier( t1.getObject() )));
                 } catch (QueryModelException qme) {
                     throw new RuntimeException(qme);
                 }
@@ -335,94 +320,42 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         } finally {
             t1.close();
         }
-        TripleIterator t2 = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.CLASS_PREFIX, pathToContainer),
-                JavaCodeModel.CONTAINS_CLASS,
-                JavaCodeModel.ALL_MATCH
-        );
-        try {
-            while(t2.next()) {
-                try {
-                    classes.add( JavaCoderFactory.createJClass(this, t2.getObject()) );
-                } catch (QueryModelException qme) {
-                    throw new RuntimeException(qme);
-                }
-            }
-        } finally {
-            t2.close();
-        }
-        TripleIterator t3 = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.INTERFACE_PREFIX, pathToContainer),
-                JavaCodeModel.CONTAINS_CLASS,
-                JavaCodeModel.ALL_MATCH
-        );
-        try {
-            while(t3.next()) {
-                try {
-                    classes.add( JavaCoderFactory.createJClass(this, t3.getObject()) );
-                } catch (QueryModelException qme) {
-                    throw new RuntimeException(qme);
-                }
-            }
-        } finally {
-            t3.close();
-        }
-        return (JClass[]) classes.toArray( new JClass[classes.size()] );
+        return classes.toArray( new JClass[classes.size()] );
     }
 
-    public JAttribute[] getAttributesInto(String pathToContainer) throws QueryModelException {
-        List attributes = new ArrayList();
+    public JAttribute[] getAttributesInto(Identifier pathToContainer) throws QueryModelException {
+        List<JAttribute> attributes = new ArrayList<JAttribute>();
         TripleIterator t1 = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.CLASS_PREFIX, pathToContainer),
+                pathToContainer.getIdentifier(),
                 JavaCodeModel.CONTAINS_ATTRIBUTE,
                 JavaCodeModel.ALL_MATCH
         );
         try {
             while(t1.next()) {
-                attributes.add( JavaCoderFactory.createJAttribute(this, t1.getObject()) );
+                attributes.add( JavaCoderFactory.createJAttribute(this, IdentifierReader.readIdentifier( t1.getObject()) ));
             }
         } finally {
             t1.close();
         }
-        TripleIterator t2 = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.INTERFACE_PREFIX, pathToContainer),
-                JavaCodeModel.CONTAINS_ATTRIBUTE,
-                JavaCodeModel.ALL_MATCH
-        );
-        try {
-            while(t2.next()) {
-                try {
-                    attributes.add( JavaCoderFactory.createJAttribute(this, t2.getObject()) );
-                } catch (QueryModelException qme) {
-                    throw new RuntimeException(qme);
-                }
-            }
-        } finally {
-            t2.close();
-        }
-        return (JAttribute[]) attributes.toArray( new JAttribute[attributes.size()] );
+        return attributes.toArray( new JAttribute[attributes.size()] );
     }
 
-    public JAttribute getAttribute(String pathToAttribute) throws QueryModelException {
-//        if( ! attributeExists(pathToAttribute) ) {
-//            throw new QueryModelException("Attribute ' " + pathToAttribute + "' is not defined.");
-//        }
+    public JAttribute getAttribute(Identifier pathToAttribute) throws QueryModelException {
         // Creating the attribute type.
         return JavaCoderFactory.createJAttribute(
                 this,
-                JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.ATTRIBUTE_PREFIX, pathToAttribute)
+                pathToAttribute
         );
     }
 
-    public JavaCodeModel.JType getAttributeType(String pathToAttribute) throws QueryModelException {
+    public JavaCodeModel.JType getAttributeType(Identifier pathToAttribute) throws QueryModelException {
         TripleIterator t1 = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.ATTRIBUTE_PREFIX, pathToAttribute),
+                pathToAttribute.getIdentifier(),
                 JavaCodeModel.ATTRIBUTE_TYPE, JavaCodeModel.ALL_MATCH
         );
         try {
-            while(t1.next()) {
-                JavaCodeModel.JType result =  JavaCodeModel.rdfTypeToJType(t1.getObject());
-                return result;
+            if(t1.next()) {
+                return JavaCodeModel.rdfTypeToJType(t1.getObject());
             }
         } finally {
             t1.close();
@@ -430,79 +363,57 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         throw new QueryModelException("Cannot find attribute '" + pathToAttribute + "'.");
     }
 
-    public JMethod[] getMethodsInto(String pathToClass) throws QueryModelException {
-        List methods = new ArrayList();
+    public JMethod[] getMethodsInto(Identifier pathToClass) throws QueryModelException {
+        List<JMethod> methods = new ArrayList<JMethod>();
         TripleIterator t1 = codeModel.searchTriples(
-               JavaCodeModel.prefixFullyQualifiedName( JavaCodeModel.CLASS_PREFIX, pathToClass),
+               pathToClass.getIdentifier(),
                JavaCodeModel.CONTAINS_METHOD,
                JavaCodeModel.ALL_MATCH
         );
         try {
             while(t1.next()) {
-                methods.add( JavaCoderFactory.createJMethod(this, t1.getObject()) );
+                methods.add( JavaCoderFactory.createJMethod(this, IdentifierReader.readIdentifier(t1.getObject()) ));
             }
         } finally {
             t1.close();
         }
-        TripleIterator t2 = codeModel.searchTriples(
-               JavaCodeModel.prefixFullyQualifiedName( JavaCodeModel.INTERFACE_PREFIX, pathToClass),
-               JavaCodeModel.CONTAINS_METHOD,
-               JavaCodeModel.ALL_MATCH
-        );
-        try {
-            while(t2.next()) {
-                methods.add( JavaCoderFactory.createJMethod(this, t2.getObject()) );
-            }
-        } finally {
-            t2.close();
-        }
-        TripleIterator t3 = codeModel.searchTriples(
-               JavaCodeModel.prefixFullyQualifiedName( JavaCodeModel.ENUMERATION_PREFIX, pathToClass),
-               JavaCodeModel.CONTAINS_METHOD,
-               JavaCodeModel.ALL_MATCH
-        );
-        try {
-            while(t3.next()) {
-                methods.add( JavaCoderFactory.createJMethod(this, t3.getObject()) );
-            }
-        } finally {
-            t3.close();
-        }
-        return (JMethod[]) methods.toArray( new JMethod[methods.size()] );
+        return methods.toArray( new JMethod[methods.size()] );
     }
 
-    public JMethod getMethod(String pathToMethod) throws QueryModelException {
+    public JMethod getMethod(Identifier pathToMethod) throws QueryModelException {
         return JavaCoderFactory.createJMethod(this, pathToMethod);
     }
 
-    public JEnumeration[] getEnumerationsInto(String pathToContainer) throws QueryModelException {
+    public JEnumeration[] getEnumerationsInto(Identifier pathToContainer) throws QueryModelException {
         TripleIterator t1 = codeModel.searchTriples(
                JavaCodeModel.ALL_MATCH,
                JavaCodeModel.CONTAINS_ENUMERATION,
                JavaCodeModel.ALL_MATCH
         );
-        List enumerations = new ArrayList();
+        List<JEnumeration> enumerations = new ArrayList<JEnumeration>();
         try {
             while(t1.next()) {
-                enumerations.add( JavaCoderFactory.createJEnumeration(this, t1.getObject()) );
+                enumerations.add(
+                        JavaCoderFactory.createJEnumeration(this, IdentifierReader.readIdentifier(t1.getObject() ))
+                );
             }
         } finally {
             t1.close();
         }
-        return (JEnumeration[]) enumerations.toArray( new JEnumeration[enumerations.size()] );
+        return enumerations.toArray( new JEnumeration[enumerations.size()] );
     }
 
-    public JEnumeration getEnumeration(String pathToEnumeration) throws QueryModelException {
+    public JEnumeration getEnumeration(Identifier pathToEnumeration) throws QueryModelException {
         return JavaCoderFactory.createJEnumeration(this, pathToEnumeration);
     }
 
-    public String[] getElements(String pathToEnumeration) {
+    public String[] getElements(Identifier pathToEnumeration) {
         TripleIterator t1 = codeModel.searchTriples(
-               JavaCodeModel.prefixFullyQualifiedName( JavaCodeModel.ENUMERATION_PREFIX, pathToEnumeration),
+               pathToEnumeration.getIdentifier(),
                JavaCodeModel.CONTAINS_ELEMENT,
                JavaCodeModel.ALL_MATCH
         );
-        List enumerations = new ArrayList();
+        List<String> enumerations = new ArrayList<String>();
         try {
             while(t1.next()) {
                 enumerations.add( t1.getObject() );
@@ -510,26 +421,26 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         } finally {
             t1.close();
         }
-        return (String[]) enumerations.toArray( new String[enumerations.size()] );
+        return enumerations.toArray( new String[enumerations.size()] );
     }
 
-    public JSignature[] getSignatures(String pathToMethod) throws QueryModelException {
+    public JSignature[] getSignatures(Identifier pathToMethod) throws QueryModelException {
         TripleIterator t1 = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.METHOD_PREFIX, pathToMethod),
+                pathToMethod.getIdentifier(),
                 JavaCodeModel.CONTAINS_SIGNATURE,
                 JavaCodeModel.ALL_MATCH
         );
         TripleIterator t2;
         TripleIterator t3;
-        List signatures = new ArrayList();
-        List parametersIntoSignature = new ArrayList();
+        List<JSignature> signatures = new ArrayList<JSignature>();
+        List<JavaCodeModel.JType> parametersIntoSignature = new ArrayList<JavaCodeModel.JType>();
         try {
             while(t1.next()) { //Signatures
                 t2 = codeModel.searchTriples(t1.getObject(), JavaCodeModel.PARAMETER_TYPE, JavaCodeModel.ALL_MATCH);
                 parametersIntoSignature.clear();
                 try {
                     while(t2.next()) { //Types.
-                        parametersIntoSignature.add(JavaCodeModel.rdfTypeToJType(t2.getSubject()));
+                        parametersIntoSignature.add( JavaCodeModel.rdfTypeToJType(t2.getSubject()) );
                     } 
                 } finally {
                     t2.close();
@@ -537,14 +448,16 @@ public class JavaQueryModelImpl implements JavaQueryModel {
                 t3 = codeModel.searchTriples(t1.getObject(), JavaCodeModel.RETURN_TYPE, JavaCodeModel.ALL_MATCH);
                 try {
                     if( ! t3.next() ) {
-                        throw new QueryModelException("Cannot find the return type for the method '" + pathToMethod + "'.");
+                        throw new QueryModelException(
+                                "Cannot find the return type for the method '" + pathToMethod + "'."
+                        );
                     }
                     signatures.add(
                         JavaCoderFactory.createJSignature(
                                 this,
-                                t1.getObject(),
-                                ( (JavaCodeModel.JType[]) parametersIntoSignature.toArray(new JavaCodeModel.JType[parametersIntoSignature.size()]) ),
-                                    JavaCodeModel.rdfTypeToJType( t3.getObject() )
+                                IdentifierReader.readIdentifier(t1.getObject()),
+                                ( parametersIntoSignature.toArray(new JavaCodeModel.JType[parametersIntoSignature.size()]) ),
+                                JavaCodeModel.rdfTypeToJType( t3.getObject() )
                             )
                     );
                 } finally {
@@ -554,30 +467,30 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         } finally {
             t1.close();
         }
-        return (JSignature[]) signatures.toArray( new JSignature[signatures.size()] );
+        return signatures.toArray( new JSignature[signatures.size()] );
     }
 
-    public JavaCodeModel.JType[] getParameters(String pathToSignature) throws QueryModelException {
+    public JavaCodeModel.JType[] getParameters(Identifier pathToSignature) throws QueryModelException {
         TripleIterator t1 = codeModel.searchTriples(
-            JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.SIGNATURE_PREFIX, pathToSignature),
+            pathToSignature.getIdentifier(),
             JavaCodeModel.CONTAINS_PARAMETER,
             JavaCodeModel.ALL_MATCH
         );
-        List result;
+        List<JavaCodeModel.JType> result;
         try {
-            result = new ArrayList();
+            result = new ArrayList<JavaCodeModel.JType>();
             while(t1.next()) {
                 result.add( JavaCodeModel.rdfTypeToJType( t1.getObject() ) );
             }
         } finally{
             t1.close();
         }
-        return (JavaCodeModel.JType[]) result.toArray( new JavaCodeModel.JType[result.size()] );
+        return result.toArray( new JavaCodeModel.JType[result.size()] );
     }
 
-    public JavaCodeModel.JType getReturnType(String pathToSignature) throws QueryModelException {
+    public JavaCodeModel.JType getReturnType(Identifier pathToSignature) throws QueryModelException {
         TripleIterator t1 = codeModel.searchTriples(
-            JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.SIGNATURE_PREFIX, pathToSignature),
+            pathToSignature.getIdentifier(),
             JavaCodeModel.RETURN_TYPE,
             JavaCodeModel.ALL_MATCH
         );
@@ -592,10 +505,9 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         }
     }
 
-    public JavaCodeModel.JVisibility getVisibility(String pathToEntity) throws QueryModelException {
-        String prefix = JavaCodeModel.getPrefixFromRDFType( getRDFType(pathToEntity) );
+    public JavaCodeModel.JVisibility getVisibility(Identifier pathToEntity) throws QueryModelException {
         TripleIterator t1 = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName(prefix, pathToEntity),
+                pathToEntity.getIdentifier(),
                 JavaCodeModel.HAS_VISIBILITY,
                 JavaCodeModel.ALL_MATCH
         );
@@ -610,10 +522,9 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         return result == null ? JavaCodeModel.JVisibility.DEFAULT : JavaCodeModel.JVisibility.toJVisibility(result);
     }
 
-    public JavaCodeModel.JModifier[] getModifiers(String pathToEntity) throws QueryModelException {
-        String prefix = JavaCodeModel.getPrefixFromRDFType( getRDFType(pathToEntity) );
+    public JavaCodeModel.JModifier[] getModifiers(Identifier pathToEntity) throws QueryModelException {
         TripleIterator t1 = codeModel.searchTriples(
-                JavaCodeModel.prefixFullyQualifiedName(prefix, pathToEntity),
+                pathToEntity.getIdentifier(),
                 JavaCodeModel.HAS_MODIFIERS,
                 JavaCodeModel.ALL_MATCH
         );
@@ -625,42 +536,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         } finally {
             t1.close();
         }
-        return result == null ? new JavaCodeModel.JModifier[]{} : JavaCodeModel.JModifier.toModifiers( result );
-    }
-
-    public String getRDFType(String pathToEntity) throws QueryModelException {
-        String rdfType;
-
-        rdfType = checkType( JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.CLASS_PREFIX, pathToEntity) );
-        if(rdfType != null) {
-            return rdfType;
-        }
-        rdfType = checkType( JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.INTERFACE_PREFIX, pathToEntity) );
-        if(rdfType != null) {
-            return rdfType;
-        }
-        rdfType = checkType( JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.METHOD_PREFIX, pathToEntity) );
-        if(rdfType != null) {
-            return rdfType;
-        }
-        rdfType = checkType( JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.PACKAGE_PREFIX, pathToEntity) );
-        if(rdfType != null) {
-            return rdfType;
-        }
-        rdfType = checkType( JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.ATTRIBUTE_PREFIX, pathToEntity) );
-        if(rdfType != null) {
-            return rdfType;
-        }
-        rdfType = checkType( JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.CONSTRUCTOR_PREFIX, pathToEntity) );
-        if(rdfType != null) {
-            return rdfType;
-        }
-        rdfType = checkType( JavaCodeModel.prefixFullyQualifiedName(JavaCodeModel.ENUMERATION_PREFIX, pathToEntity) );
-        if(rdfType != null) {
-            return rdfType;
-        }
-
-        throw new QueryModelException("Cannot find the full qualification of entity : '" + pathToEntity + "'.");
+        return result == null ? EMPTY_MODIFIERS_LIST : JavaCodeModel.JModifier.toModifiers( result );
     }
 
     public String toString() {
@@ -669,24 +545,6 @@ public class JavaQueryModelImpl implements JavaQueryModel {
                 "classes: "    + getAllClasses().length   + ", " +
                 "interfaces: " + getAllInterfaces().length       +
                 "}";
-    }
-
-    /**
-     * Returns the RDF type of the prefixed entity if exists, <code>null</code>otherwise.
-     *
-     * @param prefixedPathToEntity the entity to check.
-     * @return
-     */
-    private String checkType(String prefixedPathToEntity) {
-        TripleIterator t1 = codeModel.searchTriples(prefixedPathToEntity, JavaCodeModel.SUBCLASSOF, JavaCodeModel.ALL_MATCH);
-        try {
-            if( t1.next() ) {
-                return t1.getObject();
-            }
-        } finally {
-            t1.close();
-        }
-        return null;
     }
 
 }

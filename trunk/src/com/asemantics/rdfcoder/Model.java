@@ -40,9 +40,9 @@ import java.util.Map;
 
 
 /**
- * Defines an RDF model. 
+ * Defines an <i>RDF Model</i>. 
  */
-public class Model {
+public class Model<T extends CoderFactory> {
 
     /**
      * <i>Check package discrepancy</i> flag defualt value.
@@ -72,7 +72,7 @@ public class Model {
     /**
      * The coder factory.
      */
-    private CoderFactory coderFactory;
+    private T coderFactory;
 
     /**
      * The map of profile instances.
@@ -99,7 +99,7 @@ public class Model {
      */
     private final CodeStorage codeStorage;
 
-    protected Model(String n, RDFCoder c, CoderFactory cf) {
+    protected Model(String n, RDFCoder c, T cf) {
         name          = n;
         coder         = c;
         coderFactory  = cf;
@@ -310,7 +310,7 @@ public class Model {
      *
      * @return coder factory instance.
      */
-    protected CoderFactory getCoderFactory() {
+    protected T getCoderFactory() {
         return coderFactory;
     }
 

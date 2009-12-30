@@ -18,81 +18,85 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.Identifier;
+import com.asemantics.rdfcoder.model.IdentifierReader;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * This class represents the context of the imports of the class
- * and it is able to ully qualify an object.
+ * This class represents the imports of a class
+ * and it is able to fully qualify an object.
  */
 class ImportsContext {
 
     /**
      * The current package of the object.
      */
-    private String contextPackage;
+    private Identifier contextPackage;
 
     /**
      * Contains all objects that are imported with full qualification.
      */
-    private List<String> fullyQualifiedObjects;
+    private List<Identifier> fullyQualifiedObjects;
 
     /**
-     * Contains all pakages imported with the star '*' notation.
+     * Contains all packages imported with the star '*' notation.
      */
-    private List<String> starredPackages;
+    private List<Identifier> starredPackages;
 
-    ImportsContext() { }
+
+    ImportsContext(){}
 
     public void setContextPackage(String pkg) {
-        if(pkg == null) {
-            throw new IllegalArgumentException();
-        }
-        contextPackage = pkg;
+        contextPackage = IdentifierReader.readPackage(pkg);
     }
 
     public void addFullyQualifiedObject(String pack) {
         if(fullyQualifiedObjects == null) {
-            fullyQualifiedObjects = new ArrayList();
+            fullyQualifiedObjects = new ArrayList<Identifier>();
         }
         /* Disabled because many classes have repeated packages.
         else if(fullyQualifiedObjects.contains(pack)) {
             throw new IllegalArgumentException("Package '" +  pack + "' is already present in the Context.");
         }
         */
-        fullyQualifiedObjects.add(pack);
+        fullyQualifiedObjects.add(IdentifierReader.readPackage(pack) );
     }
 
     public void addStarredPackage(String pack) {
         if(starredPackages == null) {
-            starredPackages = new ArrayList();
+            starredPackages = new ArrayList<Identifier>();
         } else if(starredPackages.contains(pack)) {
             throw new IllegalArgumentException("Starred package '" + pack + "' is already defined.");
         }
-        starredPackages.add(pack);
+        starredPackages.add( IdentifierReader.readIdentifier(pack) );
     }
 
-    public String qualifyType(ObjectsTable objectsTable, String type) {
+    public Identifier qualifyType(ObjectsTable objectsTable, String type) {
         if(type == null || type.trim().length() == 0) {
             throw new IllegalArgumentException();
         }
 
         //The object is fully qualified.
-        if( checkFullyQualified(type) ) {
-            return type;
+        //if( checkFullyQualified(type) ) {
+        try {
+            return IdentifierReader.readPackage(type);
+        } catch (IllegalArgumentException iae) {
+            // continue.
         }
+        //}
 
         // The object is not qualified:
 
         // finding into fully qualified objects among imports.
         if( fullyQualifiedObjects != null ) {
-            String fqo;
-            for(Iterator<String> fqos = fullyQualifiedObjects.iterator(); fqos.hasNext(); ) {
+            Identifier fqo;
+            for(Iterator<Identifier> fqos = fullyQualifiedObjects.iterator(); fqos.hasNext(); ) {
                 fqo = fqos.next();
-                if( fqo.indexOf(type) == fqo.length() - type.length() ) { // Postfix found.
+                if( fqo.getIdentifier().indexOf(type) == fqo.getIdentifier().length() - type.length() ) { // Postfix found.
                     return fqo;
                 }
             }
@@ -100,16 +104,16 @@ class ImportsContext {
 
         // finding in the same package.
         if ( objectsTable.checkObject(contextPackage, type) ) {
-            return contextPackage + CodeHandler.PACKAGE_SEPARATOR + type;
+            return IdentifierReader.readPackage( contextPackage + JavaCodeHandler.PACKAGE_SEPARATOR + type);
         }
 
         // finding into the Objects table using starred objects.
         if(starredPackages != null) {
-            String spk;
-            for(Iterator<String> spks = starredPackages.iterator(); spks.hasNext(); ) {
+            Identifier spk;
+            for(Iterator<Identifier> spks = starredPackages.iterator(); spks.hasNext(); ) {
                 spk = spks.next();
                 if( objectsTable.checkObject(spk, type) ) {
-                    return spk + CodeHandler.PACKAGE_SEPARATOR + type;
+                    return IdentifierReader.readPackage( spk + JavaCodeHandler.PACKAGE_SEPARATOR + type );
                 }
             }
         }
@@ -117,11 +121,12 @@ class ImportsContext {
         return null;
     }
 
+    /*
     boolean checkFullyQualified(String type) {
         if( type.trim().length() == 0 ) {
             throw new IllegalArgumentException();
         }
-        int packSeparator = type.indexOf(CodeHandler.PACKAGE_SEPARATOR);
+        int packSeparator = type.indexOf(JavaCodeHandler.PACKAGE_SEPARATOR);
         if(packSeparator == -1 ) {
             return false;
         }
@@ -130,5 +135,6 @@ class ImportsContext {
         }
         return true;
     }
+    */
 
 }

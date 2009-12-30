@@ -58,6 +58,7 @@ import java.net.URL;
 /**
  * Defines the <i>Java</i> ontology.
  */
+// TODO: HIGH : review Ontology prefix logic.
 public class JavaOntology extends BaseOntology {
 
     /**

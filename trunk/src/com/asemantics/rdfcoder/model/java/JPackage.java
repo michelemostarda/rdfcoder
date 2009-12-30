@@ -18,6 +18,7 @@
 
 package com.asemantics.rdfcoder.model.java;
 
+import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
@@ -28,40 +29,18 @@ import com.asemantics.rdfcoder.model.QueryModelException;
 public class JPackage extends JContainer {
 
     /**
-     * Check whether a package exists.
-     *
-     * @param qm
-     * @param pathToPackege
-     * @return <code>true</code> if exists.
-     */
-    public static boolean exists(JavaQueryModel qm,  String pathToPackege) {
-        return qm.packageExists( pathToPackege );
-    }
-
-    /**
      * Constructor.
      *
      * @param codeModel
-     * @param packageSections
+     * @param identifier
      */
-    protected JPackage(JavaQueryModel codeModel, String[] packageSections)
+    protected JPackage(JavaQueryModel codeModel, Identifier identifier)
     throws QueryModelException {
-        super(codeModel, packageSections);
+        super(codeModel, identifier);
     }
 
-    /**
-     * Constructor.
-     * 
-     * @param codeModel
-     * @param name
-     */
-    protected JPackage(JavaQueryModel codeModel, String name)
-    throws QueryModelException {
-        super(codeModel, name);
-    }
-
-    public boolean exists(String[] name, int index) {
-        return exists(getQueryModel(), concatenate(name, index));
+    protected boolean exists(Identifier identifier) {
+        return getQueryModel().packageExists(identifier);
     }
 
     protected String getHierarchyElemType() {

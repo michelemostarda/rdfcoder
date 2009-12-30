@@ -24,7 +24,8 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 /**
- ** The <code>CoderFactory</code> implementation for the Jena backend.
+ ** The {@link com.asemantics.rdfcoder.model.CoderFactory}
+ * implementation for the <i>Jena</i> backend.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */

@@ -19,7 +19,7 @@
 package com.asemantics.rdfcoder.model;
 
 /**
- * Exception raised by the {@link com.asemantics.rdfcoder.model.CodeHandler}.
+ * Exception raised by the {@link com.asemantics.rdfcoder.model.java.JavaCodeHandler}.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */

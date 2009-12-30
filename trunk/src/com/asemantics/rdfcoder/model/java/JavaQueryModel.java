@@ -18,6 +18,7 @@
 
 package com.asemantics.rdfcoder.model.java;
 
+import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.QueryModel;
 import com.asemantics.rdfcoder.model.QueryModelException;
 
@@ -36,7 +37,7 @@ public interface JavaQueryModel extends QueryModel {
      * @param pack package path.
      * @return <code>true</code> if exists.
      */
-    public boolean packageExists(String pack);
+    public boolean packageExists(Identifier pack);
 
     /**
      * Checks if a class exixts in Code Model.
@@ -44,7 +45,7 @@ public interface JavaQueryModel extends QueryModel {
      * @param pathToClass fully qualified path of the class.
      * @return <code>true</code> if exists.
      */
-    public boolean classExists(String pathToClass);
+    public boolean classExists(Identifier pathToClass);
 
     /**
      * Checks if an interface exists in Code Model.
@@ -52,7 +53,7 @@ public interface JavaQueryModel extends QueryModel {
      * @param pathToInterface  fully qualified path of the interface.
      * @return <code>true</code> if exists.
      */
-    public boolean interfaceExists(String pathToInterface);
+    public boolean interfaceExists(Identifier pathToInterface);
 
     /**
      * Checks if an attribute exists in Code Model.
@@ -60,7 +61,7 @@ public interface JavaQueryModel extends QueryModel {
      * @param pathToAttribute fully qualified path of the attribute.
      * @return <code>true</code> if exists.
      */
-    public boolean attributeExists(String pathToAttribute);
+    public boolean attributeExists(Identifier pathToAttribute);
 
     /**
      * Checks if a method exists in Code Model.
@@ -68,7 +69,7 @@ public interface JavaQueryModel extends QueryModel {
      * @param pathToMethod fully qualified path of the method.
      * @return <code>true</code> if exists.
      */
-    public boolean methodExists(String pathToMethod);
+    public boolean methodExists(Identifier pathToMethod);
 
     /**
      * Checks if a signature exists in Code Model.
@@ -76,7 +77,7 @@ public interface JavaQueryModel extends QueryModel {
      * @param pathToSignanure
      * @return <code>true</code> if exists.
      */
-    public boolean signatureExists(String pathToSignanure);
+    public boolean signatureExists(Identifier pathToSignanure);
 
     /**
      * Checks if an enumeration exists in Code Model.
@@ -84,7 +85,7 @@ public interface JavaQueryModel extends QueryModel {
      * @param pathToEnumeration fully qualified path of the enumeration.
      * @return <code>true</code> if exists.
      */
-    public boolean enumerationExists(String pathToEnumeration);
+    public boolean enumerationExists(Identifier pathToEnumeration);
 
     /**
      * Returns all packages.
@@ -100,7 +101,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the package.
      * @throws com.asemantics.rdfcoder.model.QueryModelException
      */
-    public JPackage getPackage(String pack) throws QueryModelException;
+    public JPackage getPackage(Identifier pack) throws QueryModelException;
 
     /**
      * Returns all packages in the given package expressed as string.
@@ -109,7 +110,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the packages found.
      * @throws QueryModelException
      */
-    public JPackage[] getPackagesInto(String path) throws QueryModelException;
+    public JPackage[] getPackagesInto(Identifier path) throws QueryModelException;
 
     /**
      * Returns all interfaces in Code Model.
@@ -125,7 +126,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the interface.
      * @throws QueryModelException
      */
-    public JInterface getInterface(String pathToInterface) throws QueryModelException;
+    public JInterface getInterface(Identifier pathToInterface) throws QueryModelException;
 
     /**
      * Returns all classes in Code Model.
@@ -141,7 +142,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the specific class.
      * @throws QueryModelException
      */
-    public JClass getClazz(String pathToClass) throws QueryModelException;
+    public JClass getClazz(Identifier pathToClass) throws QueryModelException;
 
     /**
      * Returns all interfaces into a container path.
@@ -150,7 +151,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the interfaces found.
      * @throws QueryModelException
      */
-    public JInterface[] getInterfacesInto(String path) throws QueryModelException;
+    public JInterface[] getInterfacesInto(Identifier path) throws QueryModelException;
 
     /**
      * Returns all classes into a container path.
@@ -159,7 +160,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the classes found.
      * @throws QueryModelException
      */
-    public JClass[] getClassesInto(String path) throws QueryModelException;
+    public JClass[] getClassesInto(Identifier path) throws QueryModelException;
 
     /**
      * Returns all the attributes in a class.
@@ -167,7 +168,7 @@ public interface JavaQueryModel extends QueryModel {
      * @param pathToClass the path to the class containing the attributes.
      * @return the attributes found.
      */
-    public JAttribute[] getAttributesInto(String pathToClass) throws QueryModelException;
+    public JAttribute[] getAttributesInto(Identifier pathToClass) throws QueryModelException;
 
     /**
      * Returns the attribute of a class.
@@ -176,7 +177,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the attribute found.
      * @throws QueryModelException
      */
-    public JAttribute getAttribute(String pathToAttribute) throws QueryModelException;
+    public JAttribute getAttribute(Identifier pathToAttribute) throws QueryModelException;
 
     /**
      * Returns the attribute type of a given attribute.
@@ -185,7 +186,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the type of the attribute.
      * @throws QueryModelException
      */
-    public JavaCodeModel.JType getAttributeType(String pathToAttribute)  throws QueryModelException;
+    public JavaCodeModel.JType getAttributeType(Identifier pathToAttribute)  throws QueryModelException;
 
     /**
      * Returns the methods in the given container.
@@ -194,7 +195,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the methods found.
      * @throws QueryModelException
      */
-    public JMethod[] getMethodsInto(String pathToContainer) throws QueryModelException;
+    public JMethod[] getMethodsInto(Identifier pathToContainer) throws QueryModelException;
 
     /**
      * Returns the fully qualified method.
@@ -203,7 +204,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the <code>JMethod</code> object if exists.
      * @throws QueryModelException if the fully qualified method nam doesn't exist.
      */
-    public JMethod getMethod(String pathToMethod) throws QueryModelException;
+    public JMethod getMethod(Identifier pathToMethod) throws QueryModelException;
 
     /**
      * Returns the enumerations in the given container.
@@ -212,7 +213,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the enumerations found.
      * @throws QueryModelException
      */
-    public JEnumeration[] getEnumerationsInto(String pathToContainer) throws QueryModelException;
+    public JEnumeration[] getEnumerationsInto(Identifier pathToContainer) throws QueryModelException;
 
     /**
      * Returns the fully qualified enumeration.
@@ -221,7 +222,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the enumeration found.
      * @throws QueryModelException
      */
-    public JEnumeration getEnumeration(String pathToEnumeration) throws QueryModelException;
+    public JEnumeration getEnumeration(Identifier pathToEnumeration) throws QueryModelException;
 
     /**
      * Returns the elements into an enumeration.
@@ -229,7 +230,7 @@ public interface JavaQueryModel extends QueryModel {
      * @param pathToEnumeration
      * @return  the elements found.
      */
-    public String[] getElements(String pathToEnumeration);
+    public String[] getElements(Identifier pathToEnumeration);
 
     /**
      * Returns the signatures of a method.
@@ -238,7 +239,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return  the signatures found.
      * @throws QueryModelException
      */
-    public JSignature[] getSignatures(String pathToMethod) throws QueryModelException;
+    public JSignature[] getSignatures(Identifier pathToMethod) throws QueryModelException;
 
     /**
      * Returns the parameter types of a signature.
@@ -247,7 +248,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the parameters found.
      * @throws QueryModelException
      */
-    public JavaCodeModel.JType[] getParameters(String pathToSignature) throws QueryModelException;
+    public JavaCodeModel.JType[] getParameters(Identifier pathToSignature) throws QueryModelException;
 
     /**
      * Returns the return type of a signature.
@@ -256,7 +257,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the return type.
      * @throws QueryModelException
      */
-    public JavaCodeModel.JType getReturnType(String pathToSignature) throws QueryModelException;
+    public JavaCodeModel.JType getReturnType(Identifier pathToSignature) throws QueryModelException;
 
     /**
      * Returns the visibility associated to the entity.
@@ -265,7 +266,7 @@ public interface JavaQueryModel extends QueryModel {
      * @return the visibility.
      * @throws QueryModelException
      */
-    public JavaCodeModel.JVisibility getVisibility(String pathtoEntity) throws QueryModelException;
+    public JavaCodeModel.JVisibility getVisibility(Identifier pathtoEntity) throws QueryModelException;
 
     /**
      * Returns the modifiers associated to the given entity.
@@ -274,14 +275,6 @@ public interface JavaQueryModel extends QueryModel {
      * @return the modifiers.
      * @throws QueryModelException
      */
-    public JavaCodeModel.JModifier[] getModifiers(String pathToEntity) throws QueryModelException;
+    public JavaCodeModel.JModifier[] getModifiers(Identifier pathToEntity) throws QueryModelException;
 
-    /**
-     * Returns the RDF type of a path.
-     *
-     * @param path the path to the entity to extract the RDF type.
-     * @return the type.
-     * @throws QueryModelException
-     */
-    public String getRDFType(String path) throws QueryModelException;
 }

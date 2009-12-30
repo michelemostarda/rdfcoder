@@ -18,18 +18,23 @@
 
 package com.asemantics.rdfcoder.model;
 
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
+import com.asemantics.rdfcoder.model.java.JavaQueryModel;
+import com.asemantics.rdfcoder.model.java.JavaQueryModelImpl;
 import com.asemantics.rdfcoder.sourceparse.JStatistics;
 import com.asemantics.rdfcoder.sourceparse.JavaBytecodeJarParser;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
+import com.asemantics.rdfcoder.sourceparse.ParserException;
 import com.asemantics.rdfcoder.storage.JenaCoderFactory;
-import com.asemantics.rdfcoder.model.java.JavaQueryModel;
-import com.asemantics.rdfcoder.model.java.JavaQueryModelImpl;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-public class QueryModelTest extends TestCase {
+public class QueryModelTest {
 
     private CodeModelBase codeModelBase;
 
@@ -39,22 +44,22 @@ public class QueryModelTest extends TestCase {
      * Creates a query model by parsing target.jar.
      * @throws IOException
      */
-    protected static CodeModelBase createQueryModel() throws IOException {
+    protected static CodeModelBase createQueryModel() throws IOException, ParserException {
         JStatistics statistics = new JStatistics();
-        CoderFactory coderFactory = new JenaCoderFactory();
+        CoderFactory<JavaCodeHandler> coderFactory = new JenaCoderFactory();
         CodeModelBase codeModelBase = coderFactory.createCodeModel();
-        CodeHandler codeHandler = coderFactory.createHandlerOnModel( codeModelBase);
+        JavaCodeHandler javaCodeHandler = coderFactory.createHandlerOnModel(codeModelBase);
 
         JavaBytecodeJarParser parser = new JavaBytecodeJarParser();
-        CodeHandler statCH = statistics.createStatisticsCodeHandler(codeHandler);
+        JavaCodeHandler statCH = statistics.createStatisticsCodeHandler(javaCodeHandler);
         ObjectsTable objectsTable = new ObjectsTable();
         parser.initialize( statCH, objectsTable );
 
         File lib = new File("target_test/target.jar");
 
-        codeHandler.startParsing("test_model", lib.getAbsolutePath());
+        javaCodeHandler.startParsing("test_model", lib.getAbsolutePath());
         parser.parseFile( lib );
-        codeHandler.endParsing();
+        javaCodeHandler.endParsing();
 
         statistics.reset();
         parser.dispose();
@@ -63,34 +68,37 @@ public class QueryModelTest extends TestCase {
         return codeModelBase;
     }
 
-    public QueryModelTest() throws IOException {
+    public QueryModelTest() throws IOException, ParserException {
         codeModelBase = createQueryModel();
     }
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
          javaQueryModel = new JavaQueryModelImpl(codeModelBase);
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         javaQueryModel = null;
     }
 
+    @Test
     public void testQueryModel() {
         final String EXPECTED_LIBRARY = "asset:test_model";
 
         QueryModel queryModel = javaQueryModel;
 
         Asset asset = queryModel.getAsset();
-        assertNotNull(asset);
+        Assert.assertNotNull(asset);
 
         String[] libraries = asset.getLibraries();
-        assertNotNull(libraries);
-        assertTrue( libraries.length == 1);
-        assertEquals("Wrong library name.", libraries[0], EXPECTED_LIBRARY);
+        Assert.assertNotNull(libraries);
+        Assert.assertTrue( libraries.length == 1);
+        Assert.assertEquals("Wrong library name.", libraries[0], EXPECTED_LIBRARY);
 
-        assertNotNull("Cannot retrieve library date",  queryModel.getLibraryDateTime(EXPECTED_LIBRARY));
+        Assert.assertNotNull("Cannot retrieve library date",  queryModel.getLibraryDateTime(EXPECTED_LIBRARY));
 
-        assertNotNull("Cannot retrieve library location",  queryModel.getLibraryLocation(EXPECTED_LIBRARY));
+        Assert.assertNotNull("Cannot retrieve library location",  queryModel.getLibraryLocation(EXPECTED_LIBRARY));
     }
 
 }

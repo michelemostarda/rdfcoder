@@ -19,6 +19,7 @@
 package com.asemantics.rdfcoder.model.java;
 
 import com.asemantics.rdfcoder.model.QueryModelException;
+import com.asemantics.rdfcoder.model.Identifier;
 
 /**
  * The base class for both <code>JInterface</code>
@@ -27,14 +28,9 @@ import com.asemantics.rdfcoder.model.QueryModelException;
  */
 public abstract class JObject extends JContainer {
 
-    protected JObject(JavaQueryModel qm, String[] sections)
+    protected JObject(JavaQueryModel qm, Identifier identifier)
     throws QueryModelException {
-        super(qm, sections);
-    }
-
-    protected JObject(JavaQueryModel qm, String pathToContainer)
-    throws QueryModelException {
-        super(qm, pathToContainer);
+        super(qm, identifier);
     }
 
     /**
@@ -45,7 +41,7 @@ public abstract class JObject extends JContainer {
      */
     public JClass[] getInnerClasses() throws QueryModelException {
         JavaQueryModel qm = getQueryModel();
-        return qm.getClassesInto( getPathAsString() );
+        return qm.getClassesInto( getIdentifier() );
     }
 
     /**
@@ -56,7 +52,7 @@ public abstract class JObject extends JContainer {
      */
     public JMethod[] getMethods() throws QueryModelException {
         JavaQueryModel qm = getQueryModel();
-        return qm.getMethodsInto( getPathAsString() );
+        return qm.getMethodsInto( getIdentifier() );
     }
 
     /**
@@ -66,7 +62,7 @@ public abstract class JObject extends JContainer {
      */
     public JAttribute[] getAttributes() throws QueryModelException {
         JavaQueryModel qm = getQueryModel();
-        return qm.getAttributesInto( getPathAsString() );
+        return qm.getAttributesInto( getIdentifier() );
     }
 
     /**
@@ -77,6 +73,6 @@ public abstract class JObject extends JContainer {
      */
     public JEnumeration[] getEnumerations() throws QueryModelException {
         JavaQueryModel qm = getQueryModel();
-        return qm.getEnumerationsInto( getPathAsString() );
+        return qm.getEnumerationsInto( getIdentifier() );
     }
 }

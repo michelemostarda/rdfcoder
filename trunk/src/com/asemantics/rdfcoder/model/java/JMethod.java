@@ -18,6 +18,7 @@
 
 package com.asemantics.rdfcoder.model.java;
 
+import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
@@ -27,30 +28,24 @@ import com.asemantics.rdfcoder.model.QueryModelException;
  */
 public class JMethod extends JModifiable {
 
-    public static boolean exists(JavaQueryModel qm, String pathToMethod) {
-        return qm.methodExists(pathToMethod);
-    }
-
-    /**
-     * Constructor by sections.
-     * @param queryModel
-     * @param sections
-     * @throws com.asemantics.rdfcoder.model.CodeModelException
-     */
-    protected JMethod(JavaQueryModel queryModel, String[] sections)
-            throws QueryModelException {
-        super(queryModel, sections);
-    }
-
     /**
      * Constructor by path.
      * @param queryModel
      * @param pathToMethod
      * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
-    protected JMethod(JavaQueryModel queryModel, String pathToMethod)
+    protected JMethod(JavaQueryModel queryModel, Identifier pathToMethod)
             throws QueryModelException {
         super(queryModel, pathToMethod);
+    }
+
+    /**
+     * Returns the method name.
+     *
+     * @return the string identifying the method.
+     */
+    public String getName() {
+        return getIdentifier().getLastFragmentWithQualifier(JavaCodeModel.METHOD_KEY);
     }
 
     /**
@@ -60,18 +55,17 @@ public class JMethod extends JModifiable {
      * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
     public JSignature[] getSignatures() throws QueryModelException {
-        return getQueryModel().getSignatures(super.getFullName());
+        return getQueryModel().getSignatures( super.getIdentifier() );
     }
 
     /**
      * Check wether a method exists.
      *
-     * @param name
-     * @param index
+     * @param identifier
      * @return <code>true</code> if exists.
      */
-    public boolean exists( String[] name, int index) {
-        return exists(getQueryModel(), concatenate(name, index));
+    public boolean exists(Identifier identifier) {
+        return getQueryModel().methodExists(identifier);
     }
 
     protected String getHierarchyElemType() {

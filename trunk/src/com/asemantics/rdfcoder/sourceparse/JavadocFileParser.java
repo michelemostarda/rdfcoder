@@ -19,7 +19,7 @@
 package com.asemantics.rdfcoder.sourceparse;
 
 import com.asemantics.rdfcoder.CoderUtils;
-import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.model.java.JavadocHandler;
 
 import java.io.File;
@@ -499,8 +499,6 @@ public class JavadocFileParser extends FileParser {
                     // Javadoc commend opening.
                     if( token instanceof JDOpenComment ) {
 
-                        //System.out.println("OPEN COMMENT!!");
-
                         lastOpenComment = (JDOpenComment) token;
                         insideComment = true;
                         entryText.delete(0, entryText.length());
@@ -556,7 +554,7 @@ public class JavadocFileParser extends FileParser {
                         // Notifies to the listener the method javadoc recognition.
                         if(lastEntry != null) {
                             String containerPath = getContainerPath();
-                            String pathToMethod    = (containerPath.equals("") ? "" : containerPath + CodeHandler.PACKAGE_SEPARATOR) + methodName;
+                            String pathToMethod    = (containerPath.equals("") ? "" : containerPath + JavaCodeHandler.PACKAGE_SEPARATOR) + methodName;
                             String[] signature   = toSignature(parameters);
                             try {
                                 javadocHandler.methodJavadoc(lastEntry, pathToMethod, signature);
@@ -575,10 +573,6 @@ public class JavadocFileParser extends FileParser {
                     }
 
                 }
-            }
-
-            for(JDClassData clazz : classes) {
-                System.out.println(clazz);
             }
 
         } catch(IOException ioe) {
@@ -640,7 +634,6 @@ public class JavadocFileParser extends FileParser {
                 // Tokens.
 
                 String bufferContent = tokenBuffer.toString();
-                //System.out.println("BUFFER CONTENT: '" + bufferContent + "'");
 
                 // Handles inside <i>*</i> comment.
                 if("*".equals(bufferContent)) {
@@ -651,7 +644,6 @@ public class JavadocFileParser extends FileParser {
                 // Handles begin comment.
                 if("/**".equals(bufferContent.trim())) {
                     tokensPipe.addToken( new JDOpenComment(row, col) );
-                    //System.out.println("OPEN COMMENT TOKEN");
                     return;
                 }
 
@@ -674,7 +666,6 @@ public class JavadocFileParser extends FileParser {
                 }
 
                 // Handles word separators.
-                //System.out.println("ADDTOKEN: '" + bufferContent + " '");
                 tokensPipe.addToken( new JDWord(bufferContent + " ") );
 
                 if( c == '{' ) {
@@ -704,13 +695,11 @@ public class JavadocFileParser extends FileParser {
     private void storeCurrentAttribute() {
         if(attribute != null) {
             String key = attribute.trim();
-            //System.out.println("key:" + key);
             List<String> list = attributesMap.get(key);
             if(list == null) {
                 list = new ArrayList<String>();
                 attributesMap.put(key, list);
             }
-            //System.out.println("list " + key + "::" + list);
             list.add(attributeText.toString().trim());
         }
     }
