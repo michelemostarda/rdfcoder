@@ -28,7 +28,9 @@ import java.io.OutputStream;
 import java.util.Map;
 
 /**
- * Defines a persistent sotrage for a <code>CodeModel</code>.
+ * Defines a persistent sotrage for a {@link com.asemantics.rdfcoder.model.CodeModel}.
+ *
+ * @see com.asemantics.rdfcoder.model.CodeModel
  */
 public abstract class CodeStorage {
 

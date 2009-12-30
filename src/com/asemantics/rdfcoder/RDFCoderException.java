@@ -19,9 +19,9 @@
 package com.asemantics.rdfcoder;
 
 /**
- * Defines a generic exception raised by {@link RDFCoder}.
+ * Defines a generic exception raised by {@link com.asemantics.rdfcoder.RDFCoder}.
  *
- * @see RDFCoder
+ * @see com.asemantics.rdfcoder.RDFCoder
  */
 public class RDFCoderException extends RuntimeException {
 

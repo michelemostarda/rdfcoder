@@ -18,6 +18,7 @@
 
 package com.asemantics.rdfcoder.model.java;
 
+import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
@@ -29,22 +30,11 @@ public abstract class JModifiable extends JBase {
      * Constructor.
      *
      * @param qm
-     * @param sections
+     * @param identifier
      * @throws com.asemantics.rdfcoder.model.QueryModelException
      */
-    protected JModifiable(JavaQueryModel qm, String[] sections) throws QueryModelException {
-        super(qm, sections);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param qm
-     * @param path
-     * @throws QueryModelException
-     */
-    public JModifiable(JavaQueryModel qm, String path) throws QueryModelException {
-        super(qm, path);
+    protected JModifiable(JavaQueryModel qm, Identifier identifier) throws QueryModelException {
+        super(qm, identifier);
     }
 
     /**
@@ -54,7 +44,7 @@ public abstract class JModifiable extends JBase {
      * @throws QueryModelException
      */
     public JavaCodeModel.JVisibility getVisibility() throws QueryModelException {
-        return getQueryModel().getVisibility(super.getFullName());
+        return getQueryModel().getVisibility( super.getIdentifier() );
     }
 
     /**
@@ -64,6 +54,6 @@ public abstract class JModifiable extends JBase {
      * @throws QueryModelException
      */
     public JavaCodeModel.JModifier[] getModifiers() throws QueryModelException {
-        return getQueryModel().getModifiers(super.getFullName());
+        return getQueryModel().getModifiers( super.getIdentifier() );
     }
 }

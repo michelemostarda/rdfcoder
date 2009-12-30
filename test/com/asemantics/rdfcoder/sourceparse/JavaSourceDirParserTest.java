@@ -18,14 +18,18 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.CoderUtils;
 import com.asemantics.rdfcoder.model.CodeModelException;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.JenaCodeModel;
 import com.asemantics.rdfcoder.storage.JenaCodeStorage;
 import com.asemantics.rdfcoder.storage.JenaCoderFactory;
-import com.asemantics.rdfcoder.CoderUtils;
-import junit.framework.TestCase;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,48 +37,56 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Unit test of JavadocSourceDirParser.
+ * Test case for {@link com.asemantics.rdfcoder.sourceparse.JavaSourceDirParserTest}.
  */
-public class JavaSourceDirParserTest extends TestCase {
+public class JavaSourceDirParserTest {
 
-    ObjectsTable ot;
-    JenaCoderFactory jcf;
-    JenaCodeModel jcm;
-    JenaCodeStorage jcs;
-    CodeHandler ch;
+    private static final Logger logger = Logger.getLogger(JavaSourceDirParserTest.class);
 
+    private ObjectsTable ot;
+    private JenaCoderFactory jcf;
+    private JenaCodeModel jcm;
+    private JenaCodeStorage jcs;
+    private JavaCodeHandler ch;
+
+    @Before
     public void setUp() {
-        ot   = new ObjectsTable();
+        ot = new ObjectsTable();
         jcf = new JenaCoderFactory();
-        jcm  = (JenaCodeModel) jcf.createCodeModel();
-        jcs  = jcf.createCodeStorage();
-        ch   = jcf.createHandlerOnModel(jcm);
+        jcm = (JenaCodeModel) jcf.createCodeModel();
+        jcs = jcf.createCodeStorage();
+        ch = jcf.createHandlerOnModel(jcm);
     }
 
-     public void tearDown() {
+    @After
+    public void tearDown() {
         ot.clear();
-        ot   = null;
+        ot = null;
         jcf = null;
-        jcm  = null;
-        ch   = null;
+        jcm = null;
+        ch = null;
     }
 
+    @Test
     public void testParse() throws IOException, CodeModelException {
-        DirectoryParser jsdp = new DirectoryParser( new JavaSourceFileParser(), new CoderUtils.JavaSourceFilenameFilter() );
+        DirectoryParser jsdp = new DirectoryParser(
+                new JavaSourceFileParser(),
+                new CoderUtils.JavaSourceFilenameFilter()
+        );
         JStatistics statistics = new JStatistics();
-        CodeHandler sch = statistics.createStatisticsCodeHandler(ch);
+        JavaCodeHandler sch = statistics.createStatisticsCodeHandler(ch);
         jsdp.initialize(sch, ot);
         try {
-            jsdp.parseDirectory("src", new File("src") );
+            jsdp.parseDirectory("src", new File("src"));
             jsdp.dispose();
-            Map<String,String> params = new HashMap();
+            Map<String, String> params = new HashMap<String, String>();
             params.put(CodeStorage.FS_FILENAME, "target_test/out/test_scan_src_dir.xml");
             jcs.saveModel(jcm, params);
         } catch (Exception e) {
-            e.printStackTrace();
-            fail();
+            logger.error("Error while saving model.", e);
+            Assert.fail();
         } finally {
-            System.out.println(statistics);
+            logger.info("Parsing statistics: " + statistics);
         }
     }
 

@@ -19,6 +19,7 @@
 package com.asemantics.rdfcoder.model.java;
 
 import com.asemantics.rdfcoder.model.QueryModelException;
+import com.asemantics.rdfcoder.model.Identifier;
 
 /**
  * Represents a <i>Java</i> method signature.
@@ -37,39 +38,13 @@ public class JSignature extends JBase {
      */
     JavaCodeModel.JType returnType;
 
-    /**
-     * Check wether a signaure exists.
-     *
-     * @param qm
-     * @param pathToSignature
-     * @return <code>true</code> if exists.
-     */
-    public static boolean exists( JavaQueryModel qm, String pathToSignature) {
-        return qm.signatureExists(pathToSignature);
-    }
-
     protected JSignature(
             JavaQueryModel queryModel,
-            String[] sections,
+            Identifier identifier,
             JavaCodeModel.JType[] paramTypes,
             JavaCodeModel.JType returnType
     ) throws QueryModelException {
-        super(queryModel, sections);
-        if(paramTypes == null || returnType == null) {
-            throw new IllegalArgumentException();
-        }
-
-        this.paramTypes = paramTypes;
-        this.returnType = returnType;
-    }
-
-    protected JSignature(
-            JavaQueryModel queryModel,
-            String pathToSignature,
-            JavaCodeModel.JType[] paramTypes,
-            JavaCodeModel.JType returnType
-    ) throws QueryModelException {
-        super(queryModel, pathToSignature);
+        super(queryModel, identifier);
         if(paramTypes == null || returnType == null) {
             throw new IllegalArgumentException();
         }
@@ -80,21 +55,11 @@ public class JSignature extends JBase {
 
     protected JSignature(
         JavaQueryModel queryModel,
-        String[] sections
+        Identifier identifier
     ) throws QueryModelException {
-        super(queryModel, sections);
-        String pathToSignature = concatenate(sections, sections.length -1);
-        paramTypes = queryModel.getParameters(pathToSignature);
-        returnType = queryModel.getReturnType(pathToSignature);
-    }
-
-    protected JSignature(
-        JavaQueryModel queryModel,
-        String pathToSignature
-    ) throws QueryModelException {
-        super(queryModel, pathToSignature);
-        paramTypes = queryModel.getParameters(pathToSignature);
-        returnType = queryModel.getReturnType(pathToSignature);
+        super(queryModel, identifier);
+        paramTypes = queryModel.getParameters(identifier);
+        returnType = queryModel.getReturnType(identifier);
     }
 
     JavaCodeModel.JType[] getParameters() {
@@ -106,8 +71,8 @@ public class JSignature extends JBase {
     }
 
 
-    public boolean exists(final String[] name, int index) {
-        return exists( getQueryModel(), concatenate(name, index) );
+    public boolean exists(Identifier identifier) {
+        return getQueryModel().signatureExists(identifier);
     }
 
     protected String getHierarchyElemType() {

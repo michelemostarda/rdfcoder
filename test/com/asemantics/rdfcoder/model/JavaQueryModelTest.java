@@ -18,25 +18,30 @@
 
 package com.asemantics.rdfcoder.model;
 
-import junit.framework.TestCase;
+import com.asemantics.rdfcoder.model.java.JPackage;
+import com.asemantics.rdfcoder.model.java.JavaQueryModel;
+import com.asemantics.rdfcoder.model.java.JavaQueryModelImpl;
+import com.asemantics.rdfcoder.sourceparse.ParserException;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.IOException;
 
-import com.asemantics.rdfcoder.model.java.JavaQueryModel;
-import com.asemantics.rdfcoder.model.java.JavaQueryModelImpl;
-import com.asemantics.rdfcoder.model.java.JPackage;
-
-public class JavaQueryModelTest extends TestCase {
+/**
+ * Test case for the {@link com.asemantics.rdfcoder.model.QueryModel} class.
+ */
+public class JavaQueryModelTest {
 
     public JavaQueryModelTest() throws IOException {
         super();
     }
 
-    public void testJavaQueryModel() throws IOException {
+    @Test
+    public void testJavaQueryModel() throws IOException, ParserException {
         JavaQueryModel javaQueryModel = new JavaQueryModelImpl( QueryModelTest.createQueryModel() );
 
         JPackage[] packages = javaQueryModel.getAllPackages();
-        assertTrue("Unespected number of packages.", packages.length > 0 );
+        Assert.assertTrue("Unexpected number of packages.", packages.length > 0 );
     }
 
 }

@@ -58,7 +58,7 @@ public class JavaBytecodeJarParser extends CodeParser {
      * @param f
      * @throws IOException
      */
-    public void parseFile(File f) throws IOException {
+    public void parseFile(File f) throws IOException, ParserException {
         if( f == null) {
             throw new NullPointerException("f cannot be null");
         }

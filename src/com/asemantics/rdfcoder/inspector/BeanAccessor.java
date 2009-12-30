@@ -89,6 +89,12 @@ public class BeanAccessor {
         }
     }
 
+    /**
+     * Returns the expected name for the getter method of given <i>propertyName</i>.
+     *
+     * @param propertyName name of a bean property.
+     * @return the name of a method.
+     */
     private static String[] getMethodGetterName(String propertyName) {
         final String methodName = propertyName.substring(0,1);
         final String postfix = methodName.toUpperCase() + propertyName.substring(1);;

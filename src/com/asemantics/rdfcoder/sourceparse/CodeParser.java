@@ -21,17 +21,24 @@ package com.asemantics.rdfcoder.sourceparse;
 import com.asemantics.rdfcoder.model.ParseHandler;
 
 /**
- * Base class for any <code>CodeParser</code> implementation. 
+ * Base class for any <code>Code Parser</code> implementation. 
  */
 public abstract class CodeParser {
 
+    /**
+     * Internal parse handler.
+     */
     private ParseHandler    parseHandler;
+
+    /**
+     * Internal objects table.
+     */
     private ObjectsTable    objectsTable;
 
-    protected CodeParser() {
 
-    }
+    protected CodeParser(){}
 
+    
     /**
      * initializes the parser with the given parse handler and objects table.
      *

@@ -19,8 +19,12 @@
 package com.asemantics.rdfcoder.sourceparse;
 
 import com.asemantics.rdfcoder.CoderUtils;
-import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.Identifier;
+import com.asemantics.rdfcoder.model.IdentifierBuilder;
+import com.asemantics.rdfcoder.model.IdentifierReader;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -44,6 +48,8 @@ import java.util.jar.JarFile;
  * //TODO: LOW - implement serialization / deserialization of UnresolvedFileEntry(es). 
  */
 public class ObjectsTable implements Serializable {
+
+    private static final Logger logger = Logger.getLogger(ObjectsTable.class);
 
     private final int BLOCK_SIZE = 100;
 
@@ -122,7 +128,7 @@ public class ObjectsTable implements Serializable {
      * This map contains as keys the package prefixes and as
      * values package entries.
      */
-    private Map<String, PackageEntry> packagesToContents;
+    private Map<Identifier, PackageEntry> packagesToContents;
 
     /**
      * This map contains as keys the unresolved type names
@@ -131,7 +137,7 @@ public class ObjectsTable implements Serializable {
     private List<UnresolvedTypeEntry> unresolvedTypeEntries;
 
     public ObjectsTable() {
-        packagesToContents = new HashMap<String, PackageEntry>();
+        packagesToContents = new HashMap<Identifier, PackageEntry>();
         unresolvedTypeEntries = new ArrayList<UnresolvedTypeEntry>();
     }
 
@@ -140,19 +146,18 @@ public class ObjectsTable implements Serializable {
      * @param objectPackage the package containing the object.
      * @param objectName the object name without qualification.
      */
-    public void addObject(String objectPackage, String objectName) {
+    public void addObject(Identifier objectPackage, String objectName) {
         if(
             objectPackage == null
                 ||
-            objectName    == null || objectName.trim().length()    == 0
+            objectName    == null || objectName.trim().length() == 0
         ) {
             throw new IllegalArgumentException();
         }
-        if( objectName.indexOf(CodeHandler.PACKAGE_SEPARATOR) != -1 ) {
+        if( objectName.indexOf(JavaCodeHandler.PACKAGE_SEPARATOR) != -1 ) {
             throw new IllegalArgumentException("The object name must be NOT qualified.");
         }
 
-        //System.out.println("objectPackage: " + objectPackage);
         PackageEntry pe = packagesToContents.get(objectPackage);
         if(pe == null) {
             pe = new PackageEntry();
@@ -163,19 +168,11 @@ public class ObjectsTable implements Serializable {
 
     /**
      * Adds a fully qualified object to the objects table.
-     * @param fullyQualifiedName the fully qualified name.
+     *
+     * @param identifier the identifier of the object to add.
      */
-    public void addObject(String fullyQualifiedName) {
-        if(fullyQualifiedName == null) {
-            throw new IllegalArgumentException("fullyQualifidName cannot be null.");
-        }
-
-        int i = fullyQualifiedName.lastIndexOf(CodeHandler.PACKAGE_SEPARATOR);
-        if(i == -1) {
-            addObject("", fullyQualifiedName); // Default package.
-        } else {
-            addObject( fullyQualifiedName.substring(0, i), fullyQualifiedName.substring(i + 1 ) );
-        }
+    public void addObject(Identifier identifier) {
+        addObject( identifier.getPreTail(), identifier.getTail().getIdentifier() );
     }
 
     /**
@@ -185,7 +182,7 @@ public class ObjectsTable implements Serializable {
      * @param type the object type.
      * @return <code>true</code> if found.
      */
-    public boolean checkObject(String objectPackage, String type) {
+    public boolean checkObject(Identifier objectPackage, String type) {
         PackageEntry pe = packagesToContents.get(objectPackage);
         if(pe != null) {
             return pe.contains(type);
@@ -226,22 +223,22 @@ public class ObjectsTable implements Serializable {
      *
      * @param ch the code handler user to process the identifiers.
      */
-    public Set<String> processTemporaryIdentifiers(CodeHandler ch) {
+    public Set<String> processTemporaryIdentifiers(JavaCodeHandler ch) {
         Iterator<UnresolvedTypeEntry> uei = unresolvedTypeEntries.iterator();
         UnresolvedTypeEntry ue;
-        String qualifiedType;
-        Set<String> definitivelyUnresolved = new HashSet();
+        Identifier qualifiedType;
+        Set<String> definitivelyUnresolved = new HashSet<String>();
         while(uei.hasNext()) {
             ue = uei.next();
             qualifiedType = ue.importsContext.qualifyType(this, ue.typeName);
-            String prefixedIdentifier = ue.type.getIdentifier();
+            Identifier prefixedIdentifier = ue.type.getIdentifier();
             if(qualifiedType != null) {
                 ch.replaceIdentifierWithQualifiedType(prefixedIdentifier, qualifiedType);
                 uei.remove();
             } else {
                 ch.replaceIdentifierWithQualifiedType(
                         prefixedIdentifier,
-                        JavaCodeModel.UNQUALIFIED_PREFIX + ue.typeName
+                        IdentifierBuilder.create().pushFragment(ue.typeName, JavaCodeModel.UNQUALIFIED_PREFIX).build()
                 );
                 definitivelyUnresolved.add( ue.typeName );
             }
@@ -318,9 +315,11 @@ public class ObjectsTable implements Serializable {
                 String fullyQualifiedObject = entry.getName();
                 if( fullyQualifiedObject.indexOf(CoderUtils.JAVA_SOURCE_CLASS_EXT) == -1 ) { continue; } // is not a .class
                 fullyQualifiedObject = fullyQualifiedObject.substring(0, fullyQualifiedObject.length() - CoderUtils.JAVA_SOURCE_CLASS_EXT.length());
-                fullyQualifiedObject = fullyQualifiedObject.replaceAll("/", CodeHandler.PACKAGE_SEPARATOR);
-                System.out.println("Add object: " + fullyQualifiedObject);
-                addObject(fullyQualifiedObject);
+                fullyQualifiedObject = fullyQualifiedObject.replaceAll("/", JavaCodeHandler.PACKAGE_SEPARATOR);
+                if(logger.isDebugEnabled()) {
+                    logger.debug("Preloading object: " + fullyQualifiedObject);
+                }
+                addObject(IdentifierReader.readPackage(fullyQualifiedObject) );
             }
         } finally {
             jarFile.close();
@@ -374,11 +373,13 @@ public class ObjectsTable implements Serializable {
             String fullyQualifiedObject = f.getAbsolutePath();
             fullyQualifiedObject = fullyQualifiedObject.substring(rootLength, fullyQualifiedObject.length() - extSize);
             fullyQualifiedObject = fullyQualifiedObject
-                                        .replaceAll("/"   , CodeHandler.PACKAGE_SEPARATOR)
-                                        .replaceAll("\\\\", CodeHandler.PACKAGE_SEPARATOR)
-                                        .replaceAll("\\$" , CodeHandler.PACKAGE_SEPARATOR); // Inner classes replacing.
-            System.out.println("Add object: " + fullyQualifiedObject);
-            addObject(fullyQualifiedObject);
+                                        .replaceAll("/"   , JavaCodeHandler.PACKAGE_SEPARATOR)
+                                        .replaceAll("\\\\", JavaCodeHandler.PACKAGE_SEPARATOR)
+                                        .replaceAll("\\$" , JavaCodeHandler.PACKAGE_SEPARATOR); // Inner classes replacing.
+            if(logger.isDebugEnabled()) {
+                logger.debug("Preloading object: " + fullyQualifiedObject);
+            }
+            addObject( IdentifierReader.readPackage(fullyQualifiedObject) );
         }
 
         recursivePreload(ff, rootLength, extSize, stack);

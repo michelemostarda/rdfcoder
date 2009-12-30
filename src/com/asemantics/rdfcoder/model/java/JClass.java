@@ -18,7 +18,7 @@
 
 package com.asemantics.rdfcoder.model.java;
 
-import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
@@ -29,40 +29,27 @@ import com.asemantics.rdfcoder.model.QueryModelException;
 public class JClass extends JObject {
 
     /**
-     * Check if a class exists.
-     *
-     * @param qm
-     * @param pathToClass
-     * @return <code>true</code> if exists.
-     */
-    public static boolean exists(JavaQueryModel qm, final String pathToClass) {
-       return qm.classExists(pathToClass);
-    }
-
-    /**
      * Constructor by path.
      * @param queryModel
      * @param pathToClass
      * @throws com.asemantics.rdfcoder.model.QueryModelException
      */
-    protected JClass(JavaQueryModel queryModel, String pathToClass)
+    protected JClass(JavaQueryModel queryModel, Identifier pathToClass)
     throws QueryModelException {
-
         super(queryModel, pathToClass);
     }
 
     /**
-     * Constructor by sections.
-     * @param qm
-     * @param sections
-     * @throws QueryModelException
+     * Returns the class name.
+     *
+     * @return the string representing the name of the class.
      */
-    protected JClass(JavaQueryModel qm, String[] sections) throws QueryModelException {
-        super(qm, sections);
+    public String getName() {
+        return getIdentifier().getLastFragmentWithQualifier(JavaCodeModel.CLASS_KEY);
     }
 
-    public boolean exists(final String[] name, int index) {
-        return exists(getQueryModel(), concatenate(name, index) );
+    public boolean exists(Identifier identifier) {
+        return getQueryModel().classExists(identifier);
     }
 
     /**
@@ -102,11 +89,8 @@ public class JClass extends JObject {
         return null;
     }
 
-    public String toString() {
-        return parent.toString() + CodeHandler.PACKAGE_SEPARATOR + super.toString();
-    }
-
     protected String getHierarchyElemType() {
         return this.getClass().getSimpleName();
     }
+    
 }

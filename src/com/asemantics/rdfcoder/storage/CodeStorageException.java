@@ -17,6 +17,10 @@
 
 package com.asemantics.rdfcoder.storage;
 
+/**
+ * Defines a generic exception raised by the
+ * {@link com.asemantics.rdfcoder.storage.CodeStorage}.
+ */
 public class CodeStorageException extends Exception {
 
     public CodeStorageException() {

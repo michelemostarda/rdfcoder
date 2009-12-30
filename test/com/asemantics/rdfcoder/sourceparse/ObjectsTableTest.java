@@ -18,34 +18,41 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
- * Test unit of <code>ObjectsTable</code>
+ * Test case for {@link com.asemantics.rdfcoder.sourceparse.ObjectsTable} class.
  */
-public class ObjectsTableTest extends TestCase {
+public class ObjectsTableTest {
 
     private ObjectsTable objectsTable;
 
+    @Before
     public void setUp() {
         objectsTable = new ObjectsTable();
     }
 
+    @After
     public void tearDown() {
         objectsTable = null;
     }
 
+    @Test
     public void testSourcePreloading() {
         objectsTable.preloadSourceDir(new File("src/"));
     }
 
-     public void testClassPreloading() {
+    @Test
+    public void testClassPreloading() {
         objectsTable.preloadClassDir(new File("classes"));
     }
 
+    @Test
     public void testJarPreloading() throws IOException {
         objectsTable.preloadJar(new File("lib/antlr-2.7.5.jar"));
     }

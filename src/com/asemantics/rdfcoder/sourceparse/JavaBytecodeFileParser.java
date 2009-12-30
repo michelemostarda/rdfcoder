@@ -18,7 +18,9 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.Identifier;
+import com.asemantics.rdfcoder.model.IdentifierReader;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 import org.apache.bcel.Constants;
 import org.apache.bcel.classfile.AccessFlags;
@@ -34,6 +36,7 @@ import org.apache.bcel.classfile.InnerClasses;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
 import org.apache.bcel.classfile.Utility;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,14 +50,24 @@ import java.util.Set;
 import java.util.Stack;
 
 /**
- * The Java bytecode parser.
+ * A parser for compiled <i>Java</i> classes.
  */
 public class JavaBytecodeFileParser extends FileParser {
 
     /**
-     * Name that bcel uses to describe constructor methods.
+     * Name that <i>BCEL</i> uses to describe constructor methods.
      */
     protected static final String INIT_METHOD = "<init>";
+
+    /**
+     * Internal logger.
+     */
+    private static final Logger logger = Logger.getLogger(JavaBytecodeFileParser.class);
+
+    /**
+     * Represents the empty inner class set.
+     */
+    private static final InnerClass[] INNER_CLASS_EMPTY = new InnerClass[0];
 
     /**
      * Inner classes stack.
@@ -65,37 +78,46 @@ public class JavaBytecodeFileParser extends FileParser {
      * Constructor.
      */
     public JavaBytecodeFileParser() {
-        containersStack = new Stack();
+        containersStack = new Stack<JavaClass>();
     }
 
-    public void parse(JavaBytecodeClassLoader classloader, InputStream inputStream, String fileName) throws IOException {
+    /**
+     * Parses a <i>.class</i> file.
+     * 
+     * @param classloader
+     * @param inputStream
+     * @param fileName
+     * @throws IOException
+     */
+    public void parse(JavaBytecodeClassLoader classloader, InputStream inputStream, String fileName)
+    throws IOException, ParserException {
         containersStack.clear();
 
         // Parse bytecode.
         ClassParser classParser = new ClassParser( inputStream, fileName );
         JavaClass javaClass = classParser.parse();
 
-        final CodeHandler codeHandler   = (CodeHandler) getParseHandler();
+        final JavaCodeHandler javaCodeHandler = (JavaCodeHandler) getParseHandler();
         ObjectsTable objectsTable = getObjectsTable();
 
         // Package.
-        codeHandler.startPackage( javaClass.getPackageName() );
+        javaCodeHandler.startPackage(IdentifierReader.readPackage( javaClass.getPackageName() ) );
         try {
 
             // Objects table update.
-            objectsTable.addObject( javaClass.getClassName() );
+            objectsTable.addObject( IdentifierReader.readFullyQualifiedClass(javaClass.getClassName()) );
 
             // Recursive processing.
             Set processed = new HashSet();
-            processClass(codeHandler, classloader, processed, javaClass);
+            processClass(javaCodeHandler, classloader, processed, javaClass);
 
         } finally {
             // Close package.
-            codeHandler.endPackage();
+            javaCodeHandler.endPackage();
         }
     }
 
-    public void parse(JavaBytecodeClassLoader classloader, File file) throws IOException {
+    public void parse(JavaBytecodeClassLoader classloader, File file) throws IOException, ParserException {
         if(file == null) {
             throw new NullPointerException();
         }
@@ -108,16 +130,25 @@ public class JavaBytecodeFileParser extends FileParser {
         inputStream.close();
     }
 
-    public void parse(File file) throws IOException {
+    public void parse(File file) throws IOException, ParserException {
         //TODO - HIGH: check this method: JavaBytecodeClassLoader must not be null.
         parse(null, file);
     }
 
-    protected void processClass(CodeHandler codeHandler, JavaBytecodeClassLoader classloader, Set processed, JavaClass javaClass ) {
+    protected void processClass(
+            JavaCodeHandler javaCodeHandler,
+            JavaBytecodeClassLoader classloader,
+            Set<String> processed,
+            JavaClass javaClass
+    ) throws ParserException {
+
+        if(logger.isDebugEnabled()) {
+            logger.debug("Processing class " + javaClass);
+        }
 
         containersStack.push( javaClass );
 
-        codeHandler.startCompilationUnit(javaClass.toString());
+        javaCodeHandler.startCompilationUnit(javaClass.toString());
 
         // The stack is currectly handled despite errors.
         try {
@@ -135,14 +166,14 @@ public class JavaBytecodeFileParser extends FileParser {
                         enumElements.add( fields[i].getName() );
                     }
                 }
-                codeHandler.startEnumeration(
+                javaCodeHandler.startEnumeration(
                         modifiers,
                         toVisibility( javaClass ),
                         toQualifiedClassName( javaClass ),
                         enumElements.toArray( new String[ enumElements.size() ] )
                 );
             } else if( javaClass.isClass() ) { // Class.
-                codeHandler.startClass(
+                javaCodeHandler.startClass(
                    modifiers,
                    toVisibility(javaClass),
                    toQualifiedClassName(javaClass),
@@ -150,7 +181,7 @@ public class JavaBytecodeFileParser extends FileParser {
                    toQualifiedInterfaces(javaClass)
                 );
             } else if( javaClass.isInterface() ) { // Interface.
-                codeHandler.startInterface(
+                javaCodeHandler.startInterface(
                    toQualifiedClassName(javaClass),
                    toQualifiedInterfaces(javaClass)
                 );
@@ -159,16 +190,16 @@ public class JavaBytecodeFileParser extends FileParser {
             }
 
             // Fields.
-            for(int i = 0; i < fields.length; i++) {
-                if( enumElements.contains( fields[i].getName() ) ) {
+            for (Field field : fields) {
+                if (enumElements.contains(field.getName())) {
                     continue;
                 }
-                codeHandler.attribute(
-                        extractModifiers(fields[i]),
-                        toVisibility(fields[i]),
-                        toQualifiedAttribute(fields[i]),
-                        bcelTypeToJType( fields[i].getType() ),
-                        toConstantValue( fields[i].getConstantValue() )
+                javaCodeHandler.attribute(
+                        extractModifiers(field),
+                        toVisibility(field),
+                        toQualifiedAttribute(field),
+                        bcelTypeToJType(field.getType()),
+                        toConstantValue(field.getConstantValue())
                 );
             }
             enumElements.clear();
@@ -179,7 +210,7 @@ public class JavaBytecodeFileParser extends FileParser {
             for(int i = 0; i < methods.length; i++) {
 
                 if( INIT_METHOD.equals(methods[i].getName()) ) { // Constructors.
-                    codeHandler.constructor(
+                    javaCodeHandler.constructor(
                         extractModifiers(methods[i]),
                         toVisibility( methods[i] ),
                         i,
@@ -189,7 +220,7 @@ public class JavaBytecodeFileParser extends FileParser {
                     );
                 }
 
-                codeHandler.method(
+                javaCodeHandler.method(
                         extractModifiers(methods[i]),
                         toVisibility( methods[i] ),
                         toQualifiedMethod( methods[i] ),
@@ -203,63 +234,68 @@ public class JavaBytecodeFileParser extends FileParser {
 
             // Inner classes. If class loader is not defined the inner classes are ignored.
             if(classloader != null) {
-                String innerClassName = null;
+                String innerClassName;
                 InnerClass[] innerClasses = innerClasses(javaClass);
                 ConstantPool constantPool = javaClass.getConstantPool();
-                for(int i = 0; i < innerClasses.length; i++) {
+                for (InnerClass innerClass1 : innerClasses) {
                     innerClassName = constantPool.getConstantString(
-                        innerClasses[i].getInnerClassIndex(),
-                        Constants.CONSTANT_Class
+                            innerClass1.getInnerClassIndex(),
+                            Constants.CONSTANT_Class
                     );
-                    if( processed.contains(innerClassName) ) {
+                    if (processed.contains(innerClassName)) {
                         continue;
                     } else {
                         processed.add(innerClassName);
                     }
-                    System.out.println("INNER CLASS: " + innerClassName);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Processing inner class: " + innerClassName);
+                    }
                     innerClassName = Utility.compactClassName(innerClassName);
-                    JavaClass innerClass = null;
+                    JavaClass innerClass;
                     try {
                         innerClass = classloader.loadClass(innerClassName);
-                        if(innerClass == null) {
-                            System.out.println("CANNOT LOAD class: " + innerClassName);
-                            continue;
+                        if (innerClass == null) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Cannot load class: " + innerClassName);
+                            }
                         }
                     } catch (IOException ioe) {
-                        codeHandler.parseError(javaClass.getClassName(), "[" + ioe.getClass().getName() + "]: " + ioe.getMessage());
+                        javaCodeHandler.parseError(javaClass.getClassName(), "[" + ioe.getClass().getName() + "]: " + ioe.getMessage());
                         ioe.printStackTrace();
-                        continue;
                     }
                 }
             }
 
-         } finally {
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new ParserException( String.format("Error while parsing class %s", javaClass.getClassName() ), e);   
+        } finally { // TODO: HIGH : Improve exception handling.
 
             // End container.
             if( javaClass.isClass() ) {
-                codeHandler.endClass();
+                javaCodeHandler.endClass();
             } else if( javaClass.isInterface() ) {
-                codeHandler.endInterface();
+                javaCodeHandler.endInterface();
             } else if(javaClass.isEnum()) {
-                codeHandler.endEnumeration();
+                javaCodeHandler.endEnumeration();
             } else {
                 throw new IllegalStateException();
             }
 
             containersStack.pop();
-            codeHandler.endCompilationUnit();
+            javaCodeHandler.endCompilationUnit();
         }
     }
 
     private InnerClass[] innerClasses(JavaClass javaClass) {
         Attribute[] attributes = javaClass.getAttributes();
-        for(int i = 0; i < attributes.length; i++) {
-            if( attributes[i] instanceof InnerClasses ) {
-                InnerClasses innerClasses = (InnerClasses) attributes[i];
+        for (Attribute attribute : attributes) {
+            if (attribute instanceof InnerClasses) {
+                InnerClasses innerClasses = (InnerClasses) attribute;
                 return innerClasses.getInnerClasses();
             }
         }
-        return new InnerClass[0];
+        return INNER_CLASS_EMPTY;
     }
 
     private JavaCodeModel.JVisibility toVisibility(AccessFlags af) {
@@ -274,26 +310,21 @@ public class JavaBytecodeFileParser extends FileParser {
         }
     }
 
-    private String getContainerPath() {
+    private Identifier getContainerPath() {
         if( containersStack.size() == 0 ) {
             throw new IllegalStateException();
         }
-        return containersStack.peek().getClassName();  
+        return IdentifierReader.readPackage( containersStack.peek().getClassName() ); // TODO: HIGH this read a class name as a package. Fix it.
+    }
+
+    private Identifier toQualifiedClassName(JavaClass javaClass) {
+        return IdentifierReader.readFullyQualifiedClass( javaClass.getClassName() );
+        //return getContainerPath().copy().pushFragment(javaClass.getClassName(), JavaCodeModel.CLASS_KEY).build();
+    }
+
+    private Identifier toQualifiedSuperClassName(JavaClass javaClass) {
+        return IdentifierReader.readFullyQualifiedClass( javaClass.getClassName() );
         /*
-        StringBuilder pack = new StringBuilder();
-        pack.append( containersStack.get(0).getPackageName() );
-        for(int i = 1; i < containersStack.size(); i++) {
-            pack.append( containersStack.get(i).getClassName() );
-        }
-        return pack.toString();
-        */
-    }
-
-    private String toQualifiedClassName(JavaClass javaClass) {
-        return getContainerPath() + CodeHandler.PACKAGE_SEPARATOR + javaClass.getClassName();
-    }
-
-    private String toQualifiedSuperClassName(JavaClass javaClass) {
         JavaClass superClass;
         try {
             superClass = javaClass.getSuperClass();
@@ -301,29 +332,34 @@ public class JavaBytecodeFileParser extends FileParser {
             return null;
         }
 
-        return superClass.getPackageName() + CodeHandler.PACKAGE_SEPARATOR + superClass.getClassName();
+        return IdentifierReader
+                    .readPackage( superClass.getPackageName() )
+                    .copy()
+                    .pushFragment( superClass.getClassName(), JavaCodeModel.CLASS_KEY )
+                    .build();
+        */
     }
 
-    private String[] toQualifiedInterfaces(JavaClass javaClass) {
+    private Identifier[] toQualifiedInterfaces(JavaClass javaClass) {
         JavaClass[] interfaces;
         try {
             interfaces = javaClass.getAllInterfaces();
         } catch (ClassNotFoundException e) {
             return null;
         }
-        String[] result = new String[interfaces.length];
+        Identifier[] result = new Identifier[interfaces.length];
         for(int i = 0; i < interfaces.length; i++) {
-            result[i] = interfaces[i].getPackageName() + CodeHandler.PACKAGE_SEPARATOR + interfaces[i].getClassName();
+            result[i] = IdentifierReader.readFullyQualifiedClass( interfaces[i].getClassName() );
         }
         return result;
     }
 
-    private String toQualifiedAttribute(Field field) {
-        return getContainerPath() + CodeHandler.PACKAGE_SEPARATOR + field.getName();
+    private Identifier toQualifiedAttribute(Field field) {
+        return getContainerPath().copy().pushFragment(field.getName(), JavaCodeModel.ATTRIBUTE_KEY).build();
     }
 
-    private String toQualifiedMethod(Method method) {
-        return getContainerPath() + CodeHandler.PACKAGE_SEPARATOR + method.getName();
+    private Identifier toQualifiedMethod(Method method) {
+        return getContainerPath().copy().pushFragment(method.getName(), JavaCodeModel.METHOD_KEY).build();
     }
 
     private String toConstantValue(ConstantValue cv) {
@@ -361,7 +397,7 @@ public class JavaBytecodeFileParser extends FileParser {
         // Convert object types.
         if( type instanceof org.apache.bcel.generic.ObjectType) {
             org.apache.bcel.generic.ObjectType bcelOT = (org.apache.bcel.generic.ObjectType) type;
-            return new JavaCodeModel.ObjectType( bcelOT.getClassName() );
+            return new JavaCodeModel.ObjectType( IdentifierReader.readFullyQualifiedClass(bcelOT.getClassName() ) );
         }
 
         // Array types.
@@ -424,13 +460,13 @@ public class JavaBytecodeFileParser extends FileParser {
 
 
     private String[] toParameterNames( org.apache.bcel.generic.Type[] type ) {
-        HashMap<String,Integer> namesMap = new HashMap();
+        HashMap<String,Integer> namesMap = new HashMap<String,Integer>();
         String[] names = new String[type.length];
         String designedName;
         for(int i = 0; i < type.length; i++) {
             designedName = toParameterName( type[i] ).toLowerCase();
             Integer occurrences = namesMap.get(designedName);
-            if(occurrences == null) { occurrences = new Integer(0); }
+            if(occurrences == null) { occurrences = 0; }
             occurrences++;
             namesMap.put(designedName, occurrences);
             names[i] = designedName + ( occurrences == 1 ? "" : occurrences );
@@ -451,9 +487,14 @@ public class JavaBytecodeFileParser extends FileParser {
         if(exceptionTable == null) {
             return null;
         }
-        String[] exceptionNames = exceptionTable.getExceptionNames();
+        String[] exceptionNamesStr = exceptionTable.getExceptionNames();
+        Identifier[] exceptionNames = new Identifier[exceptionNamesStr.length];
+        int i = 0;
+        for( String exceptionNameStr : exceptionNamesStr ) {
+            exceptionNames[i++] = IdentifierReader.readFullyQualifiedClass(exceptionNameStr);
+        }
         JavaCodeModel.ExceptionType[] exceptions = new JavaCodeModel.ExceptionType[exceptionNames.length];
-        for(int i = 0; i < exceptionNames.length; i++) {
+        for(i = 0; i < exceptionNames.length; i++) {
             exceptions[i] = new JavaCodeModel.ExceptionType(exceptionNames[i]);
         }
         return exceptions;
@@ -465,7 +506,9 @@ public class JavaBytecodeFileParser extends FileParser {
      * @return
      */
     private JavaCodeModel.JModifier[] extractModifiers(AccessFlags accessFlags) {
-        List<JavaCodeModel.JModifier> modifiers = new ArrayList<JavaCodeModel.JModifier>(JavaCodeModel.JModifier.values().length);
+        List<JavaCodeModel.JModifier> modifiers =
+                new ArrayList<JavaCodeModel.JModifier>(JavaCodeModel.JModifier.values().length);
+        
         if( accessFlags.isAbstract() ) {
             modifiers.add(JavaCodeModel.JModifier.ABSTRACT);
         }

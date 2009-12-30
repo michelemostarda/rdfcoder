@@ -34,14 +34,11 @@ public abstract class BaseOntology extends DefaultOntology {
 
     protected BaseOntology() {
         try {
-
             defineRelation(ASSET, new URL(CONTAINS_LIBRARY), ASSET_PREFIX);
             defineRelation(ASSET, new URL(LIBRARY_LOCATION));
             defineRelation(ASSET, new URL(LIBRARY_DATETIME));
-
-
         } catch (Exception e) {
-             throw new RuntimeException("Error while defining Base Ontology: " + BaseOntology.class);
+             throw new RuntimeException( "Error while defining Base Ontology.", e);
         }
     }
 

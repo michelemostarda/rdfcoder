@@ -29,7 +29,8 @@ import java.io.PrintStream;
 import java.util.List;
 
 /**
- * The Jena implementation of <code>QueryResult</code>.
+ * The Jena implementation of the
+ * {@link com.asemantics.rdfcoder.model.QueryResult}.
  */
 public class JenaQueryResult implements QueryResult {
 

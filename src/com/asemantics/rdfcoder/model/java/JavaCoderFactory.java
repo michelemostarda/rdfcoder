@@ -18,28 +18,29 @@
 
 package com.asemantics.rdfcoder.model.java;
 
-import com.asemantics.rdfcoder.model.CodeHandler;
-import com.asemantics.rdfcoder.model.CodeHandlerImpl;
 import com.asemantics.rdfcoder.model.CodeModel;
 import com.asemantics.rdfcoder.model.CodeModelBase;
 import com.asemantics.rdfcoder.model.CoderFactory;
+import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.QueryModelException;
 import com.asemantics.rdfcoder.model.ontology.Ontology;
 
 
 /**
- * The <i>Java</i> specific Coder Factory.
+ * The <i>Java language</i> Coder Factory.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
-public abstract class JavaCoderFactory implements CoderFactory {
+public abstract class JavaCoderFactory implements CoderFactory<JavaCodeHandler> {
+
+    protected JavaCoderFactory() {}
 
     public Ontology createCodeModelOntology() {
         return new JavaOntology();
     }
 
-    public CodeHandler createHandlerOnModel(CodeModelBase model) {
-        return new CodeHandlerImpl(model);
+    public JavaCodeHandler createHandlerOnModel(CodeModelBase model) {
+        return new JavaCodeHandlerImpl(model);
     }
 
     /**
@@ -59,21 +60,12 @@ public abstract class JavaCoderFactory implements CoderFactory {
     /**
      * Creates a new JPackage object.
      *
-     * @param sections
+     * @param identifier
      * @return the created object.
      */
-    public static final JPackage createJPackage(JavaQueryModel qm, String[] sections) throws QueryModelException {
-        return new JPackage(qm, sections);
-    }
-
-    /**
-     * Creates a new JPackage object.
-     *
-     * @param pathToPackage
-     * @return the created object.
-     */
-    public static final JPackage createJPackage(JavaQueryModel qm, String pathToPackage) throws QueryModelException {
-        return new JPackage(qm, pathToPackage);
+    public static final JPackage createJPackage(JavaQueryModel qm, Identifier identifier)
+    throws QueryModelException {
+        return new JPackage(qm, identifier);
     }
 
    /**
@@ -82,28 +74,20 @@ public abstract class JavaCoderFactory implements CoderFactory {
      * @param pathToInterface
      * @return the created object.
      */
-    public static JInterface createJInterface(JavaQueryModelImpl qm, String pathToInterface) throws QueryModelException {
+    public static JInterface createJInterface(JavaQueryModelImpl qm, Identifier pathToInterface)
+   throws QueryModelException {
         return new JInterface(qm, pathToInterface);
     }
 
     /**
      * Creates a new JClass object.
      *
-     * @param sections
+     * @param identifier
      * @return the created object.
      */
-    public static final JClass createJClass(JavaQueryModel qm, String[] sections) throws QueryModelException {
-        return new JClass(qm, sections);
-    }
-
-    /**
-     * Creates a new JClass object.
-     *
-     * @param pathToClass
-     * @return the created object.
-     */
-    public static final JClass createJClass(JavaQueryModel qm, String pathToClass) throws QueryModelException {
-        return new JClass(qm, pathToClass);
+    public static final JClass createJClass(JavaQueryModel qm, Identifier identifier)
+    throws QueryModelException {
+        return new JClass(qm, identifier);
     }
 
     /**
@@ -112,28 +96,9 @@ public abstract class JavaCoderFactory implements CoderFactory {
      * @param qm
      * @return the created object.
      */
-    public static final JAttribute createJAttribute(JavaQueryModel qm, String[] sections) throws QueryModelException {
-        return new JAttribute(qm, sections);
-    }
-
-    /**
-     * Creates a new JAttribute object.
-     *
-     * @param qm
-     * @return the created object.
-     */
-    public static final JAttribute createJAttribute(JavaQueryModel qm, String pathToAttribute) throws QueryModelException {
+    public static final JAttribute createJAttribute(JavaQueryModel qm, Identifier pathToAttribute)
+    throws QueryModelException {
         return new JAttribute(qm, pathToAttribute);
-    }
-
-    /**
-     * Creates a new JMethod object.
-     *
-     * @param sections the path to the method.
-     * @return the created object.
-     */
-    public static final JMethod createJMethod(JavaQueryModel qm, String[] sections) throws QueryModelException {
-        return new JMethod(qm, sections);
     }
 
     /**
@@ -142,18 +107,9 @@ public abstract class JavaCoderFactory implements CoderFactory {
      * @param pathToMethod the path to the method.
      * @return the created object.
      */
-    public static final JMethod createJMethod(JavaQueryModel qm, String pathToMethod) throws QueryModelException {
+    public static final JMethod createJMethod(JavaQueryModel qm, Identifier pathToMethod)
+    throws QueryModelException {
         return new JMethod(qm, pathToMethod);
-    }
-
-    /**
-     * Creates a new JEnumeration object.
-     * 
-     * @param sections
-     * @return the created object.
-     */
-    public static final JEnumeration createJEnumeration(JavaQueryModel qm, String[] sections) throws QueryModelException {
-        return new JEnumeration(qm, sections);
     }
 
     /**
@@ -161,27 +117,9 @@ public abstract class JavaCoderFactory implements CoderFactory {
      * @param pathToEnumeration the path to the enumeration.
      * @return the created object.
      */
-    public static final JEnumeration createJEnumeration(JavaQueryModel qm, String pathToEnumeration) throws QueryModelException {
+    public static final JEnumeration createJEnumeration(JavaQueryModel qm, Identifier pathToEnumeration)
+    throws QueryModelException {
         return new JEnumeration(qm, pathToEnumeration);
-    }
-
-    /**
-     * Creates a new  JSignature object.
-     *
-     * @param qm
-     * @param sections
-     * @param parameterTypes
-     * @param returnType
-     * @return the created object.
-     * @throws com.asemantics.rdfcoder.model.CodeModelException
-     */
-    public static final JSignature createJSignature(
-             JavaQueryModel qm,
-             String[] sections,
-             JavaCodeModel.JType[] parameterTypes,
-             JavaCodeModel.JType returnType
-    ) throws QueryModelException {
-        return new JSignature(qm, sections, parameterTypes, returnType);
     }
 
     /**
@@ -196,7 +134,7 @@ public abstract class JavaCoderFactory implements CoderFactory {
      */
     public static final JSignature createJSignature(
              JavaQueryModel qm,
-             String pathToSignature,
+             Identifier pathToSignature,
              JavaCodeModel.JType[] parameterTypes,
              JavaCodeModel.JType returnType
     ) throws QueryModelException {
@@ -206,26 +144,26 @@ public abstract class JavaCoderFactory implements CoderFactory {
     /**
      * Creates a base object over an RDF class.
      *
-     * @param qm
-     * @param sections
-     * @param rdfClass
+     * @param qm the query manager used to perform the processing.
+     * @param entity the entity that must be created.
      * @return the created object.
-     * @throws QueryModelException
+     * @throws QueryModelException if an error occurs during creation.
      */
-    protected static final JBase createBaseOnRDFClass(JavaQueryModel qm, String[] sections, String rdfClass)
+    protected static JBase createBaseOnRDFClass(JavaQueryModel qm, Identifier entity)
     throws QueryModelException {
-        if(JavaCodeModel.JPACKAGE.equals(rdfClass)) {
-            return createJPackage(qm, sections);
-        } else if( JavaCodeModel.JCLASS.equals(rdfClass) ) {
-            return createJClass(qm, sections);
-        } else if( JavaCodeModel.JATTRIBUTE.equals(rdfClass)) {
-            return createJAttribute(qm, sections);
-        } else if( JavaCodeModel.JMETHOD.equals(rdfClass) ) {
-            return createJMethod(qm, sections);
-        } else if( JavaCodeModel.JENUMERATION.equals(rdfClass) ) {
-            return createJEnumeration(qm, sections);
+        final String rdfClass = entity.getStrongestQualifier();
+        if(JavaCodeModel.PACKAGE_KEY.equals(rdfClass)) {
+            return createJPackage(qm, entity);
+        } else if( JavaCodeModel.CLASS_KEY.equals(rdfClass) ) {
+            return createJClass(qm, entity);
+        } else if( JavaCodeModel.ATTRIBUTE_KEY.equals(rdfClass)) {
+            return createJAttribute(qm, entity);
+        } else if( JavaCodeModel.METHOD_KEY.equals(rdfClass) ) {
+            return createJMethod(qm, entity);
+        } else if( JavaCodeModel.ENUMERATION_KEY.equals(rdfClass) ) {
+            return createJEnumeration(qm, entity);
         } else {
-            throw new IllegalArgumentException("Unknown rdfClass: " + rdfClass);
+            throw new IllegalArgumentException( String.format("Unknown rdfClass: '%s'", rdfClass) );
         }
     }
 

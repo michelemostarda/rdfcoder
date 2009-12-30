@@ -20,7 +20,7 @@ package com.asemantics.rdfcoder.model.ontology;
 
 
 /**
- * Defines any exception concerning the <i>Ontology</i>.
+ * Defines any exception related to <i>ontologies</i>.
  */
 public class OntologyException extends Exception {
 

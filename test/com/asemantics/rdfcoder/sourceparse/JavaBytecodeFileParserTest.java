@@ -18,38 +18,42 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import junit.framework.TestCase;
-import com.asemantics.rdfcoder.model.CodeHandler;
-import com.asemantics.rdfcoder.model.CodeHandlerDebugImpl;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandlerDebugImpl;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
- * A basic uint test of <code>JavaBytecodeFileParser</code>
+ * Test case for the {@link com.asemantics.rdfcoder.sourceparse.JavaBytecodeFileParser}.
  */
-public class JavaBytecodeFileParserTest extends TestCase {
+public class JavaBytecodeFileParserTest {
 
     private ObjectsTable objectsTable;
-    private CodeHandler codeHandler;
+    private JavaCodeHandler javaCodeHandler;
     private JavaBytecodeFileParser javaBytecodeFileParser;
 
-
+    @Before
     public void setUp() {
         objectsTable = new ObjectsTable();
-        codeHandler = new CodeHandlerDebugImpl();
+        javaCodeHandler = new JavaCodeHandlerDebugImpl();
         javaBytecodeFileParser = new JavaBytecodeFileParser();
-        javaBytecodeFileParser.initialize(codeHandler, objectsTable);
+        javaBytecodeFileParser.initialize(javaCodeHandler, objectsTable);
     }
 
+    @After
     public void tearDown() {
         javaBytecodeFileParser.dispose();
         javaBytecodeFileParser = null;
         objectsTable = null;
-        codeHandler = null;
+        javaCodeHandler = null;
     }
 
-    public void testMain() throws IOException {
+    @Test
+    public void testParse() throws IOException, ParserException {
         javaBytecodeFileParser.parse(
                 new File("target_test/classes/p1/p2/Test.class")
         );

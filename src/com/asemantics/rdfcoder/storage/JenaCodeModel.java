@@ -45,7 +45,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * The <code>CodeModel</code> implementation for the Jena backend.
+ * The {@link com.asemantics.rdfcoder.model.CodeModel}
+ * implementation for the <i>Jena</i> backend.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */

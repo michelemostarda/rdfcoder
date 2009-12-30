@@ -18,7 +18,7 @@
 
 package com.asemantics.rdfcoder.model.java;
 
-import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.QueryModelException;
 
 /**
@@ -29,24 +29,12 @@ import com.asemantics.rdfcoder.model.QueryModelException;
 public class JInterface extends JObject {
 
     /**
-     * Check if an interface exists.
-     *
-     * @param qm
-     * @param name
-     * @param index
-     * @return <code>true</code> if exists.
-     */
-    public static boolean exists(JavaQueryModel qm, final String name[], int index) {
-       return qm.interfaceExists( concatenate(name, index) );
-    }
-
-    /**
      * Constructor by path.
      * @param queryModel
      * @param pathToInterface
      * @throws com.asemantics.rdfcoder.model.QueryModelException
      */
-    protected JInterface(JavaQueryModel queryModel, String pathToInterface)
+    protected JInterface(JavaQueryModel queryModel, Identifier pathToInterface)
     throws QueryModelException {
 
         super(queryModel, pathToInterface);
@@ -56,18 +44,8 @@ public class JInterface extends JObject {
         return JavaCodeModel.JVisibility.PUBLIC;
     }
 
-    /**
-     * Constructor by sections.
-     * @param qm
-     * @param sections
-     * @throws QueryModelException
-     */
-    protected JInterface(JavaQueryModel qm, String[] sections) throws QueryModelException {
-        super(qm, sections);
-    }
-
-    public boolean exists(final String[] name, int index) {
-        return exists(getQueryModel(), name, index);
+    public boolean exists(Identifier identifier) {
+        return getQueryModel().interfaceExists(identifier);
     }
 
     /**
@@ -105,10 +83,6 @@ public class JInterface extends JObject {
             return (JPackage) parent;
         }
         return null;
-    }
-
-    public String toString() {
-        return parent.toString() + CodeHandler.PACKAGE_SEPARATOR + super.toString();
     }
 
     protected String getHierarchyElemType() {

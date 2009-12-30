@@ -19,6 +19,9 @@
 package com.asemantics.rdfcoder.model.java;
 
 import com.asemantics.rdfcoder.model.CodeModelBase;
+import com.asemantics.rdfcoder.model.Identifier;
+import com.asemantics.rdfcoder.model.IdentifierBuilder;
+import com.asemantics.rdfcoder.model.IdentifierReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,9 +68,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
 
         public String getInternalIdentifier();
 
-        public String getIdentifier();
-
-        public String getIdentifier(String internalRepresentation);
+        public Identifier getIdentifier();
 
         public JType cloneType();
 
@@ -78,12 +79,13 @@ public abstract class JavaCodeModel extends CodeModelBase {
      */
     protected static abstract class JPrimitiveType implements JType {
 
-        public String getIdentifier() {
-            return toURI(getInternalIdentifier());
-        }
-
-        public String getIdentifier(String internalRepresentation) {
-            return toURI(internalRepresentation);
+        // TODO: HIGH : this must be optimized !!
+        public Identifier getIdentifier() {
+            return IdentifierBuilder
+                    .create()
+                    .pushFragment(getInternalIdentifier(), PRIMITIVE_KEY)
+                    .setPrefix(CODER_URI)
+                    .build();
         }
 
         public JType cloneType() {
@@ -93,6 +95,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
         public String toString() {
             return getInternalIdentifier();
         }
+        
     }
 
     public static class TYPE_VOID extends JPrimitiveType {
@@ -177,13 +180,13 @@ public abstract class JavaCodeModel extends CodeModelBase {
      */
     public static class ObjectType extends StructuredType {
 
-        private String pathToObject;
+        private Identifier pathToObject;
 
-        public ObjectType(String pto) {
+        public ObjectType(Identifier pto) {
             pathToObject = pto;
         }
 
-        public void setInternalIdentifier(String id) {
+        public void setInternalIdentifier(Identifier id) {
             if( pathToObject != null ) {
                 throw new IllegalStateException("Invalid renaming");
             }
@@ -191,26 +194,22 @@ public abstract class JavaCodeModel extends CodeModelBase {
         }
 
         public String getInternalIdentifier() {
+            return pathToObject.getIdentifier();
+        }
+
+        public Identifier getIdentifier() {
             return pathToObject;
         }
 
-        public String getIdentifier() {
-            return CLASS_PREFIX + pathToObject;
-        }
-
-        public String getIdentifier(String internalRepresentation) {
-            return CLASS_PREFIX + internalRepresentation;
-        }
-
         public String toString() {
-            return getInternalIdentifier();
+            return pathToObject.getIdentifier();
         }
 
         public static ObjectType rdfTypeToType(String rdfType) {
-            if(rdfType.indexOf(CLASS_PREFIX) != 0) {
-                return null;
+            if(rdfType.indexOf(CLASS_KEY) != 0) {
+                throw new IllegalArgumentException("Expected object prefix.");
             }
-            return new ObjectType( rdfType.substring(CLASS_PREFIX.length()) );
+            return new ObjectType( IdentifierReader.readIdentifier(rdfType) );
         }
     }
 
@@ -219,7 +218,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
      */
     public static class ExceptionType extends ObjectType {
 
-        public ExceptionType(String pte) {
+        public ExceptionType(Identifier pte) {
             super(pte);
         }
     }
@@ -229,13 +228,13 @@ public abstract class JavaCodeModel extends CodeModelBase {
      */
     public static class InterfaceType extends StructuredType {
 
-        private String pathToInterface;
+        private Identifier pathToInterface;
 
-        public InterfaceType(String pti) {
+        public InterfaceType(Identifier pti) {
             pathToInterface = pti;
         }
 
-        public void setInternalIdentifier(String id) {
+        public void setInternalIdentifier(Identifier id) {
             if( pathToInterface != null ) {
                 throw new IllegalStateException("Invalid renaming");
             }
@@ -243,11 +242,11 @@ public abstract class JavaCodeModel extends CodeModelBase {
         }
 
         public String getInternalIdentifier() {
-            return pathToInterface;
+            throw new UnsupportedOperationException();
         }
 
-        public String getIdentifier() {
-            return INTERFACE_PREFIX + pathToInterface;
+        public Identifier getIdentifier() {
+            return pathToInterface;
         }
 
         public String getIdentifier(String internalRepresentation) {
@@ -256,9 +255,9 @@ public abstract class JavaCodeModel extends CodeModelBase {
 
         public static InterfaceType rdfTypeToType(String rdfType) {
             if(rdfType.indexOf(INTERFACE_PREFIX) != 0) {
-                return null;
+                throw new IllegalArgumentException("Expected object prefix.");
             }
-            return new InterfaceType( rdfType.substring(INTERFACE_PREFIX.length()) );
+            return new InterfaceType( IdentifierReader.readIdentifier(rdfType) );
         }
     }
 
@@ -283,7 +282,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
             return size;
         }
 
-        public void setInternalIdentifier(String id) {
+        public void setInternalIdentifier(Identifier id) {
             if(type instanceof ObjectType) {
                 ( (ObjectType) type).setInternalIdentifier(id);
             } else if( type instanceof ArrayType) {
@@ -297,8 +296,8 @@ public abstract class JavaCodeModel extends CodeModelBase {
             return type.getInternalIdentifier();
         }
 
-        public String getIdentifier() {
-            return toIdentifier(type.getIdentifier());
+        public Identifier getIdentifier() {
+            return type.getIdentifier();
         }
 
         public String getIdentifier(String internalRepresentation) {
@@ -335,7 +334,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
             if(typeIsObj) {
                 type = type.substring(1, type.length() -2);
             }
-            return new ArrayType( typeIsObj ? new ObjectType(type) : javaTypeToJType(type), arraySize );
+            return new ArrayType( typeIsObj ? new ObjectType(IdentifierReader.readIdentifier(type) ) : javaTypeToJType(type), arraySize );
         }
     }
 
@@ -345,34 +344,34 @@ public abstract class JavaCodeModel extends CodeModelBase {
      * @return the object type.
      */
     public static final ObjectType createObjectType(String s) {
-        return new ObjectType(s);
+        return new ObjectType( IdentifierReader.readIdentifier(s) );
     }
 
     /**
      * Converts a string representation of a RDF rdfType to a <code>JType</code>.
-     * @param rdfType the <code>JType</code> as string.
+     * @param rdfType the <code>JType</code> expressed as an identifier.
      * @return the returned <code>JType</code> object.
      */
     public static final JType rdfTypeToJType(String rdfType) {
 
         // Primitive types.
-        if(CHAR.getIdentifier().equals(rdfType)) {
+        if(CHAR.getIdentifier().getIdentifier().equals(rdfType)) {
             return CHAR;
-        } else if(BYTE.getIdentifier().equals(rdfType)) {
+        } else if(BYTE.getIdentifier().getIdentifier().equals(rdfType)) {
             return BYTE;
-        } else if(SHORT.getIdentifier().equals(rdfType)) {
+        } else if(SHORT.getIdentifier().getIdentifier().equals(rdfType)) {
             return SHORT;
-        } else if(INT.getIdentifier().equals(rdfType)) {
+        } else if(INT.getIdentifier().getIdentifier().equals(rdfType)) {
             return INT;
-        } else if(LONG.getIdentifier().equals(rdfType)) {
+        } else if(LONG.getIdentifier().getIdentifier().equals(rdfType)) {
             return LONG;
-        } else if(FLOAT.getIdentifier().equals(rdfType)) {
+        } else if(FLOAT.getIdentifier().getIdentifier().equals(rdfType)) {
             return FLOAT;
-        } else if(DOUBLE.getIdentifier().equals(rdfType)) {
+        } else if(DOUBLE.getIdentifier().getIdentifier().equals(rdfType)) {
             return DOUBLE;
-        }  else if(BOOL.getIdentifier().equals(rdfType)) {
+        }  else if(BOOL.getIdentifier().getIdentifier().equals(rdfType)) {
             return BOOL;
-        } else if(VOID.getIdentifier().equals(rdfType)) {
+        } else if(VOID.getIdentifier().getIdentifier().equals(rdfType)) {
             return VOID;
         }
 
@@ -624,7 +623,9 @@ public abstract class JavaCodeModel extends CodeModelBase {
     public static final String SIGNATURE_KEY    = "jsignature";
 
     public static final String PARAMETER_KEY    = "jparameter";
-    
+
+    public static final String PRIMITIVE_KEY    = "jprimitive";
+
     /* END:   Ontology terms. */
 
 

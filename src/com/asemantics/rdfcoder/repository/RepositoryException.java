@@ -19,7 +19,8 @@
 package com.asemantics.rdfcoder.repository;
 
 /**
- * Defines any exception raised by {@link com.asemantics.rdfcoder.repository.Repository}
+ * Defines any exception raised by
+ * {@link com.asemantics.rdfcoder.repository.Repository}
  */
 public class RepositoryException extends Exception {
 

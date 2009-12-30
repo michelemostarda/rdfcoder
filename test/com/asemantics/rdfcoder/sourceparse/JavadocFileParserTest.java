@@ -19,7 +19,11 @@
 package com.asemantics.rdfcoder.sourceparse;
 
 import com.asemantics.rdfcoder.model.java.JavadocHandler;
-import junit.framework.TestCase;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -27,40 +31,38 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Test unit of <code>JavadocFileParser</code>.
+ * Test case for {@liink com.asemantics.rdfcoder.sourceparse.JavadocFileParser}.
  */
-public class JavadocFileParserTest extends TestCase {
+public class JavadocFileParserTest {
+
+    private static final Logger logger = Logger.getLogger(JavadocFileParserTest.class);
 
     class TestJavadocParserListener implements JavadocHandler {
 
         private JavadocEntry je;
-
-        private JavadocEntry methodJavadocEntry;
-
-        private JavadocEntry classJavadocEntry;
 
         JavadocEntry getJavadocEntry() {
             return je;
         }
 
         public void startParsing(String libraryName, String location) {
-            System.out.println("Start parsing of '" + libraryName + "' at location: '" + location + "'");
+            logger.info("Start parsing of '" + libraryName + "' at location: '" + location + "'");
         }
 
         public void endParsing() {
-            System.out.println("End parsing");
+            logger.info("End parsing");
         }
 
         public void startCompilationUnit(String identifier) {
-            System.out.println("start compilation unit: " + identifier);
+            logger.info("start compilation unit: " + identifier);
         }
 
         public void endCompilationUnit() {
-            System.out.println("endCompilationUnit");
+            logger.info("endCompilationUnit");
         }
 
         public void parseError(String location, String description) {
-            System.err.println("Parse error at location:" + location + ": " + description);
+            logger.error("Parse error at location:" + location + ": " + description);
         }
 
         public void parsedEntry(JavadocEntry entry) {
@@ -68,22 +70,20 @@ public class JavadocFileParserTest extends TestCase {
         }
 
         public void classJavadoc(JavadocEntry entry, String pathToClass) {
-            classJavadocEntry = entry;
-            System.out.println("=======================================");
-            System.out.println("classJavadoc: " + pathToClass);
-            System.out.println(entry);
-            System.out.println("=======================================");
+            logger.info("=======================================");
+            logger.info("classJavadoc: " + pathToClass);
+            logger.info(entry);
+            logger.info("=======================================");
         }
 
         public void methodJavadoc(JavadocEntry entry, String pathToMethod, String[] signature) {
-            methodJavadocEntry = entry;
-            System.out.println("=======================================");
-            System.out.print("methodJavadoc: " + pathToMethod);
-            System.out.print("(");
+            logger.info("=======================================");
+            logger.info("methodJavadoc: " + pathToMethod);
+            logger.info("(");
             for(String s: signature) { System.out.print(s + ", "); }
-            System.out.println(")");
-            System.out.println( entry );
-            System.out.println("=======================================");
+            logger.info(")");
+            logger.info( entry );
+            logger.info("=======================================");
         }
 
     }
@@ -103,7 +103,8 @@ public class JavadocFileParserTest extends TestCase {
 
     public JavadocFileParserTest() {}
 
-    protected void setUp() {
+    @Before
+    public void setUp() {
         String input = "/* Neutral comment */\n" +
                        "\n" +
                        "/**\n" +
@@ -126,10 +127,12 @@ public class JavadocFileParserTest extends TestCase {
         byteArrayInputStream = new ByteArrayInputStream( input.getBytes() , 0, input.length());
     }
 
-    protected void tearDown() {
+    @After
+    public void tearDown() {
         byteArrayInputStream = null;
     }
 
+    @Test
     public void testInputStream() throws ParserException {
         // Parses javadoc buffer.
         JavadocFileParser javadocFileParser = new JavadocFileParser();
@@ -140,30 +143,31 @@ public class JavadocFileParserTest extends TestCase {
 
         // Checks integrity.
         JavadocEntry entry = tjpl.getJavadocEntry();
-        System.out.println("entry: " + entry);
+        logger.info("javadoc entry: " + entry);
 
-        assertEquals(3, entry.getRow());
-        assertEquals(0, entry.getCol());
+        Assert.assertEquals(3, entry.getRow());
+        Assert.assertEquals(0, entry.getCol());
 
-        assertEquals(SHORT_DESCRIPTION, entry.getShortDescription());
-        assertEquals(LONG_DESCRIPTION_1 + " " + LONG_DESCRIPTION_2 , entry.getLongDescription() );
+        Assert.assertEquals(SHORT_DESCRIPTION, entry.getShortDescription());
+        Assert.assertEquals(LONG_DESCRIPTION_1 + " " + LONG_DESCRIPTION_2 , entry.getLongDescription() );
 
-        assertEquals(4, entry.getParameterNames().length);
-        List expected = Arrays.asList( new String[] {"param1", "param2", "param3", "param4"} );
+        Assert.assertEquals(4, entry.getParameterNames().length);
+        List expected = Arrays.asList( "param1", "param2", "param3", "param4" );
         List parameterNames = Arrays.asList( entry.getParameterNames() );
-        assertTrue( expected.containsAll(parameterNames) );
+        Assert.assertTrue( expected.containsAll(parameterNames) );
 
-        assertEquals(RETURN_DESCRIPTION, entry.getReturnDescription());
+        Assert.assertEquals(RETURN_DESCRIPTION, entry.getReturnDescription());
 
-        assertEquals(PATH_TO_SEE, entry.getSee()[0]);
+        Assert.assertEquals(PATH_TO_SEE, entry.getSee()[0]);
 
-        assertEquals(SINCE_VALUE, entry.getSince());
+        Assert.assertEquals(SINCE_VALUE, entry.getSince());
 
-        List authors = Arrays.asList( new String[] {"Name1 Surname1", "Name2 Surname2"} );
-        assertTrue( Arrays.asList( entry.getAuthors()).containsAll(authors) );
+        List authors = Arrays.asList( "Name1 Surname1", "Name2 Surname2" );
+        Assert.assertTrue( Arrays.asList( entry.getAuthors()).containsAll(authors) );
 
     }
 
+    @Test
     public void testInputFile() throws ParserException {
         // Parses file content.
         JavadocFileParser javadocFileParser = new JavadocFileParser();
@@ -174,7 +178,7 @@ public class JavadocFileParserTest extends TestCase {
 
         // Checks extracted content.
         JavadocEntry entry = tjpl.getJavadocEntry();
-        //System.out.println("entry: " + entry);
+        logger.info("Javadoc entry: " + entry);
         
     }
 }

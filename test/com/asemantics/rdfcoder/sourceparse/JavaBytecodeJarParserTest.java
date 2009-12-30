@@ -18,51 +18,59 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import junit.framework.TestCase;
-import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.storage.JenaCodeModel;
 import com.asemantics.rdfcoder.storage.JenaCoderFactory;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
- * Unit test of <code>JavaBytecodeJarParser</code> class.
+ * Test case for the {@link com.asemantics.rdfcoder.sourceparse.JavaBytecodeJarParser}.
  */
-public class JavaBytecodeJarParserTest extends TestCase {
+public class JavaBytecodeJarParserTest {
+
+    private static final Logger logger = Logger.getLogger(JavaBytecodeJarParserTest.class);
 
     private ObjectsTable objectsTable;
     private JenaCoderFactory jcf;
     private JenaCodeModel jcm;
-    CodeHandler codeHandler;
+    private JavaCodeHandler javaCodeHandler;
     private JavaBytecodeJarParser parser;
-    JStatistics statistics;
+    private JStatistics statistics;
 
     public JavaBytecodeJarParserTest() {
         statistics = new JStatistics();
         objectsTable = new ObjectsTable();
         jcf = new JenaCoderFactory();
         jcm = (JenaCodeModel) jcf.createCodeModel();
-        codeHandler = jcf.createHandlerOnModel(jcm);
+        javaCodeHandler = jcf.createHandlerOnModel(jcm);
     }
 
+    @Before
     public void setUp() {
         parser = new JavaBytecodeJarParser();
-        CodeHandler statCH = statistics.createStatisticsCodeHandler(codeHandler);
+        JavaCodeHandler statCH = statistics.createStatisticsCodeHandler(javaCodeHandler);
         parser.initialize(statCH, objectsTable);
-        codeHandler.startParsing("smack_3.0.4", "lib_location");
+        javaCodeHandler.startParsing("smack_3.0.4", "lib_location");
     }
 
+    @After
     public void tearDown() {
-        codeHandler.endParsing();
-        System.out.println(statistics.toString());
+        javaCodeHandler.endParsing();
+        logger.info("Bytecode parser statistics: " + statistics.toString() );
         statistics.reset();
         objectsTable.clear();
         parser.dispose();
         parser = null;
     }
 
-    public void testParse() throws IOException {
+    @Test
+    public void testParse() throws IOException, ParserException {
         parser.parseFile(new File("target_test/target.jar") );
     }
 

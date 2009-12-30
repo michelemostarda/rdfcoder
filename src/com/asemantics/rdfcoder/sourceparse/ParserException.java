@@ -22,7 +22,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 /**
- * This exception encapsulates every exception raised
+ * This exception encapsulates every error raised
  * by a parser.
  */
 public class ParserException extends Exception {
@@ -32,6 +32,10 @@ public class ParserException extends Exception {
     public ParserException(Throwable t, String file) {
         super(t);
         effectedFile = file;
+    }
+
+    public ParserException(String msg, Throwable t) {
+        super(msg, t);
     }
 
     public ParserException(String msg) {

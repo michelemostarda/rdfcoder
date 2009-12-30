@@ -23,7 +23,7 @@ import com.asemantics.rdfcoder.sourceparse.JStatistics;
 import java.io.File;
 
 /**
- * Defines a report on activities concerning the parsing of a
+ * Defines a report on activities concerning parsing of the
  * <i>Java Runtime Environment</i>.
  */
 public class JREReport {

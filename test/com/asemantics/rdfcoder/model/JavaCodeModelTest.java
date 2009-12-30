@@ -18,34 +18,39 @@
 
 package com.asemantics.rdfcoder.model;
 
-import com.asemantics.rdfcoder.storage.JenaCoderFactory;
 import com.asemantics.rdfcoder.model.java.JAttribute;
-import com.asemantics.rdfcoder.model.java.JavaCodeModel;
-import com.asemantics.rdfcoder.model.java.JavaQueryModel;
 import com.asemantics.rdfcoder.model.java.JClass;
 import com.asemantics.rdfcoder.model.java.JEnumeration;
 import com.asemantics.rdfcoder.model.java.JInterface;
 import com.asemantics.rdfcoder.model.java.JMethod;
 import com.asemantics.rdfcoder.model.java.JPackage;
 import com.asemantics.rdfcoder.model.java.JSignature;
-import junit.framework.TestCase;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
+import com.asemantics.rdfcoder.model.java.JavaCodeModel;
+import com.asemantics.rdfcoder.model.java.JavaQueryModel;
+import com.asemantics.rdfcoder.storage.JenaCoderFactory;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * Basic test on {@link com.asemantics.rdfcoder.model.java.JavaCodeModel}.
- *
- * @author Michele Mostarda (michele.mostarda@gmail.com)
- *
+ * Test case for the {@link com.asemantics.rdfcoder.model.java.JavaCodeModel}.
  */
-public class JavaCodeModelTest extends TestCase {
+//TODO: HIGH : this test must be decomposed.
+public class JavaCodeModelTest {
 
     private JenaCoderFactory jcmf;
 
     private CodeModelBase cmb;
 
-    private CodeHandler jch;
+    private JavaCodeHandler jch;
 
     private JavaQueryModel qm;
 
+    public JavaCodeModelTest() {}
+
+    @Before
     public void setUp() {
         jcmf = new JenaCoderFactory();
         cmb  = jcmf.createCodeModel();
@@ -53,6 +58,7 @@ public class JavaCodeModelTest extends TestCase {
         qm   = jcmf.createQueryModel(cmb);
     }
 
+    @After
     public void tearDown() {
         jcmf = null;
         cmb  = null;
@@ -60,33 +66,46 @@ public class JavaCodeModelTest extends TestCase {
         qm   = null;
     }
 
+    @Test
     public void testHandler() throws QueryModelException {
 
-        // Loading org.asemantics.model.
+        // Loading model.
         jch.startParsing("test_lib", "test_location");
 
-        jch.startPackage("p0");
-        jch.startPackage("p0.p1");
-        jch.startPackage("p0.p1.p2");
-        jch.startPackage("p0.p1.p2.p3");
+        jch.startPackage( IdentifierReader.readPackage("p0") );
+        jch.startPackage( IdentifierReader.readPackage("p0.p1") );
+        jch.startPackage( IdentifierReader.readPackage("p0.p1.p2") );
+        jch.startPackage( IdentifierReader.readPackage("p0.p1.p2.p3") );
 
         jch.startClass(
                 new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.STATIC },
                 JavaCodeModel.JVisibility.PUBLIC,
-                "p0.p1.p2.p3.class1",
+                IdentifierReader.readPackage("p0.p1.p2.p3").copy().pushFragment("class1", JavaCodeModel.CLASS_KEY).build(),
                 null,
                 null
         );
 
         jch.startEnumeration(new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.FINAL },
-                JavaCodeModel.JVisibility.PUBLIC, "p0.p1.p2.p3.class1.enum1",
+                JavaCodeModel.JVisibility.PUBLIC,
+                IdentifierReader
+                        .readPackage("p0.p1.p2.p3")
+                        .copy()
+                        .pushFragment("class1", JavaCodeModel.CLASS_KEY)
+                        .pushFragment("enum1", JavaCodeModel.ENUMERATION_KEY)
+                        .build(),
                 new String[] {"ELEM_1", "ELEM_2", "ELEM_3"}
         );
 
         jch.method(
             new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.NATIVE },
             JavaCodeModel.JVisibility.DEFAULT,
-            "p0.p1.p2.p3.class1.enum1.method1",
+            IdentifierReader
+                    .readPackage("p0.p1.p2.p3")
+                    .copy()
+                    .pushFragment("class1", JavaCodeModel.CLASS_KEY)
+                    .pushFragment("enum1", JavaCodeModel.ENUMERATION_KEY)
+                    .pushFragment("method1", JavaCodeModel.METHOD_KEY)
+                    .build(),
             1,
             new String[]{"param1", "param2"},
             new JavaCodeModel.JType[] {JavaCodeModel.INT, JavaCodeModel.FLOAT},
@@ -98,15 +117,24 @@ public class JavaCodeModelTest extends TestCase {
         jch.attribute(
                 new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.TRANSIENT },
                 JavaCodeModel.JVisibility.PRIVATE,
-                "p0.p1.p2.p3.class1.attribute1",
+                IdentifierReader
+                    .readPackage("p0.p1.p2.p3")
+                    .copy()
+                    .pushFragment("class1", JavaCodeModel.CLASS_KEY)
+                    .pushFragment("attribute1", JavaCodeModel.ATTRIBUTE_KEY)
+                    .build(),
                 JavaCodeModel.INT,
                 "0"
         );
         jch.attribute(
                 new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.STATIC },
                 JavaCodeModel.JVisibility.PROTECTED,
-                "p0.p1.p2.p3.class1.attribute2",
-                new JavaCodeModel.ObjectType("a.b.Obj1"),
+                IdentifierReader.readPackage("p0.p1.p2.p3")
+                    .copy()
+                    .pushFragment("class1", JavaCodeModel.CLASS_KEY)
+                    .pushFragment("attribute2", JavaCodeModel.ATTRIBUTE_KEY)
+                        .build(),
+                new JavaCodeModel.ObjectType( IdentifierReader.readFullyQualifiedClass("a.b.Obj1") ),
                 "0"
         );
 
@@ -115,7 +143,11 @@ public class JavaCodeModelTest extends TestCase {
         jch.startClass(
                 new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.FINAL },
                 JavaCodeModel.JVisibility.PROTECTED,
-                "p0.p1.p2.p3.class2",
+                IdentifierReader
+                    .readPackage("p0.p1.p2.p3")
+                    .copy()
+                    .pushFragment("class2", JavaCodeModel.CLASS_KEY)
+                    .build(),
                 null,
                 null
         );
@@ -123,7 +155,11 @@ public class JavaCodeModelTest extends TestCase {
         jch.method(
             new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.NATIVE },
             JavaCodeModel.JVisibility.DEFAULT,
-            "p0.p1.p2.p3.class2.method1",
+            IdentifierReader.readPackage("p0.p1.p2.p3")
+                .copy()
+                .pushFragment("class2", JavaCodeModel.CLASS_KEY)
+                .pushFragment("method1", JavaCodeModel.METHOD_KEY)
+                .build(),
             1,
             new String[]{"param1", "param2", "param3"},
             new JavaCodeModel.JType[] {JavaCodeModel.INT, JavaCodeModel.FLOAT, JavaCodeModel.LONG},
@@ -134,21 +170,42 @@ public class JavaCodeModelTest extends TestCase {
         jch.startClass(
                 new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.STATIC },
                 JavaCodeModel.JVisibility.PRIVATE,
-                "p0.p1.p2.p3.class2.class3",
+                IdentifierReader.readPackage("p0.p1.p2.p3")
+                    .copy()
+                    .pushFragment("class2", JavaCodeModel.CLASS_KEY)
+                    .pushFragment("class3", JavaCodeModel.CLASS_KEY)
+                    .build(),
                 null,
                 null
         );
         jch.endClass();
 
-        jch.startInterface( "p0.p1.p2.p3.I1", new String[] {"E1", "E2", "E3"} );
+        jch.startInterface(
+                IdentifierReader.readPackage("p0.p1.p2.p3")
+                    .copy()
+                    .pushFragment("I1", JavaCodeModel.INTERFACE_KEY)
+                    .build(),
+                new Identifier[] {
+                        IdentifierReader.readFullyQualifiedClass("p0.p1.p2.p3.E1"),
+                        IdentifierReader.readFullyQualifiedClass("p0.p1.p2.p3.E2"),
+                        IdentifierReader.readFullyQualifiedClass("p0.p1.p2.p3.E3")
+                } 
+        );
 
         jch.method(
                 new JavaCodeModel.JModifier[] { JavaCodeModel.JModifier.NATIVE },
                 JavaCodeModel.JVisibility.PUBLIC,
-                "p0.p1.p2.p3.method1",
+                IdentifierReader.readPackage("p0.p1.p2.p3")
+                    .copy()
+                    .pushFragment("I1", JavaCodeModel.INTERFACE_KEY)
+                    .pushFragment("method1", JavaCodeModel.METHOD_KEY)
+                    .build(),
                 1,
                 new String[] {"pa", "pb"},
-                new JavaCodeModel.JType[] { JavaCodeModel.INT, new JavaCodeModel.ObjectType("a.b.T") },
+                new JavaCodeModel.JType[] {
+                        JavaCodeModel.INT,
+                        new JavaCodeModel.ObjectType(IdentifierReader.readFullyQualifiedClass("a.b.T") )
+                },
                 JavaCodeModel.VOID,
                 null
         );
@@ -175,13 +232,13 @@ public class JavaCodeModelTest extends TestCase {
             System.out.println(
                     "library: " + lib + " at location: " + asset.getLibraryLocation(lib) + " with date: " + asset.getLibraryDateTime(lib) );
         }
-        assertEquals("Expected one library in asset", 1 ,asset.getLibraries().length);
+        Assert.assertEquals("Expected one library in asset", 1 ,asset.getLibraries().length);
         System.out.println("Asset <<<");
 
         // Retrieve packages.
         System.out.println("Packages >>>");
         JPackage[] packs = qm.getAllPackages();
-        assertEquals(4, packs.length);
+        Assert.assertEquals(4, packs.length);
         for (JPackage pack : packs) {
             System.out.println(pack.toString());
         }
@@ -191,11 +248,13 @@ public class JavaCodeModelTest extends TestCase {
 
         // Check classes containement.
         JClass[] classes  = qm.getAllClasses();
-        JClass[] classes2 = qm.getClassesInto("p0.p1.p2.p3");
-        JClass[] classes3 = qm.getClassesInto("p0.p1.p2.p3.class2");
-        assertEquals(3, classes.length);
-        assertEquals(2, classes2.length);
-        assertEquals(1, classes3.length);
+        Assert.assertEquals(3, classes.length);
+
+        JClass[] classes2 = qm.getClassesInto(IdentifierReader.readIdentifier("jpackage:p0.p1.p2.p3") );
+        Assert.assertEquals(2, classes2.length);
+
+        JClass[] classes3 = qm.getClassesInto(IdentifierReader.readIdentifier("jpackage:p0.p1.p2.p3.jclass:class2") );
+        Assert.assertEquals(1, classes3.length);
 
         // Print out classes.
         for(JClass clazz : classes) {
@@ -203,16 +262,16 @@ public class JavaCodeModelTest extends TestCase {
         }
 
         // Check visibility and modifiers.
-        for(int i = 0; i < classes.length; i++) {
-            if ( "class1".equals(classes[i].getName()) ) {
-                assertEquals(JavaCodeModel.JVisibility.PUBLIC, classes[i].getVisibility());
-                assertEquals(1, classes[i].getModifiers().length);
-                assertEquals(JavaCodeModel.JModifier.STATIC, classes[i].getModifiers()[0]);
+        for (JClass aClass : classes) {
+            if ("class1".equals(aClass.getName())) {
+                Assert.assertEquals(JavaCodeModel.JVisibility.PUBLIC, aClass.getVisibility());
+                Assert.assertEquals(1, aClass.getModifiers().length);
+                Assert.assertEquals(JavaCodeModel.JModifier.STATIC, aClass.getModifiers()[0]);
             }
-            if ( "class2".equals(classes[i].getName()) ) {
-                assertEquals(JavaCodeModel.JVisibility.PROTECTED, classes[i].getVisibility());
-                assertEquals(1, classes[i].getModifiers().length);
-                assertEquals(JavaCodeModel.JModifier.FINAL, classes[i].getModifiers()[0]);
+            if ("class2".equals(aClass.getName())) {
+                Assert.assertEquals(JavaCodeModel.JVisibility.PROTECTED, aClass.getVisibility());
+                Assert.assertEquals(1, aClass.getModifiers().length);
+                Assert.assertEquals(JavaCodeModel.JModifier.FINAL, aClass.getModifiers()[0]);
             }
         }
 
@@ -221,12 +280,12 @@ public class JavaCodeModelTest extends TestCase {
         // Retrieve methods from class.
         System.out.println("Methods >>>");
 
-        JMethod[] methods = qm.getMethodsInto("p0.p1.p2.p3.class2");
-        assertEquals(1, methods.length);
+        JMethod[] methods = qm.getMethodsInto( IdentifierReader.readIdentifier("jpackage:p0.p1.p2.p3.jclass:class2") );
+        Assert.assertEquals(1, methods.length);
         for (JMethod method : methods) {
             System.out.println(method);
             JSignature[] signatures = method.getSignatures();
-            assertEquals(signatures.length, 1);
+            Assert.assertEquals(signatures.length, 1);
             System.out.println("\tSignatures >>>");
             for (JSignature signature : signatures) {
                 System.out.println(signature);
@@ -237,9 +296,9 @@ public class JavaCodeModelTest extends TestCase {
         // Check visibility and modifiers.
         for(int i = 0; i < methods.length; i++) {
             if ( "method1".equals(methods[i].getName()) ) {
-                assertEquals(JavaCodeModel.JVisibility.DEFAULT, methods[i].getVisibility());
-                assertEquals(1, methods[i].getModifiers().length);
-                assertEquals(JavaCodeModel.JModifier.NATIVE, methods[i].getModifiers()[0]);
+                Assert.assertEquals(JavaCodeModel.JVisibility.DEFAULT, methods[i].getVisibility());
+                Assert.assertEquals(1, methods[i].getModifiers().length);
+                Assert.assertEquals(JavaCodeModel.JModifier.NATIVE, methods[i].getModifiers()[0]);
             }
         }
 
@@ -247,21 +306,21 @@ public class JavaCodeModelTest extends TestCase {
         System.out.println("Methods <<<");
 
         // Retrieve attributes.
-        JAttribute[] attributes = qm.getAttributesInto("p0.p1.p2.p3.class1");
-        assertEquals(attributes.length, 2);
+        JAttribute[] attributes = qm.getAttributesInto( IdentifierReader.readIdentifier("jpackage:p0.p1.p2.p3.jclass:class1") );
+        Assert.assertEquals(attributes.length, 2);
         System.out.println("Attributes >>>");
 
         // Check visibility and modifiers.
         for(int i = 0; i < attributes.length; i++) {
             if ( "attribute1".equals(attributes[i].getName()) ) {
-                assertEquals(JavaCodeModel.JVisibility.PRIVATE, attributes[i].getVisibility());
-                assertEquals(1, attributes[i].getModifiers().length);
-                assertEquals(JavaCodeModel.JModifier.TRANSIENT, attributes[i].getModifiers()[0]);
+                Assert.assertEquals(JavaCodeModel.JVisibility.PRIVATE, attributes[i].getVisibility());
+                Assert.assertEquals(1, attributes[i].getModifiers().length);
+                Assert.assertEquals(JavaCodeModel.JModifier.TRANSIENT, attributes[i].getModifiers()[0]);
             }
             if ( "attribute2".equals(attributes[i].getName()) ) {
-                assertEquals(JavaCodeModel.JVisibility.PROTECTED, attributes[i].getVisibility());
-                assertEquals(1, attributes[i].getModifiers().length);
-                assertEquals(JavaCodeModel.JModifier.STATIC, attributes[i].getModifiers()[0]);
+                Assert.assertEquals(JavaCodeModel.JVisibility.PROTECTED, attributes[i].getVisibility());
+                Assert.assertEquals(1, attributes[i].getModifiers().length);
+                Assert.assertEquals(JavaCodeModel.JModifier.STATIC, attributes[i].getModifiers()[0]);
             }
         }
 
@@ -277,7 +336,7 @@ public class JavaCodeModelTest extends TestCase {
         System.out.println("Interfaces >>>");
 
         JInterface[] interfaces = qm.getAllInterfaces();
-        assertEquals(1, interfaces.length);
+        Assert.assertEquals(1, interfaces.length);
         for(JInterface inter : interfaces) {
             System.out.println(inter);
         }
@@ -286,12 +345,12 @@ public class JavaCodeModelTest extends TestCase {
 
         System.out.println("Enumerations >>>");
 
-        JEnumeration[] enumerations = qm.getEnumerationsInto("p0.p1.p2.p3.class1");
-        assertEquals(1, enumerations.length);
+        JEnumeration[] enumerations = qm.getEnumerationsInto( IdentifierReader.readIdentifier("jpackage:p0.p1.p2.p3.jclass:class1") );
+        Assert.assertEquals(1, enumerations.length);
         for(JEnumeration enumeration : enumerations) {
             System.out.println(enumeration);
-            JMethod enumerationMethods[] = qm.getMethodsInto(enumeration.getFullName());
-            assertEquals(1, enumerationMethods.length);
+            JMethod enumerationMethods[] = qm.getMethodsInto( enumeration.getIdentifier() );
+            Assert.assertEquals(1, enumerationMethods.length);
             for(JMethod method : enumerationMethods) {
                 System.out.println("method: " + method);
             }

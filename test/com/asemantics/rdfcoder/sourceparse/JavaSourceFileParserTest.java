@@ -18,42 +18,49 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import junit.framework.TestCase;
-import com.asemantics.rdfcoder.model.CodeHandlerDebugImpl;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandlerDebugImpl;
 import net.sourceforge.jrefactory.parser.ParseException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 
 /**
- * A basic test on JavaSourceFileScanner.
+ * Test case for {@link com.asemantics.rdfcoder.sourceparse.JavaSourceFileParser}.
  */
-public class JavaSourceFileParserTest extends TestCase {
+public class JavaSourceFileParserTest {
 
-    JavaSourceFileParser jsfp;
+    private JavaSourceFileParser jsfp;
 
     public JavaSourceFileParserTest() {}
 
+    @Before
     public void setUp() {
-        CodeHandlerDebugImpl chdi = new CodeHandlerDebugImpl();
+        JavaCodeHandlerDebugImpl chdi = new JavaCodeHandlerDebugImpl();
         ObjectsTable ot           = new ObjectsTable();
         jsfp                      = new JavaSourceFileParser();
         jsfp.initialize(chdi, ot);
     }
 
+    @After
     public void tearDown() {
         jsfp.dispose();
         jsfp = null;
     }
 
+    @Test
     public void testProcessFileOnClass() throws IOException, ParseException, ParserException {
         jsfp.parse( new File("target_test/TestClass.java") );
     }
 
+    @Test
     public void testProcessFileOnInterface() throws IOException, ParseException, ParserException {
         jsfp.parse( new File("target_test/TestInterface.java") );
     }
 
+    @Test
     public void testProcessEnum() throws IOException, ParseException, ParserException {
         jsfp.parse( new File("target_test/TestEnum.java") );
     }

@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a <i>Javadoc</i> entry.
+ */
 public class JavadocEntry {
 
     static final String PARAMETER_IDENTIFIER = "@param";

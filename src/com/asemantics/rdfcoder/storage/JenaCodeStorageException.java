@@ -17,7 +17,9 @@
 
 package com.asemantics.rdfcoder.storage;
 
-
+/**
+ * Excpetion raised by the {@link com.asemantics.rdfcoder.storage.JenaCodeStorage}. 
+ */
 public class JenaCodeStorageException extends CodeStorageException {
 
     public JenaCodeStorageException() {

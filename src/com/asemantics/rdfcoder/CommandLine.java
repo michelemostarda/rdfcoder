@@ -19,7 +19,7 @@
 package com.asemantics.rdfcoder;
 
 import com.asemantics.rdfcoder.inspector.Inspector;
-import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.model.CodeModel;
 import com.asemantics.rdfcoder.model.CodeModelBase;
 import com.asemantics.rdfcoder.model.QueryResult;
@@ -57,7 +57,7 @@ import java.util.Map;
 
 
 /**
- * The Command line EDFCoder utility.
+ * The Command line <i>RDFCoder</i> utility.
  */
 public class CommandLine {
 
@@ -75,16 +75,16 @@ public class CommandLine {
         /**
          * Code handler.
          */
-        CodeHandler codeHandler;
+        JavaCodeHandler javaCodeHandler;
 
         /**
          * Query interface.
          */
         JavaQueryModel queryModel;
 
-        ModelHandler(CodeModel cm, CodeHandler ch, JavaQueryModel qm) {
+        ModelHandler(CodeModel cm, JavaCodeHandler ch, JavaQueryModel qm) {
             codeModel   = cm;
-            codeHandler = ch;
+            javaCodeHandler = ch;
             queryModel  = qm;
         }
     }
@@ -302,7 +302,7 @@ public class CommandLine {
         }
 
         CodeModelBase cmb = coderFactory.createCodeModel();
-        CodeHandler   ch  = coderFactory.createHandlerOnModel(cmb);
+        JavaCodeHandler ch  = coderFactory.createHandlerOnModel(cmb);
         JavaQueryModel qm = coderFactory.createQueryModel(cmb);
         ModelHandler mh   = new ModelHandler(cmb, ch, qm);
         modelHandlers.put(modelName, mh);
@@ -471,9 +471,9 @@ public class CommandLine {
      *
      * @return
      */
-    private CodeHandler getCodeHandler() {
+    private JavaCodeHandler getCodeHandler() {
         ModelHandler mh = modelHandlers.get( selectedModel );
-        return mh.codeHandler;
+        return mh.javaCodeHandler;
     }
 
     /**
@@ -625,7 +625,7 @@ public class CommandLine {
         // Process arguments.
         ObjectsTable ot = new ObjectsTable();
         JStatistics statistics = new JStatistics();
-        CodeHandler statisticsCodeHandler = statistics.createStatisticsCodeHandler( getCodeHandler() );
+        JavaCodeHandler statisticsJavaCodeHandler = statistics.createStatisticsCodeHandler( getCodeHandler() );
 
         JavaBytecodeJarParser javaBytecodeJarParser = null;
         DirectoryParser sourceDirectoryParser       = null;
@@ -634,22 +634,22 @@ public class CommandLine {
         for(int i = 0; i < libraries.size(); i++) {
 
             try {
-                //statisticsCodeHandler.startParsing(libraries.get(i).name, libraries.get(i).location.getAbsolutePath());
+                //statisticsJavaCodeHandler.startParsing(libraries.get(i).name, libraries.get(i).location.getAbsolutePath());
 
                 javaBytecodeJarParser = new JavaBytecodeJarParser();
-                javaBytecodeJarParser.initialize( statisticsCodeHandler, ot );
+                javaBytecodeJarParser.initialize(statisticsJavaCodeHandler, ot );
 
                 JavaSourceFileParser javaSourceFileParser = new JavaSourceFileParser();
                 sourceDirectoryParser = new DirectoryParser(javaSourceFileParser, new CoderUtils.JavaSourceFilenameFilter() );
-                sourceDirectoryParser.initialize( statisticsCodeHandler, ot );
+                sourceDirectoryParser.initialize(statisticsJavaCodeHandler, ot );
 
                 JavadocFileParser javadocFileParser = new JavadocFileParser();
                 javadocDirectoryParser = new DirectoryParser(javadocFileParser, new CoderUtils.JavaSourceFilenameFilter() );
-                javadocDirectoryParser.initialize( statisticsCodeHandler, ot );
+                javadocDirectoryParser.initialize(statisticsJavaCodeHandler, ot );
 
                 JavaBytecodeFileParser javaBytecodeFileParser = new JavaBytecodeFileParser();
                 classDirectoryParser = new DirectoryParser(javaBytecodeFileParser, new CoderUtils.JavaClassFilenameFilter() );
-                classDirectoryParser.initialize( statisticsCodeHandler, ot );
+                classDirectoryParser.initialize(statisticsJavaCodeHandler, ot );
 
                 if( libraries.get(i).type == LibraryType.JAR_FILE ) {
 
@@ -703,7 +703,7 @@ public class CommandLine {
             }
         }
 
-        //statisticsCodeHandler.endParsing();
+        //statisticsJavaCodeHandler.endParsing();
 
         ot.clear();
 

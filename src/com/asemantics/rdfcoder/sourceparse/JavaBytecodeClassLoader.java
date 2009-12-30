@@ -30,10 +30,10 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * This class helps the <code>JavaBytecodeFileParser</code>
+ * This class helps the {@link com.asemantics.rdfcoder.sourceparse.JavaBytecodeFileParser}
  * to load inner classes and parse it.
  *
- * @see JavaBytecodeFileParser
+ * @see com.asemantics.rdfcoder.sourceparse.JavaBytecodeFileParser
  */
 public interface JavaBytecodeClassLoader {
 
@@ -155,7 +155,5 @@ public interface JavaBytecodeClassLoader {
         }
 
     }
-
-
 
 }

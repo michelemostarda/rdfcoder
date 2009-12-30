@@ -29,8 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class defines an high - level usage class to work with
- * <i>RDFCoder</i>.
+ * This class defines a Facade class to work with the
+ * <i>RDFCoder</i> library.
  */
 public class RDFCoder {
 

@@ -18,7 +18,7 @@
 
 package com.asemantics.rdfcoder.model.java;
 
-import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.QueryModelException;
 
 import java.util.ArrayList;
@@ -32,14 +32,16 @@ import java.util.List;
  */
 public abstract class JContainer extends JModifiable {
 
-    protected JContainer(JavaQueryModel qm, String[] sections)
+    /**
+     * Constructor.
+     *
+     * @param qm context query model.
+     * @param identifier container identifier.
+     * @throws QueryModelException
+     */
+    protected JContainer(JavaQueryModel qm, Identifier identifier)
     throws QueryModelException {
-        super(qm, sections);
-    }
-
-    protected JContainer(JavaQueryModel qm, String pathToContainer)
-    throws QueryModelException {
-        super(qm, pathToContainer);
+        super(qm, identifier);
     }
 
     /**
@@ -48,64 +50,14 @@ public abstract class JContainer extends JModifiable {
      * @return the list of containers.
      */
     public JContainer[] getPath() {
-        List list = new ArrayList();
+        List<JContainer> list = new ArrayList<JContainer>();
         list.add(0, this);
-        JContainer current = parent;
+        JContainer current = getParent();
         while(current != null) {
             list.add(0, current);
-            current = current.parent;
+            current = current.getParent();
         }
-        return (JContainer[]) list.toArray( new JContainer[list.size()] );
-    }
-
-    /**
-     * Generates the debug path of a container path.
-     * @param path
-     *
-     * @return the absolute path.
-     */
-    public static String getDebugPath(JContainer[] path) {
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < path.length; i++) {
-            sb.append(path[i].getName()).append(":").append(path[i].getHierarchyElemType());
-            if(i < path.length -1) {
-                sb.append(CodeHandler.PACKAGE_SEPARATOR);
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Generates the debug path of this container.
-     *
-     * @return the path as absolute path.
-     */
-    public String getDebugPath() {
-        return getDebugPath(getPath());
-    }
-
-    /**
-     * Joins the container hierarchy to a path string.
-     *
-     * @return string of paths.
-     */
-    public static String getPathAsString(JContainer[] path) {
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < path.length; i++) {
-            sb.append( path[i].getName() );
-            if(i < path.length -1) {
-                sb.append(CodeHandler.PACKAGE_SEPARATOR);
-            }
-        }
-        return sb.toString();
-    }
-
-    public String getPathAsString() {
-        return getPathAsString(getPath());
-    }
-
-    public String toString() {
-        return getDebugPath();
+        return list.toArray( new JContainer[list.size()] );
     }
 
 }

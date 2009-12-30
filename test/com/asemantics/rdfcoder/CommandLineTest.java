@@ -17,17 +17,22 @@
 
 package com.asemantics.rdfcoder;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
-import java.io.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import com.asemantics.rdfcoder.CommandLine;
 
-
-public class CommandLineTest extends TestCase {
+public class CommandLineTest {
 
     class PrintStreamWrapper {
 
@@ -36,7 +41,7 @@ public class CommandLineTest extends TestCase {
         private List<String> lines;
 
         PrintStreamWrapper() {
-            sb    = new StringBuilder();
+            sb = new StringBuilder();
             lines = new ArrayList<String>();
         }
 
@@ -66,20 +71,20 @@ public class CommandLineTest extends TestCase {
 
                 public void println() {
                     super.println();
-                    lines.add( sb.toString() );
+                    lines.add(sb.toString());
                     sb.delete(0, sb.length());
                 }
             };
         }
 
         void dumpLines(PrintStream ps) {
-            if( lines.isEmpty() ) {
+            if (lines.isEmpty()) {
                 ps.println("[buffer] " + sb.toString());
                 return;
             }
 
             int i = 0;
-            for(String s : lines) {
+            for (String s : lines) {
                 ps.println("[" + i++ + "] " + s);
             }
         }
@@ -98,29 +103,35 @@ public class CommandLineTest extends TestCase {
         printStreamWrapper = new PrintStreamWrapper();
     }
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         System.out.println(">" + new File(".").getAbsolutePath());
         commandLine = new CommandLine(new File("."));
-        System.setOut( printStreamWrapper.getPrintStream(System.out) );
+        System.setOut(printStreamWrapper.getPrintStream(System.out));
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         commandLine = null;
     }
 
+    @Test
     public void testLoadSources() throws IllegalAccessException, InvocationTargetException {
         String[] command = new String[]{"loadclasspath", "sources", "src:src"};
-        assertTrue( commandLine.processCommand(command) );
+        Assert.assertTrue(commandLine.processCommand(command));
         printStreamWrapper.dumpLines();
     }
 
-   public void testLoadClasses() throws IllegalAccessException, InvocationTargetException {
+    @Test
+    public void testLoadClasses() throws IllegalAccessException, InvocationTargetException {
         String[] command = new String[]{"loadclasspath", "classes", "class:classes"};
-        assertTrue( commandLine.processCommand(command) );
+        Assert.assertTrue(commandLine.processCommand(command));
     }
 
+    @Test
     public void testInspectModel() throws IllegalAccessException, InvocationTargetException {
         String[] command = new String[]{"inspect", "model"};
-        assertTrue( commandLine.processCommand(command) );
+        Assert.assertTrue(commandLine.processCommand(command));
     }
+    
 }

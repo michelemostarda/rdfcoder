@@ -18,7 +18,9 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import com.asemantics.rdfcoder.model.CodeHandler;
+import com.asemantics.rdfcoder.model.Identifier;
+import com.asemantics.rdfcoder.model.IdentifierReader;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 import net.sourceforge.jrefactory.ast.ASTClassDeclaration;
 import net.sourceforge.jrefactory.ast.ASTClassOrInterfaceType;
@@ -61,8 +63,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is able to scan a java souce file and generate
- * corresponding triples.
+ * This class is able to parse a <i>Java</i> souce file and generates
+ * the corresponding triples (according to the ontology).
  */
 public class JavaSourceFileParser extends FileParser {
 
@@ -71,6 +73,9 @@ public class JavaSourceFileParser extends FileParser {
      */
     private class Method {
 
+        /**
+         * List of modifiers.
+         */
         JavaCodeModel.JModifier[] modifiers;
 
         /**
@@ -81,7 +86,7 @@ public class JavaSourceFileParser extends FileParser {
         /**
          * Full method path.
          */
-        private String methodPath;
+        private Identifier methodPath;
 
         /**
          * Parameter names.
@@ -114,7 +119,15 @@ public class JavaSourceFileParser extends FileParser {
          * @param rt
          * @param excs
          */
-        Method(JavaCodeModel.JModifier[] m, JavaCodeModel.JVisibility v, String mp, String[] pns, JavaCodeModel.JType[] pts, JavaCodeModel.JType rt, JavaCodeModel.ExceptionType[] excs) {
+        Method(
+                JavaCodeModel.JModifier[] m,
+                JavaCodeModel.JVisibility v,
+                Identifier mp,
+                String[] pns,
+                JavaCodeModel.JType[] pts,
+                JavaCodeModel.JType rt,
+                JavaCodeModel.ExceptionType[] excs
+        ) {
             modifiers = m;
             visibility = v;
             methodPath = mp;
@@ -129,7 +142,7 @@ public class JavaSourceFileParser extends FileParser {
     /**
      * The code handler to be used during processing.
      */
-    private CodeHandler codeHandler;
+    private JavaCodeHandler javaCodeHandler;
 
     /**
      * Processes a single compilation unit.
@@ -139,24 +152,27 @@ public class JavaSourceFileParser extends FileParser {
      */
     public void processCompilationUnit(String location, ASTCompilationUnit ast) {
 
-        codeHandler = (CodeHandler) getParseHandler();
+        javaCodeHandler = (JavaCodeHandler) getParseHandler();
 
         try {
-            codeHandler.startCompilationUnit(location);
+            javaCodeHandler.startCompilationUnit(location);
         } catch (Throwable t) {
             t.printStackTrace();
         }
 
         // Retrieve package.
         List packs = ast.findChildrenOfType(ASTPackageDeclaration.class);
-        String packagePath;
+        final String packagePathStr;
+        final Identifier packagePath;
         if (packs.size() > 0) {
-            packagePath = ((ASTName) ((ASTPackageDeclaration) packs.get(0)).findChildrenOfType(ASTName.class).get(0)).getName();
+            packagePathStr = ((ASTName) ((ASTPackageDeclaration) packs.get(0)).findChildrenOfType(ASTName.class).get(0)).getName();
         } else {
-            packagePath = ""; // Default package.
+            packagePathStr = ""; // Default package.
         }
+        packagePath = IdentifierReader.readPackage(packagePathStr);
+
         try {
-            codeHandler.startPackage(packagePath);
+            javaCodeHandler.startPackage(packagePath);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -165,7 +181,7 @@ public class JavaSourceFileParser extends FileParser {
 
             // Define inports context.
             ImportsContext importsContext = new ImportsContext();
-            importsContext.setContextPackage(packagePath);
+            importsContext.setContextPackage(packagePathStr);
 
             // Retrieve imports.
             List imports = ast.findChildrenOfType(ASTImportDeclaration.class);
@@ -176,7 +192,7 @@ public class JavaSourceFileParser extends FileParser {
                     try {
                         importsContext.addStarredPackage(importEntry);
                     } catch(IllegalArgumentException iae) {
-                        codeHandler.parseError( location, iae.getClass().getName()  + "[" + iae.getMessage() + "]" );
+                        javaCodeHandler.parseError( location, iae.getClass().getName()  + "[" + iae.getMessage() + "]" );
                     }
                 } else {
                     importsContext.addFullyQualifiedObject(importEntry);
@@ -186,7 +202,7 @@ public class JavaSourceFileParser extends FileParser {
             // Note: enumerations can be present only at first level.
             extractEnumerations(
                     packagePath,
-                    codeHandler,
+                    javaCodeHandler,
                     (ASTCompilationUnit) ast.findChildrenOfType(ASTCompilationUnit.class).get(0)
             );
 
@@ -195,19 +211,19 @@ public class JavaSourceFileParser extends FileParser {
 
         } finally {
             try {
-                codeHandler.endPackage();
+                javaCodeHandler.endPackage();
             }catch (Throwable t) {
                 t.printStackTrace();
             }
             try {
-                codeHandler.endCompilationUnit();
+                javaCodeHandler.endCompilationUnit();
             } catch (Throwable t) {
                 t.printStackTrace();
             }
         }
     }
 
-    private void processLevel(String packagePath, ImportsContext importsContext, SimpleNode simpleNode) {
+    private void processLevel(Identifier packagePath, ImportsContext importsContext, SimpleNode simpleNode) {
 
         // Find classes.
         List<ASTClassDeclaration> classes = findChildrenAtSameLevel(simpleNode, ASTClassDeclaration.class);
@@ -237,25 +253,29 @@ public class JavaSourceFileParser extends FileParser {
                     superClass = retrieveObjectName( ((ASTClassOrInterfaceType) classOrInterface.get(0)).findChildrenOfType(ASTIdentifier.class) );
                 }
 
-                codeHandler.startClass(
+                javaCodeHandler.startClass(
                         //TODO: verify the subsequest row.
                         extractModifiers( classDeclaration ),
                         clsOrIntVisibility,
-                        packagePath + CodeHandler.PACKAGE_SEPARATOR + className,
-                        superClass != null ? qualifyType(importsContext, superClass, new JavaCodeModel.ObjectType(null) ) : null,
+                        packagePath.copy().pushFragment(className, JavaCodeModel.CLASS_KEY).build(),
+                        superClass != null ? qualifyType(importsContext, superClass, new JavaCodeModel.ObjectType(null) ): null,
                         extractImplementedInterfaces(importsContext, unmodifiedClassDeclaration)
                 );
                 try {
-                    extractEnumerations(packagePath, codeHandler, unmodifiedClassDeclaration);
-                    extractAttributes  (packagePath, codeHandler, importsContext, unmodifiedClassDeclaration);
-                    extractContructors (codeHandler, importsContext, unmodifiedClassDeclaration);
-                    extractMethods     (packagePath, codeHandler, importsContext, unmodifiedClassDeclaration);
+                    extractEnumerations(packagePath, javaCodeHandler, unmodifiedClassDeclaration);
+                    extractAttributes  (packagePath, javaCodeHandler, importsContext, unmodifiedClassDeclaration);
+                    extractContructors (javaCodeHandler, importsContext, unmodifiedClassDeclaration);
+                    extractMethods     (packagePath, javaCodeHandler, importsContext, unmodifiedClassDeclaration);
 
                     // Recursive invocation.
-                    processLevel(packagePath + CodeHandler.PACKAGE_SEPARATOR + className, importsContext, unmodifiedClassDeclaration);
+                    processLevel(
+                            packagePath.copy().pushFragment(className, JavaCodeModel.CLASS_KEY).build(),
+                            importsContext,
+                            unmodifiedClassDeclaration
+                    );
 
                 } finally {
-                    codeHandler.endClass();
+                    javaCodeHandler.endClass();
                 }
 
             }
@@ -265,7 +285,9 @@ public class JavaSourceFileParser extends FileParser {
         String interfaceName = null;
         for(ASTInterfaceDeclaration interfaceDeclaration : interfaces ) {
 
-            List<ASTUnmodifiedInterfaceDeclaration> unmodifiedInterfaceDeclarations = interfaceDeclaration.findChildrenOfType(ASTUnmodifiedInterfaceDeclaration.class);
+            List<ASTUnmodifiedInterfaceDeclaration> unmodifiedInterfaceDeclarations =
+                    interfaceDeclaration.findChildrenOfType(ASTUnmodifiedInterfaceDeclaration.class);
+
             for(NamedNode unmodifiedInterfaceDeclaration : unmodifiedInterfaceDeclarations) {
 
                 // Interface name.
@@ -273,20 +295,24 @@ public class JavaSourceFileParser extends FileParser {
 
                 getObjectsTable().addObject(packagePath, interfaceName);
 
-                codeHandler.startInterface(
-                        packagePath + CodeHandler.PACKAGE_SEPARATOR + interfaceName,
+                javaCodeHandler.startInterface(
+                        packagePath.copy().pushFragment(interfaceName, JavaCodeModel.INTERFACE_KEY).build(),
                         extractImplementedInterfaces(importsContext, unmodifiedInterfaceDeclaration)
                 );
                 try {
-                    extractEnumerations(packagePath, codeHandler, unmodifiedInterfaceDeclaration);
-                    extractAttributes  (packagePath, codeHandler, importsContext, unmodifiedInterfaceDeclaration);
-                    extractMethods     (packagePath, codeHandler, importsContext, unmodifiedInterfaceDeclaration);
+                    extractEnumerations(packagePath, javaCodeHandler, unmodifiedInterfaceDeclaration);
+                    extractAttributes  (packagePath, javaCodeHandler, importsContext, unmodifiedInterfaceDeclaration);
+                    extractMethods     (packagePath, javaCodeHandler, importsContext, unmodifiedInterfaceDeclaration);
 
                     // Recursive invocation.
-                    processLevel(packagePath + CodeHandler.PACKAGE_SEPARATOR + interfaceName, importsContext, unmodifiedInterfaceDeclaration);
+                    processLevel(
+                            packagePath.copy().pushFragment(interfaceName, JavaCodeModel.INTERFACE_KEY).build(),
+                            importsContext,
+                            unmodifiedInterfaceDeclaration
+                    );
 
                 } finally {
-                    codeHandler.endInterface();
+                    javaCodeHandler.endInterface();
                 }
 
             }
@@ -334,12 +360,12 @@ public class JavaSourceFileParser extends FileParser {
      * @param simpleNode
      * @return
      */
-    private String[] extractImplementedInterfaces(ImportsContext importsContext, SimpleNode simpleNode) {
-        String[] interfacesArray = null;
+    private Identifier[] extractImplementedInterfaces(ImportsContext importsContext, SimpleNode simpleNode) {
+        Identifier[] interfacesArray = null;
         List genericNameList = simpleNode.findChildrenOfType(ASTGenericNameList.class);
         for(int i = 0; i < genericNameList.size(); i++) {
             List classOrInterfaceTypes = ( (ASTGenericNameList) genericNameList.get(i) ).findChildrenOfType(ASTClassOrInterfaceType.class);
-            interfacesArray = new String[classOrInterfaceTypes.size()];
+            interfacesArray = new Identifier[classOrInterfaceTypes.size()];
             for(int j = 0; j < classOrInterfaceTypes.size(); j++) {
                 List identifierList = ( (ASTClassOrInterfaceType) classOrInterfaceTypes.get(j)).findChildrenOfType(ASTIdentifier.class);
                 interfacesArray[j] = qualifyType(importsContext, retrieveObjectName(identifierList), new JavaCodeModel.InterfaceType(null) );
@@ -348,7 +374,12 @@ public class JavaSourceFileParser extends FileParser {
         return interfacesArray;
     }
 
-    private void extractAttributes(String packagePath, CodeHandler ch, ImportsContext importsContext, NamedNode namedNode) {
+    private void extractAttributes(
+            Identifier packagePath,
+            JavaCodeHandler ch,
+            ImportsContext importsContext,
+            NamedNode namedNode
+    ) {
         List attributes = namedNode.findChildrenOfType(ASTFieldDeclaration.class);
         String attributeName;
         JavaCodeModel.JVisibility attributeVisibility;
@@ -413,7 +444,7 @@ public class JavaSourceFileParser extends FileParser {
         }
     }
 
-    private void extractContructors(CodeHandler ch, ImportsContext importsContext, NamedNode namedNode) {
+    private void extractContructors(JavaCodeHandler ch, ImportsContext importsContext, NamedNode namedNode) {
         // Constructors.
         List constructors = namedNode.findChildrenOfType(ASTConstructorDeclaration.class);
         ASTConstructorDeclaration constructorDeclaration;
@@ -448,7 +479,12 @@ public class JavaSourceFileParser extends FileParser {
         }
     }
 
-    private void extractMethods(String packagePath, CodeHandler ch, ImportsContext importsContext, NamedNode namedNode) {
+    private void extractMethods(
+            Identifier packagePath,
+            JavaCodeHandler ch,
+            ImportsContext importsContext,
+            NamedNode namedNode
+    ) {
         List methods = namedNode.findChildrenOfType(ASTMethodDeclaration.class);
         String methodName;
         JavaCodeModel.JVisibility methodVisibility;
@@ -487,7 +523,7 @@ public class JavaSourceFileParser extends FileParser {
                    returnType = type;
                 }
             } else if (resultType.findChildrenOfType(ASTIdentifier.class).size() > 0) { // Result type is Object.
-                String qualifiedType = qualifyType(
+                Identifier qualifiedType = qualifyType(
                         importsContext,
                         retrieveObjectName( resultType.findChildrenOfType(ASTIdentifier.class) ),
                         returnTypeIsArray
@@ -542,7 +578,7 @@ public class JavaSourceFileParser extends FileParser {
         }
 
         // Group signatures by name.
-        Map<String, List<Method>> methodsMap = new HashMap<String, List<Method>>();
+        Map<Identifier, List<Method>> methodsMap = new HashMap<Identifier, List<Method>>();
         Iterator<Method> iter = methodsBuffer.iterator();
         JavaSourceFileParser.Method curr;
         while (iter.hasNext()) {
@@ -556,8 +592,8 @@ public class JavaSourceFileParser extends FileParser {
         }
 
         // Store methods.
-        Iterator<Map.Entry<String, List<JavaSourceFileParser.Method>>> entries = methodsMap.entrySet().iterator();
-        Map.Entry<String, List<JavaSourceFileParser.Method>> entry;
+        Iterator<Map.Entry<Identifier, List<JavaSourceFileParser.Method>>> entries = methodsMap.entrySet().iterator();
+        Map.Entry<Identifier, List<JavaSourceFileParser.Method>> entry;
         while (entries.hasNext()) {
             entry = entries.next();
             for (int i = 0; i < entry.getValue().size(); i++) {
@@ -575,9 +611,9 @@ public class JavaSourceFileParser extends FileParser {
         }
     }
 
-    private void extractEnumerations(String packagePath, CodeHandler ch, SimpleNode simpleNode) {
+    private void extractEnumerations(Identifier packagePath, JavaCodeHandler ch, SimpleNode simpleNode) {
         List enumDeclarations = simpleNode.findChildrenOfType(ASTEnumDeclaration.class);
-        ASTEnumDeclaration enumDeclaration = null;
+        ASTEnumDeclaration enumDeclaration;
         for(int ed = 0; ed < enumDeclarations.size(); ed++) {
             enumDeclaration = (ASTEnumDeclaration) enumDeclarations.get(ed);
              JavaCodeModel.JVisibility visibility = retrieveVisibility(enumDeclaration);
@@ -677,7 +713,7 @@ public class JavaSourceFileParser extends FileParser {
     }
 
     public void parse(File file) throws ParserException, IOException {
-        FileInputStream fis = null;
+        FileInputStream fis;
         try {
             fis = new FileInputStream(file);
         } catch (FileNotFoundException fnfe) {
@@ -775,10 +811,10 @@ public class JavaSourceFileParser extends FileParser {
        * @param typeName
        * @return
        */
-      private String qualifyType(ImportsContext importsContext, String typeName, JavaCodeModel.JType type) {
-          String qualifiedObject = importsContext.qualifyType(getObjectsTable(), typeName);
+      private Identifier qualifyType(ImportsContext importsContext, String typeName, JavaCodeModel.JType type) {
+          Identifier qualifiedObject = importsContext.qualifyType(getObjectsTable(), typeName);
           if (qualifiedObject == null) {
-              String tempId = codeHandler.generateTempUniqueIdentifier();
+              Identifier tempId = javaCodeHandler.generateTempUniqueIdentifier();
               if(type instanceof JavaCodeModel.ObjectType) {
                   ((JavaCodeModel.ObjectType) type).setInternalIdentifier(tempId);
               } else if( type instanceof JavaCodeModel.InterfaceType) {
@@ -794,16 +830,16 @@ public class JavaSourceFileParser extends FileParser {
           return qualifiedObject;
       }
 
-      private String qualifyAttribute(String packagePath, String attributeName) {
-          return packagePath + CodeHandler.PACKAGE_SEPARATOR + attributeName;
+      private Identifier qualifyAttribute(Identifier packagePath, String attributeName) {
+          return packagePath.copy().pushFragment(attributeName, JavaCodeModel.ATTRIBUTE_KEY).build();
       }
 
-      private String qualifyMethod(String packagePath, String methodName) {
-          return packagePath + CodeHandler.PACKAGE_SEPARATOR + methodName;
+      private Identifier qualifyMethod(Identifier packagePath, String methodName) {
+          return packagePath.copy().pushFragment(methodName, JavaCodeModel.METHOD_KEY).build();
       }
 
-      private String qualifyEnumeration(String packagePath, String enumerationName) {
-          return packagePath + CodeHandler.PACKAGE_SEPARATOR + enumerationName;
+      private Identifier qualifyEnumeration(Identifier packagePath, String enumerationName) {
+          return packagePath.copy().pushFragment(enumerationName, JavaCodeModel.ENUMERATION_KEY).build();
       }
 
 

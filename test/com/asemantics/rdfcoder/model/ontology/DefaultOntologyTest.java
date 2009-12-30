@@ -19,7 +19,10 @@
 package com.asemantics.rdfcoder.model.ontology;
 
 import com.asemantics.rdfcoder.model.CodeModel;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.PrintStream;
 import java.net.MalformedURLException;
@@ -28,9 +31,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * JUnit test of class {@link com.asemantics.rdfcoder.model.ontology.DefaultOntology}
+ * Test case for the {@link com.asemantics.rdfcoder.model.ontology.DefaultOntology} class.
  */
-public class DefaultOntologyTest extends TestCase {
+public class DefaultOntologyTest {
 
     private Ontology ontology;
 
@@ -40,20 +43,25 @@ public class DefaultOntologyTest extends TestCase {
 
     private final static int SIZE = 100;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         ontology = new DefaultOntology();
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
+        ontology = null;
     }
 
+    @Test
     public void testPopulate() throws OntologyException, MalformedURLException {
        for(int i = 0; i < SIZE; i++) {
            ontology.defineRelation(SUB_PREFIX + i + CodeModel.PREFIX_SEPARATOR, new URL(PREDICATE + (i % 2) ), OBJ_PREFIX + i + CodeModel.PREFIX_SEPARATOR);
        }
-       assertEquals(ontology.getRelationsCount(), SIZE);
+       Assert.assertEquals(ontology.getRelationsCount(), SIZE);
     }
 
+    @Test
     public void testNoRedefinition() throws MalformedURLException, OntologyException {
         final String sub = SUB_PREFIX;
         final URL   pred = new URL(PREDICATE);
@@ -61,18 +69,11 @@ public class DefaultOntologyTest extends TestCase {
         ontology.defineRelation(sub, pred, obj);
         try {
             ontology.defineRelation(sub, pred, obj);
-            fail();
+            Assert.fail();
         } catch (OntologyException oe) {}
     }
 
-    class Counter {
-        int count = 0;
-
-        void increment() {
-            count++;
-        }
-    }
-
+    @Test
     public void testPrint() throws MalformedURLException, OntologyException {
         testPopulate();
 
@@ -85,9 +86,10 @@ public class DefaultOntologyTest extends TestCase {
             }
         });
 
-        assertEquals(SIZE, counter.count);
+        Assert.assertEquals(SIZE, counter.count);
     }
 
+    @Test
     public void testPositiveValidation() throws MalformedURLException, OntologyException {
         testPopulate();
         for(int i = 0; i < SIZE; i++) {
@@ -99,51 +101,62 @@ public class DefaultOntologyTest extends TestCase {
         }
     }
 
-     public void testNegativeValidation() throws MalformedURLException, OntologyException {
+    @Test
+    public void testNegativeValidation() throws MalformedURLException, OntologyException {
         testPopulate();
         try {
             ontology.validateTriple(
                     SUB_PREFIX + 0 + CodeModel.PREFIX_SEPARATOR + "postfix",
-                    PREDICATE  + 1,
+                    PREDICATE + 1,
                     OBJ_PREFIX + 0 + CodeModel.PREFIX_SEPARATOR + "postfix2"
             );
-            fail();
+            Assert.fail();
         } catch (OntologyException oe) {
             // Ok.
         }
     }
 
+    @Test
     public void testAccess() throws MalformedURLException, OntologyException {
         testPopulate();
 
-        Set found = new HashSet();
+        Set<Object> found = new HashSet<Object>();
         final int count = ontology.getRelationsCount();
 
         for( int i = 0; i < count; i++) {
             if(found.contains(ontology.getRelationSubjectPrefix(i))) {
-                fail("Cannot contain a subject prefix twice");
+                Assert.fail("Cannot contain a subject prefix twice");
             }
             found.add(ontology.getRelationSubjectPrefix(i));
         }
-        assertEquals(count,  found.size());
+        Assert.assertEquals(count,  found.size());
 
         found.clear();
         for( int i = 0; i < count; i++) {
             if(found.contains(ontology.getRelationObjectPrefix(i))) {
-                fail("Cannot contain an object prefix twice");
+                Assert.fail("Cannot contain an object prefix twice");
             }
             found.add(ontology.getRelationObjectPrefix(i));
         }
-        assertEquals(count,  found.size());
+        Assert.assertEquals(count,  found.size());
 
         found.clear();
         for( int i = 0; i < count; i++) {
-            found.add(ontology.getRelationPredicate(i));
+            found.add( ontology.getRelationPredicate(i) );
         }
-        assertEquals(2,  found.size());
+        Assert.assertEquals(2,  found.size());
 
-        assertEquals(SIZE, count);
+        Assert.assertEquals(SIZE, count);
 
         found.clear();
     }
+
+    class Counter {
+        int count = 0;
+
+        void increment() {
+            count++;
+        }
+    }
+
 }

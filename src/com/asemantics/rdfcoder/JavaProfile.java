@@ -18,8 +18,9 @@
 
 package com.asemantics.rdfcoder;
 
-import com.asemantics.rdfcoder.model.CodeHandler;
 import com.asemantics.rdfcoder.model.CodeModelBase;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
+import com.asemantics.rdfcoder.model.java.JavaCoderFactory;
 import com.asemantics.rdfcoder.model.java.JavaOntology;
 import com.asemantics.rdfcoder.model.java.JavaQueryModel;
 import com.asemantics.rdfcoder.model.java.JavaQueryModelImpl;
@@ -33,7 +34,9 @@ import com.asemantics.rdfcoder.sourceparse.JavaBytecodeFileParser;
 import com.asemantics.rdfcoder.sourceparse.JavaBytecodeJarParser;
 import com.asemantics.rdfcoder.sourceparse.JavaSourceFileParser;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
+import com.asemantics.rdfcoder.sourceparse.ParserException;
 import com.asemantics.rdfcoder.storage.CodeStorage;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +50,15 @@ import java.util.Arrays;
 import java.util.List;
 
 
+/**
+ * Definition of the <i>Java Profile</i>.
+ */
 public class JavaProfile implements Profile {
+
+    /**
+     * Internal logger.
+     */
+    private static final Logger logger = Logger.getLogger(JavaProfile.class);
 
     /**
      * The prefix of the resource name associated to the JRE CodeModel.
@@ -82,7 +93,7 @@ public class JavaProfile implements Profile {
     /**
      * Coder model.
      */
-    private final Model model;
+    private final Model<JavaCoderFactory> model;
 
     /**
      * Coder repository.
@@ -177,7 +188,7 @@ public class JavaProfile implements Profile {
         JStatistics statistics    = new JStatistics();
         ObjectsTable objectsTable = model.getObjectsTable();
         CodeModelBase cmb         = model.getCodeModelBase();
-        CodeHandler codeHandler   = model.getCoderFactory().createHandlerOnModel(cmb);
+        JavaCodeHandler javaCodeHandler = model.getCoderFactory().createHandlerOnModel(cmb);
 
         CodeStorage cs = model.getCoderFactory().createCodeStorage();
         if( ! cs.supportsFile() ) {
@@ -187,25 +198,21 @@ public class JavaProfile implements Profile {
         // Initializes structures.
         final String jreName = pathToJRE.getName();
         JavaBytecodeJarParser parser = new JavaBytecodeJarParser();
-        CodeHandler statCH = statistics.createStatisticsCodeHandler(codeHandler);
+        JavaCodeHandler statCH = statistics.createStatisticsCodeHandler(javaCodeHandler);
         parser.initialize(statCH, objectsTable);
-        codeHandler.startParsing( jreName, pathToJRE.getAbsolutePath() );
+        javaCodeHandler.startParsing( jreName, pathToJRE.getAbsolutePath() );
 
         // Does jar parsing.
         for(File f : files) {
             try {
                 parser.parseFile(f);
-            } catch (IOException ioe) {
-                if( RDFCoder.assertions() ) {
-                    ioe.printStackTrace();
-                } else {
-                    System.err.println("ERROR: " + ioe.getMessage());
-                }
+            } catch (Exception e) {
+                logger.error( String.format("Error while parsing file [%s]", f.getAbsolutePath() ), e );
             }
         }
 
         // Disposes parsing.
-        codeHandler.endParsing();
+        javaCodeHandler.endParsing();
 
         // Stores the objects table content.
         try {
@@ -222,7 +229,10 @@ public class JavaProfile implements Profile {
         OutputStream os = null;
         Repository.Resource resource = null;
         try {
-            resource = repository.createResource( getJREModelResourceName(pathToJRE.getName()), Repository.ResourceType.XML );
+            resource = repository.createResource(
+                    getJREModelResourceName(pathToJRE.getName()),
+                    Repository.ResourceType.XML
+            );
             os  = resource.getOutputStream();
             codeStorage.saveModel(cmb, os);
             os.close();
@@ -259,19 +269,19 @@ public class JavaProfile implements Profile {
         return loadJava(libName, clsPath, new JavaBytecodeFileParser());
     }
 
-    public JStatistics loadJar(String libName, String pathToJar) throws IOException {
+    public JStatistics loadJar(String libName, String pathToJar) throws IOException, ParserException {
         JStatistics statistics = new JStatistics();
-        CodeHandler codeHandler = model.getCoderFactory().createHandlerOnModel( model.getCodeModelBase() );
+        JavaCodeHandler javaCodeHandler = model.getCoderFactory().createHandlerOnModel( model.getCodeModelBase() );
 
         JavaBytecodeJarParser parser = new JavaBytecodeJarParser();
-        CodeHandler statCH = statistics.createStatisticsCodeHandler(codeHandler);
+        JavaCodeHandler statCH = statistics.createStatisticsCodeHandler(javaCodeHandler);
         parser.initialize( statCH, model.getObjectsTable() );
 
         File lib = new File(pathToJar);
 
-        codeHandler.startParsing(libName, lib.getAbsolutePath());
+        javaCodeHandler.startParsing(libName, lib.getAbsolutePath());
         parser.parseFile( new File(pathToJar) );
-        codeHandler.endParsing();
+        javaCodeHandler.endParsing();
 
         statistics.reset();
         parser.dispose();
@@ -289,11 +299,11 @@ public class JavaProfile implements Profile {
      * @return
      */
     private JStatistics loadJava(String libName, String path, FileParser fileParser) {
-         CodeHandler ch = model.getCoderFactory().createHandlerOnModel( model.getCodeModelBase() );
+         JavaCodeHandler ch = model.getCoderFactory().createHandlerOnModel( model.getCodeModelBase() );
 
         DirectoryParser directoryParser = new DirectoryParser( fileParser, new CoderUtils.JavaSourceFilenameFilter() );
         JStatistics statistics = new JStatistics();
-        CodeHandler sch = statistics.createStatisticsCodeHandler(ch);
+        JavaCodeHandler sch = statistics.createStatisticsCodeHandler(ch);
 
         directoryParser.initialize(sch, model.getObjectsTable() );
         directoryParser.parseDirectory(libName, new File(path) );
@@ -310,8 +320,12 @@ public class JavaProfile implements Profile {
      *
      * @param objectsTable
      */
-    private void serializeJREObjectsTable(String jreName, ObjectsTable objectsTable) throws RepositoryException, IOException {
-        Repository.Resource resource = repository.createResource( getJREObjectTableResourceName( jreName ), Repository.ResourceType.BINARY );
+    private void serializeJREObjectsTable(String jreName, ObjectsTable objectsTable)
+    throws RepositoryException, IOException {
+        Repository.Resource resource = repository.createResource(
+                getJREObjectTableResourceName( jreName ),
+                Repository.ResourceType.BINARY
+        );
         OutputStream os = resource.getOutputStream();
         ObjectOutputStream oos = null;
         try {
@@ -332,7 +346,8 @@ public class JavaProfile implements Profile {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    private ObjectsTable deserializeJREObjectsTable(String jreName) throws RepositoryException, IOException, ClassNotFoundException {
+    private ObjectsTable deserializeJREObjectsTable(String jreName)
+    throws RepositoryException, IOException, ClassNotFoundException {
         Repository.Resource resource = repository.getResource( getJREObjectTableResourceName( jreName ) );
         InputStream is = resource.getInputStream();
         ObjectInputStream ois = null;

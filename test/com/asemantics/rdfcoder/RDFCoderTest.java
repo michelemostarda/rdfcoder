@@ -18,24 +18,31 @@
 
 package com.asemantics.rdfcoder;
 
-import com.asemantics.rdfcoder.model.java.JAttribute;
-import com.asemantics.rdfcoder.model.java.JavaQueryModel;
+import com.asemantics.rdfcoder.model.IdentifierReader;
 import com.asemantics.rdfcoder.model.QueryModelException;
 import com.asemantics.rdfcoder.model.QueryResult;
+import com.asemantics.rdfcoder.model.java.JAttribute;
+import com.asemantics.rdfcoder.model.java.JavaQueryModel;
 import com.asemantics.rdfcoder.sourceparse.JStatistics;
-import junit.framework.TestCase;
+import org.apache.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Test case for the {@link com.asemantics.rdfcoder.RDFCoder} class.
+ */
+public class RDFCoderTest {
 
-public class
-        RDFCoderTest extends TestCase {
+    private static final Logger logger = Logger.getLogger(RDFCoderTest.class);
 
     private static final String JAVA_PROFILE = "java";
 
     private static final String TEST_MODEL_NAME= "test_model_name";
 
+    @Test
     public void testHighLevelAPI() throws QueryModelException, IOException {
 
         // Creates an RDFCoder instance on a repository.
@@ -44,86 +51,90 @@ public class
         // Enables debug controls.
         coder.setDebug(true);
 
-        assertTrue("Cannot set debug flag", coder.isDebug() );
+        Assert.assertTrue("Cannot set debug flag", coder.isDebug() );
 
         // Registers the Java profile.
         coder.registerProfile(JAVA_PROFILE, "com.asemantics.rdfcoder.JavaProfile"); // Loaded by default.
 
         String[] profileNames = coder.getProfileNames();
-        assertEquals("Invalid number of profiles.", 1, profileNames.length );
-        assertEquals("Invalid profile name", JAVA_PROFILE, profileNames[0]);
+        Assert.assertEquals("Invalid number of profiles.", 1, profileNames.length );
+        Assert.assertEquals("Invalid profile name", JAVA_PROFILE, profileNames[0]);
 
         // Creates a model, i.e. a set of libraries.
         Model model = coder.createModel(TEST_MODEL_NAME);
-        assertNotNull("Cannot create model" + TEST_MODEL_NAME, model);
-        assertEquals("Invalid model name", TEST_MODEL_NAME, model.getName() );
+        Assert.assertNotNull("Cannot create model" + TEST_MODEL_NAME, model);
+        Assert.assertEquals("Invalid model name", TEST_MODEL_NAME, model.getName() );
 
         // Enables model validation over profile ontologies.
         model.setValidating(true);
 
-        assertTrue("Cannot set validating model flag", model.isValidating() );
+        Assert.assertTrue("Cannot set validating model flag", model.isValidating() );
 
-        // Retrieves a Java profile model.
+        // Retrieves the Java profile model.
         JavaProfile jprofile = (JavaProfile) model.getProfile(JAVA_PROFILE);
-        assertNotNull("Cannot instantiate "+  JAVA_PROFILE, jprofile);
+        Assert.assertNotNull("Cannot instantiate "+  JAVA_PROFILE, jprofile);
+
+         // Prints the JProfile ontology.
+        try {
+//            jprofile.printOntologyOWL(System.out);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            Assert.fail("Cannot print Java Ontology");
+        }
 
         // Initializes the JRE model if not yet done.
         final File JRE = new File( "/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home" );
         if ( ! jprofile.checkJREInit(JRE)) {
             try {
                 JREReport jreReport = jprofile.initJRE(JRE);
-                System.out.println(jreReport);
+                logger.info("JRE analysis report: " + jreReport);
             } catch (Throwable t) {
                 t.printStackTrace();
-                fail("Cannot intitialise JRE");
+                Assert.fail("Cannot initialise JRE");
             }
         } else {
             try {
             jprofile.loadJRE(JRE);
             } catch (Throwable t) {
                 t.printStackTrace();
-                fail("Cannot load JRE");
+                Assert.fail("Cannot load JRE");
             }
         }
         
-
-        // Retrieves the jprofile ontology.
-        try {
-            //TODO: activate this
-            // jprofile.printOntologyOWL(System.out);
-        } catch (Throwable t) {
-            t.printStackTrace();
-            fail("Cannot print Ontology OWL");
-        }
-
         // Processes Java libraries.
         try {
             JStatistics s1 = jprofile.loadSources("src_lib"  , "src");
-            System.out.println(s1);
+            logger.info("src_lib statistics " + s1);
 
             JStatistics s2 = jprofile.loadClasses("class_lib", "classes");
-            System.out.println(s2);
+            logger.info("class_lib statistics " + s2);
 
             JStatistics s3 = jprofile.loadJar    ("jar_lib"  , "target_test/target.jar");
-            System.out.println(s3);
+            logger.info("jar_lib statistics " + s3);
 
         } catch (Throwable t) {
             t.printStackTrace();
-            fail("Cannot process Java libraries");
+            Assert.fail("Cannot process Java libraries");
         }
 
         // Querying java model.
         JavaQueryModel jquery = jprofile.getQueryModel();
-        assertNotNull("Cannot create " + JavaQueryModel.class, jquery);
+        Assert.assertNotNull("Cannot create " + JavaQueryModel.class, jquery);
 
         // Retries the attributes of java.lang.String
-        JAttribute[] attributes = jquery.getAttributesInto("java.lang.String");
-        assertNotNull(attributes);
+        JAttribute[] attributes = jquery.getAttributesInto( IdentifierReader.readFullyQualifiedClass("java.lang.String") );
+        Assert.assertNotNull(attributes);
 
         // Low level cross querying.
         if( model.supportsSparqlQuery() ) {
-            QueryResult result = model.sparqlQuery("select ?a ?b ?c where{?a ?b ?c}");
-            System.out.println(result);
+            try {
+                final String query = "select ?a ?b ?c where{?a ?b ?c}";
+                QueryResult result = model.sparqlQuery(query);
+                Assert.assertTrue( "Unespected result size.", result.hasNext() );
+                logger.info( String.format("Result of query [%s]:\n%s", query, result) );
+            } catch (Exception e) {
+                Assert.fail("Cannot perform SPARQL query.");
+            }
         }
 
         // Saves model data.
@@ -131,9 +142,9 @@ public class
             model.save();
         } catch (Throwable t) {
             t.printStackTrace();
-            fail("Cannot save model");
+            Assert.fail("Cannot save model");
         }
-        assertTrue("Cannot save model", coder.getRepository().containsResource( model.getModelResourceName() ) );
+        Assert.assertTrue("Cannot save model", coder.getRepository().containsResource( model.getModelResourceName() ) );
 
         // Resets the model content.
         model.clear();
@@ -143,7 +154,7 @@ public class
             model.load( TEST_MODEL_NAME );
         } catch (Throwable t) {
             t.printStackTrace();
-            fail("Cannot load model");
+            Assert.fail("Cannot load model");
         }
 
     }

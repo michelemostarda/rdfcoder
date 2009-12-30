@@ -18,14 +18,19 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
-import com.asemantics.rdfcoder.model.CodeHandler;
 import com.asemantics.rdfcoder.model.ErrorListener;
+import com.asemantics.rdfcoder.model.Identifier;
+import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Decorator class collecting some statistics related to the processing
+ * of the <i>Java</i> asset.
+ */
 public class JStatistics {
 
     /* Statistic fields. */
@@ -53,7 +58,7 @@ public class JStatistics {
     /**
      * List of handlers collecting data for this statistics.
      */
-    private List<StatisticsCodeHandler> statisticsCodeHandlers;
+    private List<StatisticsJavaCodeHandler> statisticsCodeHandlers;
 
     public JStatistics() {
         errorMessages = new StringBuilder();
@@ -187,14 +192,14 @@ public class JStatistics {
         this.unresolved = unresolved;
     }
 
-    public CodeHandler createStatisticsCodeHandler(CodeHandler ch) {
-        StatisticsCodeHandler sch = new StatisticsCodeHandler(ch);
+    public JavaCodeHandler createStatisticsCodeHandler(JavaCodeHandler ch) {
+        StatisticsJavaCodeHandler sch = new StatisticsJavaCodeHandler(ch);
         statisticsCodeHandlers.add(sch);
         return sch;
     }
 
     public void reset() {
-        Iterator<StatisticsCodeHandler> handlers = statisticsCodeHandlers.iterator();
+        Iterator<StatisticsJavaCodeHandler> handlers = statisticsCodeHandlers.iterator();
         while(handlers.hasNext()) {
             handlers.next().dispose();
             handlers.remove();
@@ -255,11 +260,11 @@ public class JStatistics {
         return toStringReport();
     }
 
-    protected class StatisticsCodeHandler implements CodeHandler {
+    protected class StatisticsJavaCodeHandler implements JavaCodeHandler {
 
-        private CodeHandler wrapped;
+        private JavaCodeHandler wrapped;
 
-        StatisticsCodeHandler(CodeHandler ch) {
+        StatisticsJavaCodeHandler(JavaCodeHandler ch) {
             this.wrapped = ch;
         }
 
@@ -290,7 +295,7 @@ public class JStatistics {
             wrapped.endCompilationUnit();
         }
 
-        public void startPackage(String pathToPackage) {
+        public void startPackage(Identifier pathToPackage) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.startPackage(pathToPackage);
         }
@@ -300,7 +305,7 @@ public class JStatistics {
             wrapped.endPackage();
         }
 
-        public void startInterface(String pathToInterface, String[] extendedInterfaces) {
+        public void startInterface(Identifier pathToInterface, Identifier[] extendedInterfaces) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.startInterface(pathToInterface, extendedInterfaces);
         }
@@ -311,7 +316,13 @@ public class JStatistics {
             parsedInterfaces++;
         }
 
-        public void startClass(JavaCodeModel.JModifier[] modifiers, JavaCodeModel.JVisibility visibility, String pathToClass, String extendedClass, String[] implementedInterfaces) {
+        public void startClass(
+                JavaCodeModel.JModifier[] modifiers,
+                JavaCodeModel.JVisibility visibility,
+                Identifier pathToClass,
+                Identifier extendedClass,
+                Identifier[] implementedInterfaces
+        ) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.startClass(modifiers, visibility, pathToClass, extendedClass, implementedInterfaces);
         }
@@ -322,7 +333,12 @@ public class JStatistics {
             parsedClasses++;
         }
 
-        public void startEnumeration(JavaCodeModel.JModifier[] modifiers, JavaCodeModel.JVisibility visibility, String pathToEnumeration, String[] elements) {
+        public void startEnumeration(
+                JavaCodeModel.JModifier[] modifiers,
+                JavaCodeModel.JVisibility visibility,
+                Identifier pathToEnumeration,
+                String[] elements
+        ) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.startEnumeration(modifiers, visibility, pathToEnumeration, elements);
             parsedEnumarations++;
@@ -333,19 +349,41 @@ public class JStatistics {
             wrapped.endEnumeration();
         }
 
-        public void attribute(JavaCodeModel.JModifier[] modifiers, JavaCodeModel.JVisibility visibility, String pathToAttribute, JavaCodeModel.JType type, String value) {
+        public void attribute(
+                JavaCodeModel.JModifier[] modifiers,
+                JavaCodeModel.JVisibility visibility,
+                Identifier pathToAttribute,
+                JavaCodeModel.JType type,
+                String value
+        ) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.attribute(modifiers, visibility, pathToAttribute, type, value);
             parsedAttributes++;
         }
 
-        public void constructor(JavaCodeModel.JModifier[] modifiers, JavaCodeModel.JVisibility visibility, int overloadIndex, String[] parameterNames, JavaCodeModel.JType[] parameterTypes, JavaCodeModel.ExceptionType[] exceptions) {
+        public void constructor(
+                JavaCodeModel.JModifier[] modifiers,
+                JavaCodeModel.JVisibility visibility,
+                int overloadIndex,
+                String[] parameterNames,
+                JavaCodeModel.JType[] parameterTypes,
+                JavaCodeModel.ExceptionType[] exceptions
+        ) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.constructor(modifiers, visibility, overloadIndex, parameterNames, parameterTypes, exceptions);
             parsedConstructors++;
         }
 
-        public void method(JavaCodeModel.JModifier[] modifiers, JavaCodeModel.JVisibility visibility, String pathToMethod, int overloadIndex, String[] parameterNames, JavaCodeModel.JType[] parameterTypes, JavaCodeModel.JType returnType, JavaCodeModel.ExceptionType[] exceptions) {
+        public void method(
+                JavaCodeModel.JModifier[] modifiers,
+                JavaCodeModel.JVisibility visibility,
+                Identifier pathToMethod,
+                int overloadIndex,
+                String[] parameterNames,
+                JavaCodeModel.JType[] parameterTypes,
+                JavaCodeModel.JType returnType,
+                JavaCodeModel.ExceptionType[] exceptions
+        ) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.method(modifiers, visibility, pathToMethod, overloadIndex, parameterNames, parameterTypes, returnType, exceptions);
             parsedMethods++;
@@ -396,13 +434,13 @@ public class JStatistics {
             methodsJavadoc++;
         }
 
-        public String generateTempUniqueIdentifier() {
+        public Identifier generateTempUniqueIdentifier() {
             if(wrapped == null) { throw new IllegalStateException(); }
             generatedTempIds++;
             return wrapped.generateTempUniqueIdentifier();
         }
 
-        public int replaceIdentifierWithQualifiedType(String identifier, String qualifiedType) {
+        public int replaceIdentifierWithQualifiedType(Identifier identifier, Identifier qualifiedType) {
             if(wrapped == null) { throw new IllegalStateException(); }
             int replaced = wrapped.replaceIdentifierWithQualifiedType(identifier, qualifiedType);
             replacedEntries += replaced;

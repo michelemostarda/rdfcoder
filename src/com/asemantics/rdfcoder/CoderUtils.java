@@ -23,7 +23,7 @@ import java.io.FilenameFilter;
 import java.util.List;
 
 /**
- * Utility class.
+ * This class contains some general utility methods.
  */
 public class CoderUtils {
 

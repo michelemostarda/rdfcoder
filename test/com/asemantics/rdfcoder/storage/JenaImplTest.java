@@ -18,13 +18,16 @@
 
 package com.asemantics.rdfcoder.storage;
 
-import junit.framework.TestCase;
 import com.asemantics.rdfcoder.model.CodeModelException;
-import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 import com.asemantics.rdfcoder.model.QueryResult;
 import com.asemantics.rdfcoder.model.SPARQLException;
 import com.asemantics.rdfcoder.model.SPARQLQuerableCodeModel;
 import com.asemantics.rdfcoder.model.TripleIterator;
+import com.asemantics.rdfcoder.model.java.JavaCodeModel;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,19 +35,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The <code>JenaCodeModel</code>
+ * Test case for the {@link com.asemantics.rdfcoder.model.java.JavaCodeModel} class.
  */
-public class JenaImplTest extends TestCase {
+public class JenaImplTest {
 
     private static final String TEST_FILE  = "target_test/jena_impl_test.xml";
 
-    // Resource object triples.
+    /**
+     * Resource object triples.
+     */
     private static final int RES_OBJ_TRIPLES = 9000;
 
-    // Literal object triples.
+    /**
+     * Literal object triples.
+     */
     private static final int LIT_OBJ_TRIPLES = 1000;
 
-    // Total triples.
+    /**
+     * Total triples.
+     */
     private static final int TEST_SIZE       = RES_OBJ_TRIPLES + LIT_OBJ_TRIPLES;
 
     private JenaCoderFactory jcmf;
@@ -56,21 +65,24 @@ public class JenaImplTest extends TestCase {
     Map<String,String> params;
 
     public JenaImplTest() {
-        params = new HashMap();
+        params = new HashMap<String,String>();
         params.put(CodeStorage.FS_FILENAME, TEST_FILE);
     }
 
+    @Before
     public void setUp() {
         jcmf = new JenaCoderFactory();
         cm   = jcmf.createCodeModel();
         cs   = jcmf.createCodeStorage();
     }
 
+    @After
     public void tearDown() {
         jcmf = null;
         cm   = null;
     }
 
+    @Test
     public void testWrite() throws CodeModelException, CodeStorageException {
         // Writes triples with resource objects.
         for(int i = 0; i < RES_OBJ_TRIPLES; i++) {
@@ -83,6 +95,7 @@ public class JenaImplTest extends TestCase {
         cs.saveModel(cm, params);
     }
 
+    @Test
     public void testRead() throws IOException, CodeModelException, CodeStorageException {
         testWrite();
 
@@ -94,9 +107,10 @@ public class JenaImplTest extends TestCase {
         while( ti.next() ) {
             counter++;
         }
-        assertEquals(TEST_SIZE, counter);
+        Assert.assertEquals(TEST_SIZE, counter);
     }
 
+    @Test
     public void testQuery() throws IOException, CodeModelException, SPARQLException {
         // Loading data into model.
         for(int i = 0; i < 300; i++) {

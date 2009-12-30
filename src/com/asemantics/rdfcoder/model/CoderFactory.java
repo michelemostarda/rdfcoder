@@ -24,7 +24,7 @@ import com.asemantics.rdfcoder.storage.CodeStorage;
 /**
  * Factory class allowing the creation of main library objects. 
  */
-public interface CoderFactory {
+public interface CoderFactory<T extends CodeHandler> {
 
     /**
      * Creates the <i>Code Model Ontology</i>. 
@@ -53,5 +53,5 @@ public interface CoderFactory {
      * @param model
      * @return the code handler instance.
      */
-    CodeHandler createHandlerOnModel(CodeModelBase model);
+    T createHandlerOnModel(CodeModelBase model);
 }

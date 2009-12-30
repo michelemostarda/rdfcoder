@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Interface for every file parser.
+ * Base class for a <i>File Parser</i>.
  */
 public abstract class FileParser extends CodeParser {
 
@@ -34,6 +34,5 @@ public abstract class FileParser extends CodeParser {
      * @throws IOException if any error occurs during file access.
      */
     public abstract void parse(File file) throws ParserException, IOException;
-
 
 }

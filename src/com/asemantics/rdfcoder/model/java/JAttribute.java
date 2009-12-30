@@ -19,6 +19,7 @@
 package com.asemantics.rdfcoder.model.java;
 
 import com.asemantics.rdfcoder.model.QueryModelException;
+import com.asemantics.rdfcoder.model.Identifier;
 
 /**
  * Represents a <i>Java</i> attribute.
@@ -33,19 +34,8 @@ public class JAttribute extends JModifiable {
      * @param pathToAttribute the path to the attribute.
      * @return true if the path is valid, false otherwise.
      */
-    public static final boolean exists(JavaQueryModel qm, final String pathToAttribute) {
+    public static final boolean exists(JavaQueryModel qm, final Identifier pathToAttribute) {
         return qm.attributeExists(pathToAttribute);
-    }
-
-    /**
-     * Constructor.
-     * @param qm
-     * @param sections
-     * @throws com.asemantics.rdfcoder.model.CodeModelException
-     */
-    protected JAttribute(JavaQueryModel qm, String[] sections)
-    throws QueryModelException {
-        super(qm, sections);
     }
 
     /**
@@ -54,9 +44,18 @@ public class JAttribute extends JModifiable {
      * @param pathToAttribute
      * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
-    protected JAttribute(JavaQueryModel qm, String pathToAttribute)
+    protected JAttribute(JavaQueryModel qm, Identifier pathToAttribute)
     throws QueryModelException {
         super(qm, pathToAttribute);
+    }
+
+    /**
+     * Returns the name of the attribute.
+     *
+     * @return the string representing the name of the attribute.
+     */
+    public String getName() {
+        return getIdentifier().getLastFragmentWithQualifier(JavaCodeModel.ATTRIBUTE_KEY);
     }
 
     /**
@@ -79,12 +78,12 @@ public class JAttribute extends JModifiable {
 
     /**
      * Check wheter the attribute exists.
-     * @param name
-     * @param index
+     *
+     * @param identifier
      * @return <code>true</code> if exists.
      */
-    public boolean exists(final String[] name, int index) {
-        return exists(getQueryModel(), concatenate(name, index));
+    public boolean exists(final Identifier identifier) {
+        return exists(getQueryModel(), identifier);
     }
 
 }
