@@ -7,4 +7,4 @@
 P=`dirname $0`
 CP="`$P/rdfcoder_path $P`:$P/../dist/rdfcoder-0.5.jar"
 
-exec java -Xmx256m -cp "$CP" com.asemantics.CommandLine "$@" 2>&1
+exec java -Xmx256m -cp "$CP" com.asemantics.rdfcoder.CommandLine "$@" 2>&1
