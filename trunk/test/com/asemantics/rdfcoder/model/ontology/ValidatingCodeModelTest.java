@@ -87,7 +87,7 @@ public class ValidatingCodeModelTest {
     @Test
     public void testAddmodifier() {
           vcm.addTripleLiteral(
-                  "jpackage:p1.p2.p3:jclassC1",
+                  "jpackage:p1.p2.p3.jclass:C1",
                   JavaCodeModel.HAS_MODIFIERS,
                   JavaCodeModel.JModifier.toByte(
                           new JavaCodeModel.JModifier[] {JavaCodeModel.JModifier.STATIC}
