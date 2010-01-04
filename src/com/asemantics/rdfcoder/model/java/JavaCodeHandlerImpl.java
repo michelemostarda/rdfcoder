@@ -624,11 +624,11 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
      * @throws IllegalArgumentException
      */
     private String qualifyParameterName(Identifier pathToMethod, String parameterName) {
-        if(parameterName.indexOf(PACKAGE_SEPARATOR) != -1) {
-            throw new IllegalArgumentException();
-        }
-        String postFix = PACKAGE_SEPARATOR + parameterName;
-        return CodeModelBase.prefixParameter( JavaCodeModel.PARAMETER_PREFIX, pathToMethod + postFix);
+        return pathToMethod
+                    .copy()
+                    .pushFragment(parameterName, JavaCodeModel.PARAMETER_KEY)
+                    .build()
+                    .getIdentifier();
     }
 
     private void checkPackageDiscrepancy(Identifier pathToElement) {
