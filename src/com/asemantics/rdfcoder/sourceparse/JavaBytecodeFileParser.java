@@ -111,6 +111,9 @@ public class JavaBytecodeFileParser extends FileParser {
             Set processed = new HashSet();
             processClass(javaCodeHandler, classloader, processed, javaClass);
 
+        } catch(Exception e) {
+            logger.error("An error occurred while parsing bytecode file.", e);
+            throw new ParserException("An error occurred while parsing bytecode file.", e);
         } finally {
             // Close package.
             javaCodeHandler.endPackage();
@@ -169,7 +172,7 @@ public class JavaBytecodeFileParser extends FileParser {
                 javaCodeHandler.startEnumeration(
                         modifiers,
                         toVisibility( javaClass ),
-                        toQualifiedClassName( javaClass ),
+                        toQualifiedEnumName( javaClass ),
                         enumElements.toArray( new String[ enumElements.size() ] )
                 );
             } else if( javaClass.isClass() ) { // Class.
@@ -182,7 +185,7 @@ public class JavaBytecodeFileParser extends FileParser {
                 );
             } else if( javaClass.isInterface() ) { // Interface.
                 javaCodeHandler.startInterface(
-                   toQualifiedClassName(javaClass),
+                   toQualifiedInterfaceName(javaClass),
                    toQualifiedInterfaces(javaClass)
                 );
             } else {
@@ -319,25 +322,18 @@ public class JavaBytecodeFileParser extends FileParser {
 
     private Identifier toQualifiedClassName(JavaClass javaClass) {
         return IdentifierReader.readFullyQualifiedClass( javaClass.getClassName() );
-        //return getContainerPath().copy().pushFragment(javaClass.getClassName(), JavaCodeModel.CLASS_KEY).build();
     }
 
     private Identifier toQualifiedSuperClassName(JavaClass javaClass) {
         return IdentifierReader.readFullyQualifiedClass( javaClass.getClassName() );
-        /*
-        JavaClass superClass;
-        try {
-            superClass = javaClass.getSuperClass();
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
+    }
 
-        return IdentifierReader
-                    .readPackage( superClass.getPackageName() )
-                    .copy()
-                    .pushFragment( superClass.getClassName(), JavaCodeModel.CLASS_KEY )
-                    .build();
-        */
+    private Identifier toQualifiedInterfaceName(JavaClass javaClass) {
+        return IdentifierReader.readFullyQualifiedInterface( javaClass.getClassName() );
+    }
+
+    private Identifier toQualifiedEnumName(JavaClass javaClass) {
+        return IdentifierReader.readFullyQualifiedEnumeration( javaClass.getClassName() );
     }
 
     private Identifier[] toQualifiedInterfaces(JavaClass javaClass) {
@@ -349,7 +345,7 @@ public class JavaBytecodeFileParser extends FileParser {
         }
         Identifier[] result = new Identifier[interfaces.length];
         for(int i = 0; i < interfaces.length; i++) {
-            result[i] = IdentifierReader.readFullyQualifiedClass( interfaces[i].getClassName() );
+            result[i] = IdentifierReader.readFullyQualifiedInterface( interfaces[i].getClassName() );
         }
         return result;
     }
