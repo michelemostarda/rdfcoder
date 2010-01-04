@@ -18,38 +18,59 @@
 
 package com.asemantics.rdfcoder.model.ontology;
 
+import java.util.Collection;
+import java.util.Collections;
+
 
 /**
- * Defines any exception related to <i>ontologies</i>.
+ * Defines any exception related to <i>ontology validation</i>.
  */
 public class OntologyException extends Exception {
 
-    /**
-     * Constructor.
-     *
-     * @param cause
-     */
-    public OntologyException(Throwable cause) {
-        super(cause);
-    }
+    private Collection<Throwable> causes;
 
     /**
      * Constructor.
      *
-     * @param message
-     * @param cause
+     * @param msg error message.
+     * @param cause exception cause.
      */
-    public OntologyException(String message, Throwable cause) {
-        super(message, cause);
+    public OntologyException(String msg, Throwable cause) {
+        super(msg, cause);
     }
 
     /**
      * Constructor.
      * 
-     * @param msg
+     * @param msg error message.
      */
     public OntologyException(String msg) {
         super(msg);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param msg error message.
+     * @param causes list of causes for the current exception.
+     */
+    public OntologyException(String msg, Collection<Throwable> causes) {
+        super(msg);
+        this.causes = Collections.unmodifiableCollection(causes);
+    }
+
+    public Collection<Throwable> getCauses() {
+        return causes;
+    }
+
+    @Override
+    public String getLocalizedMessage() {
+        return getMessage();
+    }
+
+    @Override
+    public String getMessage() {
+        return super.getMessage() + String.format("(%d causes)", causes == null ? 0 : causes.size() );
+    }
+    
 }

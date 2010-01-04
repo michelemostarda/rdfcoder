@@ -32,11 +32,6 @@ import com.asemantics.rdfcoder.model.TripleIterator;
 public class ValidatingCodeModel extends CodeModelBase {
 
     /**
-     * Validation error message.
-     */
-    private static String VALIDATION_ERROR = "Validation error";
-
-    /**
      * Decorated code model.
      */
     private CodeModel decorated;
@@ -63,7 +58,7 @@ public class ValidatingCodeModel extends CodeModelBase {
         try {
             ontology.validateTriple(subject, predicate, object);
         } catch (OntologyException oe) {
-            throw createRuntimeException(oe, subject, predicate, object);
+            throw createException(oe, subject, predicate, object);
         }
         decorated.addTriple(subject, predicate, object);
     }
@@ -76,7 +71,7 @@ public class ValidatingCodeModel extends CodeModelBase {
         try {
             ontology.validateTripleLiteral(subject, predicate);
         } catch (OntologyException oe) {
-            throw createRuntimeException(oe, subject, predicate, literal);
+            throw createException(oe, subject, predicate, literal);
         }
         decorated.addTripleLiteral(subject, predicate, literal);
     }
@@ -89,8 +84,11 @@ public class ValidatingCodeModel extends CodeModelBase {
         decorated.clearAll();
     }
 
-    // TODO: improve replace the RuntimeException wih OntologyException.
-    private RuntimeException createRuntimeException(OntologyException oe, String s, String p, String o) {
-        return new RuntimeException(VALIDATION_ERROR + ": " + oe.getMessage() + " in triple <" + s + "," + p + "," + o + ">", oe);
+    private RuntimeException createException(OntologyException cause, String s, String p, String o) {
+        return new RuntimeException(
+                String.format("An error occurred while validating triple { %s %s %s }", s, p, o),
+                cause
+        );
     }
+    
 }
