@@ -41,6 +41,7 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -53,6 +54,7 @@ import java.util.List;
 /**
  * Definition of the <i>Java Profile</i>.
  */
+// TODO: write appropriate test case.
 public class JavaProfile implements Profile {
 
     /**
@@ -226,7 +228,7 @@ public class JavaProfile implements Profile {
         parser = null;
 
         // Saves model in repository.
-        OutputStream os = null;
+        OutputStream os;
         Repository.Resource resource = null;
         try {
             resource = repository.createResource(
@@ -256,8 +258,13 @@ public class JavaProfile implements Profile {
     public void loadJRE(File pathToJRE) {
         try {
             model.getObjectsTable().load( deserializeJREObjectsTable( pathToJRE.getName() ) );
+        } catch (RepositoryException re) {
+            logger.info("Cannot retrieve Objects Table.", re);
+        } catch (InvalidClassException ice) {
+            logger.info("Obsolete Objects Table, removing it.", ice);
+            removeObjectsTable( pathToJRE.getName() );
         } catch (Exception e) {
-            throw new RDFCoderException("Cannot deserialize Object Table from repository.", e);
+            throw new RDFCoderException("A generic error occurred while loading the Objects Table.", e);
         }
     }
 
@@ -337,7 +344,7 @@ public class JavaProfile implements Profile {
     }
 
     /**
-     * Deserializes the content of the JRE {@link com.asemantics.rdfcoder.sourceparse.ObjectsTable}
+     * Deserializes the content of the <i>JRE</i> {@link com.asemantics.rdfcoder.sourceparse.ObjectsTable}
      * from the repository.
      * 
      * @param jreName
@@ -357,6 +364,19 @@ public class JavaProfile implements Profile {
             return ot;
         } finally {
             if(ois != null) { ois.close(); }
+        }
+    }
+
+    /**
+     * Removes the object table associated to the given <i>JRE</i>.
+     *
+     * @param jreName
+     */
+    private void removeObjectsTable(String jreName) {
+        try {
+            repository.removeResource( getJREObjectTableResourceName( jreName ) );
+        } catch (RepositoryException re) {
+            logger.error("Error while removing object table.", re);
         }
     }
 
