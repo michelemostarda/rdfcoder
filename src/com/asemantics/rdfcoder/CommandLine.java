@@ -1098,7 +1098,7 @@ public class CommandLine {
     }
 
     public String __command_querymodel() {
-        return "allows to query yhe current model";
+        return "allows to query the current model";
     }
 
     public String ___command_querymodel() {
