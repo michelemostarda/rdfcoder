@@ -252,7 +252,7 @@ public class JavaSourceFileParser extends FileParser {
                 }
 
                 javaCodeHandler.startClass(
-                        //TODO: verify the subsequest row.
+                        //TODO: HIGH - verify the subsequest row.
                         extractModifiers( classDeclaration ),
                         clsOrIntVisibility,
                         packagePath.copy().pushFragment(className, JavaCodeModel.CLASS_KEY).build(),

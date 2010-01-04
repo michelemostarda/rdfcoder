@@ -79,7 +79,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
      */
     protected static abstract class JPrimitiveType implements JType {
 
-        // TODO: HIGH : this must be optimized !!
+        // TODO: HIGH - this must be optimized !!
         public Identifier getIdentifier() {
             return IdentifierBuilder
                     .create()
@@ -572,7 +572,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
             }
         };
 
-        //TODO: manage CONST modifier.
+        //TODO HIGH - manage CONST modifier.
 
         public abstract byte    value();
         public abstract boolean isValue(byte b);

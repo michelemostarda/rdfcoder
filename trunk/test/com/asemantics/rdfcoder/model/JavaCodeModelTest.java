@@ -37,7 +37,7 @@ import org.junit.Test;
 /**
  * Test case for the {@link com.asemantics.rdfcoder.model.java.JavaCodeModel}.
  */
-//TODO: HIGH : this test must be decomposed.
+//TODO: HIGH - this test must be decomposed.
 public class JavaCodeModelTest {
 
     private JenaCoderFactory jcmf;

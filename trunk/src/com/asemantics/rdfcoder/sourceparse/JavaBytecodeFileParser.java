@@ -134,7 +134,7 @@ public class JavaBytecodeFileParser extends FileParser {
     }
 
     public void parse(File file) throws IOException, ParserException {
-        //TODO - HIGH: check this method: JavaBytecodeClassLoader must not be null.
+        //TODO: HIGH - check this method: JavaBytecodeClassLoader must not be null.
         parse(null, file);
     }
 
@@ -270,9 +270,9 @@ public class JavaBytecodeFileParser extends FileParser {
             }
 
         } catch(Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); // TODO: HIGH - Remove me.
             throw new ParserException( String.format("Error while parsing class %s", javaClass.getClassName() ), e);   
-        } finally { // TODO: HIGH : Improve exception handling.
+        } finally {
 
             // End container.
             if( javaClass.isClass() ) {
