@@ -18,6 +18,7 @@
 
 package com.asemantics.rdfcoder.model.ontology;
 
+import com.asemantics.rdfcoder.model.IdentifierReader;
 import com.asemantics.rdfcoder.model.CodeModel;
 
 import java.io.OutputStream;
@@ -48,11 +49,11 @@ public class DefaultOntology implements Ontology {
          * @throws OntologyException
          */
         String getPrefix(String term) throws OntologyException {
-            int index = term.indexOf(CodeModel.PREFIX_SEPARATOR);
-            if(index == -1) {
-                throw new OntologyException("Invalid term: '" + term + "'");
+            try {
+                return IdentifierReader.readIdentifier(term).getStrongestQualifier() + CodeModel.PREFIX_SEPARATOR;
+            } catch (Exception e) {
+                throw new OntologyException("Invalid term.", e);
             }
-            return term.substring(0, index + 1);
         }
 
         /**
@@ -396,13 +397,16 @@ public class DefaultOntology implements Ontology {
             throw new OntologyException( String.format("predicate '%s' is not defined.", predicate) );
         }
 
+        List<OntologyException> causes = new ArrayList<OntologyException>();
         for(PropertyBase property : properties) {
             try {
                 if( literal == property.isLiteral() ) {
                     property.validate(subject, predicate, object);                    
                     return property;
                 }
-            } catch (OntologyException oe) {}
+            } catch (OntologyException oe) {
+                causes.add(oe);
+            }
         }
         throw new OntologyException(
                 String.format("No property matches specified terms for predicate: '%s'", predicate)
