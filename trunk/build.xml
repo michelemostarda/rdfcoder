@@ -190,7 +190,7 @@
 	>
 		<delete dir="${classes.dir}"/>
 		<delete dir="${dist.dir}"/>
-		<delete dir="${javadoc.dir}"/>
+		<!-- delete dir="${javadoc.dir}"/ -->
 		<delete dir="${umldoc.dir}"/>		
 
         <delete dir="target_test/classes"/>
