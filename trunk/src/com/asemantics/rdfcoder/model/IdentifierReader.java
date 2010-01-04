@@ -52,6 +52,13 @@ public class IdentifierReader {
         String currentQualifier = null;
         for(String section : sections) {
             sectionSplit = section.split(CodeModel.PREFIX_SEPARATOR);
+            if(section.lastIndexOf(CodeModel.PREFIX_SEPARATOR) == section.length() - 1) {
+                final int sectionSplitLength = sectionSplit.length;
+                String[] newSectionSplit = new String[sectionSplitLength + 1];
+                System.arraycopy(sectionSplit, 0, newSectionSplit, 0, sectionSplitLength);
+                newSectionSplit[newSectionSplit.length - 1] = "";
+                sectionSplit = newSectionSplit;
+            }
             if(sectionSplit.length > 2) {
                 throw new IllegalArgumentException(
                         String.format("Invalid section [%s] in identifier [%s] ", section, identifier)
@@ -109,15 +116,48 @@ public class IdentifierReader {
      * @throws IllegalArgumentException if an error occurred during parsing.
      */
     public static Identifier readFullyQualifiedClass(String clazz) {
-        int packageEnd = clazz.lastIndexOf(JavaCodeHandler.PACKAGE_SEPARATOR);
+        return readFullyQualifiedType(clazz, JavaCodeModel.CLASS_KEY);
+    }
+
+    /**
+     * Reads a fully qualified interface.
+     *
+     * @param iface the interface name.
+     * @return the identifier representing the interface.
+     * @throws IllegalArgumentException if an error occurred during parsing.
+     */
+    public static Identifier readFullyQualifiedInterface(String iface) {
+        return readFullyQualifiedType(iface, JavaCodeModel.INTERFACE_KEY);
+    }
+
+    /**
+     * Reads a fully qualified enumeration.
+     *
+     * @param enumeration the enumeration name.
+     * @return the identifier representing the enumeration.
+     * @throws IllegalArgumentException if an error occurred during parsing.
+     */
+    public static Identifier readFullyQualifiedEnumeration(String enumeration) {
+        return readFullyQualifiedType(enumeration, JavaCodeModel.ENUMERATION_KEY);
+    }
+
+    /**
+     * Reads a fully qualified type and return an identifier with the specified strongest qualifier. 
+     *
+     * @param pathToType
+     * @param qualifier
+     * @return the identifier generated.
+     */
+    private static Identifier readFullyQualifiedType(final String pathToType, final String qualifier) {
+        int packageEnd = pathToType.lastIndexOf(JavaCodeHandler.PACKAGE_SEPARATOR);
         List<IdentifierFragment> fragments = new ArrayList<IdentifierFragment>();
         if(packageEnd == -1) {
             fragments.add( new IdentifierFragment("", JavaCodeModel.PACKAGE_KEY) );
         } else {
-            Identifier packageIdentifier = IdentifierReader.readPackage(clazz.substring(0, packageEnd));
+            Identifier packageIdentifier = IdentifierReader.readPackage(pathToType.substring(0, packageEnd));
             fragments.addAll( packageIdentifier.fragments );
         }
-        fragments.add( new IdentifierFragment( clazz.substring(packageEnd + 1), JavaCodeModel.CLASS_KEY ) );
+        fragments.add( new IdentifierFragment( pathToType.substring(packageEnd + 1), qualifier ) );
         return new Identifier("", fragments);
     }
 

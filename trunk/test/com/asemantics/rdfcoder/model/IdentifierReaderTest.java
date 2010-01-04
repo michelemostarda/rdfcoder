@@ -64,4 +64,13 @@ public class IdentifierReaderTest {
         Assert.assertEquals("Unexpected identifier.", "jclass:Class1", identifier.getTail().getIdentifier() );
     }
 
+    @Test
+    public void testReadQualifierWithEmptyFragment() {
+        Identifier identifier = IdentifierReader.readIdentifier("asset:");
+        Assert.assertTrue( "unespected size.", identifier.size() == 1 );
+        IdentifierFragment fragment = identifier.getFragment(0);
+        Assert.assertEquals("Unespected qualifier", "asset", fragment.getQualifier());
+        Assert.assertEquals("Unespected fragment" , ""     , fragment.getFragment() );
+    }
+
 }
