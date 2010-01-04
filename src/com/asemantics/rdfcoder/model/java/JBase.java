@@ -27,7 +27,7 @@ import com.asemantics.rdfcoder.model.QueryModelException;
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
-//TODO: extract the Base class.
+//TODO: LOW - extract the Base class.
 public abstract class JBase {
 
     /**

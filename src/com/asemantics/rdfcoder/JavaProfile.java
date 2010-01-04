@@ -54,7 +54,7 @@ import java.util.List;
 /**
  * Definition of the <i>Java Profile</i>.
  */
-// TODO: write appropriate test case.
+// TODO: HIGH - write appropriate test case.
 public class JavaProfile implements Profile {
 
     /**

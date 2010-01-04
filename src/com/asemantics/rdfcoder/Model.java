@@ -118,7 +118,7 @@ public class Model<T extends CoderFactory> {
     public void setValidating(boolean f) {
         if(f) {
             if( validatingCodeModel == null) {
-                validatingCodeModel = new ValidatingCodeModel(codeModelBase, new JavaOntology() ); //TODO HIGH geberalize this (ontology is related to profiles)
+                validatingCodeModel = new ValidatingCodeModel(codeModelBase, new JavaOntology() ); //TODO: LOW - generalize this (ontology is related to profiles).
             }
             currentModel = validatingCodeModel;
         } else {

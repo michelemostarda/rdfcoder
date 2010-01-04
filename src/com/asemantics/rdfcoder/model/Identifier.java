@@ -107,7 +107,7 @@ public class Identifier implements Serializable {
                 sb.append(cf.getFragment());
             }
             if(i <= lastIndex) {
-                sb.append(JavaCodeHandler.PACKAGE_SEPARATOR); // TODO: generalize this dep.
+                sb.append(JavaCodeHandler.PACKAGE_SEPARATOR); // TODO: MED - generalize this dep.
             }
         }
         return sb.toString();
@@ -126,7 +126,7 @@ public class Identifier implements Serializable {
     /**
      * @return all but the last fragment of the identifier.
      */
-    // TODO: HIGH : rename to getParent()
+    // TODO: HIGH - rename to getParent()
     public Identifier getPreTail() {
         if(fragments.size() > 0) {
             return new Identifier( prefix, fragments.subList(0, fragments.size() - 1) );

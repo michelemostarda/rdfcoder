@@ -198,7 +198,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
      *
      * @param objectsTable
      */
-    //TODO: LOW - integrate preloading.
+    //TODO: LOW - Integrate preloading.
     public void preloadObjectsFromModel(ObjectsTable objectsTable);
 
     /**
