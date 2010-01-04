@@ -51,6 +51,7 @@ import net.sourceforge.jrefactory.ast.Node;
 import net.sourceforge.jrefactory.ast.SimpleNode;
 import net.sourceforge.jrefactory.parser.JavaParser;
 import net.sourceforge.jrefactory.parser.ParseException;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -138,6 +139,11 @@ public class JavaSourceFileParser extends FileParser {
         }
     }
 
+    /**
+     * Internal class logger.
+     */
+    private static final Logger logger = Logger.getLogger(JavaSourceFileParser.class);
+
 
     /**
      * The code handler to be used during processing.
@@ -210,16 +216,8 @@ public class JavaSourceFileParser extends FileParser {
             processLevel(packagePath, importsContext, ast);
 
         } finally {
-            try {
-                javaCodeHandler.endPackage();
-            }catch (Throwable t) {
-                t.printStackTrace();
-            }
-            try {
-                javaCodeHandler.endCompilationUnit();
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
+            javaCodeHandler.endPackage();
+            javaCodeHandler.endCompilationUnit();
         }
     }
 
@@ -720,12 +718,12 @@ public class JavaSourceFileParser extends FileParser {
             throw new ParserException(fnfe, file.getAbsolutePath());
         }
         JavaParser jp = new JavaParser(fis);
-        ASTCompilationUnit ast = null;
+        ASTCompilationUnit ast;
         try {
             ast = jp.CompilationUnit();
             processCompilationUnit(file.getAbsolutePath(), ast);
         } catch (ParseException pe) {
-            throw new ParserException(pe, file.getAbsolutePath());
+            throw new ParserException( pe, file.getAbsolutePath() );
         } finally {
             fis.close();
         }
