@@ -317,7 +317,7 @@ public class JavaBytecodeFileParser extends FileParser {
         if( containersStack.size() == 0 ) {
             throw new IllegalStateException();
         }
-        return IdentifierReader.readPackage( containersStack.peek().getClassName() ); // TODO: HIGH this read a class name as a package. Fix it.
+        return IdentifierReader.readFullyQualifiedClass( containersStack.peek().getClassName() );
     }
 
     private Identifier toQualifiedClassName(JavaClass javaClass) {
