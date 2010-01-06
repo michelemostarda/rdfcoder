@@ -107,7 +107,7 @@ public class Identifier implements Serializable {
                 sb.append(cf.getFragment());
             }
             if(i <= lastIndex) {
-                sb.append(JavaCodeHandler.PACKAGE_SEPARATOR); // TODO: MED - generalize this dep.
+                sb.append(JavaCodeHandler.PACKAGE_SEPARATOR);
             }
         }
         return sb.toString();
