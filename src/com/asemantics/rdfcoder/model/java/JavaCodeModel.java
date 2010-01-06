@@ -79,13 +79,19 @@ public abstract class JavaCodeModel extends CodeModelBase {
      */
     protected static abstract class JPrimitiveType implements JType {
 
-        // TODO: HIGH - this must be optimized !!
+        private Identifier primitiveTypeIdentifier;
+        private String relatedInternal;
+
         public Identifier getIdentifier() {
-            return IdentifierBuilder
-                    .create()
-                    .pushFragment(getInternalIdentifier(), PRIMITIVE_KEY)
-                    .setPrefix(CODER_URI)
-                    .build();
+            if (primitiveTypeIdentifier == null || ! getInternalIdentifier().equals(relatedInternal) ) {
+                relatedInternal = getInternalIdentifier();
+                primitiveTypeIdentifier = IdentifierBuilder
+                        .create()
+                        .pushFragment( relatedInternal, PRIMITIVE_KEY)
+                        .setPrefix(CODER_URI)
+                        .build();
+            }
+            return primitiveTypeIdentifier;
         }
 
         public JType cloneType() {
@@ -206,7 +212,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
         }
 
         public static ObjectType rdfTypeToType(String rdfType) {
-            if(rdfType.indexOf(CLASS_KEY) != 0) {
+            if(rdfType.indexOf(CLASS_KEY) == -1) {
                 throw new IllegalArgumentException("Expected object prefix.");
             }
             return new ObjectType( IdentifierReader.readIdentifier(rdfType) );
@@ -300,25 +306,8 @@ public abstract class JavaCodeModel extends CodeModelBase {
             return type.getIdentifier();
         }
 
-        public String getIdentifier(String internalRepresentation) {
-            return toIdentifier(internalRepresentation);
-        }
-
-        //TODO: MED - check this.
-        private String toIdentifier(String id) {
-            return toURI(
-                    TYPE_ARRAY_STR + ":" +
-                    ( type instanceof JPrimitiveType ?
-                            type.getInternalIdentifier()
-                                :
-                            "<" + id + ">" // Mark object type.
-                    ) +
-                    ":" + size
-            );
-        }
-
         public String toString() {
-            return getInternalIdentifier() + "["+ getSize() + "]";
+            return String.format( "%s[%d]", getInternalIdentifier(), getSize() );
         }
 
         private static String ARRAY_PREFIX = toURI(TYPE_ARRAY_STR);
@@ -334,7 +323,13 @@ public abstract class JavaCodeModel extends CodeModelBase {
             if(typeIsObj) {
                 type = type.substring(1, type.length() -2);
             }
-            return new ArrayType( typeIsObj ? new ObjectType(IdentifierReader.readIdentifier(type) ) : javaTypeToJType(type), arraySize );
+            return new ArrayType(
+                    typeIsObj
+                            ?
+                    new ObjectType(IdentifierReader.readIdentifier(type) )
+                            :
+                    javaTypeToJType(type), arraySize
+            );
         }
     }
 
@@ -571,8 +566,6 @@ public abstract class JavaCodeModel extends CodeModelBase {
                 return (b & SY) == SY;
             }
         };
-
-        //TODO HIGH - manage CONST modifier.
 
         public abstract byte    value();
         public abstract boolean isValue(byte b);
