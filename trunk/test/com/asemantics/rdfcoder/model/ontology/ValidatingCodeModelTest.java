@@ -58,7 +58,7 @@ public class ValidatingCodeModelTest {
     }
 
     @Test
-    public void testApplyOntology() {
+    public void testApplyOntologyOnRealClasspath() {
         final File dir = new File("./classes");
         if( ! dir.exists() ) {
             throw new RuntimeException(
