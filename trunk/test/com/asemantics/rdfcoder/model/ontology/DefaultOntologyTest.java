@@ -53,16 +53,33 @@ public class DefaultOntologyTest {
         ontology = null;
     }
 
+    /**
+     * Tests the {@link com.asemantics.rdfcoder.model.ontology.Ontology#defineRelation(String, java.net.URL, String)}
+     * method.
+     *
+     * @throws OntologyException
+     * @throws MalformedURLException
+     */
     @Test
-    public void testPopulate() throws OntologyException, MalformedURLException {
+    public void testDefineRelation() throws OntologyException, MalformedURLException {
        for(int i = 0; i < SIZE; i++) {
-           ontology.defineRelation(SUB_PREFIX + i + CodeModel.PREFIX_SEPARATOR, new URL(PREDICATE + (i % 2) ), OBJ_PREFIX + i + CodeModel.PREFIX_SEPARATOR);
+           ontology.defineRelation(
+                   SUB_PREFIX + i + CodeModel.PREFIX_SEPARATOR,
+                   new URL(PREDICATE + (i % 2) ),
+                   OBJ_PREFIX + i + CodeModel.PREFIX_SEPARATOR
+           );
        }
        Assert.assertEquals(ontology.getRelationsCount(), SIZE);
     }
 
+    /**
+     * Tests the control on relation redefinition. 
+     *
+     * @throws MalformedURLException
+     * @throws OntologyException
+     */
     @Test
-    public void testNoRedefinition() throws MalformedURLException, OntologyException {
+    public void testCheckRedefinition() throws MalformedURLException, OntologyException {
         final String sub = SUB_PREFIX;
         final URL   pred = new URL(PREDICATE);
         final String obj = OBJ_PREFIX;
@@ -73,9 +90,15 @@ public class DefaultOntologyTest {
         } catch (OntologyException oe) {}
     }
 
+    /**
+     * Tests the {@link com.asemantics.rdfcoder.model.ontology.Ontology#printOntology(java.io.PrintStream)} method.
+     *
+     * @throws MalformedURLException
+     * @throws OntologyException
+     */
     @Test
     public void testPrint() throws MalformedURLException, OntologyException {
-        testPopulate();
+        testDefineRelation();
 
         final Counter counter = new Counter();
         ontology.printOntology(new PrintStream(System.out) {
@@ -89,9 +112,16 @@ public class DefaultOntologyTest {
         Assert.assertEquals(SIZE, counter.count);
     }
 
+    /**
+     * Tests method {@link com.asemantics.rdfcoder.model.ontology.Ontology#validateTriple(String, String, String)}
+     * on valid triples.
+     *
+     * @throws MalformedURLException
+     * @throws OntologyException
+     */
     @Test
     public void testPositiveValidation() throws MalformedURLException, OntologyException {
-        testPopulate();
+        testDefineRelation();
         for(int i = 0; i < SIZE; i++) {
             ontology.validateTriple(
                     SUB_PREFIX + i + CodeModel.PREFIX_SEPARATOR + "postfix",
@@ -101,9 +131,16 @@ public class DefaultOntologyTest {
         }
     }
 
+    /**
+     * Tests method {@link com.asemantics.rdfcoder.model.ontology.Ontology#validateTriple(String, String, String)}
+     * on invalid triples.
+     *
+     * @throws MalformedURLException
+     * @throws OntologyException
+     */
     @Test
     public void testNegativeValidation() throws MalformedURLException, OntologyException {
-        testPopulate();
+        testDefineRelation();
         try {
             ontology.validateTriple(
                     SUB_PREFIX + 0 + CodeModel.PREFIX_SEPARATOR + "postfix",
@@ -116,9 +153,15 @@ public class DefaultOntologyTest {
         }
     }
 
+    /**
+     * Tests the ontology accessor methods.
+     *
+     * @throws MalformedURLException
+     * @throws OntologyException
+     */
     @Test
     public void testAccess() throws MalformedURLException, OntologyException {
-        testPopulate();
+        testDefineRelation();
 
         Set<Object> found = new HashSet<Object>();
         final int count = ontology.getRelationsCount();
@@ -129,7 +172,7 @@ public class DefaultOntologyTest {
             }
             found.add(ontology.getRelationSubjectPrefix(i));
         }
-        Assert.assertEquals(count,  found.size());
+        Assert.assertEquals(count, found.size());
 
         found.clear();
         for( int i = 0; i < count; i++) {
@@ -138,19 +181,22 @@ public class DefaultOntologyTest {
             }
             found.add(ontology.getRelationObjectPrefix(i));
         }
-        Assert.assertEquals(count,  found.size());
+        Assert.assertEquals(count, found.size());
 
         found.clear();
         for( int i = 0; i < count; i++) {
             found.add( ontology.getRelationPredicate(i) );
         }
-        Assert.assertEquals(2,  found.size());
+        Assert.assertEquals(2, found.size());
 
         Assert.assertEquals(SIZE, count);
 
         found.clear();
     }
 
+    /**
+     * Auxiliary class.
+     */
     class Counter {
         int count = 0;
 
