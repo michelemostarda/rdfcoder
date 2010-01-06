@@ -35,7 +35,6 @@ import java.util.Map;
 /**
  * A basic Repository based on filesystem where to store code metadata.
  */
-//TODO: improve lock management.
 public class Repository {
 
     /**
