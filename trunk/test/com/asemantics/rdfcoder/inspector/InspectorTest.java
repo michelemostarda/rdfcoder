@@ -33,8 +33,184 @@ import java.util.Map;
  */
 public class InspectorTest {
 
+    private Inspector inspector;
+
+    @Before
+    public void setUp() {
+        inspector = new Inspector();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        inspector = null;
+    }
+
+    /**
+     * Tests the ability of reading a sinple property.
+     *
+     * @throws PatternException
+     * @throws InspectorParserException
+     */
+    @Test
+    public void testReadSimpleProperty() throws PatternException, InspectorParserException {
+        Target target = new Target();
+
+        Object result1 = inspector.inspect("str", target);
+        Assert.assertNotNull("Result not found.", result1);
+        Assert.assertTrue("Invalid result type.", result1 instanceof String);
+        Assert.assertEquals( "Invalid result value", "str", result1);
+
+        Object result2 = inspector.inspect("condition", target);
+        Assert.assertNotNull("Result not found.", result2);
+        Assert.assertTrue("Invalid result type.", result2 instanceof Boolean);
+        Assert.assertEquals( "Invalid result value", true, result2);
+
+        Object result3 = inspector.inspect("value", target);
+        Assert.assertNotNull("Result not found.", result3);
+        Assert.assertTrue("Invalid result type.", result3 instanceof Integer);
+        Assert.assertEquals( "Invalid result value", 100, result3);
+
+        Object result4 = inspector.inspect("targetIn", target);
+        Assert.assertNotNull("Result not found.", result4);
+        Assert.assertTrue("Invalid result type.", result4 instanceof TargetIn );
+    }
+
+    /**
+     * Tests the ability of reading a map property.
+     *
+     * @throws PatternException
+     * @throws InspectorParserException
+     */
+    @Test
+    public void testReadMapProperty() throws PatternException, InspectorParserException {
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("prop1", "val1");
+        map.put("prop2", "val2");
+        map.put("prop3", "val3");
+
+        Object result1 = inspector.inspect("prop1", map);
+        Assert.assertNotNull("Result not found.", result1);
+        Assert.assertEquals("val1", result1);
+
+        Object result2 = inspector.inspect("prop2", map);
+        Assert.assertNotNull("Result not found.", result2);
+        Assert.assertEquals("val2", result2);
+
+        Object result3 = inspector.inspect("prop3", map);
+        Assert.assertNotNull("Result not found.", result3);
+        Assert.assertEquals("val3", result3);
+    }
+
+    /**
+     * Tests the ability of reading a sequence of accessors. 
+     *
+     * @throws PatternException
+     * @throws InspectorParserException
+     */
+    @Test
+    public void testReadSequence() throws PatternException, InspectorParserException {
+        Target target = new Target();
+
+        Map<String,Object> mapLevel2 = new HashMap<String,Object>();
+        mapLevel2.put("prop11", "value11");
+        mapLevel2.put("prop12", "value12");
+        mapLevel2.put("prop13", target);
+
+        Map<String,Object> mapLevel1 = new HashMap<String,Object>();
+        mapLevel1.put("prop1", "value1");
+        mapLevel1.put("prop2", mapLevel2);
+        mapLevel1.put("prop3", "value3");
+
+        Object result = inspector.inspect("prop2.prop13.targetIn", mapLevel1);
+        Assert.assertNotNull("Result not found.", result);
+        Assert.assertTrue( result instanceof TargetIn);
+    }
+
+    /**
+     * Tests the ability of reading an array.
+     *
+     * @throws PatternException
+     * @throws InspectorParserException
+     */
+    @Test
+    public void testInspectArray() throws PatternException, InspectorParserException {
+        final int SIZE = 100;
+
+        String[] array = new String[SIZE];
+        for(int i = 0; i < array.length; i++) {
+            array[i] = "a" + i;
+        }
+
+        Map<String,String[]> map = new HashMap<String,String[]>();
+        map.put("array", array);
+
+        for( int i = 0; i < array.length; i++) {
+            Object result = inspector.inspect("array[" + i +"]", map);
+            Assert.assertNotNull("Result not found.", result);
+            Assert.assertEquals("Wrong result.", "a" + i, result);
+        }
+
+        try {
+            inspector.inspect("array[" + SIZE + "]", map);
+            Assert.fail("Unespected element.");
+        } catch (PatternException pe) {}
+    }
+
+    /**
+     * Tests the ability of reading a list.
+     * 
+     * @throws PatternException
+     * @throws InspectorParserException
+     */
+    @Test
+    public void testInspectList() throws PatternException, InspectorParserException {
+        final int SIZE = 100;
+
+        List<String> list = new ArrayList<String>();
+        for(int i = 0; i < SIZE; i++) {
+            list.add("element_" + i);
+        }
+
+        Map<String,List<String>> map = new HashMap<String,List<String>>();
+        map.put("list", list);
+
+        for( int i = 0; i < SIZE; i++) {
+            Object result = inspector.inspect("list[" + i +"]", map);
+            Assert.assertNotNull("Result not found.", result);
+            Assert.assertEquals("Wrong result.", "element_" + i, result);
+        }
+
+        try {
+            inspector.inspect("list[" + SIZE + "]", map);
+            Assert.fail("Unespected element.");
+        } catch (PatternException pe) {}
+    }
+
+    /**
+     * Tests the describe {@link com.asemantics.rdfcoder.inspector.Inspector#describe(String)}  method.
+     * 
+     * @throws PatternException
+     * @throws InspectorParserException
+     */
+    @Test
+    public void testDescribe() throws PatternException, InspectorParserException {
+        inspector.addToContext( "target", new Target() );
+        String description = inspector.describe("target");
+        Assert.assertNotNull("Expected a valid description.", description);
+        String[] expected = new String[]{"str", "condition", "value", "targetIn"};
+        for(String e : expected) {
+            Assert.assertTrue("Cannot find an expected part of description.", description.contains(e) );
+        }
+    }
+
+    /**
+     * Test target referenced in {@link com.asemantics.rdfcoder.inspector.InspectorTest.Target}.
+     */
     class TargetIn {}
 
+    /**
+     * Test target.
+     */
     class Target {
 
         // String type.
@@ -80,135 +256,6 @@ public class InspectorTest {
         public void setValue(int value) {
             this.value = value;
         }
-    }
-
-    private Inspector inspector;
-
-    @Before
-    public void setUp() {
-        inspector = new Inspector();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        inspector = null;
-    }
-
-    @Test
-    public void testReadSimpleProperty() throws PatternException, InspectorParserException {
-        Target target = new Target();
-
-        Object result1 = inspector.inspect("str", target);
-        Assert.assertNotNull("Result not found.", result1);
-        Assert.assertTrue("Invalid result type.", result1 instanceof String);
-        Assert.assertEquals( "Invalid result value", "str", (String) result1);
-
-        Object result2 = inspector.inspect("condition", target);
-        Assert.assertNotNull("Result not found.", result2);
-        Assert.assertTrue("Invalid result type.", result2 instanceof Boolean);
-        Assert.assertEquals( "Invalid result value", true, result2);
-
-        Object result3 = inspector.inspect("value", target);
-        Assert.assertNotNull("Result not found.", result3);
-        Assert.assertTrue("Invalid result type.", result3 instanceof Integer);
-        Assert.assertEquals( "Invalid result value", 100, result3);
-
-        Object result4 = inspector.inspect("targetIn", target);
-        Assert.assertNotNull("Result not found.", result4);
-        Assert.assertTrue("Invalid result type.", result4 instanceof TargetIn );
-    }
-
-    @Test
-    public void testReadMapProperty() throws PatternException, InspectorParserException {
-        Map<String,String> map = new HashMap<String,String>();
-        map.put("prop1", "val1");
-        map.put("prop2", "val2");
-        map.put("prop3", "val3");
-
-        Object result1 = inspector.inspect("prop1", map);
-        Assert.assertNotNull("Result not found.", result1);
-        Assert.assertEquals("val1", result1);
-
-        Object result2 = inspector.inspect("prop2", map);
-        Assert.assertNotNull("Result not found.", result2);
-        Assert.assertEquals("val2", result2);
-
-        Object result3 = inspector.inspect("prop3", map);
-        Assert.assertNotNull("Result not found.", result3);
-        Assert.assertEquals("val3", result3);
-    }
-
-    @Test
-    public void testReadComplexSequence() throws PatternException, InspectorParserException {
-        Target target = new Target();
-
-        Map<String,Object> mapLevel2 = new HashMap<String,Object>();
-        mapLevel2.put("prop11", "value11");
-        mapLevel2.put("prop12", "value12");
-        mapLevel2.put("prop13", target);
-
-        Map<String,Object> mapLevel1 = new HashMap<String,Object>();
-        mapLevel1.put("prop1", "value1");
-        mapLevel1.put("prop2", mapLevel2);
-        mapLevel1.put("prop3", "value3");
-
-        Object result = inspector.inspect("prop2.prop13.targetIn", mapLevel1);
-        Assert.assertNotNull("Result not found.", result);
-        Assert.assertTrue( result instanceof TargetIn);
-    }
-
-    @Test
-    public void testInspectArray() throws PatternException, InspectorParserException {
-        final int SIZE = 100;
-
-        String[] array = new String[SIZE];
-        for(int i = 0; i < array.length; i++) {
-            array[i] = "a" + i;
-        }
-
-        Map<String,String[]> map = new HashMap<String,String[]>();
-        map.put("array", array);
-
-        for( int i = 0; i < array.length; i++) {
-            Object result = inspector.inspect("array[" + i +"]", map);
-            Assert.assertNotNull("Result not found.", result);
-            Assert.assertEquals("Wrong result.", "a" + i, result);
-        }
-
-        try {
-            inspector.inspect("array[" + SIZE + "]", map);
-            Assert.fail("Unespected element.");
-        } catch (PatternException pe) {}
-    }
-
-    @Test
-    public void testInspectList() throws PatternException, InspectorParserException {
-        final int SIZE = 100;
-
-        List<String> list = new ArrayList<String>();
-        for(int i = 0; i < SIZE; i++) {
-            list.add("element_" + i);
-        }
-
-        Map<String,List<String>> map = new HashMap<String,List<String>>();
-        map.put("list", list);
-
-        for( int i = 0; i < SIZE; i++) {
-            Object result = inspector.inspect("list[" + i +"]", map);
-            Assert.assertNotNull("Result not found.", result);
-            Assert.assertEquals("Wrong result.", "element_" + i, result);
-        }
-
-        try {
-            inspector.inspect("list[" + SIZE + "]", map);
-            Assert.fail("Unespected element.");
-        } catch (PatternException pe) {}
-    }
-
-    @Test
-    public void testDescribe() throws PatternException, InspectorParserException {
-        inspector.addToContext( "target", new Target() );
-        System.out.println( inspector.describe("target") );
     }
 
 }
