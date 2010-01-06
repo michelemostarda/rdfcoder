@@ -476,15 +476,33 @@ public class JavaQueryModelImpl implements JavaQueryModel {
             JavaCodeModel.CONTAINS_PARAMETER,
             JavaCodeModel.ALL_MATCH
         );
-        List<JavaCodeModel.JType> result;
+
+        // Retrieve parameter names.
+        List<String> parameterNames = new ArrayList<String>();
         try {
-            result = new ArrayList<JavaCodeModel.JType>();
             while(t1.next()) {
-                result.add( JavaCodeModel.rdfTypeToJType( t1.getObject() ) );
+                parameterNames.add(t1.getObject());
             }
         } finally{
             t1.close();
         }
+
+        // Retrieve parameter types.
+        List<JavaCodeModel.JType> result = new ArrayList<JavaCodeModel.JType>();
+        for (String parameterName : parameterNames) {
+            TripleIterator t2 = codeModel.searchTriples(
+                    parameterName,
+                    JavaCodeModel.PARAMETER_TYPE,
+                    JavaCodeModel.ALL_MATCH
+            );
+            try {
+                t2.next(); // Expected to be found.
+                result.add(JavaCodeModel.rdfTypeToJType( t2.getObject()) );
+            } finally {
+                t2.close();
+            }
+        }
+
         return result.toArray( new JavaCodeModel.JType[result.size()] );
     }
 
