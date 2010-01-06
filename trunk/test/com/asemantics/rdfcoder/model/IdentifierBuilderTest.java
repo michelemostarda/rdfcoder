@@ -36,6 +36,9 @@ public class IdentifierBuilderTest {
     @After
     public void tearDown() {}
 
+    /**
+     * Tests the builder methods.
+     */
     @Test
     public void testBuild() {
         final Identifier identifier = IdentifierBuilder
@@ -61,6 +64,9 @@ public class IdentifierBuilderTest {
         Assert.assertEquals("Expected to be the same.", identifier, copy);
     }
 
+    /**
+     * Tests a building sequence with modification.
+     */
     @Test
     public void testBuildWithModification() {
         final Identifier identifier = IdentifierBuilder
