@@ -319,12 +319,18 @@ public class JavaSourceFileParser extends FileParser {
     }
 
     /**
+     * List of empty modifiers.
+     */
+    private static final JavaCodeModel.JModifier[] NO_MODIFIERS = new JavaCodeModel.JModifier[0];
+
+    /**
      * Extracts the list of modifiers associated to this access node.
      * @param accessNode
      * @return
      */
     private JavaCodeModel.JModifier[] extractModifiers(AccessNode accessNode) {
-        List<JavaCodeModel.JModifier> modifiers = new ArrayList<JavaCodeModel.JModifier>(JavaCodeModel.JModifier.values().length);
+        List<JavaCodeModel.JModifier> modifiers
+                = new ArrayList<JavaCodeModel.JModifier>(JavaCodeModel.JModifier.values().length);
         if( accessNode.isAbstract() ) {
             modifiers.add(JavaCodeModel.JModifier.ABSTRACT);
         }
@@ -346,7 +352,7 @@ public class JavaSourceFileParser extends FileParser {
         if( accessNode.isSynchronized() ) {
             modifiers.add(JavaCodeModel.JModifier.SYNCHRONIZED);
         }
-        return modifiers.toArray(new JavaCodeModel.JModifier[modifiers.size()]);
+        return  modifiers.size() == 0 ? NO_MODIFIERS : modifiers.toArray(new JavaCodeModel.JModifier[modifiers.size()]);
     }
 
 
