@@ -44,7 +44,7 @@ public class QueryModelTest {
      * Creates a query model by parsing target.jar.
      * @throws IOException
      */
-    protected static CodeModelBase createQueryModel() throws IOException, ParserException {
+    public static CodeModelBase createQueryModel() throws IOException, ParserException {
         JStatistics statistics = new JStatistics();
         CoderFactory<JavaCodeHandler> coderFactory = new JenaCoderFactory();
         CodeModelBase codeModelBase = coderFactory.createCodeModel();
