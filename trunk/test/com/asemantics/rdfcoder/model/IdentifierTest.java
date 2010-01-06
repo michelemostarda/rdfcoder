@@ -53,11 +53,17 @@ public class IdentifierTest {
         identifier = null;
     }
 
+    /**
+     * Test the {@link com.asemantics.rdfcoder.model.Identifier#getPrefix()} method.
+     */
     @Test
     public void testGetPrefix() {
         Assert.assertEquals( "Unespected prefix.", TEST_PREFIX, identifier.getPrefix() );
     }
 
+    /**
+     * Test the {@link com.asemantics.rdfcoder.model.Identifier#getIdentifier()} method.
+     */
     @Test
     public void testGetIdentifier() {
         String identifierStr = identifier.getIdentifier();
@@ -68,6 +74,9 @@ public class IdentifierTest {
         );
     }
 
+    /**
+     * Test the {@link com.asemantics.rdfcoder.model.Identifier#getTail()} method.
+     */
     @Test
     public void testGetTail() {
         Identifier tail = identifier.getTail();
@@ -81,6 +90,9 @@ public class IdentifierTest {
         );
     }
 
+    /**
+     * Test the {@link com.asemantics.rdfcoder.model.Identifier#getPreTail()} method.
+     */
     @Test
     public void testGetPreTail() {
         Identifier pretail = identifier.getPreTail();
@@ -91,6 +103,9 @@ public class IdentifierTest {
         );
     }
 
+    /**
+     * Test the {@link com.asemantics.rdfcoder.model.Identifier#getHead()} method.
+     */
     @Test
     public void testGetHead() {
         Identifier head = identifier.getHead();
@@ -101,6 +116,9 @@ public class IdentifierTest {
         );
     }
 
+    /**
+     * Test the {@link com.asemantics.rdfcoder.model.Identifier#getSections(int, int)} method.
+     */
     @Test
     public void testGetSections() {
         Identifier empty = identifier.getSections(0, 0);
@@ -110,6 +128,9 @@ public class IdentifierTest {
         Assert.assertEquals("Expected to be the same.", identifier, all);
     }
 
+    /**
+     * Test the {@link com.asemantics.rdfcoder.model.Identifier#getFirstFragmentWithQualifier(String)} method.
+     */
     @Test
     public void testGetFirstFragmentWhithQualifier() {
         Assert.assertEquals(
@@ -119,8 +140,11 @@ public class IdentifierTest {
         );
     }
 
+    /**
+     * Test the {@link com.asemantics.rdfcoder.model.Identifier#getLastFragmentWithQualifier(String)} method.
+     */
     @Test
-    public void testGetLastFragmentWhithQualifier() {
+    public void testGetLastFragmentWithQualifier() {
         Assert.assertEquals(
                 "Unespected fragment.",
                 "fragment3",
@@ -128,6 +152,9 @@ public class IdentifierTest {
         );
     }
 
+    /**
+     * Test the {@link com.asemantics.rdfcoder.model.Identifier#getStrongestQualifier()} method.
+     */
     @Test
     public void testGetStrongestQualifier() {
         Assert.assertEquals(
@@ -137,12 +164,18 @@ public class IdentifierTest {
         );
     }
 
+    /**
+     * Test the {@link com.asemantics.rdfcoder.model.Identifier#copy()} method.
+     */
     @Test
     public void testCopy() {
         Identifier copy = identifier.copy().build();
         Assert.assertEquals("Invalid copy.", identifier, copy);
     }
 
+    /**
+     * Test the {@link com.asemantics.rdfcoder.model.Identifier#size()} method.
+     */
     @Test
     public void testSize() {
         Assert.assertEquals("Unespected size.", TEST_FRAGMENTS.length, identifier.size() );
