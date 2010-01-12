@@ -150,7 +150,7 @@ public class JavaQueryModelImplTest {
         JPackage[] packages = javaQueryModel.getPackagesInto(
                 IdentifierReader.readPackage("org.jivesoftware.smack")
         );
-        Assert.assertTrue("Unexpected number of packages.", packages.length > 0 );
+        Assert.assertEquals("Unexpected number of packages.", 6, packages.length );
     }
 
     @Test
