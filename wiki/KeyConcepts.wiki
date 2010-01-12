@@ -48,8 +48,5 @@ An independent introduction on these topics can be found [http://www.obitko.com/
 
 ==The Kabbalah Model==
 
-TODO
-
-==Understanding the Identifiers==
-
-TODO
+After having acquired a good confidence with the RDF related topics, you can read more
+specific details about RDFCoder and its [http://rdfcoder.googlecode.com/svn/trunk/doc/htmldoc/model.html model organization].
