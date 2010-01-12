@@ -31,6 +31,7 @@ import java.io.Serializable;
  * @see com.asemantics.rdfcoder.model.IdentifierReader
  * @version $Id$
  */
+//TODO Rename as section so to be armonized with the documentation.
 public class IdentifierFragment implements Serializable {
 
     /**
