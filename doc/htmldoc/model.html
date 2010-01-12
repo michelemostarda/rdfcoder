@@ -43,10 +43,9 @@
                 <div id="content">
 	
                     <div class="article">
-                        <h1 class="firstHeading">Architecture</h1>
+                        <h1 class="firstHeading">The Kabbalah Model</h1>
 
                         <a name="rdf_model"></a>
-                        <h2>The Kabbalah Model</h2>
                         <p>The Kabbalah Model is the <a href="TODO">ontology</a> behind RDFCoder.</p>
 					    <p>
 							The figure below shows the <b>Kabbalah</b> model.
@@ -60,42 +59,44 @@
                         <p><img src="images/rdf_coder_model.jpg"></p>
                     </div>
 
-					<a name="resource_identifiers"></a>
-					<h2>The Resource Identifiers</h2>
-					<p>
-						The Kabbalah model defines resources and relationships among resources.
-						Every resource within the model is represented by a resource identifier.
-						Almost every resource stored within a model is an Identifier.
-					</p>
-					<p>	
-						The identifiers have a fixed structure that can be represented with the following <i>BNF</I> rules:
-							
-							<pre>
-								&lt;IDENTIFIER&gt; ::= (&lt;PREFIX&gt; '#')? &lt;SECTIONS&gt;;
-								&lt;SECTIONS&gt;   ::= &lt;SECTIONS&gt; '.' &lt;SECTION&gt; | &lt;SECTION&gt;;
-								&lt;SECTION&gt; ::= (qualifier ':')? fragment
-							</pre>
-					</p>	
-						Every identifier can have a prefix that, if present, must end with <code>'#'</code>, The identifier is composed
-						of a sequence of sections separated by <code>'.'</code>, every section can contain a qualifier and must define a fragment.
-						The characters <code>'#' '.' ':'</code> are used to identify the different parts of the identifier, fir this reason
-						they cannot be used neither in the prefix nor in qualifiers or fragments.
+					<div class="article">
+						<h1 class="firstHeading">The Resource Identifiers</h1>
+						<a name="resource_identifiers"></a>
 					
-					</p>	
-					<p>
-						An example of valid identifiers are:
+						<p>
+							The Kabbalah model defines resources and relationships among resources.
+							Every resource within the model is represented by a resource identifier.
+							Almost every resource stored within a model is an Identifier.
+						</p>
+						<p>	
+							The identifiers have a fixed structure that can be represented with the following <i>BNF</I> rules:
+								<pre>
+									&lt;IDENTIFIER&gt; ::= (&lt;PREFIX&gt; '#')? &lt;SECTIONS&gt;;
+									&lt;SECTIONS&gt;   ::= &lt;SECTIONS&gt; '.' &lt;SECTION&gt; | &lt;SECTION&gt;;
+									&lt;SECTION&gt; ::= (qualifier ':')? fragment
+								</pre>
+						</p>	
+							Every identifier can have a prefix that, if present, must end with <code>'#'</code>, The identifier is composed
+							of a sequence of sections separated by <code>'.'</code>, every section can contain a qualifier and must define a fragment.
+							The characters <code>'#' '.' ':'</code> are used to identify the different parts of the identifier, fir this reason
+							they cannot be used neither in the prefix nor in qualifiers or fragments.
+					
+						</p>	
+						<p>
+							An example of valid identifiers are:
 						
-						<pre>
-							http://www.rdfcoder.org/2007/1.0#jpackage:com.asemantics.rdfcoder.jclass:CoderUtils
-							http://www.rdfcoder.org/2007/1.0#jpackage:com.asemantics.rdfcoder.model.jinterface:CodeHandler
-						</pre>
+							<pre>
+								http://www.rdfcoder.org/2007/1.0#jpackage:com.asemantics.rdfcoder.jclass:CoderUtils
+								http://www.rdfcoder.org/2007/1.0#jpackage:com.asemantics.rdfcoder.model.jinterface:CodeHandler
+							</pre>
 						
-					</p>
-					<p>	
-						Within the RDFCoder API, identifiers are represented by the class <code>com.asemantics.rdfcoder.model.Identifier</code>.
-						The identifiers can be build using the class <code>com.asemantics.rdfcoder.model.IdentifierBuilder</code> and read using 
-						<code>com.asemantics.rdfcoder.model.IdentifierReader</code>.		
-				    </p>
+						</p>
+						<p>	
+							Within the RDFCoder API, identifiers are represented by the class <code>com.asemantics.rdfcoder.model.Identifier</code>.
+							The identifiers can be build using the class <code>com.asemantics.rdfcoder.model.IdentifierBuilder</code> and read using 
+							<code>com.asemantics.rdfcoder.model.IdentifierReader</code>.		
+					    </p>
+				<div>
                 <!-- end id content -->
 
                 <div id="footer">
