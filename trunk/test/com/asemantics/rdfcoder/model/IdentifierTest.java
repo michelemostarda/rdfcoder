@@ -81,7 +81,7 @@ public class IdentifierTest {
     public void testGetTail() {
         Identifier tail = identifier.getTail();
         Assert.assertEquals(
-                "Unespected tail.",
+                "Unexpected tail.",
                 new Identifier(
                         TEST_PREFIX,
                         Arrays.asList(TEST_FRAGMENTS[TEST_FRAGMENTS.length - 1])
@@ -97,7 +97,7 @@ public class IdentifierTest {
     public void testGetPreTail() {
         Identifier pretail = identifier.getPreTail();
         Assert.assertEquals(
-                "Unespected pretail.",
+                "Unexpected pretail.",
                 new Identifier(TEST_PREFIX, new IdentifierFragment[]{ TEST_FRAGMENTS[0], TEST_FRAGMENTS[1] } ),
                 pretail
         );
@@ -110,7 +110,7 @@ public class IdentifierTest {
     public void testGetHead() {
         Identifier head = identifier.getHead();
         Assert.assertEquals(
-                "Unespected head.",
+                "Unexpected head.",
                 new Identifier(TEST_PREFIX, new IdentifierFragment[]{TEST_FRAGMENTS[0]}),
                 head
         );
@@ -134,7 +134,7 @@ public class IdentifierTest {
     @Test
     public void testGetFirstFragmentWhithQualifier() {
         Assert.assertEquals(
-                "Unespected fragment.",
+                "Unexpected fragment.",
                 "fragment3",
                 identifier.getFirstFragmentWithQualifier("qualifier3")
         );
@@ -146,7 +146,7 @@ public class IdentifierTest {
     @Test
     public void testGetLastFragmentWithQualifier() {
         Assert.assertEquals(
-                "Unespected fragment.",
+                "Unexpected fragment.",
                 "fragment3",
                 identifier.getLastFragmentWithQualifier("qualifier3")
         );
@@ -178,7 +178,7 @@ public class IdentifierTest {
      */
     @Test
     public void testSize() {
-        Assert.assertEquals("Unespected size.", TEST_FRAGMENTS.length, identifier.size() );
+        Assert.assertEquals("Unexpected size.", TEST_FRAGMENTS.length, identifier.size() );
     }
 
 }
