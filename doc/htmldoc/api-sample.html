@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr" lang="en">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Language" content="en" />
+        <meta name="keywords" content="sparql grammar parser antlr" />
+        <link rel="shortcut icon" href="favicon.ico" />
+        <link rel="license" href="" />
+        <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
+        <title>RDFCoder - Command line</title>
+
+		<script type="text/javascript" src="syntaxhighlighter/src/shCore.js"></script>
+		<script type="text/javascript" src="syntaxhighlighter/scripts/shBrushJScript.js"></script>
+		<link href="syntaxhighlighter/styles/shCore.css" rel="stylesheet" type="text/css" />
+		<link href="syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript">
+		     SyntaxHighlighter.all()
+		</script>
+    </head>
+
+    <body>	
+        <div id="container">
+            
+			<div id="header">
+                <h1>RDFCoder - Command line</h1>
+            </div>
+
+            <div id="page">
+                <!-- START SIDEBAR -->
+                <div id="sidebar">
+                    <div id="sidebarslidebox">
+                        <div>
+
+                            <div class="related">
+                                <div>
+									<h3>Navigation<h3/>
+									<ul>
+										<li><a href="index.html">Home</a></li>
+									</ul>
+                                    <h3>Main</h3>
+                                    <ul>
+                                        <li><a href="#obtain_help">Obtain help</a></li>
+										<li><a href="#commands">Commands</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END SIDEBAR -->
+
+                <div id="content">
+                    <div class="article">
+						<a name="obtain_help"></a>
+                        <h1 class="firstHeading">RDFCoder API Usage Example</h1>
+                        <p>
+							The code snippet below shows how to use the RDFCoder API
+							to analyze the content of the current JVM classpath.
+						</p>
+						<script type="syntaxhighlighter" class="brush: js">
+						<![CDATA[
+							// Creates an RDFCoder instance on a specified repository.
+							RDFCoder coder = new RDFCoder("target_test/hla_repo");
+
+							// Enables debug mode.
+							coder.setDebug(true);
+
+							// Registers Java profile.
+							coder.registerProfile("java", "com.asemantics.JavaProfile");
+
+							// Creates a model, i.e. a set of libraries.
+							Model model = coder.createModel("test_model");
+
+							// Enables model validation over profile ontologies.
+							model.setValidating(true);
+
+							// Retrieves the Java profile on test_model.
+							JavaProfile jprofile = (JavaProfile) model.getProfile("java");
+
+							// Initializes the JRE model if not yet done.
+							final File JRE = new File("/path/to/current/JRE" );
+							if ( ! jprofile.checkJREInit(JRE)) {
+							    JREReport jreReport = jprofile.initJRE(JRE);
+							    System.out.println(jreReport);
+
+							}
+
+							// Retrieves the Java profile ontology.
+							jprofile.printOntologyOWL( System.out );
+
+							// Processes Java libraries.
+							JStatistics s1 = jprofile.loadSources("src_lib"  , "path/to/source/files");
+							System.out.println(s1);
+
+							JStatistics s2 = jprofile.loadClasses("class_lib", "path/to/bytecode/files");
+							System.out.println(s2);
+
+							JStatistics s3 = jprofile.loadJar    ("jar_lib"  , "path/to/file.jar");
+							System.out.println(s3);
+
+							// Querying java model.
+							JavaQueryModel jquery = jprofile.getQueryModel();
+
+							// Retrives the attributes of java.lang.String class.
+							JAttribute[] attributes = jquery.getAttributesInto("java.lang.String");
+
+							// Low level querying.
+							if( model.supportsSparqlQuery() ) {
+							    QueryResult result = model.sparqlQuery("<SPARQL query>");
+							    System.out.println(result);
+							}
+
+							// Saves model data.
+							model.save();
+
+							// Resets the model content.
+							model.clear();
+
+							// Loads existing model data into the current model.
+							model.load("new_model_name");
+							]]>
+						</script>
+                    </div>
+				<div/>
+
+	         
+                <!-- end id content -->
+
+                <div id="footer">
+                    <ul>
+                        <li>Copyright &copy; 2007 - The <a href="http://code.google.com/p/rdf-coder/">RDF Coder</a> team</li>
+                    </ul>
+                    <ul>
+                        <li>Content is available under <a href="http://path/to/apache/license">Apache License</a> [the Apache License].</li>
+                    </ul>
+                </div>
+
+            </div>
+            <!-- end id page -->
+
+        </div>
+        <!-- end id container -->
+    </body>
+
+</html>
