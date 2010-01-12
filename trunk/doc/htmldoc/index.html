@@ -8,13 +8,13 @@
         <link rel="shortcut icon" href="favicon.ico" />
         <link rel="license" href="" />
         <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
-        <title>RDFCoder - The Java2RDF Converter</title>
+        <title>RDFCoder - The Java to RDF Modeler</title>
     </head>
 
     <body>
         <div id="container">
             <div id="header">
-                <h1>RDFCoder - The Java2RDF Converter</h1>
+                <h1>RDFCoder - The Java to RDF Modeler</h1>
             </div>
 
             <div id="page">
@@ -31,7 +31,7 @@
 										<li><a href="#purporse">Purpose</a></li>
                                         <li><a href="#download">Download</a></li>
                                         <li><a href="#releasenotes">Release Notes</a></li>
-										<li><a href="#todos">Todos</a></li>
+										<li><a href="#todos">TODOs</a></li>
                                         <li><a href="#bugs">Bugs</a></li>
                                         <li><a href="#sourcerepository">Source Repository</a></li>
                                         <li><a href="#getinvolved">Get Involved</a></li>
@@ -75,16 +75,18 @@
                         <a name="overview"></a>
                         <h2>Overview</h2>
                         <p>
-						RDFCoder is a flexible <a href="architecture.html">suite of tools</a> meant to convert Java code, 
-						both source or bytecode, to an <a href="model.html">RDF model</a> representation.
+						RDFCoder is a flexible <a href="architecture.html">library</a> meant to convert the Java code, 
+						both <i>source</i> or <i>bytecode</i>, to an RDF <a href="model.html">representation</a>.
 						</p>
+						
 						<p>
-						RDF is a set of standards to represent, store and query graphs representations of complex models.
-						RDF provides <a href="http://www.w3.org/TR/rdf-sparql-query/" target="_blank">SPARQL</a>, a powerful query language meant to 
-						inquiry RDF Graphs.The <b>RDFCoder</b> tools provide methods to create an RDF <a href="model.html">model</a>
-						of any <b>Java library</b> and to perform complex structure analysis.
+						RDF is a set of standards conceived to represent, store and query graphs expressing complex models,
+						and it is related to the <a href="http://www.w3.org/TR/rdf-sparql-query/" target="_blank">SPARQL language</a>, 
+						a powerful query language meant to access RDF models. 
 						<br/>
-						Here some <a href="examples.html">query examples</a>.
+						<b>RDFCoder</b> can be used both as <a href="api-sample.html">library</a> and as a <a href="commandline.html">command-line</a> tool.
+						<br/>
+						Here some<a href="examples.html">query examples</a> showing the flexibility of this solution.
 						</p>
 						
 						<p>
@@ -96,16 +98,16 @@
 						<p>
 						How <b>RDF Coder</b> can be useful for you?
 						<ul>
-							<li><b>Code Analysis</b> - Analyze package structures, class fields, methods, signatures, library dependencies.
-						    <li><b>Code Refactoring</b> - Find library problems, find separation points among libraries.
-						    <li><b>Custom Documentation</b> - Generate your custom documentation starting from the model.
+							<li><b>Code Analysis</b> - Analyzing large package structures, classes, signatures and dependencies.
+						    <li><b>Code Refactoring</b> - Finding library problems and relationships.
+						    <li><b>Custom Documentation</b> - Generating custom documentation.
 						</ul>
 						
                         <a name="download"></a>
                         <h2>Download</h2>
                         <p>
 							<!-- RDFCoder version <b>1.0</b> can be downloaded <a href="http://code.google.com/p/rdfcoder/downloads/list">here</a>.<br/> -->
-							RDFCoder is not yet released, for an early preview please download the trunk source code.
+							RDFCoder has not yet released, but is is possible to download the trunk snapshot.
                         </p>
 
                         <a name="releasenotes"></a>
@@ -129,9 +131,9 @@
                         </ul>
 
                         <a name="todos"></a>
-                        <h2>Todos</h2>
-						<p>See our 
-						<a href="http://code.google.com/p/rdfcoder/issues/list">issue tracker</a>.<br/>
+                        <h2>TODOs</h2>
+						<p>
+							See the <a href="http://code.google.com/p/rdfcoder/issues/list">issue tracker</a>.<br/>
                         </p>
                         <ul>
                             <!-- <li class="todo">Example TODO</li> -->
@@ -157,6 +159,8 @@
 					     </ul>
                         My work is based on the <a href="http://www.opensource.org/docs/osd">Open Source</a> philosophy, 
 						so I need also your collaboration!
+						<br/> 
+						If you are interested then contact me at <i>michele.mostarda at gmail.com</i>
 						</p>
                     </div>
 
@@ -181,8 +185,8 @@
 	                        <h2>Command line Console</h2>
 	                        <p>a detailed tutorial to learn how to use <b>RDF Coder Command line</b> can be found <a href="commandline.html">here</a></b>
 	                        </p>
-	
 	                    </div>
+	
 	                </div>
 
                     <div id="about" class="article">
