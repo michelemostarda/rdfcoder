@@ -54,17 +54,10 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
      */
     private static final SimpleDateFormat libraryDatetimeFormatter = new SimpleDateFormat(LIBRARY_DATETIME_FORMAT);
 
-    public static final String formatLibraryDatetime(Date date) {
-        return libraryDatetimeFormatter.format(date);
-    }
-
-    public static final Date parseLibraryDatetime(String datetime) {
-        try {
-            return libraryDatetimeFormatter.parse(datetime);
-        } catch (ParseException e) {
-            return null;
-        }
-    }
+    /**
+     * Expresses the RDFS subclass relationship.
+     */
+    private static final String SUBCLASSOF = RDFS.subClassOf.getURI();
 
     /**
      * The default package.
@@ -74,7 +67,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
     /**
      * The code model on which store code events.
      */
-    private CodeModelBase model;
+    private final CodeModelBase model;
 
     /**
      * The library name.
@@ -87,19 +80,14 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
     private String libraryLocation;
 
     /**
-     * The stack of current packages.
+     * The identifier containing the current package.
      */
-    private Stack<Identifier> packagesStack;
+    private Identifier currentPackage;
 
     /**
      * The stack of current container, intended as class, interface or enumeration.
      */
-    private Stack<Identifier> containersStack;
-
-    /**
-     * Expresses the RDFS subclass relationship.
-     */
-    private static final String SUBCLASSOF = RDFS.subClassOf.getURI();
+    private final Stack<Identifier> containersStack;
 
     /**
      * <code>true</code> if start process is parsing is started.
@@ -116,6 +104,17 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
      */
     private List<ErrorListener> errorListeners;
 
+    public static final String formatLibraryDatetime(Date date) {
+        return libraryDatetimeFormatter.format(date);
+    }
+
+    public static final Date parseLibraryDatetime(String datetime) {
+        try {
+            return libraryDatetimeFormatter.parse(datetime);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
 
     /**
      * Constructor.
@@ -127,7 +126,6 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
             throw new NullPointerException();
         }
         model           = cmb;
-        packagesStack   = new Stack<Identifier>();
         containersStack = new Stack<Identifier>();
     }
 
@@ -171,7 +169,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
             parsingStarted = true;
         }
 
-        packagesStack.clear();
+        clearPackagesStack();
         containersStack.clear();
     }
 
@@ -182,8 +180,8 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         if(! containersStack.isEmpty() ) {
             throw new CodeHandlerException("There are some classes opened but not closed: " + containersStack.peek());
         }
-        if(! packagesStack.isEmpty() ) {
-            throw new CodeHandlerException("There are some pakeges opened but not closed.");
+        if(! isPackagesStackEmpty() ) {
+            throw new CodeHandlerException("There are some packages opened but not closed.");
         }
         parsingStarted = false;
 
@@ -215,16 +213,11 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         if( ! containersStack.isEmpty()) { // Inside a class.
             throw new CodeHandlerException("Cannot start a package when inside a class");
         }
-
-        final String packageStr = pathToPackage.getIdentifier();
-        model.addTriple(packageStr, SUBCLASSOF, JavaCodeModel.JPACKAGE);
-        Identifier parent = peekPackage();
-        model.addTriple(parent.getIdentifier(), JavaCodeModel.CONTAINS_PACKAGE, packageStr);
         pushPackage(pathToPackage);
     }
 
     public void endPackage() {
-        if(packagesStack.isEmpty()) {
+        if( isPackagesStackEmpty() ) {
             throw new CodeHandlerException("No packages to end.");
         }
 
@@ -467,6 +460,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
                 JavaCodeModel.JModifier.toByte(modifiers).toString()
         );
         model.addTripleLiteral(identifier, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
+//        String signature = JavaCodeModel.SIGNATURE_PREFIX + generateSignatureIdentifier(parameterTypes);
         String signature = IdentifierBuilder
                 .create(pathToMethod)
                 .pushFragment( "_" + overloadIndex, JavaCodeModel.SIGNATURE_KEY)
@@ -580,19 +574,40 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         return model.replaceIdentifierWithQualifiedType(identifier, qualifiedType);
     }
 
+
+    /**
+     * @return <code>true</code> if the packages stack is empty,
+     *         <code>false</code> otherwise.
+     */
+    protected boolean isPackagesStackEmpty() {
+        return currentPackage == null;
+    }
+
     /**
      * Adds a package on the packages stack.
-     * @param p
+     *
+     * @param cp current package identifier.
      */
-    protected void pushPackage(Identifier p) {
-        packagesStack.push(p);
+    protected void pushPackage(final Identifier cp) {
+        currentPackage = cp;
+
+        String currentStr;
+        Identifier parent;
+        Identifier current = cp;
+        do {
+            currentStr = current.getIdentifier();
+            model.addTriple(currentStr, SUBCLASSOF, JavaCodeModel.JPACKAGE);
+            parent = current.getPreTail();
+            model.addTriple(parent.getIdentifier(), JavaCodeModel.CONTAINS_PACKAGE, currentStr);
+            current = parent;
+        } while (current.size() > 1);
     }
 
     /**
      * Removes last package from the packges stack.
      */
     protected void popPackage() {
-        packagesStack.pop();
+        currentPackage = null;
     }
 
     /**
@@ -601,10 +616,17 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
      * @return the peek package string.
      */
     protected Identifier peekPackage() {
-        if(packagesStack.isEmpty()) {
+        if( currentPackage == null ) {
             return DEFAULT_PACKAGE;
         }
-        return packagesStack.peek();
+        return currentPackage;
+    }
+
+    /**
+     * Clears the content of the packages stack.
+     */
+    protected void clearPackagesStack() {
+        currentPackage = null;
     }
 
     /**
@@ -661,10 +683,10 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         if( ! RDFCoder.checkPackageDiscrepancy() ) { return; }
 
         Identifier elementContainer = pathToElement.getPreTail();
-        Identifier currentContainer = packagesStack.peek();
+        Identifier currentPackage = peekPackage();
 
-        if( ! currentContainer.equals(elementContainer) ) {
-             notifyPackageDiscrepancy(elementContainer.getIdentifier(), currentContainer.getIdentifier());
+        if( ! currentPackage.equals(elementContainer) ) {
+             notifyPackageDiscrepancy(elementContainer.getIdentifier(), currentPackage.getIdentifier());
         }
     }
 
@@ -705,6 +727,23 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
                 t.printStackTrace();
             }
         }
+    }
+
+    private String generateSignatureIdentifier(JavaCodeModel.JType[] types) {
+        StringBuilder sb = new StringBuilder();
+        for(JavaCodeModel.JType type : types) {
+            if( type instanceof JavaCodeModel.ArrayType) {
+                JavaCodeModel.ArrayType arrayType = (JavaCodeModel.ArrayType) type;
+                sb.append("[");
+                sb.append( type.getInternalIdentifier() );
+                sb.append(":");
+                sb.append(arrayType.getSize());
+                sb.append("]");
+            } else {
+                sb.append( type.getInternalIdentifier() );
+            }
+        }
+        return sb.toString();
     }
 
 }
