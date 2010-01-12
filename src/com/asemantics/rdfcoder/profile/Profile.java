@@ -25,13 +25,13 @@ import com.asemantics.rdfcoder.model.QueryModel;
  * Defines an RDFCoder language profile, i.e. any
  * language <i>RDF Coder</i> is able to process.
  */
-public interface Profile {
+public interface Profile<Q extends QueryModel> {
 
     /**
      * Returns the query model for this <i>Profile</i>.
      *
      * @return the query model instance.
      */
-    public QueryModel getQueryModel();
+    public Q getQueryModel();
 
 }
