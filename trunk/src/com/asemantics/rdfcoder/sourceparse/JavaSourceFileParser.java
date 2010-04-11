@@ -238,9 +238,9 @@ public class JavaSourceFileParser extends FileParser {
             for( NamedNode unmodifiedClassDeclaration : unmodifiedClassDeclarations) {
 
                 // Class name.
-                className = unmodifiedClassDeclaration.getName(); // Class name.
-
-                getObjectsTable().addObject(packagePath, className);
+                className = unmodifiedClassDeclaration.getName();
+                final Identifier clazz = packagePath.copy().pushFragment(className, JavaCodeModel.CLASS_KEY).build();
+                getObjectsTable().addObject(clazz);
 
                 // Class visibility.
                 JavaCodeModel.JVisibility clsOrIntVisibility = retrieveVisibility(classDeclaration);
@@ -290,8 +290,8 @@ public class JavaSourceFileParser extends FileParser {
 
                 // Interface name.
                 interfaceName = unmodifiedInterfaceDeclaration.getName();
-
-                getObjectsTable().addObject(packagePath, interfaceName);
+                final Identifier iface = packagePath.copy().pushFragment(interfaceName, JavaCodeModel.INTERFACE_KEY).build();
+                getObjectsTable().addObject(iface);
 
                 javaCodeHandler.startInterface(
                         packagePath.copy().pushFragment(interfaceName, JavaCodeModel.INTERFACE_KEY).build(),
