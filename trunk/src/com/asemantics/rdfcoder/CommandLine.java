@@ -560,7 +560,7 @@ public class CommandLine {
         JAR_FILE,
         SOURCE_DIR,
         JAVADOC_DIR,
-        CLASS_DIR,
+        CLASS_DIR
     }
 
     /**
