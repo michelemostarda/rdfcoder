@@ -85,6 +85,11 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
     private Identifier currentPackage;
 
     /**
+     * Number of open packages.
+     */
+    private int packagesCount;
+
+    /**
      * The stack of current container, intended as class, interface or enumeration.
      */
     private final Stack<Identifier> containersStack;
@@ -220,7 +225,6 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         if( isPackagesStackEmpty() ) {
             throw new CodeHandlerException("No packages to end.");
         }
-
         popPackage();
     }
 
@@ -272,7 +276,11 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         checkPackageDiscrepancy(pathToClass);
 
         model.addTriple(pathToClassIdentifier, CodeModel.SUBCLASSOF, JavaCodeModel.JCLASS);
-        model.addTripleLiteral(pathToClassIdentifier, JavaCodeModel.HAS_MODIFIERS, JavaCodeModel.JModifier.toByte(modifiers).toString() );
+        model.addTripleLiteral(
+                pathToClassIdentifier,
+                JavaCodeModel.HAS_MODIFIERS,
+                JavaCodeModel.JModifier.toByte(modifiers).toString()
+        );
         model.addTripleLiteral(pathToClassIdentifier, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         if(extededClass != null) {
             model.addTriple(
@@ -580,7 +588,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
      *         <code>false</code> otherwise.
      */
     protected boolean isPackagesStackEmpty() {
-        return currentPackage == null;
+        return packagesCount == 0;
     }
 
     /**
@@ -589,6 +597,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
      * @param cp current package identifier.
      */
     protected void pushPackage(final Identifier cp) {
+        packagesCount++;
         currentPackage = cp;
 
         String currentStr;
@@ -607,6 +616,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
      * Removes last package from the packges stack.
      */
     protected void popPackage() {
+        packagesCount--;
         currentPackage = null;
     }
 
@@ -626,6 +636,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
      * Clears the content of the packages stack.
      */
     protected void clearPackagesStack() {
+        packagesCount  = 0;
         currentPackage = null;
     }
 
