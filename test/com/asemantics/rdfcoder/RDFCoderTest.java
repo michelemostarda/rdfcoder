@@ -43,7 +43,7 @@ public class RDFCoderTest {
     private static final String TEST_MODEL_NAME= "test_model_name";
 
     @Test
-    public void testHighLevelAPI() throws QueryModelException, IOException {
+    public void testFacadeAPI() throws QueryModelException, IOException {
 
         // Creates an RDFCoder instance on a repository.
         RDFCoder coder = new RDFCoder("target_test/hla_repo");
@@ -76,7 +76,7 @@ public class RDFCoderTest {
 
          // Prints the JProfile ontology.
         try {
-//            jprofile.printOntologyOWL(System.out);
+            // TODO: to be reactivated.  jprofile.printOntologyOWL(System.out);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail("Cannot print Java Ontology");
@@ -94,23 +94,49 @@ public class RDFCoderTest {
             }
         } else {
             try {
-            jprofile.loadJRE(JRE);
+                jprofile.loadJRE(JRE);
             } catch (Throwable t) {
                 t.printStackTrace();
                 Assert.fail("Cannot load JRE");
             }
         }
         
-        // Processes Java libraries.
+        // Processes the RDFCoder src and classes as test.
         try {
+            final int RC_MIN_EXPECTED_CLASSES      = 100;
+            final int RC_MIN_EXPECTED_INTERFACES   = 15;
+            final int RC_MIN_EXPECTED_ENUMERATIONS = 5;
             JStatistics s1 = jprofile.loadSources("src_lib"  , "src");
             logger.info("src_lib statistics " + s1);
+            Assert.assertTrue("Unexpected number of files.", s1.getParsedFiles() > 90);
+            Assert.assertTrue(
+                    "Unexpected number of classes."     , s1.getParsedClasses()      > RC_MIN_EXPECTED_CLASSES
+            );
+            Assert.assertTrue(
+                    "Unexpected number of interfaces."  , s1.getParsedInterfaces()   > RC_MIN_EXPECTED_INTERFACES
+            );
+            Assert.assertTrue(
+                    "Unexpected number of enumerations.", s1.getParsedEnumerations() > RC_MIN_EXPECTED_ENUMERATIONS
+            );
 
             JStatistics s2 = jprofile.loadClasses("class_lib", "classes");
             logger.info("class_lib statistics " + s2);
+            Assert.assertTrue("Unexpected number of files.", s2.getParsedFiles() > 180);
+            Assert.assertTrue(
+                    "Unexpected number of classes."     , s2.getParsedClasses()      > RC_MIN_EXPECTED_CLASSES
+            );
+            Assert.assertTrue(
+                    "Unexpected number of interfaces."  , s2.getParsedInterfaces()   > RC_MIN_EXPECTED_INTERFACES
+            );
+            Assert.assertTrue(
+                    "Unexpected number of enumerations.", s2.getParsedEnumerations() > RC_MIN_EXPECTED_ENUMERATIONS
+            );
 
-            JStatistics s3 = jprofile.loadJar    ("jar_lib"  , "target_test/target.jar");
+            JStatistics s3 = jprofile.loadJar("jar_lib"  , "target_test/target.jar");
             logger.info("jar_lib statistics " + s3);
+            Assert.assertTrue("Unexpected number of files."     , s3.getParsedFiles()      > 170);
+            Assert.assertTrue("Unexpected number of classes."   , s3.getParsedFiles()      > 150);
+            Assert.assertTrue("Unexpected number of interfaces.", s3.getParsedInterfaces() > 20 );
 
         } catch (Throwable t) {
             t.printStackTrace();
@@ -128,9 +154,14 @@ public class RDFCoderTest {
         // Low level cross querying.
         if( model.supportsSparqlQuery() ) {
             try {
-                final String query = "select ?a ?b ?c where{?a ?b ?c}";
+                final String query = "select ?a ?b ?c where{?a ?b ?c} limit 100";
                 QueryResult result = model.sparqlQuery(query);
-                Assert.assertTrue( "Unespected result size.", result.hasNext() );
+                int resultSize = 0;
+                while (result.hasNext()) {
+                    result.next();
+                    resultSize++;
+                }
+                Assert.assertEquals( "Unexpected result size.", 100, resultSize );
                 logger.info( String.format("Result of query [%s]:\n%s", query, result) );
             } catch (Exception e) {
                 Assert.fail("Cannot perform SPARQL query.");
