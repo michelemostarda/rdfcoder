@@ -105,7 +105,7 @@ public class IdentifierReader {
             fragments[i] = new IdentifierFragment(section, JavaCodeModel.PACKAGE_KEY);
             i++;
         }
-        return new Identifier("", fragments);
+        return new Identifier(CodeModel.CODER_URI, fragments);
     }
 
     /**
@@ -158,7 +158,7 @@ public class IdentifierReader {
             fragments.addAll( packageIdentifier.fragments );
         }
         fragments.add( new IdentifierFragment( pathToType.substring(packageEnd + 1), qualifier ) );
-        return new Identifier("", fragments);
+        return new Identifier(CodeModel.CODER_URI, fragments);
     }
 
 }

@@ -143,36 +143,21 @@ public class ObjectsTable implements Serializable {
 
     /**
      * Adds an object to the objects table.
-     * @param objectPackage the package containing the object.
-     * @param objectName the object name without qualification.
+     * 
+     * @param object the object to be added.
      */
-    public void addObject(Identifier objectPackage, String objectName) {
-        if(
-            objectPackage == null
-                ||
-            objectName    == null || objectName.trim().length() == 0
-        ) {
+    public void addObject(Identifier object) {
+        if(object == null) {
             throw new IllegalArgumentException();
         }
-        if( objectName.indexOf(JavaCodeHandler.PACKAGE_SEPARATOR) != -1 ) {
-            throw new IllegalArgumentException("The object name must be NOT qualified.");
-        }
 
-        PackageEntry pe = packagesToContents.get(objectPackage);
+        Identifier pack = object.getPreTail(); // TODO: extract package.
+        PackageEntry pe = packagesToContents.get(pack);
         if(pe == null) {
             pe = new PackageEntry();
-            packagesToContents.put(objectPackage, pe);
+            packagesToContents.put(pack, pe);
         }
-        pe.add(objectName);
-    }
-
-    /**
-     * Adds a fully qualified object to the objects table.
-     *
-     * @param identifier the identifier of the object to add.
-     */
-    public void addObject(Identifier identifier) {
-        addObject( identifier.getPreTail(), identifier.getTail().getIdentifier() );
+        pe.add( object.getTailFragment().getFragment() ); // TODO: extract object name.
     }
 
     /**

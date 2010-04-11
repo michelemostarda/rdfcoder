@@ -264,10 +264,14 @@ public class JavaCodeHandlerTest {
             logger.info( String.format("class %s", clazz) );
         }
 
-        JClass[] classes2 = qm.getClassesInto( IdentifierReader.readIdentifier("jpackage:p0.p1.p2.p3") );
+        JClass[] classes2 = qm.getClassesInto(
+                IdentifierReader.readIdentifier("http://www.rdfcoder.org/2007/1.0#jpackage:p0.p1.p2.p3")
+        );
         Assert.assertEquals(2, classes2.length);
 
-        JClass[] classes3 = qm.getClassesInto( IdentifierReader.readIdentifier("jpackage:p0.p1.p2.p3.jclass:class2") );
+        JClass[] classes3 = qm.getClassesInto(
+                IdentifierReader.readIdentifier("http://www.rdfcoder.org/2007/1.0#jpackage:p0.p1.p2.p3.jclass:class2")
+        );
         Assert.assertEquals(1, classes3.length);
 
         // Check visibility and modifiers.
@@ -288,7 +292,9 @@ public class JavaCodeHandlerTest {
         // Retrieve methods from class.
         logger.info("Methods >>>");
 
-        JMethod[] methods = qm.getMethodsInto( IdentifierReader.readIdentifier("jpackage:p0.p1.p2.p3.jclass:class2") );
+        JMethod[] methods = qm.getMethodsInto(
+                IdentifierReader.readIdentifier("http://www.rdfcoder.org/2007/1.0#jpackage:p0.p1.p2.p3.jclass:class2")
+        );
         Assert.assertEquals(1, methods.length);
         for (JMethod method : methods) {
             logger.info( String.format("method: %s", method) );
@@ -314,7 +320,7 @@ public class JavaCodeHandlerTest {
 
         // Retrieve attributes.
         JAttribute[] attributes = qm.getAttributesInto(
-                IdentifierReader.readIdentifier("jpackage:p0.p1.p2.p3.jclass:class1")
+                IdentifierReader.readIdentifier("http://www.rdfcoder.org/2007/1.0#jpackage:p0.p1.p2.p3.jclass:class1")
         );
         Assert.assertEquals(attributes.length, 2);
         logger.info("Attributes >>>");
@@ -353,7 +359,7 @@ public class JavaCodeHandlerTest {
         logger.info("Enumerations >>>");
 
         JEnumeration[] enumerations = qm.getEnumerationsInto(
-                IdentifierReader.readIdentifier("jpackage:p0.p1.p2.p3.jclass:class1")
+                IdentifierReader.readIdentifier("http://www.rdfcoder.org/2007/1.0#jpackage:p0.p1.p2.p3.jclass:class1")
         );
         Assert.assertEquals(1, enumerations.length);
         for(JEnumeration enumeration : enumerations) {

@@ -227,7 +227,11 @@ public class JavaQueryModelImplTest {
                         .build()
         );
         Assert.assertNotNull("Expected valid type type.", type);
-        Assert.assertEquals("Unexpected type.", "jpackage:java.util.jclass:Set", type.getIdentifier().getIdentifier() );
+        Assert.assertEquals(
+                "Unexpected type.",
+                "http://www.rdfcoder.org/2007/1.0#jpackage:java.util.jclass:Set", 
+                type.getIdentifier().getIdentifier()
+        );
     }
 
     @Test
@@ -320,11 +324,11 @@ public class JavaQueryModelImplTest {
         // TODO: HIGH - the parameter order in a signature is not respected: fix it.
         Assert.assertEquals("Unexpected number of types.", 2, types.length);
         Assert.assertEquals(
-                "jpackage:org.jivesoftware.smack.jclass:Chat",
+                "http://www.rdfcoder.org/2007/1.0#jpackage:org.jivesoftware.smack.jclass:Chat",
                 types[1].getIdentifier().getIdentifier()
         );
         Assert.assertEquals(
-                "jpackage:org.jivesoftware.smack.packet.jclass:Message",
+                "http://www.rdfcoder.org/2007/1.0#jpackage:org.jivesoftware.smack.packet.jclass:Message",
                 types[0].getIdentifier().getIdentifier()
         );
     }
@@ -340,8 +344,8 @@ public class JavaQueryModelImplTest {
                         .build()
         );
         Assert.assertEquals(
-                "Unespected return type.",
-                "jpackage:org.jivesoftware.smack.jclass:PacketCollector",
+                "Unexpected return type.",
+                "http://www.rdfcoder.org/2007/1.0#jpackage:org.jivesoftware.smack.jclass:PacketCollector",
                 type.getIdentifier().getIdentifier()
         );
     }
