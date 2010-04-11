@@ -65,7 +65,15 @@ public class JStatistics {
         statisticsCodeHandlers = new ArrayList();
     }
 
-    protected JStatistics(int e, int pf, int pc, int pi, int pa, int pco, int pm, int pe, int ui, int re, int je, int cj, int mj, String[] u) {
+    protected JStatistics(
+            int e, int pf,
+            int pc, int pi,
+            int pa, int pco,
+            int pm, int pe,
+            int ui, int re,
+            int je, int cj,
+            int mj, String[] u
+    ) {
         this();
         
         parseErrors = e;
@@ -88,7 +96,7 @@ public class JStatistics {
         return parseErrors;
     }
 
-    public int parsedFiles() {
+    public int getParsedFiles() {
         return parsedFiles;
     }
 
@@ -198,12 +206,18 @@ public class JStatistics {
         return sch;
     }
 
-    public void reset() {
+    public void detachHandlers() {
         Iterator<StatisticsJavaCodeHandler> handlers = statisticsCodeHandlers.iterator();
-        while(handlers.hasNext()) {
+        while (handlers.hasNext()) {
             handlers.next().dispose();
             handlers.remove();
         }
+    }
+
+    public void reset() {
+        detachHandlers();
+
+        startParsingTime = endParsingTime = 0;
 
         parseErrors = 0;
         parsedFiles = 0;
@@ -237,7 +251,7 @@ public class JStatistics {
         sb.append("javadoc entries: ").append(javadocEntries).append("\n");
         sb.append("classes javadoc: ").append(classesJavadoc).append("\n");
         sb.append("methods javadoc: ").append(methodsJavadoc).append("\n");
-        sb.append("generated temporary indentifiers: ").append(generatedTempIds).append("\n");
+        sb.append("generated temporary identifiers: ").append(generatedTempIds).append("\n");
         sb.append("replaced entries: ").append(replacedEntries).append("\n");
 
         sb.append("unresolved [").append( unresolved != null ? unresolved.length : 0).append("] {\n");
@@ -385,7 +399,12 @@ public class JStatistics {
                 JavaCodeModel.ExceptionType[] exceptions
         ) {
             if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.method(modifiers, visibility, pathToMethod, overloadIndex, parameterNames, parameterTypes, returnType, exceptions);
+            wrapped.method(
+                    modifiers, visibility,
+                    pathToMethod, overloadIndex,
+                    parameterNames, parameterTypes,
+                    returnType, exceptions
+            );
             parsedMethods++;
         }
 
