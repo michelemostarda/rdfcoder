@@ -606,7 +606,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         do {
             currentStr = current.getIdentifier();
             model.addTriple(currentStr, SUBCLASSOF, JavaCodeModel.JPACKAGE);
-            parent = current.getPreTail();
+            parent = current.getParent();
             model.addTriple(parent.getIdentifier(), JavaCodeModel.CONTAINS_PACKAGE, currentStr);
             current = parent;
         } while (current.size() > 1);
@@ -693,7 +693,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
     private void checkPackageDiscrepancy(Identifier pathToElement) {
         if( ! RDFCoder.checkPackageDiscrepancy() ) { return; }
 
-        Identifier elementContainer = pathToElement.getPreTail();
+        Identifier elementContainer = pathToElement.getParent();
         Identifier currentPackage = peekPackage();
 
         if( ! currentPackage.equals(elementContainer) ) {

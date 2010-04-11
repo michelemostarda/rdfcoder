@@ -151,7 +151,7 @@ public class ObjectsTable implements Serializable {
             throw new IllegalArgumentException();
         }
 
-        Identifier pack = object.getPreTail(); // TODO: extract package.
+        Identifier pack = object.getParent(); // TODO: extract package.
         PackageEntry pe = packagesToContents.get(pack);
         if(pe == null) {
             pe = new PackageEntry();

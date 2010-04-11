@@ -89,7 +89,7 @@ public class IdentifierReaderTest {
         Assert.assertEquals(
                 "Unexpected identifier.",
                 "http://www.rdfcoder.org/2007/1.0#jpackage:p1.p2.p3.p4",
-                identifier.getPreTail().getIdentifier()
+                identifier.getParent().getIdentifier()
         );
         Assert.assertEquals(
                 "Unexpected identifier.",
@@ -108,7 +108,7 @@ public class IdentifierReaderTest {
         Assert.assertEquals(
                 "Unexpected identifier.",
                 "http://www.rdfcoder.org/2007/1.0#jpackage:p1.p2.p3.p4",
-                identifier.getPreTail().getIdentifier()
+                identifier.getParent().getIdentifier()
         );
         Assert.assertEquals(
                 "Unexpected identifier.",
@@ -128,7 +128,7 @@ public class IdentifierReaderTest {
         Assert.assertEquals(
                 "Unexpected identifier.",
                 "http://www.rdfcoder.org/2007/1.0#jpackage:p1.p2.p3.p4",
-                identifier.getPreTail().getIdentifier()
+                identifier.getParent().getIdentifier()
         );
         Assert.assertEquals(
                 "Unexpected identifier.",

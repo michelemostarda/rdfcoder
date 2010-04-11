@@ -126,8 +126,7 @@ public class Identifier implements Serializable {
     /**
      * @return all but the last fragment of the identifier.
      */
-    // TODO: HIGH - rename to getParent()
-    public Identifier getPreTail() {
+    public Identifier getParent() {
         if(fragments.size() > 0) {
             return new Identifier( prefix, fragments.subList(0, fragments.size() - 1) );
         }
