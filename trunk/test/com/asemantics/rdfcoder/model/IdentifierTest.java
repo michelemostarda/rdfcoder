@@ -91,13 +91,13 @@ public class IdentifierTest {
     }
 
     /**
-     * Test the {@link com.asemantics.rdfcoder.model.Identifier#getPreTail()} method.
+     * Test the {@link com.asemantics.rdfcoder.model.Identifier#getParent()} method.
      */
     @Test
-    public void testGetPreTail() {
-        Identifier pretail = identifier.getPreTail();
+    public void testGetParent() {
+        Identifier pretail = identifier.getParent();
         Assert.assertEquals(
-                "Unexpected pretail.",
+                "Unexpected parent.",
                 new Identifier(TEST_PREFIX, new IdentifierFragment[]{ TEST_FRAGMENTS[0], TEST_FRAGMENTS[1] } ),
                 pretail
         );

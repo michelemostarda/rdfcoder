@@ -155,7 +155,7 @@ public abstract class JBase {
      */
     protected final JBase makeHierarchy(JavaQueryModel qm, Identifier entity)
     throws QueryModelException {
-        Identifier parentIdentifier = entity.getPreTail();
+        Identifier parentIdentifier = entity.getParent();
         if(parentIdentifier.size() == 0) {
             return null;
         }
