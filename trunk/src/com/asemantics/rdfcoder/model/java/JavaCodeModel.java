@@ -595,7 +595,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
     }
 
 
-    /* BEGIN: Ontology terms. */
+    /* BEGIN: Vocabulary terms. */
 
     public static final String PACKAGE_KEY      = "jpackage";
 
@@ -619,10 +619,10 @@ public abstract class JavaCodeModel extends CodeModelBase {
 
     public static final String PRIMITIVE_KEY    = "jprimitive";
 
-    /* END:   Ontology terms. */
+    /* END:   Vocabulary terms. */
 
 
-    /* BEGIN: RDF classes. */
+    /* BEGIN: Vocabulary classes. */
 
     public static final String JPACKAGE     = toURI(PACKAGE_KEY);
 
@@ -642,7 +642,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
 
     public static final String JPARAMETER   = toURI(PARAMETER_KEY);
 
-    /* END:   RDF classes. */
+    /* END:   Vocabulary classes. */
 
 
     /* BEGIN: Entity prefixes. */
@@ -670,7 +670,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
     /* END:   Entity prefixes. */
 
 
-    /* BEGIN: RDFS properties. */
+    /* BEGIN: Vocabulary properties. */
 
     /**
      * A package contains a package.
@@ -772,6 +772,6 @@ public abstract class JavaCodeModel extends CodeModelBase {
      */
     public static final String HAS_MODIFIERS      = toURI("has_modifiers");
 
-    /* END:   RDFS properties. */
+    /* END:   Vocabulary properties. */
 
 }
