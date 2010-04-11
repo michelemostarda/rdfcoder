@@ -39,6 +39,7 @@ import com.asemantics.rdfcoder.storage.CodeStorage;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
@@ -269,11 +270,11 @@ public class JavaProfile implements Profile<JavaQueryModel> {
     }
 
     public JStatistics loadSources(String libName, String srcPath) {
-        return loadJava(libName, srcPath, new JavaSourceFileParser());
+        return loadJava(libName, srcPath, new JavaSourceFileParser(), new CoderUtils.JavaSourceFilenameFilter());
     }
 
     public JStatistics loadClasses(String libName, String clsPath) {
-        return loadJava(libName, clsPath, new JavaBytecodeFileParser());
+        return loadJava(libName, clsPath, new JavaBytecodeFileParser(), new CoderUtils.JavaClassFilenameFilter());
     }
 
     public JStatistics loadJar(String libName, String pathToJar) throws IOException, ParserException {
@@ -290,7 +291,7 @@ public class JavaProfile implements Profile<JavaQueryModel> {
         parser.parseFile( new File(pathToJar) );
         javaCodeHandler.endParsing();
 
-        statistics.reset();
+        statistics.detachHandlers();
         parser.dispose();
         parser = null;
 
@@ -305,10 +306,10 @@ public class JavaProfile implements Profile<JavaQueryModel> {
      * @param fileParser
      * @return
      */
-    private JStatistics loadJava(String libName, String path, FileParser fileParser) {
-         JavaCodeHandler ch = model.getCoderFactory().createHandlerOnModel( model.getCodeModelBase() );
+    private JStatistics loadJava(String libName, String path, FileParser fileParser, FilenameFilter filenameFilter) {
+        JavaCodeHandler ch = model.getCoderFactory().createHandlerOnModel( model.getCodeModelBase() );
 
-        DirectoryParser directoryParser = new DirectoryParser( fileParser, new CoderUtils.JavaSourceFilenameFilter() );
+        DirectoryParser directoryParser = new DirectoryParser( fileParser, filenameFilter );
         JStatistics statistics = new JStatistics();
         JavaCodeHandler sch = statistics.createStatisticsCodeHandler(ch);
 
