@@ -65,7 +65,8 @@ public class IdentifierReaderTest {
     @Test
     public void testReadPackage() {
         Identifier identifier = IdentifierReader.readPackage("p1.p2.p3.p4");
-        Identifier identifierNew = IdentifierReader.readIdentifier("jpackage:p1.p2.p3.p4");
+        Identifier identifierNew =
+                IdentifierReader.readIdentifier("http://www.rdfcoder.org/2007/1.0#jpackage:p1.p2.p3.p4");
         Assert.assertEquals("Expected to be equal.", identifier, identifierNew);
     }
 
@@ -85,8 +86,16 @@ public class IdentifierReaderTest {
     @Test
     public void testFullyQualifiedClass() {
         Identifier identifier = IdentifierReader.readFullyQualifiedClass("p1.p2.p3.p4.Class1");
-        Assert.assertEquals("Unexpected identifier.", "jpackage:p1.p2.p3.p4", identifier.getPreTail().getIdentifier() );
-        Assert.assertEquals("Unexpected identifier.", "jclass:Class1", identifier.getTail().getIdentifier() );
+        Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jpackage:p1.p2.p3.p4",
+                identifier.getPreTail().getIdentifier()
+        );
+        Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jclass:Class1",
+                identifier.getTail().getIdentifier()
+        );
     }
 
     /**
@@ -96,8 +105,16 @@ public class IdentifierReaderTest {
     @Test
     public void testReadFullyQualifiedInterface() {
         Identifier identifier = IdentifierReader.readFullyQualifiedInterface("p1.p2.p3.p4.Interf1");
-        Assert.assertEquals("Unexpected identifier.", "jpackage:p1.p2.p3.p4", identifier.getPreTail().getIdentifier() );
-        Assert.assertEquals("Unexpected identifier.", "jinterface:Interf1", identifier.getTail().getIdentifier() );
+        Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jpackage:p1.p2.p3.p4",
+                identifier.getPreTail().getIdentifier()
+        );
+        Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jinterface:Interf1",
+                identifier.getTail().getIdentifier()
+        );
 
     }
 
@@ -108,8 +125,16 @@ public class IdentifierReaderTest {
     @Test
     public void testReadFullyQualifiedEnumeration() {
         Identifier identifier = IdentifierReader.readFullyQualifiedEnumeration("p1.p2.p3.p4.Enum1");
-        Assert.assertEquals("Unexpected identifier.", "jpackage:p1.p2.p3.p4", identifier.getPreTail().getIdentifier() );
-        Assert.assertEquals("Unexpected identifier.", "jenumeration:Enum1", identifier.getTail().getIdentifier() );
+        Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jpackage:p1.p2.p3.p4",
+                identifier.getPreTail().getIdentifier()
+        );
+        Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jenumeration:Enum1",
+                identifier.getTail().getIdentifier()
+        );
 
     }
 
