@@ -42,9 +42,14 @@ public interface CodeModel {
     static final String URI_PREFIX_SEPARATOR = "#";
 
     /**
-     * RDF type prefix URI.
+     * Coder base prefix URI.
      */
-    static final String CODER_URI = "http://www.rdfcoder.org/2007/1.0" + URI_PREFIX_SEPARATOR;
+    static final String CODER_URI_BASE = "http://www.rdfcoder.org/2007/1.0";
+
+    /**
+     * Coder prefix URI with prefix separator.
+     */
+    static final String CODER_URI = CODER_URI_BASE + URI_PREFIX_SEPARATOR;
 
     /**
      * Prefix separator definition.
@@ -54,12 +59,12 @@ public interface CodeModel {
     /**
      * The temporary Type ID prefix.
      */
-    public static final String TEMPORARY_TYPE_ID_PREFIX = "tmpTID_";
+    static final String TEMPORARY_TYPE_ID_PREFIX = "tmpTID_";
 
     /**
      * No element specified.
      */
-    public static final String ALL_MATCH = null;
+    static final String ALL_MATCH = null;
 
     /**
      * Allows to perform a triple search on the org.asemantics.model.
