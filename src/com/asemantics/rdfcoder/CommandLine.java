@@ -256,13 +256,21 @@ public class CommandLine {
     /**
      * Sets a new current location.
      *
-     * @param newLocation
+     * @param candidateLocation the new candidate location.
      */
-    protected void setCurrentDirectory(File newLocation) {
-        if(newLocation.exists()) {
-            currentDirectory = new File( toAbsolutePath( newLocation.getAbsolutePath() ).getAbsolutePath());
+    protected void setCurrentDirectory(File candidateLocation) {
+        File newDirectory;
+        try {
+            newDirectory = toAbsolutePath( candidateLocation.getPath() ).getCanonicalFile();
+        } catch (IOException ioe) {
+            throw new IllegalArgumentException("An error occurred while switching to new location.", ioe);
+        }
+        if( newDirectory.exists() ) {
+            currentDirectory = newDirectory;
         } else {
-            throw new IllegalArgumentException("cannot change directory to unexisting path:'" + newLocation.getAbsolutePath() + "'");
+            throw new IllegalArgumentException(
+                String.format("Cannot change directory to un-existing path:'%s'", newDirectory.getAbsolutePath() )
+            );
         }
     }
 
@@ -279,7 +287,7 @@ public class CommandLine {
      * If <i>in</i>parameter is an absolute file it is returned unchanged,
      * otherwise a concatenation of #currentDirectory and the relative path is
      * returned.
-     *  
+     *
      * @return create file.
      */
     protected File toAbsolutePath(String in) {
