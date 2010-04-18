@@ -624,23 +624,23 @@ public abstract class JavaCodeModel extends CodeModelBase {
 
     /* BEGIN: Vocabulary classes. */
 
-    public static final String JPACKAGE     = toURI(PACKAGE_KEY);
+    public static final String JPACKAGE     = toClassURI(PACKAGE_KEY);
 
-    public static final String JINTERFACE   = toURI(INTERFACE_KEY);
+    public static final String JINTERFACE   = toClassURI(INTERFACE_KEY);
 
-    public static final String JCLASS       = toURI(CLASS_KEY);
+    public static final String JCLASS       = toClassURI(CLASS_KEY);
 
-    public static final String JATTRIBUTE   = toURI(ATTRIBUTE_KEY);
+    public static final String JATTRIBUTE   = toClassURI(ATTRIBUTE_KEY);
 
-    public static final String JCONSTRUCTOR = toURI(CONSTRUCTOR_KEY);
+    public static final String JCONSTRUCTOR = toClassURI(CONSTRUCTOR_KEY);
 
-    public static final String JMETHOD      = toURI(METHOD_KEY);
+    public static final String JMETHOD      = toClassURI(METHOD_KEY);
 
-    public static final String JENUMERATION = toURI(ENUMERATION_KEY);
+    public static final String JENUMERATION = toClassURI(ENUMERATION_KEY);
 
-    public static final String JSIGNATURE   = toURI(SIGNATURE_KEY);
+    public static final String JSIGNATURE   = toClassURI(SIGNATURE_KEY);
 
-    public static final String JPARAMETER   = toURI(PARAMETER_KEY);
+    public static final String JPARAMETER   = toClassURI(PARAMETER_KEY);
 
     /* END:   Vocabulary classes. */
 
@@ -675,102 +675,102 @@ public abstract class JavaCodeModel extends CodeModelBase {
     /**
      * A package contains a package.
      */
-    public static final String CONTAINS_PACKAGE   = toURI("contains_package");
+    public static final String CONTAINS_PACKAGE   = toPropertyURI("contains_package");
 
     /**
      * A container contains an interface.
      */
-    public static final String CONTAINS_INTERFACE = toURI("contains_interface");
+    public static final String CONTAINS_INTERFACE = toPropertyURI("contains_interface");
 
     /**
      * A container contains a class.
      */
-    public static final String CONTAINS_CLASS     = toURI("contains_class");
+    public static final String CONTAINS_CLASS     = toPropertyURI("contains_class");
 
     /**
      * Connects a class to a contained attribute.
      */
-    public static final String CONTAINS_ATTRIBUTE = toURI("contains_attribute");
+    public static final String CONTAINS_ATTRIBUTE = toPropertyURI("contains_attribute");
 
     /**
      * Connects a class to a contained constructor.
      */
-    public static final String CONTAINS_CONSTRUCTOR = toURI("contains_contructor");
+    public static final String CONTAINS_CONSTRUCTOR = toPropertyURI("contains_contructor");
 
     /**
      * The attribute type.
      */
-    public static final String ATTRIBUTE_TYPE     = toURI("attribute_type");
+    public static final String ATTRIBUTE_TYPE     = toPropertyURI("attribute_type");
 
     /**
      * The attribute value.
      */
-    public static final String ATTRIBUTE_VALUE    = toURI("attribute_value");
+    public static final String ATTRIBUTE_VALUE    = toPropertyURI("attribute_value");
 
     /**
      * A class contains a method.
      */
-    public static final String CONTAINS_METHOD    = toURI("contains_method");
+    public static final String CONTAINS_METHOD    = toPropertyURI("contains_method");
 
     /**
      * A class or interface contains an enumeration.
      */
-    public static final String CONTAINS_ENUMERATION = toURI("contains_enumeration");
+    public static final String CONTAINS_ENUMERATION = toPropertyURI("contains_enumeration");
 
     /**
      * An enumeration contains an element.
      */
-    public static final String CONTAINS_ELEMENT = toURI("contains_element");
+    public static final String CONTAINS_ELEMENT   = toPropertyURI("contains_element");
 
     /**
      * A method or constructor contain a signature.
      */
-    public static final String CONTAINS_SIGNATURE = toURI("contains_signature");
+    public static final String CONTAINS_SIGNATURE = toPropertyURI("contains_signature");
 
     /**
      * A signature contains a parameter.
      */
-    public static final String CONTAINS_PARAMETER = toURI("contains_parameter");
+    public static final String CONTAINS_PARAMETER = toPropertyURI("contains_parameter");
 
     /**
      * A parameter type.
      */
-    public static final String PARAMETER_TYPE     = toURI("parameter_type");
+    public static final String PARAMETER_TYPE     = toPropertyURI("parameter_type");
 
     /**
      * Return type of a signature.
      */
-    public static final String RETURN_TYPE        = toURI("return_type");
+    public static final String RETURN_TYPE        = toPropertyURI("return_type");
 
     /**
      * The base class of a class.
      */
-    public static final String EXTENDS_CLASS      = toURI("extends_class");
+    public static final String EXTENDS_CLASS      = toPropertyURI("extends_class");
 
     /**
      * Connects a class to an implemented interface.
      */
-    public static final String IMPLEMENTS_INT     = toURI("implements_int");
+    public static final String IMPLEMENTS_INT     = toPropertyURI("implements_int");
 
     /**
      * Connects an interface to an extended interface.
      */
-    public static final String EXTENDS_INT        = toURI("extends_int");
+    public static final String EXTENDS_INT        = toPropertyURI("extends_int");
 
     /**
      * Connects a constructor or method to the thrown exceptions.
      */
-    public static final String THROWS             = toURI("throws");
+    public static final String THROWS             = toPropertyURI("throws");
 
     /**
      * Defines the visibility level of an entity.
      */
-    public static final String HAS_VISIBILITY     = toURI("has_visibility");
+    public static final String HAS_VISIBILITY     = toPropertyURI("has_visibility");
 
     /**
      * Defines the modifier of an entity.
      */
-    public static final String HAS_MODIFIERS      = toURI("has_modifiers");
+    public static final String HAS_MODIFIERS      = toPropertyURI("has_modifiers");
 
     /* END:   Vocabulary properties. */
 

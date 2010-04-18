@@ -50,17 +50,17 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
     /**
      * The model asset contains library.
      */
-    public static final String CONTAINS_LIBRARY = toURI("contains_library");
+    public static final String CONTAINS_LIBRARY = toPropertyURI("contains_library");
 
     /**
      * Location of a library.
      */
-    public static final String LIBRARY_LOCATION = toURI("library_location");
+    public static final String LIBRARY_LOCATION = toPropertyURI("library_location");
 
     /**
      * Date of parsing of the library.
      */
-    public static final String LIBRARY_DATETIME = toURI("library_date");
+    public static final String LIBRARY_DATETIME = toPropertyURI("library_date");
 
     /* END: Asset classes and properties. */
 
@@ -78,6 +78,26 @@ public abstract class CodeModelBase implements CodeModel, BackTrackingSupport {
      */
     protected static String toURI(String prop) {
         return CODER_URI + prop;
+    }
+
+    /**
+     * URI-fier method.
+     *
+     * @param prop
+     * @return the URI form as string.
+     */
+    protected static String toPropertyURI(String prop) {
+        return CODER_URI_BASE + "/" + prop;
+    }
+
+    /**
+     * URI-fier method for class specific names.
+     *
+     * @param prop
+     * @return the URI form as string with the first two class chars upper case.
+     */
+    protected static String toClassURI(String prop) {
+        return CODER_URI + prop.substring(0, 2).toUpperCase() + prop.substring(2);
     }
 
     /**
