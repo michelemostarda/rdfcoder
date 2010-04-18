@@ -938,12 +938,20 @@ public class CommandLine {
         return sb.toString();
     }
 
-    /**
-     * Lists the content of the current directory.
-     */
-    public void command_ls(String args[]) {
-        File[] content = getCurrentDirectory().listFiles();
+    private void lsDir(File target) {
+        if( ! target.exists() ) {
+            System.err.println( String.format("Cannot find dir '%s'", target.getAbsolutePath()) );
+            return;
+        }
+        if( target.isFile() ) {
+            System.out.println( target.getAbsolutePath() );
+            System.out.println();
+            return;
+        }
+        File[] content = target.listFiles();
         FilePermission fp;
+        System.out.println( target.getAbsolutePath() );
+        System.out.println();
         for(File f : content) {
             fp = new FilePermission(f.getAbsolutePath(), "read,write,execute,delete");
             System.out.printf(
@@ -953,6 +961,20 @@ public class CommandLine {
                     rewriteActions( fp.getActions() ),
                     f.length()
             );
+        }
+        System.out.println();
+    }
+
+    /**
+     * Lists the content of the current directory.
+     */
+    public void command_ls(String args[]) {
+        if(args.length == 0) {
+            lsDir( getCurrentDirectory() );
+        } else {
+            for(String arg : args) {
+                lsDir( toAbsolutePath(arg) );
+            }
         }
     }
 
@@ -1536,6 +1558,7 @@ public class CommandLine {
      */
     protected static String[] extractArgs(String cl) {
         commands.clear();
+        cl += " ";
         boolean insideQuotes = false;
         int begin = 0;
         int c;
@@ -1565,9 +1588,6 @@ public class CommandLine {
             } else if(c == cl.length() - 1 && c - begin > 0) {
                 commands.add( cl.substring(begin, c + 1) );
             }
-        }
-        if (c - begin > 0) {
-            commands.add(cl.substring(begin, c));
         }
         return commands.toArray(new String[commands.size()]);
     }
