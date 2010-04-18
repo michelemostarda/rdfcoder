@@ -1351,6 +1351,8 @@ public class CommandLine {
      * @param args
      * @throws IllegalAccessException
      * @throws InvocationTargetException
+     * @return returns <code>true</code> if the command has been processed, <code>false</code> otherwise.
+     *
      */
     protected boolean processCommand(String[] args) throws IllegalAccessException, InvocationTargetException {
         if(args.length == 0) {
@@ -1489,6 +1491,28 @@ public class CommandLine {
     }
 
     /**
+     * Processes a single command line input.
+     *
+     * @param line the input command line.
+     * @return
+     * @throws IOException
+     */
+    protected boolean processLine(String line) throws IOException {
+        String[] arguments = extractArgs(line);
+        if (isExit(arguments) && confirmExit()) {
+            return false;
+        }
+        try {
+            processCommand(arguments);
+        } catch (IllegalArgumentException iae) {
+            handleIllegalArgumentException(iae);
+        } catch (Throwable t) {
+            handleGenericException(t);
+        }
+        return true;
+    }
+
+    /**
      * Main cycle of the command line console.
      *
      * @throws IllegalAccessException
@@ -1497,23 +1521,12 @@ public class CommandLine {
      */
     protected void mainCycle() throws IllegalAccessException, InvocationTargetException, IOException {
         printHello();
-        while (true) {
-            String[] arguments = extractArgs( readInput( getPrompt() ) );
-            if ( isExit(arguments) && confirmExit() ) {
-                System.out.println("Bye");
-                System.exit(0);
-            }
-            try {
-                processCommand(arguments);
-            } catch (IllegalArgumentException iae) {
-                handleIllegalArgumentException(iae);
-            } catch (Throwable t) {
-                handleGenericException(t);
-            }
-        }
+        while ( processLine( readInput( getPrompt() ) )  );
+        System.out.println("Bye");
+        System.exit(0);
     }
 
-    private static List<String> commands = new ArrayList();
+    private static List<String> commands = new ArrayList<String>();
 
     /**
      * Extracts arguments from a command line input.
@@ -1525,7 +1538,8 @@ public class CommandLine {
         commands.clear();
         boolean insideQuotes = false;
         int begin = 0;
-        for(int c = 0; c < cl.length(); c++) {
+        int c;
+        for(c = 0; c < cl.length(); c++) {
             if( cl.charAt(c) == '"' ) {
                 if(insideQuotes) {
                     insideQuotes = false;
@@ -1551,6 +1565,9 @@ public class CommandLine {
             } else if(c == cl.length() - 1 && c - begin > 0) {
                 commands.add( cl.substring(begin, c + 1) );
             }
+        }
+        if (c - begin > 0) {
+            commands.add(cl.substring(begin, c));
         }
         return commands.toArray(new String[commands.size()]);
     }

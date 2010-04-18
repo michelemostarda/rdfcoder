@@ -116,6 +116,12 @@ public class CommandLineTest {
     }
 
     @Test
+    public void testCdCommand() throws InvocationTargetException, IllegalAccessException, IOException {
+        Assert.assertTrue(commandLine.processLine("cd ."));
+        printStreamWrapper.dumpLines();
+    }
+
+    @Test
     public void testLoadSources() throws IllegalAccessException, InvocationTargetException {
         String[] command = new String[]{"loadclasspath", "sources", "src:src"};
         Assert.assertTrue(commandLine.processCommand(command));
