@@ -22,78 +22,20 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ * Test case for {@link com.asemantics.rdfcoder.CommandLine}.
+ */
 public class CommandLineTest {
-
-    class PrintStreamWrapper {
-
-        private StringBuilder sb;
-
-        private List<String> lines;
-
-        PrintStreamWrapper() {
-            sb = new StringBuilder();
-            lines = new ArrayList<String>();
-        }
-
-        PrintStream getPrintStream(OutputStream os) {
-            return new PrintStream(os) {
-
-                public void write(byte b[]) throws IOException {
-                    super.write(b);
-                    sb.append(b);
-                }
-
-                public void write(int b) {
-                    super.write(b);
-                    sb.append(b);
-                }
-
-                public void write(byte buf[], int off, int len) {
-                    super.write(buf, off, len);
-                    String s;
-                    try {
-                        s = new String(buf, off, len, "ISO-8859-1");
-                    } catch (UnsupportedEncodingException uee) {
-                        throw new RuntimeException(uee);
-                    }
-                    sb.append(s);
-                }
-
-                public void println() {
-                    super.println();
-                    lines.add(sb.toString());
-                    sb.delete(0, sb.length());
-                }
-            };
-        }
-
-        void dumpLines(PrintStream ps) {
-            if (lines.isEmpty()) {
-                ps.println("[buffer] " + sb.toString());
-                return;
-            }
-
-            int i = 0;
-            for (String s : lines) {
-                ps.println("[" + i++ + "] " + s);
-            }
-        }
-
-        void dumpLines() {
-            dumpLines(System.err);
-        }
-
-    }
 
     private PrintStreamWrapper printStreamWrapper;
 
@@ -107,7 +49,7 @@ public class CommandLineTest {
     public void setUp() throws Exception {
         System.out.println(">" + new File(".").getAbsolutePath());
         commandLine = new CommandLine(new File("."));
-        System.setOut(printStreamWrapper.getPrintStream(System.out));
+        System.setOut( printStreamWrapper.getPrintStream(System.out) );
     }
 
     @After
@@ -119,25 +61,141 @@ public class CommandLineTest {
     public void testCdCommand() throws InvocationTargetException, IllegalAccessException, IOException {
         Assert.assertTrue(commandLine.processLine("cd ."));
         printStreamWrapper.dumpLines();
+        Assert.assertEquals( "Unexpected number of lines.", 1, printStreamWrapper.getLines().size() );
     }
 
     @Test
-    public void testLoadSources() throws IllegalAccessException, InvocationTargetException {
-        String[] command = new String[]{"loadclasspath", "sources", "src:src"};
-        Assert.assertTrue(commandLine.processCommand(command));
+    // TODO: add check for 0 errors.
+    public void testLoadSources() throws IllegalAccessException, InvocationTargetException, IOException {
+        Assert.assertTrue(commandLine.processLine("loadclasspath sources src:src"));
         printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("parse errors");
+        printStreamWrapper.assertContent("unresolved");
     }
 
     @Test
-    public void testLoadClasses() throws IllegalAccessException, InvocationTargetException {
-        String[] command = new String[]{"loadclasspath", "classes", "class:classes"};
-        Assert.assertTrue(commandLine.processCommand(command));
+    public void testLoadClasses() throws IllegalAccessException, InvocationTargetException, IOException {
+        Assert.assertTrue(commandLine.processLine("loadclasspath classes class:classes"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("parse errors[0]");
+        printStreamWrapper.assertContent("unresolved [0]");
     }
 
     @Test
-    public void testInspectModel() throws IllegalAccessException, InvocationTargetException {
-        String[] command = new String[]{"inspect", "model"};
-        Assert.assertTrue(commandLine.processCommand(command));
+    public void testLoadJar() throws IllegalAccessException, InvocationTargetException, IOException {
+        Assert.assertTrue(commandLine.processLine("loadclasspath junit jar:lib/junit-4.4.jar"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("parse errors[0]");
+        printStreamWrapper.assertContent("unresolved [0]");
     }
+
+    @Test
+    public void testInspectModel() throws IllegalAccessException, InvocationTargetException, IOException {
+        Assert.assertTrue(commandLine.processLine("loadclasspath junit jar:lib/junit-4.4.jar"));
+        Assert.assertTrue(commandLine.processLine("inspect model"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent(
+                "com.asemantics.rdfcoder.model.java.JavaQueryModelImpl{ packages: 21, classes: 131, interfaces: 23}"
+        );
+    }
+
+    /**
+     * Provides a wrapper to the print stream.
+     */
+    class PrintStreamWrapper {
+
+        ByteArrayOutputStreamWrapper baos;
+
+        PrintStream ps;
+
+        private boolean extracted = false;
+
+        private List<String> lines = new ArrayList<String>();
+
+        PrintStreamWrapper() {
+        }
+
+        public List<String> getLines() {
+            extractLines();
+            return lines;
+        }
+
+        PrintStream getPrintStream(final OutputStream os) {
+            extracted = false;
+            baos = new ByteArrayOutputStreamWrapper(os);
+            ps   = new PrintStream(baos);
+            return ps;
+        }
+
+        void extractLines() {
+            if(extracted) {
+                return;
+            }
+            extracted = false;
+            ps.flush();
+            lines.clear();
+            String out = new String( baos.toByteArray() );
+            lines.addAll( Arrays.asList( out.split("\n") ) );
+        }
+
+        void dumpLines(PrintStream ps) {
+            extractLines();
+            int i = 0;
+            for (String s : lines) {
+                ps.println("[" + i++ + "] " + s);
+            }
+        }
+
+        void dumpLines() {
+            dumpLines(System.err);
+        }
+
+        void assertContent(String in) {
+            extractLines();
+            for(String line : lines) {
+                if(line.contains(in)) {
+                    return;
+                }
+            }
+            Assert.fail( String.format("Cannot find %s in output.", in) );
+        }
+
+        class ByteArrayOutputStreamWrapper extends ByteArrayOutputStream {
+
+            OutputStream os;
+
+            ByteArrayOutputStreamWrapper(OutputStream os) {
+                this.os = os;
+            }
+
+            @Override
+            public void write(int b) {
+                super.write(b);
+                try {
+                    os.write(b);
+                } catch (IOException ioe) {
+                    throw new RuntimeException();
+                }
+            }
+
+            @Override
+            public void write(byte[] b, int off, int len) {
+                super.write(b, off, len);
+                try {
+                    os.write(b, off, len);
+                } catch (IOException ioe) {
+                    throw new RuntimeException();
+                }
+            }
+
+            @Override
+            public void write(byte[] b) throws IOException {
+                super.write(b);
+                os.write(b);
+            }
+        }
+
+    }
+
     
 }
