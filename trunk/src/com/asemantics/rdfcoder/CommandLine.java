@@ -18,10 +18,14 @@
 
 package com.asemantics.rdfcoder;
 
+import com.asemantics.rdfcoder.storage.CodeStorage;
+import com.asemantics.rdfcoder.storage.CodeStorageException;
+
 import java.io.File;
 import java.io.FilePermission;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 
 /**
@@ -49,17 +53,15 @@ public class CommandLine extends AbstractCommandLine {
      * @param args
      */
     public void command_debug(String[] args) {
-        boolean debug = isDebug();
         if( args.length == 0 ) {
-            System.out.println("debug: " + debug);
+            System.out.println("debug: " + isDebug());
         } else if(args.length == 1 && "true".equals(args[0]) ) {
-            debug = true;
+            setDebug(true);
         }  else if(args.length == 1 && "false".equals(args[0]) ) {
-            debug = false;
+            setDebug(false);
         } else {
             throw new IllegalArgumentException("invalid argument");
         }
-        setDebug(debug);
     }
 
     public String __command_debug() {
@@ -177,6 +179,7 @@ public class CommandLine extends AbstractCommandLine {
         }
         String modelName = args[0];
         createModelHandler(modelName);
+        System.out.println( String.format("Model '%s' created.", modelName) );
     }
 
     public String __command_newmodel() {
@@ -195,11 +198,15 @@ public class CommandLine extends AbstractCommandLine {
      * @param args
      */
     public void command_removemodel(String[] args) {
-        if( args.length != 1 ) {
+        if (args.length != 1) {
             throw new IllegalArgumentException("a model name must be specified");
         }
         String modelName = args[0];
-//        removeModelHandler(modelName);
+        if( removeModelHandler(modelName) ) {
+            System.out.println(String.format("Model '%s' deleted.", modelName));
+        } else {
+            System.out.println(String.format("Model '%s' cannot be deleted.", modelName));
+        }
     }
 
     public String __command_removemodel() {
@@ -223,7 +230,8 @@ public class CommandLine extends AbstractCommandLine {
             throw new IllegalArgumentException();
         }
         String modelName = args[0];
-//        clearModelHandler(modelName);
+        clearModelHandler(modelName);
+        System.out.println(String.format("Model '%s' cleaned up.", modelName));
     }
 
      public String __command_clearmodel() {
@@ -248,6 +256,7 @@ public class CommandLine extends AbstractCommandLine {
         } else if( args.length == 1 ) {
             String modelName = args[0];
             setSelectedModel(modelName);
+            System.out.println( String.format("Model set to '%s'", modelName) );
         } else {
             throw new IllegalArgumentException();
         }
@@ -263,6 +272,117 @@ public class CommandLine extends AbstractCommandLine {
                 "\nsyntax: setmodel <model_name>" +
                 "\n\tsets the model as the default one, osed for every subsequent" +
                 "\n\toperation where the model is not specified";
+    }
+
+    /**
+     * Command to save a model on the storage specified with parameters.
+     *
+     * @param args
+     * @throws IOException
+     */
+    public void command_savemodel(String[] args) throws CodeStorageException {
+        if(args.length < 1) {
+            throw new IllegalArgumentException("at least storage name must be specified");
+        }
+
+        Map<String,String> parameters;
+        if(CodeStorage.STORAGE_FS.equals(args[0])) {
+            parameters = fileStorageParams(args);
+        } else {
+            parameters = databaseStorageParams(args);
+        }
+        saveModel(parameters);
+        System.out.println("Model saved.");
+    }
+
+    public String __command_savemodel() {
+        return "Saves the current model";
+    }
+
+    public String ___command_savemodel() {
+        return
+                __command_savemodel() +
+                "\nsyntax: savemodel <storagename> [<storage_param1> ...]" +
+                "\n\tsaves the current model on the storage with name storagename by using the given parameters" +
+                "\n\t possible values for storagename are: " +
+                "\n\t\t" + CodeStorage.STORAGE_FS  + "==filesystem" +
+                "\n\t\t" + CodeStorage.STORAGE_DB + "==database" +
+                "\n\texample:" +
+                "\n\tmodel1> savemodel fs filename=/path/to/file.xml";
+
+    }
+
+    /**
+     * Command to load a model.
+     *
+     * @param args
+     * @throws IOException
+     */
+    public void command_loadmodel(String[] args) throws CodeStorageException {
+        if(args.length < 1) {
+            throw new IllegalArgumentException("at least storage name must be specified");
+        }
+
+        Map parameters;
+        if(CodeStorage.STORAGE_FS.equals(args[0])) {
+            parameters = fileStorageParams(args);
+        } else {
+            parameters = databaseStorageParams(args);
+        }
+        loadModel(parameters);
+        System.out.println("Model loaded.");
+    }
+
+    public String __command_loadmodel() {
+        return "Loads a model from a storage";
+    }
+
+    public String ___command_loadmodel() {
+        return
+                __command_loadmodel() +
+                "\nsyntax: loadmodel <storagename> [<storage_param1> ...]" +
+                "\n\tloads on the current model the content of the storage with name storagename" +
+                " by using the given parameters" +
+                "\n\t possible values for storagename are: "
+                        + CodeStorage.STORAGE_FS  + "==filesystem" + CodeStorage.STORAGE_DB + "==database" +
+                "\n\texample:" +
+                "\n\tmodel1> loadmodel fs filename=/path/to/file.xml";
+
+    }
+
+    /**
+     * Command to obtain help on other command.
+     *
+     * @param args
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    public void command_help(String[] args) throws IllegalAccessException, InvocationTargetException {
+        if(args.length == 0) {
+            printUsage(System.out);
+            return;
+        }
+        if(args.length == 1) {
+            String longHelp = getLongCommandDescription(args[0]);
+            if(longHelp == null) {
+                System.out.println("cannot find help for command '" + args[0] + "'");
+            } else {
+                System.out.println(longHelp);
+            }
+            return;
+        }
+        System.out.println("invalid command");
+        System.out.println( __command_help() );
+    }
+
+    public String __command_help() {
+        return "prints this help\n\tto obtain more informations about a specific command type: help <command>";
+    }
+
+    public String ___command_help() {
+        return
+                "prints the usage help of a specific command." +
+                "\n\tsyntax: help <command>";
     }
 
     /**

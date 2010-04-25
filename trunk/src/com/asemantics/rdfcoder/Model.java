@@ -333,7 +333,7 @@ public class Model<T extends CoderFactory> {
     }
 
     /**
-     * Destroies the model content.
+     * Destroys the model content.
      */
     protected void destroy() {
         // Empty.
