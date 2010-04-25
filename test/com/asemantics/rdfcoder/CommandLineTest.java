@@ -31,6 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Test case for {@link com.asemantics.rdfcoder.CommandLine}.
@@ -55,6 +56,7 @@ public class CommandLineTest {
     @After
     public void tearDown() throws Exception {
         commandLine = null;
+        printStreamWrapper.clear();
     }
 
     @Test
@@ -63,10 +65,173 @@ public class CommandLineTest {
     }
 
     @Test
+    public void testDebugCommand() throws IOException {
+        Assert.assertTrue( commandLine.processLine("debug true") );
+        printStreamWrapper.clear();
+        commandLine.processLine("debug");
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("debug: true");
+
+        Assert.assertTrue( commandLine.processLine("debug false") );
+        printStreamWrapper.clear();
+        commandLine.processLine("debug");
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("debug: false");
+    }
+
+    @Test
+    public void testPwdCommand() throws IOException {
+        Assert.assertTrue( commandLine.processLine("pwd") );
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("trunk");
+    }
+
+    @Test
     public void testCdCommand() throws InvocationTargetException, IllegalAccessException, IOException {
         Assert.assertTrue(commandLine.processLine("cd ."));
         printStreamWrapper.dumpLines();
         Assert.assertEquals( "Unexpected number of lines.", 1, printStreamWrapper.getLines().size() );
+    }
+
+    @Test
+    public void testLsCommand() throws IOException {
+        Assert.assertTrue(commandLine.processLine("ls ."));
+        printStreamWrapper.dumpLines();
+        Assert.assertTrue( "Unexpected number of lines.", printStreamWrapper.getLines().size() > 5 );
+    }
+
+    @Test
+    public void testCreateNewModelCommand() throws IOException {
+        Assert.assertTrue(commandLine.processLine("newmodel testmodel"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("Model 'testmodel' created.");
+        printStreamWrapper.clear();
+        Assert.assertTrue(commandLine.processLine("newmodel testmodel"));
+        printStreamWrapper.assertContent("ERROR: 'a model with name testmodel already exists.'");
+    }
+
+    @Test
+    public void testRemoveModelCommand() throws IOException {
+        Assert.assertTrue(commandLine.processLine("removemodel fakemodel"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("ERROR: 'Cannot find model 'fakemodel'");
+        Assert.assertTrue(commandLine.processLine("newmodel toBeDeletedModel"));
+        printStreamWrapper.clear();
+        Assert.assertTrue(commandLine.processLine("removemodel toBeDeletedModel"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("Model 'toBeDeletedModel' deleted");
+        printStreamWrapper.clear();
+        Assert.assertTrue(commandLine.processLine("removemodel default"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("Model 'default' cannot be deleted.");
+    }
+
+    @Test
+    public void testClearModelCommand() throws IOException {
+        Assert.assertTrue(commandLine.processLine("clearmodel fakemodel"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("ERROR: 'Cannot find model 'fakemodel''");
+        Assert.assertTrue(commandLine.processLine("newmodel toBeDeletedClean"));
+        printStreamWrapper.clear();
+        Assert.assertTrue(commandLine.processLine("clearmodel toBeDeletedClean"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("Model 'toBeDeletedClean' clean");
+    }
+
+    @Test
+    public void testSetModelCommand() throws IOException {
+        Assert.assertTrue(commandLine.processLine("newmodel modelA"));
+        printStreamWrapper.clear();
+        Assert.assertTrue(commandLine.processLine("setmodel"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("selected model: default");
+        printStreamWrapper.clear();
+        Assert.assertTrue(commandLine.processLine("setmodel modelA"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("Model set to 'modelA'");
+        printStreamWrapper.clear();
+        Assert.assertTrue(commandLine.processLine("setmodel XXX"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("ERROR: 'model with name XXX doesn't exist.'");
+    }
+
+    @Test
+    public void testSaveModelCommand() throws IOException {
+        final String tmpFile =
+                System.getProperty("java.io.tmpdir") + File.pathSeparator + UUID.randomUUID().hashCode();
+        final File file = new File(tmpFile);
+        Assert.assertFalse(file.exists());
+        printStreamWrapper.clear();
+        Assert.assertTrue(
+                commandLine.processLine( String.format("savemodel fs filename=%s", tmpFile))
+        );
+        Assert.assertTrue(file.exists());
+        printStreamWrapper.assertContent("Model saved.");
+    }
+
+    @Test
+    public void testLoadModelCommand() throws IOException {
+        final String tmpFile =
+                System.getProperty("java.io.tmpdir") + File.pathSeparator + UUID.randomUUID().hashCode();
+        final File file = new File(tmpFile);
+        Assert.assertFalse(file.exists());
+        Assert.assertTrue(
+                commandLine.processLine( String.format("savemodel fs filename=%s", tmpFile))
+        );
+        Assert.assertTrue(file.exists());
+        printStreamWrapper.clear();
+        Assert.assertTrue(
+                commandLine.processLine( String.format("loadmodel fs filename=%s", tmpFile))
+        );
+        printStreamWrapper.assertContent("Model loaded.");
+    }
+
+    @Test
+    public void testHelpCommand() throws IOException {
+        Assert.assertTrue( commandLine.processLine("help") );
+        printStreamWrapper.dumpLines();
+        Assert.assertTrue("Unexpected number of lines.", printStreamWrapper.getLines().size() >= 16 );
+
+        printStreamWrapper.clear();
+        Assert.assertTrue( commandLine.processLine("help help") );
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("prints the usage help of a specific command.");
+    }
+
+    @Test
+    public void testListCommand() throws IOException {
+        Assert.assertTrue( commandLine.processLine("list") );
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("default[X]");
+    }
+
+    @Test
+    public void testQueryModelCommand() throws IOException {
+        Assert.assertTrue( commandLine.processLine("querymodel \"select * where {?s ?p ?o}\"") );
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("| s | p | o |");
+    }
+
+
+    @Test
+    public void testInspectModelCommand() throws IllegalAccessException, InvocationTargetException, IOException {
+        Assert.assertTrue(commandLine.processLine("loadclasspath junit jar:lib/junit-4.4.jar"));
+        Assert.assertTrue(commandLine.processLine("inspect model"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent(
+                "com.asemantics.rdfcoder.model.java.JavaQueryModelImpl{ packages: 21, classes: 131, interfaces: 23}"
+        );
+    }
+
+    @Test
+    public void testDescribeModelCommand() throws IllegalAccessException, InvocationTargetException, IOException {
+        Assert.assertTrue(commandLine.processLine("describe model"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("allClasses:[Lcom.asemantics.rdfcoder.model.java.JClass;");
+        printStreamWrapper.assertContent("allInterfaces:[Lcom.asemantics.rdfcoder.model.java.JInterface;");
+        printStreamWrapper.assertContent("allPackages:[Lcom.asemantics.rdfcoder.model.java.JPackage;");
+        printStreamWrapper.assertContent("asset:com.asemantics.rdfcoder.model.Asset");
+        printStreamWrapper.assertContent("libraries:[Ljava.lang.String;");
     }
 
     @Test
@@ -94,16 +259,6 @@ public class CommandLineTest {
         printStreamWrapper.assertContent("unresolved [0]");
     }
 
-    @Test
-    public void testInspectModel() throws IllegalAccessException, InvocationTargetException, IOException {
-        Assert.assertTrue(commandLine.processLine("loadclasspath junit jar:lib/junit-4.4.jar"));
-        Assert.assertTrue(commandLine.processLine("inspect model"));
-        printStreamWrapper.dumpLines();
-        printStreamWrapper.assertContent(
-                "com.asemantics.rdfcoder.model.java.JavaQueryModelImpl{ packages: 21, classes: 131, interfaces: 23}"
-        );
-    }
-
     /**
      * Provides a wrapper to the print stream.
      */
@@ -120,7 +275,12 @@ public class CommandLineTest {
         PrintStreamWrapper() {
         }
 
-        public List<String> getLines() {
+        void clear() {
+            lines.clear();
+            baos.reset();
+        }
+
+        List<String> getLines() {
             extractLines();
             return lines;
         }
@@ -156,13 +316,16 @@ public class CommandLineTest {
         }
 
         void assertContent(String in) {
+            if(in == null || in.length() == 0) {
+                throw new IllegalArgumentException("Invalid in pattern.");
+            }
             extractLines();
             for(String line : lines) {
                 if(line.contains(in)) {
                     return;
                 }
             }
-            Assert.fail( String.format("Cannot find %s in output.", in) );
+            Assert.fail( String.format("Cannot find \"%s\" content in output lines.", in) );
         }
 
         class ByteArrayOutputStreamWrapper extends ByteArrayOutputStream {
