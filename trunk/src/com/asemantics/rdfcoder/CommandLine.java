@@ -453,7 +453,10 @@ public class CommandLine extends AbstractCommandLine {
         return
                 __command_inspect() +
                 "\nsyntax: inspect <inspection_query>" +
-                "\n\tperforms an inspection on the current query model";        
+                "\n\tperforms an inspection on the current query model." +
+                String.format("\n\tThe model root object name is %s.", INSPECTION_MODEL_NAME) +
+                "\n\texample:" +
+                String.format("\n\tinspect %s.asset", INSPECTION_MODEL_NAME);        
     }
 
     public void command_describe(String[] args) {
@@ -472,7 +475,11 @@ public class CommandLine extends AbstractCommandLine {
         return
                 __command_describe() +
                 "\nsyntax: describe <inspection_query>" +
-                "\n\tperforms an inspection on the current query model";
+                "\n\tdescribes the object targeted by the given inspection query." +
+                String.format("\n\tThe model root object name is %s.", INSPECTION_MODEL_NAME) +
+                "\n\texample:" +
+                String.format("\n\tdescribe %s.asset", INSPECTION_MODEL_NAME);          
+
     }
 
     /**
