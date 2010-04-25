@@ -58,6 +58,11 @@ public class CommandLineTest {
     }
 
     @Test
+    public void testRetrieveCommands() {
+        Assert.assertEquals("Unexpected number of commands.", 16, commandLine.getCommands().length);
+    }
+
+    @Test
     public void testCdCommand() throws InvocationTargetException, IllegalAccessException, IOException {
         Assert.assertTrue(commandLine.processLine("cd ."));
         printStreamWrapper.dumpLines();

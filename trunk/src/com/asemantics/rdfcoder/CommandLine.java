@@ -42,6 +42,7 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,6 +137,11 @@ public class CommandLine {
      */
     private static final String JAVA_PROFILE = "java-profile";
 
+    /**
+     * Arguments buffer.
+     */
+    private static List<String> argsBuffer = new ArrayList<String>();
+
     /* Fields. */
 
     /**
@@ -181,6 +187,11 @@ public class CommandLine {
     private File currentDirectory;
 
     /**
+     * Map of detected commands.
+     */
+    private Map<String,Command> commands;
+
+    /**
      * Internal library facade.
      */
     private final RDFCoder rdfCoder;
@@ -199,7 +210,6 @@ public class CommandLine {
         }
         currentDirectory = file;
 
-//        coderFactory = new JenaCoderFactory();
         modelHandlers = new HashMap<String, ModelHandler>();
         toBeSaved = new ArrayList<String>();
 
@@ -225,7 +235,7 @@ public class CommandLine {
         consoleReader.setCompletionHandler(completionHandler);
         consoleReader.addCompletor (
                 new ArgumentCompletor (
-                    new SimpleCompletor( getAvailableCommandNames() )
+                    new SimpleCompletor( getCommandNames() )
                 )
         );
         consoleReader.addCompletor (
@@ -240,7 +250,7 @@ public class CommandLine {
      *
      * @param candidateLocation the new candidate location.
      */
-    protected void setCurrentDirectory(File candidateLocation) {
+    public void setCurrentDirectory(File candidateLocation) {
         File newDirectory;
         try {
             newDirectory = toAbsolutePath( candidateLocation.getPath() ).getCanonicalFile();
@@ -266,6 +276,45 @@ public class CommandLine {
     }
 
     /**
+     * Returns an array of the available argsBuffer declared in this class.
+     *
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    public Command[] getCommands() {
+        loadCommands();
+        Collection<Command> result = commands.values();
+        return result.toArray( new Command[result.size()] );
+    }
+
+    /**
+     * Returns an array of the available command names.
+     *
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    public String[] getCommandNames() {
+        loadCommands();
+        Collection<String> result = commands.keySet();
+        return result.toArray( new String[result.size()] );
+    }
+
+    /**
+     * Sets the selected model.
+     *
+     * @param modelName
+     */
+    protected void setSelectedModel(String modelName) {
+        if( ! modelHandlers.containsKey(modelName)) {
+            throw new IllegalArgumentException("model with name " + modelName + " doesn't exist.");
+        }
+
+        selectedModel = modelName;
+    }
+
+    /**
      * If <i>in</i>parameter is an absolute file it is returned unchanged,
      * otherwise a concatenation of #currentDirectory and the relative path is
      * returned.
@@ -287,7 +336,7 @@ public class CommandLine {
      * @param modelName
      * @return
      */
-    private ModelHandler createModelHandler(String modelName) {
+    protected ModelHandler createModelHandler(String modelName) {
         if(modelHandlers.containsKey(modelName)) {
             throw new IllegalArgumentException("a model with name " + modelName + " already exists.");   
         }
@@ -300,26 +349,13 @@ public class CommandLine {
     }
 
     /**
-     * Sets the selected model.
-     *
-     * @param modelName
-     */
-    private void setSelectedModel(String modelName) {
-        if( ! modelHandlers.containsKey(modelName)) {
-            throw new IllegalArgumentException("model with name " + modelName + " doesn't exist.");
-        }
-
-        selectedModel = modelName;
-    }
-
-    /**
      * Performs a SPARQL query on the specified model.
      * 
      * @param modelName
      * @param qry
      * @param ps
      */
-    private void performQueryOnModel(String modelName, String qry, PrintStream ps) {
+    protected void performQueryOnModel(String modelName, String qry, PrintStream ps) {
         if( ! modelHandlers.containsKey(modelName)) {
             throw new IllegalArgumentException("model with name " + modelName + " doesn't exist.");
         }
@@ -347,7 +383,7 @@ public class CommandLine {
      * @param qry
      * @param ps
      */
-    private void performQueryOnModel(String qry, PrintStream ps) {
+    protected void performQueryOnModel(String qry, PrintStream ps) {
         performQueryOnModel(selectedModel, qry, ps);
     }
 
@@ -358,7 +394,7 @@ public class CommandLine {
      * @param qry
      * @param ps
      */
-    private void inspectModel(String modelName, String qry, PrintStream ps) {
+    protected void inspectModel(String modelName, String qry, PrintStream ps) {
         if( ! modelHandlers.containsKey(modelName) ) {
             throw new IllegalArgumentException("model with name '" + modelName + "' doesn't exist.");
         }
@@ -381,20 +417,22 @@ public class CommandLine {
 
     /**
      * Inspects the active code model as a bean.
+     *
      * @param qry
      * @param ps
      */
-    private void inspectModel(String qry, PrintStream ps) {
+    protected void inspectModel(String qry, PrintStream ps) {
         inspectModel(selectedModel, qry, ps);
     }
 
     /**
      * Describes the specified model.
+     *
      * @param modelName
      * @param qry
      * @param ps
      */
-    private void describeModel(String modelName, String qry, PrintStream ps) {
+    protected void describeModel(String modelName, String qry, PrintStream ps) {
         if( ! modelHandlers.containsKey(modelName) ) {
             throw new IllegalArgumentException("model with name '" + modelName + "' doesn't exist.");
         }
@@ -421,7 +459,7 @@ public class CommandLine {
      * @param qry
      * @param ps
      */
-    private void describeModel(String qry, PrintStream ps) {
+    protected void describeModel(String qry, PrintStream ps) {
         describeModel(selectedModel, qry, ps);
     }
 
@@ -430,17 +468,17 @@ public class CommandLine {
      *
      * @return
      */
-    private CodeModel getCodeModel() {
+    protected CodeModel getCodeModel() {
         ModelHandler mh = modelHandlers.get( selectedModel );
         return mh.model.getCodeModelBase();
     }
 
-    private JavaProfile getJavaProfile() {
+    protected JavaProfile getJavaProfile() {
         ModelHandler mh = modelHandlers.get( selectedModel );
         return mh.javaProfile;
     }
 
-    private CoderFactory getCoderFactory() {
+    protected CoderFactory getCoderFactory() {
         ModelHandler mh = modelHandlers.get( selectedModel );
         return mh.model.getCoderFactory();
     }
@@ -450,7 +488,7 @@ public class CommandLine {
      *
      * @param libName
      */
-    private void validLibraryName(String libName) {
+    protected void validLibraryName(String libName) {
         if(libName == null || libName.trim().length() == 0) {
             throw new IllegalArgumentException("Illegal library name: '" + libName + "'");
         }
@@ -462,7 +500,7 @@ public class CommandLine {
      * @param pathToJar
      * @return
      */
-    private File validJar(String pathToJar) {
+    protected File validJar(String pathToJar) {
         if(pathToJar.indexOf(RESOURCE_JAR_PREFIX) != 0) {
              return null;
         }
@@ -476,7 +514,7 @@ public class CommandLine {
      * @param pathToSource
      * @return
      */
-    private File validSource(String pathToSource) {
+    protected File validSource(String pathToSource) {
        if(pathToSource.indexOf(RESOURCE_SOURCE_PREFIX) != 0) {
              return null;
         }
@@ -490,7 +528,7 @@ public class CommandLine {
      * @param pathToJavadoc
      * @return
      */
-    private File validJavadoc(String pathToJavadoc) {
+    protected File validJavadoc(String pathToJavadoc) {
        if(pathToJavadoc.indexOf(RESOURCE_JAVADOC_PREFIX) != 0) {
              return null;
         }
@@ -504,7 +542,7 @@ public class CommandLine {
      * @param pathToClass
      * @return
      */
-    private File validClass(String pathToClass) {
+    protected File validClass(String pathToClass) {
        if(pathToClass.indexOf(RESOURCE_CLASS_PREFIX) != 0) {
              return null;
         }
@@ -519,7 +557,7 @@ public class CommandLine {
      * @param ps
      * @throws IOException
      */
-    private void loadLibraries(String[] args, PrintStream ps) throws IOException {
+    protected void loadLibraries(String[] args, PrintStream ps) throws IOException {
         String libraryName;
 
         // Validate arguments first.
@@ -629,7 +667,7 @@ public class CommandLine {
      * @throws IOException
      * @throws com.asemantics.rdfcoder.storage.CodeStorageException
      */
-    private void saveModel(Map<String,String> parameters) throws CodeStorageException {
+    protected void saveModel(Map<String,String> parameters) throws CodeStorageException {
         CodeStorage codeStorage = getCoderFactory().createCodeStorage();
         codeStorage.saveModel( getCodeModel(), parameters );
 
@@ -643,7 +681,7 @@ public class CommandLine {
      * @throws IOException
      * @throws com.asemantics.rdfcoder.storage.CodeStorageException
      */
-    private void loadModel(Map<String,String> parameters) throws CodeStorageException {
+    protected void loadModel(Map<String,String> parameters) throws CodeStorageException {
         CodeStorage codeStorage = getCoderFactory().createCodeStorage();
         codeStorage.loadModel( getCodeModel(), parameters );
     }
@@ -666,111 +704,24 @@ public class CommandLine {
     }
 
     /**
-     * Defines a command with a name and a description.
-     */
-    private class Command {
-        private String name;
-        private String description;
-    }
-
-    /**
-     * Retrieves the short command description of a specified command.
-     *
-     * @param commandName
-     * @return
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
-    private String getShortCommandDescription(String commandName)
-    throws IllegalAccessException, InvocationTargetException {
-        Method[] methods = this.getClass().getMethods();
-        for(int i = 0; i < methods.length; i++) {
-            if(methods[i].getName().equals(SHORT_COMMAND_DESCRIPTION_PREFIX + commandName)) {
-                return (String) methods[i].invoke(this);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Retrieves the extended command description of a specified command.
-     *
-     * @param commandName
-     * @return
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
-    private String getLongCommandDescription(String commandName)
-    throws IllegalAccessException, InvocationTargetException {
-        Method[] methods = this.getClass().getMethods();
-        for(int i = 0; i < methods.length; i++) {
-            if(methods[i].getName().equals(LONG_COMMAND_DESCRIPTION_PREFIX + commandName)) {
-                return (String) methods[i].invoke(this);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns an array of the available commands declared in this class.
-     *
-     * @return
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
-    private Command[] getAvailableCommands()
-    throws IllegalAccessException, InvocationTargetException {
-        Method[] methods = this.getClass().getMethods();
-        List<Command> commands = new ArrayList<Command>();
-        for(int i = 0; i < methods.length; i++) {
-            Command command;
-            if( methods[i].getName().indexOf(COMMAND_PREFIX) == 0) {
-                String commandName =  methods[i].getName().substring(COMMAND_PREFIX.length());
-                command = new Command();
-                command.name = commandName;
-                command.description = getShortCommandDescription(commandName);
-                commands.add(command);
-            }
-        }
-        return commands.toArray( new Command[commands.size()] );
-    }
-
-    /**
-     * Returns an array of the available command names.
-     *
-     * @return
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
-    private String[] getAvailableCommandNames()
-    throws IllegalAccessException, InvocationTargetException {
-        Command[] commands = getAvailableCommands();
-        String[] commandNames = new String[commands.length];
-        for(int i = 0; i < commands.length; i++) {
-            commandNames[i] = commands[i].name;
-        }
-        return commandNames;
-    }
-
-    /**
      * Prints the usage of the CommandLine interface.
      *
      * @param ps
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    private void printUsage(PrintStream ps) throws IllegalAccessException, InvocationTargetException {
+    protected void printUsage(PrintStream ps) throws IllegalAccessException, InvocationTargetException {
         ps.println("Usage: <command> <parameters>");
         ps.println();
         ps.println("\tavailable commands:");
-        Command[] availableCommands = getAvailableCommands();
+        Command[] availableCommands = getCommands();
         for(int i = 0; i < availableCommands.length; i++) {
             ps.println("\t" + availableCommands[i].name + "\t\t\t" + availableCommands[i].description);
         }
         ps.println();
     }
 
-    /* BEGIN: Command line commands. */
+    /* BEGIN: Command line argsBuffer. */
 
     /**
      * Command to enable / disable the debug flag.
@@ -1114,6 +1065,44 @@ public class CommandLine {
                 "\n\tPerforms a parsing of the given set of resources" +
                 "\n\tand loads the generated model in the active model";
     }
+    
+    /**
+     * Retrieves the short command description of a specified command.
+     *
+     * @param commandName
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    private String getShortCommandDescription(String commandName)
+    throws IllegalAccessException, InvocationTargetException {
+        Method[] methods = this.getClass().getMethods();
+        for(int i = 0; i < methods.length; i++) {
+            if(methods[i].getName().equals(SHORT_COMMAND_DESCRIPTION_PREFIX + commandName)) {
+                return (String) methods[i].invoke(this);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Retrieves the extended command description of a specified command.
+     *
+     * @param commandName
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    private String getLongCommandDescription(String commandName)
+    throws IllegalAccessException, InvocationTargetException {
+        Method[] methods = this.getClass().getMethods();
+        for(int i = 0; i < methods.length; i++) {
+            if(methods[i].getName().equals(LONG_COMMAND_DESCRIPTION_PREFIX + commandName)) {
+                return (String) methods[i].invoke(this);
+            }
+        }
+        return null;
+    }
 
     /**
      * Retrieves the file storage parameters.
@@ -1135,10 +1124,12 @@ public class CommandLine {
      * @return
      */
     private Map databaseStorageParams(String[] args) {
-        Map parameters = new HashMap();
+        Map<String,String> parameters = new HashMap<String,String>();
         String server = retrieveParam(CodeStorage.DB_SERVER, args);
         if( server == null ) {
-            throw new IllegalArgumentException(CodeStorage.FS_FILENAME + " or " + CodeStorage.DB_SERVER + " must be specified.");
+            throw new IllegalArgumentException(
+                    CodeStorage.FS_FILENAME + " or " + CodeStorage.DB_SERVER + " must be specified."
+            );
         }
         String port = retrieveParam(CodeStorage.DB_PORT, args);
         if( port == null ) {
@@ -1273,7 +1264,32 @@ public class CommandLine {
                 "\n\tsyntax: help <command>";
     }
 
-    /* END Command line commands. */
+    /* END Command line argsBuffer. */
+
+    /**
+     * Loads all the commands defined in the command line.
+     */
+    private void loadCommands() {
+        if(commands != null) {
+            return;
+        }
+
+        commands = new HashMap<String, Command>();
+        Method[] methods = this.getClass().getMethods();
+        Command command;
+        try {
+            for (Method method : methods) {
+                final String methodName = method.getName();
+                if (methodName.indexOf(COMMAND_PREFIX) == 0) {
+                    String commandName = methodName.substring(COMMAND_PREFIX.length());
+                    command = new Command(commandName, getShortCommandDescription(commandName), method);
+                    commands.put(commandName, command);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while loading commands.", e);
+        }
+    }
 
     /**
      * Processes a command line input.
@@ -1289,30 +1305,32 @@ public class CommandLine {
             return true;
         }
 
+        loadCommands();
+
         String command = args[0];
         String[] commandArgs = new String[args.length -1];
         int i;
         for(i = 1; i < args.length; i++) {
             commandArgs[i - 1] = args[i];
         }
-        Method[] methods = this.getClass().getMethods();
-        for(i = 0; i < methods.length; i++) {
-            if( methods[i].getName().equals( COMMAND_PREFIX + command)) {
-                try {
-                    methods[i].invoke(this, (Object) commandArgs);
-                } catch (InvocationTargetException ite) {
-                    if (ite.getCause() instanceof IllegalArgumentException) {
-                        IllegalArgumentException iae = (IllegalArgumentException) ite.getCause();
-                        handleIllegalArgumentException(iae, command);
-                        return false;
-                    } else {
-                        throw ite;
-                    }
-                }
-                return true;
+
+        final Method target = commands.get(command).target;
+        if(target == null) {
+            throw new IllegalArgumentException("unknown command: " + command);
+        }
+
+        try {
+            target.invoke(this, (Object) commandArgs);
+        } catch (InvocationTargetException ite) {
+            if (ite.getCause() instanceof IllegalArgumentException) {
+                IllegalArgumentException iae = (IllegalArgumentException) ite.getCause();
+                handleIllegalArgumentException(iae, command);
+                return false;
+            } else {
+                throw ite;
             }
         }
-        throw new IllegalArgumentException("unknown command: " + command);
+        return true;
     }
 
     /**
@@ -1456,8 +1474,6 @@ public class CommandLine {
         System.exit(0);
     }
 
-    private static List<String> commands = new ArrayList<String>();
-
     /**
      * Extracts arguments from a command line input.
      *
@@ -1465,7 +1481,7 @@ public class CommandLine {
      * @return the list of arguments.
      */
     protected static String[] extractArgs(String cl) {
-        commands.clear();
+        argsBuffer.clear();
         cl += " ";
         boolean insideQuotes = false;
         int begin = 0;
@@ -1475,7 +1491,7 @@ public class CommandLine {
                 if(insideQuotes) {
                     insideQuotes = false;
                     if(c - begin > 0) {
-                        commands.add(cl.substring(begin, c));
+                        argsBuffer.add(cl.substring(begin, c));
                     }
                 } else {
                     insideQuotes = true;
@@ -1490,14 +1506,14 @@ public class CommandLine {
             }
             if( cl.charAt(c) == ' ' ) {
                 if(c - begin > 0) {
-                    commands.add( cl.substring(begin, c) );
+                    argsBuffer.add( cl.substring(begin, c) );
                 }
                 begin = c + 1;
             } else if(c == cl.length() - 1 && c - begin > 0) {
-                commands.add( cl.substring(begin, c + 1) );
+                argsBuffer.add( cl.substring(begin, c + 1) );
             }
         }
-        return commands.toArray(new String[commands.size()]);
+        return argsBuffer.toArray(new String[argsBuffer.size()]);
     }
 
     /**
@@ -1521,6 +1537,21 @@ public class CommandLine {
     throws IOException, IllegalAccessException, InvocationTargetException {
         CommandLine commandLine = new CommandLine(new File("."));
         commandLine.mainCycle();
+    }
+
+    /**
+     * Defines a command with a name and a description.
+     */
+    public class Command {
+        protected final String name;
+        protected final String description;
+        protected final Method target;
+
+        private Command(String description, String name, Method target) {
+            this.description = description;
+            this.name = name;
+            this.target = target;
+        }
     }
 
     /**
