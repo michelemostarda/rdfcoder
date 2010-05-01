@@ -810,24 +810,25 @@ public abstract class AbstractCommandLine {
 
         loadCommands();
 
-        String command = args[0];
+        String commandName = args[0];
         String[] commandArgs = new String[args.length -1];
         int i;
         for(i = 1; i < args.length; i++) {
             commandArgs[i - 1] = args[i];
         }
 
-        final Method target = commands.get(command).target;
-        if(target == null) {
-            throw new IllegalArgumentException("unknown command: " + command);
+        final Command command = commands.get(commandName);
+        if(command == null) {
+            throw new IllegalArgumentException( String.format("unknown command: '%s'", commandName) );
         }
+        final Method target = command.target;
 
         try {
             target.invoke(this, (Object) commandArgs);
         } catch (InvocationTargetException ite) {
             if (ite.getCause() instanceof IllegalArgumentException) {
                 IllegalArgumentException iae = (IllegalArgumentException) ite.getCause();
-                handleIllegalArgumentException(iae, command);
+                handleIllegalArgumentException(iae, commandName);
                 return false;
             } else {
                 throw ite;
@@ -1061,7 +1062,7 @@ public abstract class AbstractCommandLine {
      * @param cmd
      */
     private void handleIllegalArgumentException(IllegalArgumentException iae, String cmd) {
-        System.out.println("ERROR: '" + iae.getMessage() + "'");
+        System.out.println("ERROR: " + iae.getMessage() );
         if(debug) { iae.printStackTrace(); }
         Throwable cause = iae.getCause();
         int causeLevel = 0;
@@ -1099,7 +1100,13 @@ public abstract class AbstractCommandLine {
      * @param t
      */
     private void handleGenericException(Throwable t) {
-        System.out.println("SEVERE ERROR: an expected exception occurred: '" + t.getMessage() + "'");
+        System.out.println(
+                String.format(
+                        "SEVERE ERROR: an expected exception occurred: %s with message'%s'",
+                        t.getClass().getName(),
+                        t.getMessage()
+                )
+        );
         if(debug) {
             t.printStackTrace();
         }
