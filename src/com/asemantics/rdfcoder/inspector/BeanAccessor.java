@@ -21,12 +21,15 @@ package com.asemantics.rdfcoder.inspector;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
 /**
  * Utility class to handle bean properties.
  */
 public class BeanAccessor {
+
+    private BeanAccessor(){}
 
     /**
      * Returns the property value for the specified <i>bean</i>.
@@ -77,10 +80,19 @@ public class BeanAccessor {
             StringBuilder sb = new StringBuilder();
             sb.append("{\n");
             for(PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-                sb.append(propertyDescriptor.getName())
+                final String propertyName = propertyDescriptor.getName();
+                if("class".equals(propertyName)) {
+                    continue;
+                }
+                sb.append(propertyName)
                         .append(":")
-                .append( propertyDescriptor.getPropertyType().getName() )
-                        .append("\n");
+                .append(
+                        getHumanDescription(
+                                propertyDescriptor.getPropertyType(),
+                                propertyDescriptor.getReadMethod().invoke(bean)
+                        )
+                )
+                .append("\n");
             }
             sb.append("}\n");
             return sb.toString();
@@ -99,5 +111,12 @@ public class BeanAccessor {
         final String methodName = propertyName.substring(0,1);
         final String postfix = methodName.toUpperCase() + propertyName.substring(1);;
         return new String[] { "get" + postfix, "is" + postfix, methodName};
+    }
+
+    private static String getHumanDescription(Class c, Object o) {
+        if(c.isArray()) {
+            return String.format("%s[%s]", c.getComponentType().getName(), Array.getLength(o));
+        }
+        return c.getName();
     }
 }
