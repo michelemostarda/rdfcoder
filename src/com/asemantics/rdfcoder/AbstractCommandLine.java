@@ -241,7 +241,11 @@ public abstract class AbstractCommandLine {
         // Init console reader and history.
         consoleReader = new ConsoleReader();
         if(!HISTORY_FILE.exists()) {
-            HISTORY_FILE.createNewFile();
+            if( ! HISTORY_FILE.createNewFile() ) {
+                throw new IllegalStateException(
+                    String.format("An error occurred while attempting to create the history file %s", HISTORY_FILE)
+                );
+            }
         }
         history = new History(HISTORY_FILE);
         consoleReader.setHistory(history);
