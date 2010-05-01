@@ -56,6 +56,14 @@ public interface JavaQueryModel extends QueryModel {
     public boolean interfaceExists(Identifier pathToInterface);
 
     /**
+     * Checks if an enumeration exists in Code Model.
+     *
+     * @param pathToEnumeration fully qualified path of the enumeration.
+     * @return <code>true</code> if exists.
+     */
+    public boolean enumerationExists(Identifier pathToEnumeration);
+
+    /**
      * Checks if an attribute exists in Code Model.
      *
      * @param pathToAttribute fully qualified path of the attribute.
@@ -80,15 +88,7 @@ public interface JavaQueryModel extends QueryModel {
     public boolean signatureExists(Identifier pathToSignanure);
 
     /**
-     * Checks if an enumeration exists in Code Model.
-     *
-     * @param pathToEnumeration fully qualified path of the enumeration.
-     * @return <code>true</code> if exists.
-     */
-    public boolean enumerationExists(Identifier pathToEnumeration);
-
-    /**
-     * Returns all packages.
+     * Returns all packages defined within this models.
      *
      * @return list of packages in model.
      */
@@ -113,7 +113,7 @@ public interface JavaQueryModel extends QueryModel {
     public JPackage[] getPackagesInto(Identifier path) throws QueryModelException;
 
     /**
-     * Returns all interfaces in Code Model.
+     * Returns all the interfaces defined within this model.
      *
      * @return all the interfaces in the model.
      */
@@ -129,7 +129,16 @@ public interface JavaQueryModel extends QueryModel {
     public JInterface getInterface(Identifier pathToInterface) throws QueryModelException;
 
     /**
-     * Returns all classes in Code Model.
+     * Returns all interfaces into a container path.
+     *
+     * @param path
+     * @return the interfaces found.
+     * @throws QueryModelException
+     */
+    public JInterface[] getInterfacesInto(Identifier path) throws QueryModelException;
+
+    /**
+     * Returns all classes defined within this model.
      *
      * @return all the classes.
      */
@@ -143,15 +152,6 @@ public interface JavaQueryModel extends QueryModel {
      * @throws QueryModelException
      */
     public JClass getClazz(Identifier pathToClass) throws QueryModelException;
-
-    /**
-     * Returns all interfaces into a container path.
-     *
-     * @param path
-     * @return the interfaces found.
-     * @throws QueryModelException
-     */
-    public JInterface[] getInterfacesInto(Identifier path) throws QueryModelException;
 
     /**
      * Returns all classes into a container path.
@@ -205,6 +205,13 @@ public interface JavaQueryModel extends QueryModel {
      * @throws QueryModelException if the fully qualified method nam doesn't exist.
      */
     public JMethod getMethod(Identifier pathToMethod) throws QueryModelException;
+
+    /**
+     * Returns all the enumerations defined within the model.
+     *
+     * @return list of available enumerations, an empty list if no enumerations are found. 
+     */
+    public JEnumeration[] getAllEnumerations();
 
     /**
      * Returns the enumerations in the given container.
@@ -262,11 +269,11 @@ public interface JavaQueryModel extends QueryModel {
     /**
      * Returns the visibility associated to the entity.
      * 
-     * @param pathtoEntity path to the entity.
+     * @param pathToEntity path to the entity.
      * @return the visibility.
      * @throws QueryModelException
      */
-    public JavaCodeModel.JVisibility getVisibility(Identifier pathtoEntity) throws QueryModelException;
+    public JavaCodeModel.JVisibility getVisibility(Identifier pathToEntity) throws QueryModelException;
 
     /**
      * Returns the modifiers associated to the given entity.

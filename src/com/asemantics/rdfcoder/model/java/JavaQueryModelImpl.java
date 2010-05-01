@@ -384,6 +384,31 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         return JavaCoderFactory.createJMethod(this, pathToMethod);
     }
 
+    public JEnumeration[] getAllEnumerations() {
+        TripleIterator t1 = codeModel.searchTriples(
+                JavaCodeModel.ALL_MATCH,
+                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.JENUMERATION
+        );
+        List<JEnumeration> packages = new ArrayList<JEnumeration>();
+        String subject;
+        try {
+            while(t1.next()) {
+                subject = t1.getSubject();
+                try {
+                    packages.add(
+                            JavaCoderFactory.createJEnumeration(this, IdentifierReader.readIdentifier( subject) )
+                    );
+                } catch (QueryModelException cme) {
+                    throw new RuntimeException("Error while retrieving enumerations.", cme);
+                }
+            }
+        } finally {
+            t1.close();
+        }
+        return packages.toArray( new JEnumeration[packages.size()] );
+    }
+
     public JEnumeration[] getEnumerationsInto(Identifier pathToContainer) throws QueryModelException {
         TripleIterator t1 = codeModel.searchTriples(
                JavaCodeModel.ALL_MATCH,
@@ -558,11 +583,14 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     }
 
     public String toString() {
-        return JavaQueryModelImpl.class.getName() + "{ " +
-                "packages: "   + getAllPackages().length  + ", " +
-                "classes: "    + getAllClasses().length   + ", " +
-                "interfaces: " + getAllInterfaces().length       +
-                "}";
+        return String.format(
+                "%s{packages: %s, classes: %s, interfaces: %s, enumerations: %s}",
+                this.getClass().getName(),
+                getAllPackages().length,
+                getAllClasses().length,
+                getAllInterfaces().length,
+                getAllEnumerations().length
+        );
     }
 
 }
