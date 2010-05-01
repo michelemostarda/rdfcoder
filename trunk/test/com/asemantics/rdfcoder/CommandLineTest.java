@@ -60,6 +60,13 @@ public class CommandLineTest {
     }
 
     @Test
+    public void testUnknownCommand() throws IOException {
+        Assert.assertTrue( commandLine.processLine("pappo") );
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("ERROR: unknown command: 'pappo'");
+    }
+
+    @Test
     public void testRetrieveCommands() {
         Assert.assertEquals("Unexpected number of commands.", 16, commandLine.getCommands().length);
     }
@@ -107,14 +114,14 @@ public class CommandLineTest {
         printStreamWrapper.assertContent("Model 'testmodel' created.");
         printStreamWrapper.clear();
         Assert.assertTrue(commandLine.processLine("newmodel testmodel"));
-        printStreamWrapper.assertContent("ERROR: 'a model with name testmodel already exists.'");
+        printStreamWrapper.assertContent("ERROR: a model with name testmodel already exists.");
     }
 
     @Test
     public void testRemoveModelCommand() throws IOException {
         Assert.assertTrue(commandLine.processLine("removemodel fakemodel"));
         printStreamWrapper.dumpLines();
-        printStreamWrapper.assertContent("ERROR: 'Cannot find model 'fakemodel'");
+        printStreamWrapper.assertContent("ERROR: Cannot find model 'fakemodel'");
         Assert.assertTrue(commandLine.processLine("newmodel toBeDeletedModel"));
         printStreamWrapper.clear();
         Assert.assertTrue(commandLine.processLine("removemodel toBeDeletedModel"));
@@ -130,7 +137,7 @@ public class CommandLineTest {
     public void testClearModelCommand() throws IOException {
         Assert.assertTrue(commandLine.processLine("clearmodel fakemodel"));
         printStreamWrapper.dumpLines();
-        printStreamWrapper.assertContent("ERROR: 'Cannot find model 'fakemodel''");
+        printStreamWrapper.assertContent("ERROR: Cannot find model 'fakemodel'");
         Assert.assertTrue(commandLine.processLine("newmodel toBeDeletedClean"));
         printStreamWrapper.clear();
         Assert.assertTrue(commandLine.processLine("clearmodel toBeDeletedClean"));
@@ -152,7 +159,7 @@ public class CommandLineTest {
         printStreamWrapper.clear();
         Assert.assertTrue(commandLine.processLine("setmodel XXX"));
         printStreamWrapper.dumpLines();
-        printStreamWrapper.assertContent("ERROR: 'model with name XXX doesn't exist.'");
+        printStreamWrapper.assertContent("ERROR: model with name XXX doesn't exist.");
     }
 
     @Test
@@ -215,11 +222,12 @@ public class CommandLineTest {
 
     @Test
     public void testInspectModelCommand() throws IllegalAccessException, InvocationTargetException, IOException {
-        Assert.assertTrue(commandLine.processLine("loadclasspath junit jar:lib/junit-4.4.jar"));
+        Assert.assertTrue(commandLine.processLine("loadclasspath uml jar:lib/UmlGraph.jar"));
         Assert.assertTrue(commandLine.processLine("inspect model"));
         printStreamWrapper.dumpLines();
         printStreamWrapper.assertContent(
-                "com.asemantics.rdfcoder.model.java.JavaQueryModelImpl{ packages: 21, classes: 131, interfaces: 23}"
+            "com.asemantics.rdfcoder.model.java.JavaQueryModelImpl" +
+                    "{packages: 2, classes: 24, interfaces: 2, enumerations: 5}"
         );
     }
 
