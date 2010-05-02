@@ -18,9 +18,17 @@
 
 package com.asemantics.rdfcoder;
 
+import com.asemantics.rdfcoder.profile.ProfileException;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.CodeStorageException;
-import jline.*;
+import jline.ArgumentCompletor;
+import jline.CandidateListCompletionHandler;
+import jline.Completor;
+import jline.ConsoleReader;
+import jline.FileNameCompletor;
+import jline.MultiCompletor;
+import jline.NullCompletor;
+import jline.SimpleCompletor;
 
 import java.io.File;
 import java.io.FilePermission;
@@ -44,7 +52,7 @@ public class CommandLine extends AbstractCommandLine {
      *
      */
     public CommandLine(File file)
-    throws IOException, IllegalAccessException, InvocationTargetException {
+    throws IOException, IllegalAccessException, InvocationTargetException, ProfileException {
         super(file);
     }
 
@@ -174,7 +182,7 @@ public class CommandLine extends AbstractCommandLine {
      *
      * @param args
      */
-    public void command_newmodel(String[] args) {
+    public void command_newmodel(String[] args) throws ProfileException {
         if( args.length != 1 ) {
             throw new IllegalArgumentException();
         }

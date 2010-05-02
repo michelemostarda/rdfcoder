@@ -57,4 +57,13 @@ public class JREReport {
         return jreLocation;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "%s[%s]\n%s",
+                this.getClass().getName(),
+                jreLocation.getAbsolutePath(),
+                statistics.toStringReport()
+        );
+    }
 }
