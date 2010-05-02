@@ -560,7 +560,4 @@ public class CommandLine extends AbstractCommandLine {
         cr.addCompletor(multiCompletor);
     }
 
-    private int libIndex = 0;
-
-
 }
