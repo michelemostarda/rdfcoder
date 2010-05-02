@@ -23,6 +23,7 @@ import com.asemantics.rdfcoder.model.QueryModelException;
 import com.asemantics.rdfcoder.model.QueryResult;
 import com.asemantics.rdfcoder.model.java.JAttribute;
 import com.asemantics.rdfcoder.model.java.JavaQueryModel;
+import com.asemantics.rdfcoder.profile.ProfileException;
 import com.asemantics.rdfcoder.sourceparse.JStatistics;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -43,7 +44,7 @@ public class RDFCoderTest {
     private static final String TEST_MODEL_NAME= "test_model_name";
 
     @Test
-    public void testFacadeAPI() throws QueryModelException, IOException {
+    public void testFacadeAPI() throws QueryModelException, IOException, ProfileException {
 
         // Creates an RDFCoder instance on a repository.
         RDFCoder coder = new RDFCoder("target_test/hla_repo");
@@ -83,22 +84,11 @@ public class RDFCoderTest {
         }
 
         // Initializes the JRE model if not yet done.
-        final File JRE = new File( "/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home" );
-        if ( ! jprofile.checkJREInit(JRE)) {
-            try {
-                JREReport jreReport = jprofile.initJRE(JRE);
-                logger.info("JRE analysis report: " + jreReport);
-            } catch (Throwable t) {
-                t.printStackTrace();
-                Assert.fail("Cannot initialise JRE");
-            }
+        JREReport report = jprofile.initOrLoadJRE();
+        if(report != null) {
+            logger.info("JRE analysis report: " + report);
         } else {
-            try {
-                jprofile.loadJRE(JRE);
-            } catch (Throwable t) {
-                t.printStackTrace();
-                Assert.fail("Cannot load JRE");
-            }
+            logger.info("Init skipped");
         }
         
         // Processes the RDFCoder src and classes as test.

@@ -25,6 +25,7 @@ import com.asemantics.rdfcoder.model.java.JavaOntology;
 import com.asemantics.rdfcoder.model.java.JavaQueryModel;
 import com.asemantics.rdfcoder.model.java.JavaQueryModelImpl;
 import com.asemantics.rdfcoder.profile.Profile;
+import com.asemantics.rdfcoder.profile.ProfileException;
 import com.asemantics.rdfcoder.repository.Repository;
 import com.asemantics.rdfcoder.repository.RepositoryException;
 import com.asemantics.rdfcoder.sourceparse.DirectoryParser;
@@ -107,6 +108,19 @@ public class JavaProfile implements Profile<JavaQueryModel> {
      * Code storage internal instance.
      */
     private final CodeStorage codeStorage;
+
+    /**
+     * Returns the <i>JRE</i> location on the basis of the Operative System.
+     *
+     * @return the file addressing the JRE root dir.
+     */
+    public static File getJRELocation() throws ProfileException {
+        final String javaHome = System.getProperty("java.home");
+        if(javaHome == null) {
+            throw new ProfileException("Error while retrieving the Java Home.");
+        }
+        return new File(javaHome);
+    }
 
     /**
      * Constructor.
@@ -267,6 +281,40 @@ public class JavaProfile implements Profile<JavaQueryModel> {
         } catch (Exception e) {
             throw new RDFCoderException("A generic error occurred while loading the Objects Table.", e);
         }
+    }
+
+    /**
+     * This utility method initializes or loads the given <i>JRE</i> profile depending if it exists or not.
+     *
+     * @param pathToJRE the location of the JRE.
+     * @return the initialization report if the init happened, <code>null</code> otherwise.
+     * @throws ProfileException
+     */
+    public JREReport initOrLoadJRE(File pathToJRE) throws ProfileException {
+        if ( ! checkJREInit(pathToJRE)) {
+            try {
+                return initJRE(pathToJRE);
+            } catch (Throwable t) {
+                throw new ProfileException("An error occurred while init the JRE profile.", t);
+            }
+        } else {
+            try {
+                loadJRE(pathToJRE);
+                return null;
+            } catch (Throwable t) {
+                throw new ProfileException("An error occurred while loading the JRE profile.", t);
+            }
+        }
+    }
+
+    /**
+     * This utility method initializes or loads the default <i>JRE</i> profile depending if it exists or not.
+     *
+     * @return the initialization report if the init happened, <code>null</code> otherwise.
+     * @throws ProfileException
+     */
+    public JREReport initOrLoadJRE() throws ProfileException {
+        return initOrLoadJRE( getJRELocation() );
     }
 
     public JStatistics loadSources(String libName, String srcPath) {
