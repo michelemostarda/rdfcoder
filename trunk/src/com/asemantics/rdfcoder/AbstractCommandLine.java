@@ -25,10 +25,12 @@ import com.asemantics.rdfcoder.model.QueryResult;
 import com.asemantics.rdfcoder.model.SPARQLException;
 import com.asemantics.rdfcoder.model.SPARQLQuerableCodeModel;
 import com.asemantics.rdfcoder.model.java.JavaQueryModel;
+import com.asemantics.rdfcoder.profile.ProfileException;
 import com.asemantics.rdfcoder.sourceparse.JStatistics;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.CodeStorageException;
-import jline.*;
+import jline.ConsoleReader;
+import jline.History;
 
 import java.io.File;
 import java.io.IOException;
@@ -192,6 +194,11 @@ public abstract class AbstractCommandLine {
     private final RDFCoder rdfCoder;
 
     /**
+     * This flag is used to intialize the JRE just once.
+     */
+    private boolean jreIntializationDone = false;
+
+    /**
      * Access point.
      *
      * @param args
@@ -200,7 +207,7 @@ public abstract class AbstractCommandLine {
      * @throws InvocationTargetException
      */
     public static void main(String[] args)
-    throws IOException, IllegalAccessException, InvocationTargetException {
+    throws IOException, IllegalAccessException, InvocationTargetException, ProfileException {
         CommandLine commandLine = new CommandLine(new File("."));
         commandLine.mainCycle();
     }
@@ -214,7 +221,7 @@ public abstract class AbstractCommandLine {
      * @throws InvocationTargetException
      */
     public AbstractCommandLine(File file)
-    throws IOException, IllegalAccessException, InvocationTargetException {
+            throws IOException, IllegalAccessException, InvocationTargetException, ProfileException {
         if(file == null) {
             throw new IllegalArgumentException("file cannot be null");
         }
@@ -227,7 +234,6 @@ public abstract class AbstractCommandLine {
         rdfCoder = new RDFCoder("./rdfcoder-repository");
         rdfCoder.setDebug( debug );
         rdfCoder.registerProfile(JAVA_PROFILE, "com.asemantics.rdfcoder.JavaProfile");
-        // TODO: invoke initJRE()
 
         // Model handler initialization.
         createModelHandler(DEFAULT_CODE_MODEL);
@@ -357,19 +363,43 @@ public abstract class AbstractCommandLine {
         return new File( getCurrentDirectory(), in );
     }
 
+    protected void initOrLoadJRE(JavaProfile jprofile) throws ProfileException {
+            System.out.println("Initializing JRE ...");
+            JREReport report = jprofile.initOrLoadJRE();
+            if (report == null) {
+                System.out.println("JRE model loaded.");
+            } else {
+                System.out.println("-------------------------------------------------------------------------------");
+                System.out.println("JRE model initialized.");
+                System.out.println(report.toString());
+                System.out.println("-------------------------------------------------------------------------------");
+            }
+    }
+
+    protected void initOrLoadJRE() throws ProfileException {
+        initOrLoadJRE( modelHandlers.get( getSelectedModel() ).javaProfile );
+    }
+
     /**
      * Creates a model handler for a model name.
      *
      * @param modelName
      * @return
      */
-    protected ModelHandler createModelHandler(String modelName) {
+    // TODO: retrieve the code model used do populate the Object Table and add it to the list of available models.
+    protected ModelHandler createModelHandler(String modelName) throws ProfileException {
         if(modelHandlers.containsKey(modelName)) {
             throw new IllegalArgumentException("a model with name " + modelName + " already exists.");
         }
 
         Model model = rdfCoder.createModel(modelName);
-        JavaProfile jprofile = (JavaProfile) model.getProfile(JAVA_PROFILE);
+        final JavaProfile jprofile = (JavaProfile) model.getProfile(JAVA_PROFILE);
+
+        if (!jreIntializationDone) {
+            initOrLoadJRE(jprofile);
+            jreIntializationDone = true;
+        }
+
         ModelHandler mh = new ModelHandler(model, jprofile);
         modelHandlers.put(modelName, mh);
         return mh;
