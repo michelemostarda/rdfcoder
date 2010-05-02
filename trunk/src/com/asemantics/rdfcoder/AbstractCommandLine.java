@@ -28,12 +28,7 @@ import com.asemantics.rdfcoder.model.java.JavaQueryModel;
 import com.asemantics.rdfcoder.sourceparse.JStatistics;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.CodeStorageException;
-import jline.ArgumentCompletor;
-import jline.CandidateListCompletionHandler;
-import jline.ConsoleReader;
-import jline.FileNameCompletor;
-import jline.History;
-import jline.SimpleCompletor;
+import jline.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -250,19 +245,8 @@ public abstract class AbstractCommandLine {
         history = new History(HISTORY_FILE);
         consoleReader.setHistory(history);
         consoleReader.setUseHistory(true);
-        CandidateListCompletionHandler completionHandler = new CandidateListCompletionHandler();
-        consoleReader.setCompletionHandler(completionHandler);
-        consoleReader.addCompletor (
-                new ArgumentCompletor (
-                    new SimpleCompletor( getCommandNames() )
-                )
-        );
-        consoleReader.addCompletor (
-                new ArgumentCompletor (
-                    new FileNameCompletor ()
-                )
-        );
-    }
+        configureCommandCompletors(consoleReader);
+    }                                                   
 
     public boolean isDebug() {
         return debug;
@@ -336,6 +320,13 @@ public abstract class AbstractCommandLine {
         Collection<String> result = commands.keySet();
         return result.toArray( new String[result.size()] );
     }
+
+    /**
+     * Configures the command line completors. 
+     *
+     * @param cr
+     */
+    protected abstract void configureCommandCompletors(ConsoleReader cr);
 
     /**
      * Sets the selected model.
