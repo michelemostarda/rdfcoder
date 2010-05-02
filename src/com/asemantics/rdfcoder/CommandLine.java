@@ -20,6 +20,7 @@ package com.asemantics.rdfcoder;
 
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.CodeStorageException;
+import jline.*;
 
 import java.io.File;
 import java.io.FilePermission;
@@ -504,15 +505,62 @@ public class CommandLine extends AbstractCommandLine {
     public String ___command_loadclasspath() {
         return
                 __command_loadclasspath() +
-                "\nsyntax: loadclasspath resource1 [resource2 ... ]" +
-                "\n\twhere resource can be" +
+                "\nsyntax: loadclasspath <library_name> <library_location> [<library_name> <library_location>]+" +
+                "\n\twhere <library_location> can be expressed as" +
                 "\n\t\ta jar    file:  jar:/path/to/jarfile.jar" +
                 "\n\t\ta source  dir:  src:/path/to/src" +
                 "\n\t\ta javadoc dir:  javadoc:/path/to/src" +
                 "\n\t\ta class   dir:  class:/path/to/class" +
                 "\n" +
                 "\n\tPerforms a parsing of the given set of resources" +
-                "\n\tand loads the generated model in the active model";
+                "\n\tand loads extracted data within the current model";
     }
+
+    protected void configureCommandCompletors(ConsoleReader cr) {
+        CandidateListCompletionHandler completionHandler = new CandidateListCompletionHandler();
+        cr.setCompletionHandler(completionHandler);
+
+        // help completor.
+        final ArgumentCompletor helpCompletor = new ArgumentCompletor(
+                new Completor[]{
+                        new SimpleCompletor(new String[]{"help"}),
+                        new SimpleCompletor(getCommandNames()),
+                        new NullCompletor()
+                }
+        );
+
+        // loadclasspath completor.
+        final ArgumentCompletor loadClasspathCompletor = new ArgumentCompletor(
+                new Completor[]{
+                        new SimpleCompletor(new String[]{"loadclasspath"}),
+                        new SimpleCompletor("<modelname>"),
+                        new ArgumentCompletor(
+                            new FileNameCompletor()
+                        )
+                }
+        );
+
+        // Generic completor.
+        final ArgumentCompletor completor = new ArgumentCompletor(
+                new Completor[]{
+                        new SimpleCompletor(getCommandNames()),
+                        new ArgumentCompletor(
+                                new FileNameCompletor()
+                        )
+                }
+        );
+
+        final MultiCompletor multiCompletor = new MultiCompletor(
+                new Completor[]{
+                        helpCompletor,
+                        loadClasspathCompletor,
+                        completor
+                }
+        );
+        cr.addCompletor(multiCompletor);
+    }
+
+    private int libIndex = 0;
+
 
 }
