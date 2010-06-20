@@ -556,19 +556,26 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         }
     }
 
-    public void parsedEntry(JavadocEntry entry) {
-        if(logger.isDebugEnabled()) {
-            logger.debug("parsedEntry: " + entry);
-        }
-    }
-
-    public void classJavadoc(JavadocEntry entry, String pathToClass) {
+    public void classJavadoc(JavadocEntry entry, Identifier pathToClass) {
         if(logger.isDebugEnabled()) {
             logger.debug("classJavadoc:" + pathToClass + "{" + entry + "}");
         }
     }
 
-    public void methodJavadoc(JavadocEntry entry, String pathToMethod, String[] signature) {
+    public void fieldJavadoc(JavadocEntry entry, Identifier pathToField) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("fieldJavadoc:" + pathToField + "{" + entry + "}");
+        }
+    }
+
+    public void constructorJavadoc(JavadocEntry entry, Identifier pathToConstructor, String[] signature) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("constructorJavadoc:" + pathToConstructor + "{" + entry + "}");
+        }
+
+    }
+
+    public void methodJavadoc(JavadocEntry entry, Identifier pathToMethod, String[] signature) {
         if(logger.isDebugEnabled()) {
             logger.debug("methodJavadoc:" + pathToMethod + "{" + entry + "}");
         }

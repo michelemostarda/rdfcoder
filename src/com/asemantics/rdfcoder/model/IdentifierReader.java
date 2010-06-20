@@ -142,14 +142,57 @@ public class IdentifierReader {
     }
 
     /**
+     * Reads a fully qualified field name.
+     *
+     * @param attribute the attribute name.
+     * @return the identifier representing the attribute.
+     * @throws IllegalArgumentException if an error occurred during parsing.
+     */
+    public static Identifier readFullyQualifiedAttribute(String attribute) {
+        return readFullyQualifiedType(attribute, JavaCodeModel.CLASS_KEY, JavaCodeModel.ATTRIBUTE_KEY);
+    }
+
+    /**
+     * Reads a fully qualified constructor name.
+     *
+     * @param constructor the constructor name.
+     * @return the identifier representing the constructor.
+     * @throws IllegalArgumentException if an error occurred during parsing.
+     */
+    public static Identifier readFullyQualifiedConstructor(String constructor) {
+        return readFullyQualifiedType(constructor, JavaCodeModel.CONSTRUCTOR_KEY);
+    }
+
+    /**
+     * Reads a fully qualified method name.
+     *
+     * @param method the method name.
+     * @return the identifier representing the method.
+     * @throws IllegalArgumentException if an error occurred during parsing.
+     */
+    public static Identifier readFullyQualifiedMethod(String method) {
+        return readFullyQualifiedType(method, JavaCodeModel.CLASS_KEY, JavaCodeModel.METHOD_KEY);
+    }
+
+    /**
      * Reads a fully qualified type and return an identifier with the specified strongest qualifier. 
      *
-     * @param pathToType
-     * @param qualifier
+     * @param pathToType string describeing the path to the type.
+     * @param qualifier list of segment qualifiers.
      * @return the identifier generated.
      */
-    private static Identifier readFullyQualifiedType(final String pathToType, final String qualifier) {
-        int packageEnd = pathToType.lastIndexOf(JavaCodeHandler.PACKAGE_SEPARATOR);
+    private static Identifier readFullyQualifiedType(final String pathToType, final String... qualifier) {
+        int packageEnd = -1;
+        int fromIndex = pathToType.length();
+        final String[] segments = new String[qualifier.length];
+        for(int i = 0; i < qualifier.length; i++) {
+            packageEnd = pathToType.lastIndexOf(JavaCodeHandler.PACKAGE_SEPARATOR, fromIndex - 1);
+            if(packageEnd == -1) {
+                break;
+            }
+            segments[segments.length - i - 1] = pathToType.substring(packageEnd + 1, fromIndex);
+            fromIndex = packageEnd;
+        }
         List<IdentifierFragment> fragments = new ArrayList<IdentifierFragment>();
         if(packageEnd == -1) {
             fragments.add( new IdentifierFragment("", JavaCodeModel.PACKAGE_KEY) );
@@ -157,7 +200,9 @@ public class IdentifierReader {
             Identifier packageIdentifier = IdentifierReader.readPackage(pathToType.substring(0, packageEnd));
             fragments.addAll( packageIdentifier.fragments );
         }
-        fragments.add( new IdentifierFragment( pathToType.substring(packageEnd + 1), qualifier ) );
+        for(int i = 0; i < qualifier.length; i++) {
+            fragments.add( new IdentifierFragment(segments[i], qualifier[i]) );
+        }
         return new Identifier(CodeModel.CODER_URI, fragments);
     }
 

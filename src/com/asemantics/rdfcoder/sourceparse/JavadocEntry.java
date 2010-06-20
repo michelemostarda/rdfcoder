@@ -18,6 +18,8 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +27,7 @@ import java.util.Map;
 /**
  * Represents a <i>Javadoc</i> entry.
  */
-public class JavadocEntry {
+public class JavadocEntry implements Serializable {
 
     static final String PARAMETER_IDENTIFIER = "@param";
 
@@ -155,9 +157,47 @@ public class JavadocEntry {
         return col;
     }
 
+    @Override
+    public int hashCode() {
+        return
+                shortDescription.hashCode() *
+                longDescription.hashCode()  * 2 *
+                parameterNames.hashCode()   * 3 *
+                attributes.hashCode()       * 5 *
+                row * 7 *
+                col * 11;        
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null) {
+            return false;
+        }
+        if(obj == this) {
+            return true;
+        }
+        if(obj instanceof JavadocEntry) {
+            JavadocEntry other = (JavadocEntry) obj ;
+            return
+                    shortDescription.equals( other.shortDescription )
+                        &&
+                    longDescription.equals(other.longDescription)
+                        &&
+                    Arrays.equals(parameterNames, other.parameterNames)
+                        &&
+                    attributes.equals(other.attributes)
+                        &&
+                    row == other.row
+                        &&
+                    col == other.col;
+        }
+        return false;
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName()).append(" at location r=").append(row).append(",c=").append(col).append(" {\n");
+        sb.append(this.getClass().getSimpleName()).append(" at location r=").append(row).append(",c=")
+                .append(col).append(" {\n");
         sb.append("\tshort description: ").append(shortDescription).append("\n");
         sb.append("\tlong  description: ").append(longDescription).append("\n");
         sb.append("parameter names: ").append( printArray(getParameterNames()) ).append("\n");

@@ -57,15 +57,6 @@ public class DirectoryParserTest {
         Assert.assertTrue( "No attributes found.", statistics.getParsedAttributes() > 0);
     }
 
-    @Test
-    public void testJavadocDirParser() {
-        JavadocFileParser javadocFileParser = new JavadocFileParser();
-        JStatistics statistics = processDir(javadocFileParser, new File("./src"));
-        logger.info( "Javadoc parsing statistics: " + statistics.toString() );
-        Assert.assertTrue( "No classes found.", statistics.getJavadocEntries() > 0);
-        Assert.assertTrue( "No methods found.", statistics.getMethodsJavadoc() > 0);
-    }
-
     public static JStatistics processDir(FileParser fileParser, File dir) {
         JStatistics statistics = new JStatistics();
         CoderFactory<JavaCodeHandler> coderFactory = new JenaCoderFactory();

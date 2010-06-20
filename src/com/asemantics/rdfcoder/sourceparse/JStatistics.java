@@ -47,6 +47,8 @@ public class JStatistics {
     private int replacedEntries;
     private int javadocEntries;
     private int classesJavadoc;
+    private int fieldsJavadoc;
+    private int constructorsJavadoc;
     private int methodsJavadoc;
     private String[] unresolved;
 
@@ -126,6 +128,14 @@ public class JStatistics {
 
     public int getClassesJavadoc() {
         return classesJavadoc;
+    }
+
+    public int getFieldsJavadoc() {
+        return fieldsJavadoc;
+    }
+
+    public int getConstructorsJavadoc() {
+        return constructorsJavadoc;
     }
 
     public int getMethodsJavadoc() {
@@ -250,6 +260,8 @@ public class JStatistics {
         sb.append("parsed enumerations: ").append(parsedEnumarations).append("\n");
         sb.append("javadoc entries: ").append(javadocEntries).append("\n");
         sb.append("classes javadoc: ").append(classesJavadoc).append("\n");
+        sb.append("fields javadoc: ").append(fieldsJavadoc).append("\n");
+        sb.append("constructors javadoc: ").append(constructorsJavadoc).append("\n");
         sb.append("methods javadoc: ").append(methodsJavadoc).append("\n");
         sb.append("generated temporary identifiers: ").append(generatedTempIds).append("\n");
         sb.append("replaced entries: ").append(replacedEntries).append("\n");
@@ -408,6 +420,10 @@ public class JStatistics {
             parsedMethods++;
         }
 
+        public void comment(Identifier identifier, String comment) {
+            //To change body of implemented methods use File | Settings | File Templates.
+        }
+
         public void parseError(String location, String description) {
             errorMessages.append("location='" + location + "' description='" + description + "'\n" );
             parseErrors++;
@@ -417,7 +433,6 @@ public class JStatistics {
             if(wrapped == null) { throw new IllegalStateException(); }
             unresolved = types;
             wrapped.unresolvedTypes(types);
-
         }
 
         public void preloadObjectsFromModel(ObjectsTable objectsTable) {
@@ -435,19 +450,25 @@ public class JStatistics {
             wrapped.removeErrorListener(errorListener);
         }
 
-        public void parsedEntry(JavadocEntry entry) {
-            if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.parsedEntry(entry);
-            javadocEntries++;
-        }
-
-        public void classJavadoc(JavadocEntry entry, String pathToClass) {
+        public void classJavadoc(JavadocEntry entry, Identifier pathToClass) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.classJavadoc(entry, pathToClass);
             classesJavadoc++;
         }
 
-        public void methodJavadoc(JavadocEntry entry, String pathToMethod, String[] signature) {
+        public void fieldJavadoc(JavadocEntry entry, Identifier pathToField) {
+            if(wrapped == null) { throw new IllegalStateException(); }
+            wrapped.fieldJavadoc(entry, pathToField);
+            fieldsJavadoc++;
+        }
+
+        public void constructorJavadoc(JavadocEntry entry, Identifier pathToConstructor, String[] signature) {
+            if(wrapped == null) { throw new IllegalStateException(); }
+            wrapped.fieldJavadoc(entry, pathToConstructor);
+            constructorsJavadoc++;
+        }
+
+        public void methodJavadoc(JavadocEntry entry, Identifier pathToMethod, String[] signature) {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.methodJavadoc(entry, pathToMethod, signature);
             methodsJavadoc++;
