@@ -18,6 +18,7 @@
 
 package com.asemantics.rdfcoder.model.java;
 
+import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.ParseHandler;
 import com.asemantics.rdfcoder.sourceparse.JavadocEntry;
 
@@ -27,19 +28,29 @@ import com.asemantics.rdfcoder.sourceparse.JavadocEntry;
 public interface JavadocHandler extends ParseHandler {
 
     /**
-     * Raised wether a Javadoc comment is found.
-     *
-     * @param entry
-     */
-    void parsedEntry(JavadocEntry entry);
-
-    /**
      * Raised when the parsed entry refers to a class.
      *
      * @param entry
      * @param pathToClass
      */
-    void classJavadoc(JavadocEntry entry, String pathToClass);
+    void classJavadoc(JavadocEntry entry, Identifier pathToClass);
+
+    /**
+     * Raised when the parsed entry refers to a class.
+     *
+     * @param entry
+     * @param pathToField
+     */
+    void fieldJavadoc(JavadocEntry entry, Identifier pathToField);
+
+    /**
+     * Raised when the parsed entry refers to a method.
+     *
+     * @param entry
+     * @param pathToConstructor
+     * @param signature
+     */
+    void constructorJavadoc(JavadocEntry entry, Identifier pathToConstructor, String[] signature);    
 
     /**
      * Raised when the parsed entry refers to a method.
@@ -48,5 +59,5 @@ public interface JavadocHandler extends ParseHandler {
      * @param pathToMethod
      * @param signature
      */
-    void methodJavadoc(JavadocEntry entry, String pathToMethod, String[] signature);
+    void methodJavadoc(JavadocEntry entry, Identifier pathToMethod, String[] signature);
 }

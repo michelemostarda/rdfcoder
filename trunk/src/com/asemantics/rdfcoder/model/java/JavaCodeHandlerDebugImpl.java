@@ -231,19 +231,29 @@ public class JavaCodeHandlerDebugImpl implements JavaCodeHandler {
         throw new UnsupportedOperationException();
     }
 
-    public void parsedEntry(JavadocEntry entry) {
-        if(logger.isDebugEnabled()) {
-            logger.debug("parsedEntry: " + entry );
-        }
-    }
-
-    public void classJavadoc(JavadocEntry entry, String pathToClass) {
+    public void classJavadoc(JavadocEntry entry, Identifier pathToClass) {
         if(logger.isDebugEnabled()) {
             logger.debug("classJavadoc:" + entry + " at location: " + pathToClass );
         }
     }
 
-    public void methodJavadoc(JavadocEntry entry, String pathToMethod, String[] signature) {
+    public void fieldJavadoc(JavadocEntry entry, Identifier pathToField) {
+        if(logger.isDebugEnabled()) {
+            logger.debug("fieldJavadoc:" + entry + " at location: " + pathToField );
+        }
+    }
+
+    public void constructorJavadoc(JavadocEntry entry, Identifier pathToConstructor, String[] signature) {
+        if(logger.isDebugEnabled()) {
+            logger.debug("constructorJavadoc: " + entry + " at location: " + pathToConstructor);
+            logger.debug("(");
+            for(String s: signature) { logger.debug(s + ", "); }
+            logger.debug(")");
+        }
+
+    }
+
+    public void methodJavadoc(JavadocEntry entry, Identifier pathToMethod, String[] signature) {
         if(logger.isDebugEnabled()) {
             logger.debug("methodJavadoc: " + entry + " at location: " + pathToMethod);
             logger.debug("(");

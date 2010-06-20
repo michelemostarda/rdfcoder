@@ -138,4 +138,72 @@ public class IdentifierReaderTest {
 
     }
 
+
+    /**
+     * Tests the {@link com.asemantics.rdfcoder.model.IdentifierReader#readFullyQualifiedAttribute(String)}
+     * method.
+     */
+    @Test
+    public void testReadFullyQualifiedAttribute() {
+        Identifier identifier = IdentifierReader.readFullyQualifiedAttribute("p1.p2.p3.C1.a1");
+        Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jpackage:p1.p2.p3",
+                identifier.getSections(0, 3).getIdentifier()
+        );
+        Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jclass:C1",
+                identifier.getSections(3, 4).getIdentifier()
+        );
+        Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jattribute:a1",
+                identifier.getTail().getIdentifier()
+        );
+    }
+
+    /**
+     * Tests the {@link com.asemantics.rdfcoder.model.IdentifierReader#readFullyQualifiedConstructor(String)}
+     * method. 
+     */
+    @Test
+    public void testReadFullyQualifiedConstructor() {
+        Identifier identifier = IdentifierReader.readFullyQualifiedConstructor("p1.p2.p3.C1");
+         Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jpackage:p1.p2.p3",
+                identifier.getParent().getIdentifier()
+        );
+        Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jconstructor:C1",
+                identifier.getTail().getIdentifier()
+        );
+    }
+
+    /**
+     * Tests the {@link com.asemantics.rdfcoder.model.IdentifierReader#readFullyQualifiedMethod(String)}
+     * method.
+     */
+    @Test
+    public void testReadFullyQualifiedMethod() {
+        Identifier identifier = IdentifierReader.readFullyQualifiedMethod("p1.p2.p3.C1.m1");
+        Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jpackage:p1.p2.p3",
+                identifier.getSections(0, 3).getIdentifier()
+        );
+        Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jclass:C1",
+                identifier.getSections(3, 4).getIdentifier()
+        );
+        Assert.assertEquals(
+                "Unexpected identifier.",
+                "http://www.rdfcoder.org/2007/1.0#jmethod:m1",
+                identifier.getTail().getIdentifier()
+        );
+    }
+
 }

@@ -93,6 +93,7 @@
   	<path id="test.build.classpath">
 	    <path        refid = "build.classpath"/>
 		<pathelement path  = "${lib.dir}/junit-4.4.jar"/>
+		<pathelement path  = "${lib.dir}/mockito-all-1.8.4.jar"/>
     </path>
 
     <path id="test.classpath">
@@ -274,7 +275,7 @@
          <mkdir dir="${test.reports}"/>
          <junit
                  printsummary="yes"
-                 haltonfailure="no"
+                 haltonfailure="yes"
                  dir="."
           >
              <classpath>

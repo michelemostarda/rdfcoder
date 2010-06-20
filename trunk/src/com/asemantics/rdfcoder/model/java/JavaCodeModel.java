@@ -772,6 +772,11 @@ public abstract class JavaCodeModel extends CodeModelBase {
      */
     public static final String HAS_MODIFIERS      = toPropertyURI("has_modifiers");
 
+    /**
+     * Defines the comment associated to an entity.
+     */
+    public static final String HAS_COMMENT        = toPropertyURI("has_comment");
+
     /* END:   Vocabulary properties. */
 
 }

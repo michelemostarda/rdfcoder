@@ -161,7 +161,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
      *
      * The method is expected to be FULLY QUALIFIED.
      *
-     * The length of paramterSize and parameterNames is the same,
+     * The length of parameterSize and parameterNames is the same,
      * the association between these elements is done positionally.
      *
      * @param modifiers the method modifiers.
@@ -184,7 +184,6 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
             JavaCodeModel.JType returnType,
             JavaCodeModel.ExceptionType[] exceptions
     );
-
 
     /**
      * Collects the unresolved types at the end of the parsing.
