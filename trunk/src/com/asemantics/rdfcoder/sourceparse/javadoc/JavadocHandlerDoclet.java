@@ -17,9 +17,14 @@
 
 package com.asemantics.rdfcoder.sourceparse.javadoc;
 
+import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.IdentifierReader;
+import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 import com.asemantics.rdfcoder.model.java.JavadocHandler;
-import com.asemantics.rdfcoder.sourceparse.JavadocEntry;
+import com.asemantics.rdfcoder.sourceparse.ClassJavadoc;
+import com.asemantics.rdfcoder.sourceparse.ConstructorJavadoc;
+import com.asemantics.rdfcoder.sourceparse.FieldJavadoc;
+import com.asemantics.rdfcoder.sourceparse.MethodJavadoc;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ConstructorDoc;
 import com.sun.javadoc.Doc;
@@ -42,6 +47,8 @@ import java.util.Map;
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
 public class JavadocHandlerDoclet {
+
+    public static final Identifier OBJECT_SUPERCLASS = IdentifierReader.readFullyQualifiedClass("java.lang.Object");
 
     public static final String SERIALIZATION_FILE_OPTION = "-serializationFile";
 
@@ -93,12 +100,49 @@ public class JavadocHandlerDoclet {
         }
     }
 
+    private JavaCodeModel.JVisibility getVisibility(ClassDoc doc) {
+        if(doc.isPublic()) {
+            return JavaCodeModel.JVisibility.PUBLIC;
+        }
+        if(doc.isProtected()) {
+            return JavaCodeModel.JVisibility.PROTECTED;
+        }
+        if(doc.isPrivate()) {
+            return JavaCodeModel.JVisibility.PRIVATE;
+        }
+        return JavaCodeModel.JVisibility.DEFAULT;
+    }
+
+    private Identifier[] getInterfaces(ClassDoc classDoc) {
+        ClassDoc[] ifaces = classDoc.interfaces();
+        Identifier[] result = new Identifier[ifaces.length];
+        for(int i =0; i < ifaces.length; i++) {
+            result[i] = IdentifierReader.readFullyQualifiedInterface(ifaces[i].qualifiedName());
+        }
+        return result;
+    }
+
+    private Identifier getSuperclass(ClassDoc classDoc) {
+        ClassDoc superClass = classDoc.superclass();
+        if(superClass == null) {
+            return OBJECT_SUPERCLASS;
+        }
+        return IdentifierReader.readFullyQualifiedClass(classDoc.superclass().qualifiedName());
+    }
+
     private void handleClass(ClassDoc classDoc) {
-        final JavadocEntry je = docToEntry(classDoc);
-        javadocHandler.classJavadoc(
-                je,
-                IdentifierReader.readFullyQualifiedClass(classDoc.qualifiedName())
+        final ClassJavadoc je = new ClassJavadoc(
+            IdentifierReader.readFullyQualifiedClass(classDoc.qualifiedName()),
+            getVisibility(classDoc),
+            getSuperclass(classDoc),
+            getInterfaces(classDoc),
+            classDoc.getRawCommentText(),
+            classDoc.commentText(),
+            getTags(classDoc),
+            classDoc.position().line(),
+            classDoc.position().column()
         );
+        javadocHandler.classJavadoc(je);
 
         for(FieldDoc fieldDoc : classDoc.fields()) {
             handleField(fieldDoc);
@@ -112,39 +156,41 @@ public class JavadocHandlerDoclet {
     }
 
     private void handleField(FieldDoc fieldDoc) {
-        final JavadocEntry je = docToEntry(fieldDoc);
-        javadocHandler.fieldJavadoc(
-                je,
-                IdentifierReader.readFullyQualifiedAttribute( fieldDoc.qualifiedName() )
+        final FieldJavadoc je = new FieldJavadoc(
+                IdentifierReader.readFullyQualifiedAttribute(fieldDoc.qualifiedName()),
+                fieldDoc.getRawCommentText(),
+                fieldDoc.commentText(),
+                getTags(fieldDoc),
+                fieldDoc.position().line(),
+                fieldDoc.position().column()
         );
+        javadocHandler.fieldJavadoc(je);
     }
 
     private void handleConstructor(ConstructorDoc constructorDoc) {
-        final JavadocEntry je = docToEntry(constructorDoc);
-        javadocHandler.constructorJavadoc(
-                je,
-                IdentifierReader.readFullyQualifiedConstructor( constructorDoc.qualifiedName() ),
-                new String[]{ constructorDoc.signature() }
+        final ConstructorJavadoc je = new ConstructorJavadoc(
+                IdentifierReader.readFullyQualifiedConstructor(constructorDoc.qualifiedName()),
+                constructorDoc.signature().split(" "),
+                constructorDoc.getRawCommentText(),
+                constructorDoc.commentText(),
+                getTags(constructorDoc),
+                constructorDoc.position().line(),
+                constructorDoc.position().column()
         );
+        javadocHandler.constructorJavadoc(je);
     }
 
     private void handleMethod(MethodDoc methodDoc) {
-        final JavadocEntry je = docToEntry(methodDoc);
-        javadocHandler.methodJavadoc(
-                je,
-                IdentifierReader.readFullyQualifiedMethod( methodDoc.qualifiedName() ),
-                new String[]{ methodDoc.signature() }
+        final MethodJavadoc je = new MethodJavadoc(
+                IdentifierReader.readFullyQualifiedMethod(methodDoc.qualifiedName()),
+                methodDoc.signature().split(" "),
+                methodDoc.getRawCommentText(),
+                methodDoc.commentText(),
+                getTags(methodDoc),
+                methodDoc.position().line(),
+                methodDoc.position().column()
         );
-    }
-
-    private JavadocEntry docToEntry(Doc doc) {
-        return new JavadocEntry(
-            doc.getRawCommentText(),
-            doc.commentText(),
-            getTags(doc),
-            doc.position().line(),
-            doc.position().column()
-        );
+        javadocHandler.methodJavadoc(je);
     }
 
     private File getSerializationFile(String[][] options) {

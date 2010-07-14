@@ -20,7 +20,10 @@ package com.asemantics.rdfcoder.model.java;
 
 import com.asemantics.rdfcoder.model.ErrorListener;
 import com.asemantics.rdfcoder.model.Identifier;
-import com.asemantics.rdfcoder.sourceparse.JavadocEntry;
+import com.asemantics.rdfcoder.sourceparse.ClassJavadoc;
+import com.asemantics.rdfcoder.sourceparse.ConstructorJavadoc;
+import com.asemantics.rdfcoder.sourceparse.FieldJavadoc;
+import com.asemantics.rdfcoder.sourceparse.MethodJavadoc;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
 import org.apache.log4j.Logger;
 
@@ -231,34 +234,27 @@ public class JavaCodeHandlerDebugImpl implements JavaCodeHandler {
         throw new UnsupportedOperationException();
     }
 
-    public void classJavadoc(JavadocEntry entry, Identifier pathToClass) {
+    public void classJavadoc(ClassJavadoc entry) {
         if(logger.isDebugEnabled()) {
-            logger.debug("classJavadoc:" + entry + " at location: " + pathToClass );
+            logger.debug("classJavadoc:" + entry);
         }
     }
 
-    public void fieldJavadoc(JavadocEntry entry, Identifier pathToField) {
+    public void fieldJavadoc(FieldJavadoc entry) {
         if(logger.isDebugEnabled()) {
-            logger.debug("fieldJavadoc:" + entry + " at location: " + pathToField );
+            logger.debug("fieldJavadoc:" + entry);
         }
     }
 
-    public void constructorJavadoc(JavadocEntry entry, Identifier pathToConstructor, String[] signature) {
+    public void constructorJavadoc(ConstructorJavadoc entry) {
         if(logger.isDebugEnabled()) {
-            logger.debug("constructorJavadoc: " + entry + " at location: " + pathToConstructor);
-            logger.debug("(");
-            for(String s: signature) { logger.debug(s + ", "); }
-            logger.debug(")");
+            logger.debug("constructorJavadoc: " + entry);
         }
-
     }
 
-    public void methodJavadoc(JavadocEntry entry, Identifier pathToMethod, String[] signature) {
+    public void methodJavadoc(MethodJavadoc entry) {
         if(logger.isDebugEnabled()) {
-            logger.debug("methodJavadoc: " + entry + " at location: " + pathToMethod);
-            logger.debug("(");
-            for(String s: signature) { logger.debug(s + ", "); }
-            logger.debug(")");
+            logger.debug("methodJavadoc: " + entry );
         }
     }
 

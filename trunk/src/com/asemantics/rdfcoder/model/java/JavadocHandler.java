@@ -18,9 +18,11 @@
 
 package com.asemantics.rdfcoder.model.java;
 
-import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.ParseHandler;
-import com.asemantics.rdfcoder.sourceparse.JavadocEntry;
+import com.asemantics.rdfcoder.sourceparse.ClassJavadoc;
+import com.asemantics.rdfcoder.sourceparse.ConstructorJavadoc;
+import com.asemantics.rdfcoder.sourceparse.FieldJavadoc;
+import com.asemantics.rdfcoder.sourceparse.MethodJavadoc;
 
 /**
  * Defines a consumer for <i>Javadoc</i> parsing events.
@@ -31,33 +33,27 @@ public interface JavadocHandler extends ParseHandler {
      * Raised when the parsed entry refers to a class.
      *
      * @param entry
-     * @param pathToClass
      */
-    void classJavadoc(JavadocEntry entry, Identifier pathToClass);
+    void classJavadoc(ClassJavadoc entry);
 
     /**
      * Raised when the parsed entry refers to a class.
      *
      * @param entry
-     * @param pathToField
      */
-    void fieldJavadoc(JavadocEntry entry, Identifier pathToField);
+    void fieldJavadoc(FieldJavadoc entry);
+
+    /**
+     * Raised when the parsed entry refers to a constructor.
+     *
+     * @param entry
+     */
+    void constructorJavadoc(ConstructorJavadoc entry);
 
     /**
      * Raised when the parsed entry refers to a method.
      *
      * @param entry
-     * @param pathToConstructor
-     * @param signature
      */
-    void constructorJavadoc(JavadocEntry entry, Identifier pathToConstructor, String[] signature);    
-
-    /**
-     * Raised when the parsed entry refers to a method.
-     *
-     * @param entry
-     * @param pathToMethod
-     * @param signature
-     */
-    void methodJavadoc(JavadocEntry entry, Identifier pathToMethod, String[] signature);
+    void methodJavadoc(MethodJavadoc entry);
 }

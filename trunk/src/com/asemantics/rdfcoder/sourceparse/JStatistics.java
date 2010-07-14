@@ -450,27 +450,27 @@ public class JStatistics {
             wrapped.removeErrorListener(errorListener);
         }
 
-        public void classJavadoc(JavadocEntry entry, Identifier pathToClass) {
+        public void classJavadoc(ClassJavadoc entry) {
             if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.classJavadoc(entry, pathToClass);
+            wrapped.classJavadoc(entry);
             classesJavadoc++;
         }
 
-        public void fieldJavadoc(JavadocEntry entry, Identifier pathToField) {
+        public void fieldJavadoc(FieldJavadoc entry) {
             if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.fieldJavadoc(entry, pathToField);
+            wrapped.fieldJavadoc(entry);
             fieldsJavadoc++;
         }
 
-        public void constructorJavadoc(JavadocEntry entry, Identifier pathToConstructor, String[] signature) {
+        public void constructorJavadoc(ConstructorJavadoc entry) {
             if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.fieldJavadoc(entry, pathToConstructor);
+            wrapped.constructorJavadoc(entry);
             constructorsJavadoc++;
         }
 
-        public void methodJavadoc(JavadocEntry entry, Identifier pathToMethod, String[] signature) {
+        public void methodJavadoc(MethodJavadoc entry) {
             if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.methodJavadoc(entry, pathToMethod, signature);
+            wrapped.methodJavadoc(entry);
             methodsJavadoc++;
         }
 
