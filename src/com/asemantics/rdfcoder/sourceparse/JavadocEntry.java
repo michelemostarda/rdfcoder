@@ -25,19 +25,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a <i>Javadoc</i> entry.
+ * Represents a generic <i>Javadoc</i> entry.
  */
-public class JavadocEntry implements Serializable {
+public abstract class JavadocEntry implements Serializable {
 
     static final String PARAMETER_IDENTIFIER = "@param";
 
     /**
-     * The short desciption of the comment.
+     * The short description of the comment.
      */
     private String shortDescription;
 
     /**
-     * The long decription of the content.
+     * The long description of the content.
      */
     private String longDescription;
 
@@ -47,7 +47,7 @@ public class JavadocEntry implements Serializable {
     private String[] parameterNames;
 
     /**
-     * The atreibutes of the entry.
+     * The attributes of the entry.
      */
     private Map<String,List<String>> attributes;
 
@@ -90,7 +90,7 @@ public class JavadocEntry implements Serializable {
 
     private Map<String, String> getParametersMap() {
         if (parametersMap == null) {
-            parametersMap = new HashMap();
+            parametersMap = new HashMap<String,String>();
             for (Map.Entry<String, List<String>> entry : attributes.entrySet()) {
                 if ( PARAMETER_IDENTIFIER.equals( entry.getKey() ) ) {
                     for(String listItem: entry.getValue()) {

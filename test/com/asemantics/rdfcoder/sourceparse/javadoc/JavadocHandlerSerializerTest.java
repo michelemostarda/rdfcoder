@@ -3,7 +3,7 @@ package com.asemantics.rdfcoder.sourceparse.javadoc;
 import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.IdentifierReader;
 import com.asemantics.rdfcoder.model.java.JavadocHandler;
-import com.asemantics.rdfcoder.sourceparse.JavadocEntry;
+import com.asemantics.rdfcoder.sourceparse.FieldJavadoc;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,20 +39,18 @@ public class JavadocHandlerSerializerTest implements Serializable {
     public void testSerializationDeserializationFlow() throws Exception {
         // Data.
         final JavadocHandler jh = javadocHandlerSerializer.getHandler();
-        final JavadocEntry javadocEntry = new JavadocEntry(
+        final Identifier fakeIdentifier = IdentifierReader.readFullyQualifiedClass("path.to.Clazz");
+        final FieldJavadoc javadocEntry = new FieldJavadoc(
+            fakeIdentifier,
             "short",
             "long",
             new HashMap<String, List<String>>(){ { put("p1", null); } },
             1, 2
         );
-        final Identifier fakeIdentifier = IdentifierReader.readFullyQualifiedClass("path.to.Clazz");
 
         // Serialization.
         jh.startParsing("test-lib-name", "test-lib-location");
-        jh.classJavadoc(
-                javadocEntry,
-                fakeIdentifier
-        );
+        jh.fieldJavadoc(javadocEntry);
         jh.endParsing();
         File tmpFile = File.createTempFile("pre", "suff");
         javadocHandlerSerializer.serialize(tmpFile);
@@ -66,7 +64,7 @@ public class JavadocHandlerSerializerTest implements Serializable {
 
         // Verification.
         verify(mockJH).startParsing("test-lib-name", "test-lib-location");
-        verify(mockJH).classJavadoc(javadocEntry, fakeIdentifier);
+        verify(mockJH).fieldJavadoc(javadocEntry);
         verify(mockJH).endParsing();
     }
 

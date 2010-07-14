@@ -27,7 +27,10 @@ import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.IdentifierBuilder;
 import com.asemantics.rdfcoder.model.IdentifierReader;
 import com.asemantics.rdfcoder.model.TripleIterator;
-import com.asemantics.rdfcoder.sourceparse.JavadocEntry;
+import com.asemantics.rdfcoder.sourceparse.ClassJavadoc;
+import com.asemantics.rdfcoder.sourceparse.ConstructorJavadoc;
+import com.asemantics.rdfcoder.sourceparse.FieldJavadoc;
+import com.asemantics.rdfcoder.sourceparse.MethodJavadoc;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import org.apache.log4j.Logger;
@@ -326,7 +329,11 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         checkPackageDiscrepancy(pathToEnumeration);
 
         model.addTriple(pathToEnumerationIdentifier, CodeModel.SUBCLASSOF, JavaCodeModel.JENUMERATION);
-        model.addTripleLiteral(pathToEnumerationIdentifier, JavaCodeModel.HAS_MODIFIERS, JavaCodeModel.JModifier.toByte(modifiers).toString() );
+        model.addTripleLiteral(
+                pathToEnumerationIdentifier,
+                JavaCodeModel.HAS_MODIFIERS,
+                JavaCodeModel.JModifier.toByte(modifiers).toString()
+        );
         model.addTripleLiteral(pathToEnumerationIdentifier, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
         for(int i = 0; i < elements.length; i++) {
             model.addTriple(
@@ -556,28 +563,31 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         }
     }
 
-    public void classJavadoc(JavadocEntry entry, Identifier pathToClass) {
+    // TODO HIGH - Implement method.
+    public void classJavadoc(ClassJavadoc entry) {
         if(logger.isDebugEnabled()) {
-            logger.debug("classJavadoc:" + pathToClass + "{" + entry + "}");
+            logger.debug("classJavadoc:" + "{" + entry + "}");
         }
     }
 
-    public void fieldJavadoc(JavadocEntry entry, Identifier pathToField) {
+    // TODO HIGH - Implement method.
+    public void fieldJavadoc(FieldJavadoc entry) {
         if (logger.isDebugEnabled()) {
-            logger.debug("fieldJavadoc:" + pathToField + "{" + entry + "}");
+            logger.debug("fieldJavadoc:" + "{" + entry + "}");
         }
     }
 
-    public void constructorJavadoc(JavadocEntry entry, Identifier pathToConstructor, String[] signature) {
+    // TODO HIGH - Implement method.
+    public void constructorJavadoc(ConstructorJavadoc entry) {
         if (logger.isDebugEnabled()) {
-            logger.debug("constructorJavadoc:" + pathToConstructor + "{" + entry + "}");
+            logger.debug("constructorJavadoc:" + "{" + entry + "}");
         }
-
     }
 
-    public void methodJavadoc(JavadocEntry entry, Identifier pathToMethod, String[] signature) {
+    // TODO HIGH - Implement method.
+    public void methodJavadoc(MethodJavadoc entry) {
         if(logger.isDebugEnabled()) {
-            logger.debug("methodJavadoc:" + pathToMethod + "{" + entry + "}");
+            logger.debug("methodJavadoc:" + "{" + entry + "}");
         }
     }
 
