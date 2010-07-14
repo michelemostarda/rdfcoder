@@ -4,6 +4,6 @@ The project documentation is [http://rdfcoder.googlecode.com/svn/trunk/doc/htmld
 
 To check out the documentation use:
 
-{{{ svn co http://rdfcoder.googlecode.com/svn/trunk/doc/htmldoc rdfcoder-doc-RO }}}
+{{{ svn co http://rdfcoder.googlecode.com/svn/trunk/doc/htmldoc rdfcoder-doc-trunk }}}
 
 The Javadoc is accessible [http://rdfcoder.googlecode.com/svn/trunk/javadoc/index.html here].
