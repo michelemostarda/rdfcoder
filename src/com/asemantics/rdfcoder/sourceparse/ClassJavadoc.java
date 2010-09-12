@@ -16,8 +16,6 @@ public class ClassJavadoc extends JavadocEntry {
 
     private Identifier identifier;
 
-    private JavaCodeModel.JVisibility visibility;
-
     private Identifier extendedClass;
 
     private Identifier[] implementedInterfaces;
@@ -25,6 +23,12 @@ public class ClassJavadoc extends JavadocEntry {
     /**
      * Constructor.
      *
+     * @param identifier
+     * @param identifier
+     * @param extendedClass
+     * @param implementedInterfaces
+     * @param modifiers
+     * @param visibility
      * @param sd
      * @param ld
      * @param attrs
@@ -33,12 +37,13 @@ public class ClassJavadoc extends JavadocEntry {
      */
     public ClassJavadoc(
             Identifier identifier,
-            JavaCodeModel.JVisibility visibility,
             Identifier extendedClass,
             Identifier[] implementedInterfaces,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
             String sd, String ld, Map<String, List<String>> attrs, int row, int col
     ) {
-        super(sd, ld, attrs, row, col);
+        super(sd, ld, attrs, row, col, modifiers, visibility);
         if(identifier == null) {
             throw new NullPointerException();
         }
@@ -52,17 +57,12 @@ public class ClassJavadoc extends JavadocEntry {
             throw new NullPointerException();
         }
         this.identifier = identifier;
-        this.visibility = visibility;
         this.extendedClass = extendedClass;
         this.implementedInterfaces = implementedInterfaces;
     }
 
     public Identifier getIdentifier() {
         return identifier;
-    }
-
-    public JavaCodeModel.JVisibility getVisibility() {
-        return visibility;
     }
 
     public Identifier getExtendedClass() {

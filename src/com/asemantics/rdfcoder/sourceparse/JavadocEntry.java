@@ -18,6 +18,8 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
+import com.asemantics.rdfcoder.model.java.JavaCodeModel;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -52,6 +54,16 @@ public abstract class JavadocEntry implements Serializable {
     private Map<String,List<String>> attributes;
 
     /**
+     * Modifiers associated to this entry.
+     */
+    private JavaCodeModel.JModifier[] modifiers;
+
+    /**
+     * The visibility of the entry target.
+     */
+    private JavaCodeModel.JVisibility visibility;
+
+    /**
      * The location row of the Javadoc entry.
      */
     private int row;
@@ -69,13 +81,24 @@ public abstract class JavadocEntry implements Serializable {
      * @param attrs
      * @param row
      * @param col
+     * @param modifiers
+     * @param visibility
      */
-    public JavadocEntry(String sd, String ld, Map<String, List<String>> attrs, int row, int col) {
+    public JavadocEntry(
+            String sd,
+            String ld,
+            Map<String, List<String>> attrs,
+            int row, int col,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility
+    ) {
         shortDescription = sd;
         longDescription = ld;
         attributes = attrs;
         this.row = row;
         this.col = col;
+        this.modifiers = modifiers;
+        this.visibility = visibility;
     }
 
     public String getShortDescription() {
@@ -157,6 +180,14 @@ public abstract class JavadocEntry implements Serializable {
         return col;
     }
 
+    public JavaCodeModel.JModifier[] getModifiers() {
+        return modifiers;
+    }
+
+    public JavaCodeModel.JVisibility getVisibility() {
+        return visibility;
+    }
+
     @Override
     public int hashCode() {
         return
@@ -218,5 +249,4 @@ public abstract class JavadocEntry implements Serializable {
         }
         return sb.toString();
     }
-
 }
