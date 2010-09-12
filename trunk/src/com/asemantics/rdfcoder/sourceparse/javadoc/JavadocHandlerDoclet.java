@@ -31,8 +31,11 @@ import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.Parameter;
+import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.Tag;
+import com.sun.javadoc.Type;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -100,7 +103,7 @@ public class JavadocHandlerDoclet {
         }
     }
 
-    private JavaCodeModel.JVisibility getVisibility(ClassDoc doc) {
+    private JavaCodeModel.JVisibility getVisibility(ProgramElementDoc doc) {
         if(doc.isPublic()) {
             return JavaCodeModel.JVisibility.PUBLIC;
         }
@@ -113,6 +116,71 @@ public class JavadocHandlerDoclet {
         return JavaCodeModel.JVisibility.DEFAULT;
     }
 
+    private JavaCodeModel.JModifier[] getModifiers(MethodDoc doc){
+        final List<JavaCodeModel.JModifier> modifiers = new ArrayList<JavaCodeModel.JModifier>();
+        if(doc.isAbstract()) {
+            modifiers.add(JavaCodeModel.JModifier.ABSTRACT);
+        }
+        if(doc.isFinal()) {
+            modifiers.add(JavaCodeModel.JModifier.FINAL);
+        }
+        if(doc.isNative()) {
+            modifiers.add(JavaCodeModel.JModifier.NATIVE);
+        }
+        if(doc.isStatic()) {
+            modifiers.add(JavaCodeModel.JModifier.STATIC);
+        }
+        if(doc.isSynchronized()) {
+            modifiers.add(JavaCodeModel.JModifier.SYNCHRONIZED);
+        }
+        return modifiers.toArray( new JavaCodeModel.JModifier[modifiers.size()]);
+    }
+
+    private JavaCodeModel.JModifier[] getModifiers(ConstructorDoc doc){
+        final List<JavaCodeModel.JModifier> modifiers = new ArrayList<JavaCodeModel.JModifier>();
+        if(doc.isFinal()) {
+            modifiers.add(JavaCodeModel.JModifier.FINAL);
+        }
+        if(doc.isNative()) {
+            modifiers.add(JavaCodeModel.JModifier.NATIVE);
+        }
+        if(doc.isStatic()) {
+            modifiers.add(JavaCodeModel.JModifier.STATIC);
+        }
+        if(doc.isSynchronized()) {
+            modifiers.add(JavaCodeModel.JModifier.SYNCHRONIZED);
+        }
+        return modifiers.toArray( new JavaCodeModel.JModifier[modifiers.size()]);
+    }
+
+    private JavaCodeModel.JModifier[] getModifiers(ClassDoc doc){
+        final List<JavaCodeModel.JModifier> modifiers = new ArrayList<JavaCodeModel.JModifier>();
+        if(doc.isAbstract()) {
+            modifiers.add(JavaCodeModel.JModifier.ABSTRACT);
+        }
+        if(doc.isFinal()) {
+            modifiers.add(JavaCodeModel.JModifier.FINAL);
+        }
+        if(doc.isStatic()) {
+            modifiers.add(JavaCodeModel.JModifier.STATIC);
+        }
+        return modifiers.toArray( new JavaCodeModel.JModifier[modifiers.size()]);
+    }
+
+    private JavaCodeModel.JModifier[] getModifiers(FieldDoc doc){
+        final List<JavaCodeModel.JModifier> modifiers = new ArrayList<JavaCodeModel.JModifier>();
+        if(doc.isStatic()) {
+            modifiers.add(JavaCodeModel.JModifier.STATIC);
+        }
+        if(doc.isTransient()) {
+            modifiers.add(JavaCodeModel.JModifier.TRANSIENT);
+        }
+        if(doc.isVolatile()) {
+            modifiers.add(JavaCodeModel.JModifier.VOLATILE);
+        }
+        return modifiers.toArray( new JavaCodeModel.JModifier[modifiers.size()]);
+    }
+
     private Identifier[] getInterfaces(ClassDoc classDoc) {
         ClassDoc[] ifaces = classDoc.interfaces();
         Identifier[] result = new Identifier[ifaces.length];
@@ -120,6 +188,44 @@ public class JavadocHandlerDoclet {
             result[i] = IdentifierReader.readFullyQualifiedInterface(ifaces[i].qualifiedName());
         }
         return result;
+    }
+
+
+    // TODO: handle all Types (interfaces, objects, exceptions...).
+    private JavaCodeModel.JType typeToJType(Type t) {
+        if (t.isPrimitive()) {
+            return JavaCodeModel.javaTypeToJType(t.qualifiedTypeName());
+        } else {
+            return new JavaCodeModel.ObjectType(
+                    IdentifierReader.readFullyQualifiedClass(t.qualifiedTypeName())
+            );
+        }
+    }
+
+    private JavaCodeModel.JType[] getSignature(Parameter[] parameters) {
+        final JavaCodeModel.JType[] signature = new JavaCodeModel.JType[parameters.length];
+        for(int i = 0; i < parameters.length; i++) {
+            signature[i] = typeToJType(parameters[i].type());
+        }
+        return signature;
+    }
+
+    private String[] getParameterNames(Parameter[] parameters) {
+        final String[] parameterNames = new String[parameters.length];
+        for(int i = 0; i < parameters.length; i++) {
+            parameterNames[i] = parameters[i].name();
+        }
+        return parameterNames;
+    }
+
+    private JavaCodeModel.ExceptionType[] getExceptions(ClassDoc[] thrownExceptions) {
+        final JavaCodeModel.ExceptionType[] exceptionTypes = new JavaCodeModel.ExceptionType[thrownExceptions.length];
+        for(int i = 0; i < thrownExceptions.length; i++) {
+            exceptionTypes[i] = new JavaCodeModel.ExceptionType(
+                    IdentifierReader.readFullyQualifiedClass( thrownExceptions[i].qualifiedName() )
+            );
+        }
+        return exceptionTypes;
     }
 
     private Identifier getSuperclass(ClassDoc classDoc) {
@@ -133,9 +239,10 @@ public class JavadocHandlerDoclet {
     private void handleClass(ClassDoc classDoc) {
         final ClassJavadoc je = new ClassJavadoc(
             IdentifierReader.readFullyQualifiedClass(classDoc.qualifiedName()),
-            getVisibility(classDoc),
             getSuperclass(classDoc),
             getInterfaces(classDoc),
+            getModifiers(classDoc),
+            getVisibility(classDoc),
             classDoc.getRawCommentText(),
             classDoc.commentText(),
             getTags(classDoc),
@@ -158,6 +265,10 @@ public class JavadocHandlerDoclet {
     private void handleField(FieldDoc fieldDoc) {
         final FieldJavadoc je = new FieldJavadoc(
                 IdentifierReader.readFullyQualifiedAttribute(fieldDoc.qualifiedName()),
+                typeToJType(fieldDoc.type()),
+                fieldDoc.constantValue() != null ? fieldDoc.constantValue().toString() : null,
+                getModifiers(fieldDoc),
+                getVisibility(fieldDoc),
                 fieldDoc.getRawCommentText(),
                 fieldDoc.commentText(),
                 getTags(fieldDoc),
@@ -168,9 +279,14 @@ public class JavadocHandlerDoclet {
     }
 
     private void handleConstructor(ConstructorDoc constructorDoc) {
+        constructorDoc.signature();
         final ConstructorJavadoc je = new ConstructorJavadoc(
                 IdentifierReader.readFullyQualifiedConstructor(constructorDoc.qualifiedName()),
-                constructorDoc.signature().split(" "),
+                getSignature( constructorDoc.parameters() ),
+                getParameterNames( constructorDoc.parameters() ),
+                getExceptions( constructorDoc.thrownExceptions() ),
+                getModifiers(constructorDoc),
+                getVisibility(constructorDoc),
                 constructorDoc.getRawCommentText(),
                 constructorDoc.commentText(),
                 getTags(constructorDoc),
@@ -183,7 +299,12 @@ public class JavadocHandlerDoclet {
     private void handleMethod(MethodDoc methodDoc) {
         final MethodJavadoc je = new MethodJavadoc(
                 IdentifierReader.readFullyQualifiedMethod(methodDoc.qualifiedName()),
-                methodDoc.signature().split(" "),
+                getSignature( methodDoc.parameters() ),
+                getParameterNames( methodDoc.parameters() ),
+                typeToJType(methodDoc.returnType()),
+                getExceptions( methodDoc.thrownExceptions() ),
+                getModifiers(methodDoc),
+                getVisibility(methodDoc),
                 methodDoc.getRawCommentText(),
                 methodDoc.commentText(),
                 getTags(methodDoc),

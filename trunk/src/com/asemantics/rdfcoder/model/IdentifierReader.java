@@ -116,7 +116,11 @@ public class IdentifierReader {
      * @throws IllegalArgumentException if an error occurred during parsing.
      */
     public static Identifier readFullyQualifiedClass(String clazz) {
-        return readFullyQualifiedType(clazz, JavaCodeModel.CLASS_KEY);
+        try {
+            return readFullyQualifiedType(clazz, JavaCodeModel.CLASS_KEY);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error while parsing class '" + clazz + "'", e);
+        }
     }
 
     /**

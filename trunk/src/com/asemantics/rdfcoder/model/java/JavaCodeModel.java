@@ -23,6 +23,7 @@ import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.IdentifierBuilder;
 import com.asemantics.rdfcoder.model.IdentifierReader;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
     /**
      *  Java Type interface.
      */
-    public interface JType {
+    public interface JType extends Serializable {
 
         public String getInternalIdentifier();
 
@@ -339,7 +340,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
      * @return the object type.
      */
     public static final ObjectType createObjectType(String s) {
-        return new ObjectType( IdentifierReader.readIdentifier(s) );
+        return new ObjectType( IdentifierReader.readFullyQualifiedClass(s) );
     }
 
     /**

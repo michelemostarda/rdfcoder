@@ -2,6 +2,7 @@ package com.asemantics.rdfcoder.sourceparse.javadoc;
 
 import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.IdentifierReader;
+import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 import com.asemantics.rdfcoder.model.java.JavadocHandler;
 import com.asemantics.rdfcoder.sourceparse.FieldJavadoc;
 import org.junit.After;
@@ -42,6 +43,10 @@ public class JavadocHandlerSerializerTest implements Serializable {
         final Identifier fakeIdentifier = IdentifierReader.readFullyQualifiedClass("path.to.Clazz");
         final FieldJavadoc javadocEntry = new FieldJavadoc(
             fakeIdentifier,
+            JavaCodeModel.createObjectType("path.to.Type"),
+            "FAKE-VALUE",
+            new JavaCodeModel.JModifier[0],
+            JavaCodeModel.JVisibility.DEFAULT,
             "short",
             "long",
             new HashMap<String, List<String>>(){ { put("p1", null); } },
@@ -67,6 +72,4 @@ public class JavadocHandlerSerializerTest implements Serializable {
         verify(mockJH).fieldJavadoc(javadocEntry);
         verify(mockJH).endParsing();
     }
-
-
 }

@@ -563,32 +563,51 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         }
     }
 
-    // TODO HIGH - Implement method.
     public void classJavadoc(ClassJavadoc entry) {
-        if(logger.isDebugEnabled()) {
-            logger.debug("classJavadoc:" + "{" + entry + "}");
-        }
+        startClass(
+                entry.getModifiers(),
+                entry.getVisibility(),
+                entry.getIdentifier(),
+                entry.getExtendedClass(),
+                entry.getImplementedInterfaces()
+        );
+        // TODO: add specific triples generation.
     }
 
-    // TODO HIGH - Implement method.
     public void fieldJavadoc(FieldJavadoc entry) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("fieldJavadoc:" + "{" + entry + "}");
-        }
+        attribute(
+                entry.getModifiers(),
+                entry.getVisibility(),
+                entry.getPathToField(),
+                entry.getPathToType(),
+                entry.getFieldValue()
+        );
+        // TODO: add specific triples generation.
     }
 
-    // TODO HIGH - Implement method.
     public void constructorJavadoc(ConstructorJavadoc entry) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("constructorJavadoc:" + "{" + entry + "}");
-        }
+        constructor(
+                entry.getModifiers(),
+                entry.getVisibility(),
+                0, // TODO: add missing parameter.
+                entry.getParameterNames(),
+                entry.getSignature(),
+                entry.getExceptions()
+        );
+        // TODO: add specific triples generation.
     }
 
-    // TODO HIGH - Implement method.
     public void methodJavadoc(MethodJavadoc entry) {
-        if(logger.isDebugEnabled()) {
-            logger.debug("methodJavadoc:" + "{" + entry + "}");
-        }
+        method(
+                entry.getModifiers(),
+                entry.getVisibility(),
+                entry.getPathToMethod(),
+                0, //TODO: add missing parameter.
+                entry.getParameterNames(),
+                entry.getSignature(),
+                entry.getReturnType(),
+                entry.getThrownExceptions()
+        );
     }
 
     public Identifier generateTempUniqueIdentifier() {
@@ -598,7 +617,6 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
     public int replaceIdentifierWithQualifiedType(Identifier identifier, Identifier qualifiedType) {
         return model.replaceIdentifierWithQualifiedType(identifier, qualifiedType);
     }
-
 
     /**
      * @return <code>true</code> if the packages stack is empty,
