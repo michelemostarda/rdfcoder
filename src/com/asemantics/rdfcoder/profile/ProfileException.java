@@ -18,9 +18,10 @@
 package com.asemantics.rdfcoder.profile;
 
 /**
- * Defines an exception raised by a {@link com.asemantics.rdfcoder.profile.Profile}
+ * Defines an exception raised by a
+ * {@link com.asemantics.rdfcoder.profile.Profile}.
  *
- * @author Michele Mostarda (mostarda@fbk.eu)
+ * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
 public class ProfileException extends Exception {
 
