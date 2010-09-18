@@ -31,8 +31,6 @@ import java.util.Map;
  */
 public class ConstructorJavadoc extends JavadocEntry {
 
-    private Identifier constructorIdentifier;
-
     private JavaCodeModel.JType[] signature;
 
     private String signatureStr;
@@ -67,7 +65,7 @@ public class ConstructorJavadoc extends JavadocEntry {
             JavaCodeModel.JVisibility visibility,
             String sd, String ld, Map<String, List<String>> attrs, int row, int col
     ) {
-        super(sd, ld, attrs, row, col, modifiers, visibility);
+        super(constructorIdentifier, sd, ld, attrs, row, col, modifiers, visibility);
         if(constructorIdentifier == null) {
             throw new NullPointerException("identifier cannot be null.");
         }
@@ -85,15 +83,10 @@ public class ConstructorJavadoc extends JavadocEntry {
                     "The size of signature must correspond with the size of parameters names."
             );
         }
-        this.constructorIdentifier = constructorIdentifier;
         this.signature = signature;
         this.signatureStr = signatureStr;
         this.parameterNames = paramNames;
         this.exceptions = exceptions;
-    }
-
-    public Identifier getConstructorIdentifier() {
-        return constructorIdentifier;
     }
 
     public JavaCodeModel.JType[] getSignature() {

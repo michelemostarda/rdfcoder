@@ -32,11 +32,6 @@ import java.util.Map;
 public class FieldJavadoc extends JavadocEntry {
 
     /**
-     * The identifier of the field.
-     */
-    private Identifier pathToField;
-
-    /**
      * The identifier of the field type.
      */
     private JavaCodeModel.JType fieldType;
@@ -68,20 +63,15 @@ public class FieldJavadoc extends JavadocEntry {
             JavaCodeModel.JVisibility visibility,
             String sd, String ld, Map<String, List<String>> attrs, int row, int col
     ) {
-        super(sd, ld, attrs, row, col, modifiers, visibility);
+        super(pathToField, sd, ld, attrs, row, col, modifiers, visibility);
         if(pathToField == null) {
             throw new NullPointerException();
         }
         if(fieldType == null) {
             throw new NullPointerException();
         }
-        this.pathToField = pathToField;
         this.fieldType   = fieldType;
         this.fieldValue  = fieldValue;
-    }
-
-    public Identifier getPathToField() {
-        return pathToField;
     }
 
     public JavaCodeModel.JType getPathToType() {
