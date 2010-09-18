@@ -31,8 +31,6 @@ import java.util.Map;
  */
 public class MethodJavadoc extends JavadocEntry {
 
-    private Identifier pathToMethod;
-
     private JavaCodeModel.JType[] signature;
 
     private String signatureStr;
@@ -71,7 +69,7 @@ public class MethodJavadoc extends JavadocEntry {
             JavaCodeModel.JVisibility visibility,
             String sd, String ld, Map<String, List<String>> attrs, int row, int col
     ) {
-        super(sd, ld, attrs, row, col, modifiers, visibility);
+        super(pathToMethod, sd, ld, attrs, row, col, modifiers, visibility);
         if(pathToMethod == null){
             throw new NullPointerException();
         }
@@ -87,16 +85,11 @@ public class MethodJavadoc extends JavadocEntry {
         if(thrownExceptions == null) {
             throw new NullPointerException("thrown exceptions list cannot be null.");
         }
-        this.pathToMethod = pathToMethod;
         this.signature = signature;
         this.signatureStr = signatureStr;
         this.parameterNames = parameterNames;
         this.returnType = returnType;
         this.thrownExceptions = thrownExceptions;
-    }
-
-    public Identifier getPathToMethod() {
-        return pathToMethod;
     }
 
     public JavaCodeModel.JType[] getSignature() {

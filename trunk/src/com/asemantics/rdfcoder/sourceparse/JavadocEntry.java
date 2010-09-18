@@ -18,6 +18,7 @@
 
 package com.asemantics.rdfcoder.sourceparse;
 
+import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 
 import java.io.Serializable;
@@ -34,14 +35,49 @@ public abstract class JavadocEntry implements Serializable {
     static final String PARAMETER_IDENTIFIER = "@param";
 
     /**
+     * The identifier addressing the entity associated to this javadoc.
+     */
+    private Identifier pathToEntity;
+
+    /**
      * The short description of the comment.
      */
-    private String shortDescription;
+    private final String shortDescription;
 
     /**
      * The long description of the content.
      */
-    private String longDescription;
+    private final String longDescription;
+
+    /**
+     * The attributes of the entry.
+     */
+    private final Map<String,List<String>> attributes;
+
+    /**
+     * Modifiers associated to this entry.
+     */
+    private final JavaCodeModel.JModifier[] modifiers;
+
+    /**
+     * The visibility of the entry target.
+     */
+    private final JavaCodeModel.JVisibility visibility;
+
+    /**
+     * The location row of the Javadoc entry.
+     */
+    private final int row;
+
+    /**
+     * The location col of the Javadoc entry.
+     */
+    private final int col;
+
+    /**
+     * List of declared attribute names.
+     */
+    private String[] attributeNames;
 
     /**
      * List of parameter names.
@@ -49,33 +85,9 @@ public abstract class JavadocEntry implements Serializable {
     private String[] parameterNames;
 
     /**
-     * The attributes of the entry.
-     */
-    private Map<String,List<String>> attributes;
-
-    /**
-     * Modifiers associated to this entry.
-     */
-    private JavaCodeModel.JModifier[] modifiers;
-
-    /**
-     * The visibility of the entry target.
-     */
-    private JavaCodeModel.JVisibility visibility;
-
-    /**
-     * The location row of the Javadoc entry.
-     */
-    private int row;
-
-    /**
-     * The location col of the Javadoc entry.
-     */
-    private int col;
-
-    /**
      * Constructor.
      *
+     * @param pathToEntity
      * @param sd
      * @param ld
      * @param attrs
@@ -85,6 +97,7 @@ public abstract class JavadocEntry implements Serializable {
      * @param visibility
      */
     public JavadocEntry(
+            Identifier pathToEntity,
             String sd,
             String ld,
             Map<String, List<String>> attrs,
@@ -92,6 +105,10 @@ public abstract class JavadocEntry implements Serializable {
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility
     ) {
+        if(pathToEntity == null) {
+            throw new NullPointerException("path to entity identifier cannot be null.");
+        }
+        this.pathToEntity = pathToEntity;
         shortDescription = sd;
         longDescription = ld;
         attributes = attrs;
@@ -99,6 +116,10 @@ public abstract class JavadocEntry implements Serializable {
         this.col = col;
         this.modifiers = modifiers;
         this.visibility = visibility;
+    }
+
+    public Identifier getIdentifier() {
+        return pathToEntity;
     }
 
     public String getShortDescription() {
@@ -130,6 +151,18 @@ public abstract class JavadocEntry implements Serializable {
         return parametersMap;
     }
 
+    public String[] getAttributeNames() {
+        if(attributeNames == null) {
+            attributeNames = attributes.keySet().toArray( new String[ attributes.keySet().size() ]); 
+        }
+        return attributeNames;
+    }
+
+    public String[] getAttributeValues(String attrName) {
+        List<String> values = attributes.get(attrName);
+        return values.toArray( new String[values.size()] ); 
+    }
+
     public String[] getParameterNames() {
         if (parameterNames == null) {
             parameterNames = getParametersMap().keySet().toArray(new String[getParametersMap().keySet().size()]);
@@ -137,38 +170,42 @@ public abstract class JavadocEntry implements Serializable {
         return parameterNames;
     }
 
+    public String getParameterDescription(String paramName) {
+        return getParametersMap().get(paramName);
+    }
+
     public String getParameterShortDescription(String paramName) {
-        String desc = getParametersMap().get(paramName);
+        final String desc = getParameterDescription(paramName);
         return desc != null ? desc.substring(0, desc.indexOf(".")) : "";
     }
 
     public String getParameterLongDescription(String paramName) {
-        String desc = getParametersMap().get(paramName);
+        final String desc = getParameterDescription(paramName);
         return desc != null ? desc.substring(desc.indexOf(".")) : "";
     }
 
     public String getReturnDescription() {
-        List<String> ret = attributes.get("@return");
+        final List<String> ret = attributes.get("@return");
         return ret.get(0);
     }
 
     public String[] getAuthors() {
-        List<String> authors = attributes.get("@author");
+        final List<String> authors = attributes.get("@author");
         return authors.toArray(new String[authors.size()]);
     }
 
     public String[] getSee() {
-        List<String> sees = attributes.get("@see");
+        final List<String> sees = attributes.get("@see");
         return sees.toArray(new String[sees.size()]);
     }
 
     public String getSince() {
-        List<String> since = attributes.get("@since");
+        final List<String> since = attributes.get("@since");
         return since.get(0);
     }
 
     public String getVersion() {
-        List<String> version = attributes.get("@version");
+        final List<String> version = attributes.get("@version");
         return version.get(0);
     }
 

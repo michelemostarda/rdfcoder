@@ -32,8 +32,6 @@ import java.util.Map;
  */
 public class ClassJavadoc extends JavadocEntry {
 
-    private Identifier identifier;
-
     private Identifier extendedClass;
 
     private Identifier[] implementedInterfaces;
@@ -61,7 +59,7 @@ public class ClassJavadoc extends JavadocEntry {
             JavaCodeModel.JVisibility visibility,
             String sd, String ld, Map<String, List<String>> attrs, int row, int col
     ) {
-        super(sd, ld, attrs, row, col, modifiers, visibility);
+        super(identifier, sd, ld, attrs, row, col, modifiers, visibility);
         if(identifier == null) {
             throw new NullPointerException();
         }
@@ -74,13 +72,8 @@ public class ClassJavadoc extends JavadocEntry {
         if(implementedInterfaces == null) {
             throw new NullPointerException();
         }
-        this.identifier = identifier;
         this.extendedClass = extendedClass;
         this.implementedInterfaces = implementedInterfaces;
-    }
-
-    public Identifier getIdentifier() {
-        return identifier;
     }
 
     public Identifier getExtendedClass() {
