@@ -211,28 +211,27 @@ public class JavaBytecodeFileParser extends FileParser {
             // Methods.
             Method[] methods = javaClass.getMethods();
             for(int i = 0; i < methods.length; i++) {
-
                 if( INIT_METHOD.equals(methods[i].getName()) ) { // Constructors.
                     javaCodeHandler.constructor(
                         extractModifiers(methods[i]),
                         toVisibility( methods[i] ),
-                        i,
+                        methods[i].getSignature().hashCode(),
                         toParameterNames( methods[i].getArgumentTypes()  ),
                         toParameterTypes( methods[i].getArgumentTypes()  ),
                         toExceptionTypes( methods[i].getExceptionTable() )
                     );
+                } else {
+                    javaCodeHandler.method(
+                            extractModifiers(methods[i]),
+                            toVisibility(methods[i]),
+                            toQualifiedMethod(methods[i]),
+                            methods[i].getSignature().hashCode(),
+                            toParameterNames(methods[i].getArgumentTypes()),
+                            toParameterTypes(methods[i].getArgumentTypes()),
+                            bcelTypeToJType(methods[i].getReturnType()),
+                            toExceptionTypes(methods[i].getExceptionTable())
+                    );
                 }
-
-                javaCodeHandler.method(
-                        extractModifiers(methods[i]),
-                        toVisibility( methods[i] ),
-                        toQualifiedMethod( methods[i] ),
-                        i,
-                        toParameterNames( methods[i].getArgumentTypes() ),
-                        toParameterTypes( methods[i].getArgumentTypes() ),
-                        bcelTypeToJType ( methods[i].getReturnType()    ),
-                        toExceptionTypes( methods[i].getExceptionTable())
-                );
             }
 
             // Inner classes. If class loader is not defined the inner classes are ignored.
