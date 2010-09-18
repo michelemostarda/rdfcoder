@@ -141,7 +141,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
      *
      * @param modifiers the constructor modifiers.
      * @param visibility the visibility level for the constructor.
-     * @param overloadIndex the overload index for the constructor.
+     * @param signatureHashCode the signature hash code. 
      * @param parameterNames the array of parameter names.
      * @param parameterTypes the array of parameter types.
      * @param exceptions exceptions raised by the constructor.
@@ -150,7 +150,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
     public void constructor(
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
-            int overloadIndex,
+            int signatureHashCode,
             String[] parameterNames,
             JavaCodeModel.JType[] parameterTypes,
             JavaCodeModel.ExceptionType[] exceptions
@@ -167,7 +167,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
      * @param modifiers the method modifiers.
      * @param visibility the method visibility level.
      * @param pathToMethod the fully qualified path to the method.
-     * @param overloadIndex the index of the current overload for the method.
+     * @param signatureHashCode the signature hash code.
      * @param parameterNames the array of parameter names.
      * @param parameterTypes the array of parameter types.
      * @param returnType the return type of the method.
@@ -178,7 +178,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
             Identifier pathToMethod,
-            int overloadIndex,
+            int signatureHashCode,
             String[] parameterNames,
             JavaCodeModel.JType[] parameterTypes,
             JavaCodeModel.JType returnType,

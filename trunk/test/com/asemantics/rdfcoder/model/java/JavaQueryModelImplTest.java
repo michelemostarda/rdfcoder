@@ -110,7 +110,7 @@ public class JavaQueryModelImplTest {
                                 .readFullyQualifiedClass("org.jivesoftware.smack.ChatManager")
                                 .copy()
                                 .pushFragment("sendMessage", JavaCodeModel.METHOD_KEY)
-                                .pushFragment("_12", JavaCodeModel.SIGNATURE_KEY) //TODO: HIGH - the signature should be represented by a more significant string.
+                                .pushFragment("_285434957", JavaCodeModel.SIGNATURE_KEY)
                                 .build()
                 )
         );
@@ -318,7 +318,7 @@ public class JavaQueryModelImplTest {
                         .readFullyQualifiedClass("org.jivesoftware.smack.ChatManager")
                         .copy()
                         .pushFragment("sendMessage", JavaCodeModel.METHOD_KEY)
-                        .pushFragment("_12", JavaCodeModel.SIGNATURE_KEY)
+                        .pushFragment("_285434957", JavaCodeModel.SIGNATURE_KEY)
                         .build()
         );
         // TODO: HIGH - the parameter order in a signature is not respected: fix it.
@@ -340,7 +340,7 @@ public class JavaQueryModelImplTest {
                         .readFullyQualifiedClass("org.jivesoftware.smack.ChatManager")
                         .copy()
                         .pushFragment("createPacketCollector", JavaCodeModel.METHOD_KEY)
-                        .pushFragment("_13", JavaCodeModel.SIGNATURE_KEY)
+                        .pushFragment("_1382257162", JavaCodeModel.SIGNATURE_KEY)
                         .build()
         );
         Assert.assertEquals(

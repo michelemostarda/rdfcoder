@@ -475,7 +475,7 @@ public class JavaSourceFileParser extends FileParser {
             ch.constructor(
                     extractModifiers(constructorDeclaration),
                     retrieveVisibility(constructorDeclaration),
-                    c,
+                    c, // TODO: replace index with signature hashcode.
                     parameterNames.toArray( new String[parameterNames.size()] ),
                     parameterTypes.toArray( new JavaCodeModel.JType[parameterTypes.size()] ),
                     exceptions
@@ -605,7 +605,7 @@ public class JavaSourceFileParser extends FileParser {
                         entry.getValue().get(i).modifiers,
                         entry.getValue().get(i).visibility,
                         entry.getKey(),
-                        i,
+                        i, // TODO: replace index with signature hashcode.
                         entry.getValue().get(i).parameterNames,
                         entry.getValue().get(i).parameterTypes,
                         entry.getValue().get(i).returnType,
@@ -845,6 +845,4 @@ public class JavaSourceFileParser extends FileParser {
       private Identifier qualifyEnumeration(Identifier packagePath, String enumerationName) {
           return packagePath.copy().pushFragment(enumerationName, JavaCodeModel.ENUMERATION_KEY).build();
       }
-
-
 }
