@@ -390,13 +390,13 @@ public class JStatistics {
         public void constructor(
                 JavaCodeModel.JModifier[] modifiers,
                 JavaCodeModel.JVisibility visibility,
-                int overloadIndex,
+                int signatureHashCode,
                 String[] parameterNames,
                 JavaCodeModel.JType[] parameterTypes,
                 JavaCodeModel.ExceptionType[] exceptions
         ) {
             if(wrapped == null) { throw new IllegalStateException(); }
-            wrapped.constructor(modifiers, visibility, overloadIndex, parameterNames, parameterTypes, exceptions);
+            wrapped.constructor(modifiers, visibility, signatureHashCode, parameterNames, parameterTypes, exceptions);
             parsedConstructors++;
         }
 
@@ -404,7 +404,7 @@ public class JStatistics {
                 JavaCodeModel.JModifier[] modifiers,
                 JavaCodeModel.JVisibility visibility,
                 Identifier pathToMethod,
-                int overloadIndex,
+                int signatureHashCode,
                 String[] parameterNames,
                 JavaCodeModel.JType[] parameterTypes,
                 JavaCodeModel.JType returnType,
@@ -413,7 +413,7 @@ public class JStatistics {
             if(wrapped == null) { throw new IllegalStateException(); }
             wrapped.method(
                     modifiers, visibility,
-                    pathToMethod, overloadIndex,
+                    pathToMethod, signatureHashCode,
                     parameterNames, parameterTypes,
                     returnType, exceptions
             );

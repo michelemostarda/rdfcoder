@@ -164,14 +164,14 @@ public class JavaCodeHandlerDebugImpl implements JavaCodeHandler {
     public void constructor(
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
-            int overloadIndex,
+            int signatureHashCode,
             String[] parameterNames,
             JavaCodeModel.JType[] parameterTypes,
             JavaCodeModel.ExceptionType[] exceptions
     ) {
         if(logger.isDebugEnabled()) {
             logger.debug(
-                    "constructor " + overloadIndex +
+                    "constructor " + signatureHashCode +
                             " visibility " + visibility +
                             " modifiers "  + JavaCodeModel.JModifier.toByte(modifiers)
             );
@@ -186,7 +186,7 @@ public class JavaCodeHandlerDebugImpl implements JavaCodeHandler {
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
             Identifier pathToMethod,
-            int overloadIndex,
+            int signatureHashCode,
             String[] parameterNames,
             JavaCodeModel.JType[] parameterTypes,
             JavaCodeModel.JType returnType,
@@ -194,7 +194,7 @@ public class JavaCodeHandlerDebugImpl implements JavaCodeHandler {
     ) {
         if(logger.isDebugEnabled()) {
             logger.debug(
-                    "method " + pathToMethod + " index " + overloadIndex +
+                    "method " + pathToMethod + " signature " + signatureHashCode +
                             " visibility " + visibility +
                             " modifiers " + JavaCodeModel.JModifier.toByte(modifiers)
             );

@@ -41,7 +41,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
 
     private CodeModel codeModel;
 
-    public JavaQueryModelImpl(CodeModel codeModel) {  // Protecting creation.
+    public JavaQueryModelImpl(CodeModel codeModel) {
         this.codeModel = codeModel;
     }
 

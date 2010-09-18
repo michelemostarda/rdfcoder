@@ -283,6 +283,7 @@ public class JavadocHandlerDoclet {
         final ConstructorJavadoc je = new ConstructorJavadoc(
                 IdentifierReader.readFullyQualifiedConstructor(constructorDoc.qualifiedName()),
                 getSignature( constructorDoc.parameters() ),
+                constructorDoc.signature(),
                 getParameterNames( constructorDoc.parameters() ),
                 getExceptions( constructorDoc.thrownExceptions() ),
                 getModifiers(constructorDoc),
@@ -300,6 +301,7 @@ public class JavadocHandlerDoclet {
         final MethodJavadoc je = new MethodJavadoc(
                 IdentifierReader.readFullyQualifiedMethod(methodDoc.qualifiedName()),
                 getSignature( methodDoc.parameters() ),
+                methodDoc.signature(),
                 getParameterNames( methodDoc.parameters() ),
                 typeToJType(methodDoc.returnType()),
                 getExceptions( methodDoc.thrownExceptions() ),

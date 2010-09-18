@@ -1,3 +1,21 @@
+/*
+ * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package com.asemantics.rdfcoder.sourceparse;
 
 import com.asemantics.rdfcoder.model.Identifier;
@@ -9,7 +27,7 @@ import java.util.Map;
 /**
  * Represents the Javadoc for a class field.
  *
- * @author Michele Mostarda (mostarda@fbk.eu)
+ * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
 public class FieldJavadoc extends JavadocEntry {
 
@@ -33,7 +51,7 @@ public class FieldJavadoc extends JavadocEntry {
      *
      * @param pathToField
      * @param fieldType
-     * @param value
+     * @param fieldValue
      * @param modifiers
      * @param visibility
      * @param sd
@@ -45,7 +63,7 @@ public class FieldJavadoc extends JavadocEntry {
     public FieldJavadoc(
             Identifier pathToField,
             JavaCodeModel.JType fieldType,
-            String value,
+            String fieldValue,
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
             String sd, String ld, Map<String, List<String>> attrs, int row, int col

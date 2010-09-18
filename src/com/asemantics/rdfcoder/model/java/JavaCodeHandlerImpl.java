@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * The {@link JavaCodeHandler}
+ * The {@link com.asemantics.rdfcoder.model.java.JavaCodeHandler}
  * default implementation.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
@@ -386,12 +386,12 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
     public void constructor(
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
-            int overloadIndex,
+            int signatureHashCode,
             String[] parameterNames,
             JavaCodeModel.JType[] parameterTypes,
             JavaCodeModel.ExceptionType[] exceptions
     ) {
-       if(modifiers == null || visibility == null || overloadIndex < 0) {
+       if(modifiers == null || visibility == null) {
             throw new IllegalArgumentException();
         }
         if(containersStack.isEmpty()) {
@@ -413,7 +413,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         String classIdentifier = pathToClass.getIdentifier();
         String identifier = IdentifierBuilder
                 .create(pathToClass)
-                .pushFragment( "_" + overloadIndex, JavaCodeModel.CONSTRUCTOR_KEY).build().getIdentifier();
+                .pushFragment( "_" + signatureHashCode, JavaCodeModel.CONSTRUCTOR_KEY).build().getIdentifier();
         model.addTriple(identifier, CodeModel.SUBCLASSOF, JavaCodeModel.JCONSTRUCTOR);
         model.addTripleLiteral(
                 identifier,
@@ -442,13 +442,13 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
             Identifier pathToMethod,
-            int overloadIndex,
+            int signatureHashCode,
             String[] parameterNames,
             JavaCodeModel.JType[] parameterTypes,
             JavaCodeModel.JType returnType,
             JavaCodeModel.ExceptionType[] exceptions
     ) {
-        if(modifiers == null || visibility == null || pathToMethod == null || overloadIndex < 0) {
+        if(modifiers == null || visibility == null || pathToMethod == null) {
             throw new IllegalArgumentException();
         }
         if(containersStack.isEmpty()) {
@@ -478,7 +478,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
 //        String signature = JavaCodeModel.SIGNATURE_PREFIX + generateSignatureIdentifier(parameterTypes);
         String signature = IdentifierBuilder
                 .create(pathToMethod)
-                .pushFragment( "_" + overloadIndex, JavaCodeModel.SIGNATURE_KEY)
+                .pushFragment( "_" + signatureHashCode, JavaCodeModel.SIGNATURE_KEY)
                 .build()
                 .getIdentifier();
         model.addTriple(signature, SUBCLASSOF, JavaCodeModel.JSIGNATURE);
@@ -589,7 +589,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         constructor(
                 entry.getModifiers(),
                 entry.getVisibility(),
-                0, // TODO: add missing parameter.
+                entry.getSignatureStr().hashCode(),
                 entry.getParameterNames(),
                 entry.getSignature(),
                 entry.getExceptions()
@@ -602,7 +602,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
                 entry.getModifiers(),
                 entry.getVisibility(),
                 entry.getPathToMethod(),
-                0, //TODO: add missing parameter.
+                entry.getSignatureStr().hashCode(),
                 entry.getParameterNames(),
                 entry.getSignature(),
                 entry.getReturnType(),
