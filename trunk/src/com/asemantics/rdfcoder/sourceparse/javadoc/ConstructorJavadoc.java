@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.rdfcoder.sourceparse;
+package com.asemantics.rdfcoder.sourceparse.javadoc;
 
 import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents the Javadoc associated to a Java class method.
+ * Represents the Javadoc of to a class constructor.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
-public class MethodJavadoc extends JavadocEntry {
+public class ConstructorJavadoc extends JavadocEntry {
 
     private JavaCodeModel.JType[] signature;
 
@@ -37,19 +37,16 @@ public class MethodJavadoc extends JavadocEntry {
 
     private String[] parameterNames;
 
-    private JavaCodeModel.JType returnType; 
-
-    private JavaCodeModel.ExceptionType[] thrownExceptions;
+    private JavaCodeModel.ExceptionType[] exceptions;
 
     /**
      * Constructor.
      *
-     * @param pathToMethod
+     * @param constructorIdentifier
      * @param signature
      * @param signatureStr
-     * @param parameterNames
-     * @param returnType
-     * @param thrownExceptions
+     * @param paramNames
+     * @param exceptions
      * @param modifiers
      * @param visibility
      * @param sd
@@ -58,38 +55,38 @@ public class MethodJavadoc extends JavadocEntry {
      * @param row
      * @param col
      */
-    public MethodJavadoc(
-            Identifier pathToMethod,
+    public ConstructorJavadoc(
+            Identifier constructorIdentifier,
             JavaCodeModel.JType[] signature,
             String signatureStr,
-            String[] parameterNames,
-            JavaCodeModel.JType returnType,
-            JavaCodeModel.ExceptionType[] thrownExceptions,
+            String[] paramNames,
+            JavaCodeModel.ExceptionType[] exceptions,
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
             String sd, String ld, Map<String, List<String>> attrs, int row, int col
     ) {
-        super(pathToMethod, sd, ld, attrs, row, col, modifiers, visibility);
-        if(pathToMethod == null){
-            throw new NullPointerException();
+        super(constructorIdentifier, sd, ld, attrs, row, col, modifiers, visibility);
+        if(constructorIdentifier == null) {
+            throw new NullPointerException("identifier cannot be null.");
         }
-        if(signature == null || signatureStr == null){
+        if(signature == null || signatureStr == null) {
             throw new NullPointerException("signature cannot be null.");
         }
-        if(parameterNames == null) {
+        if(paramNames == null) {
             throw new NullPointerException("parameter names list cannot be null.");
         }
-        if(returnType == null) {
-            throw new NullPointerException("return type cannot be null.");
+        if(exceptions == null) {
+            throw new NullPointerException("exception types cannot be null.");
         }
-        if(thrownExceptions == null) {
-            throw new NullPointerException("thrown exceptions list cannot be null.");
+        if(signature.length != paramNames.length) {
+            throw new IllegalArgumentException(
+                    "The size of signature must correspond with the size of parameters names."
+            );
         }
         this.signature = signature;
         this.signatureStr = signatureStr;
-        this.parameterNames = parameterNames;
-        this.returnType = returnType;
-        this.thrownExceptions = thrownExceptions;
+        this.parameterNames = paramNames;
+        this.exceptions = exceptions;
     }
 
     public JavaCodeModel.JType[] getSignature() {
@@ -104,11 +101,7 @@ public class MethodJavadoc extends JavadocEntry {
         return parameterNames;
     }
 
-    public JavaCodeModel.ExceptionType[] getThrownExceptions() {
-        return thrownExceptions;
-    }
-
-    public JavaCodeModel.JType getReturnType() {
-        return returnType;
+    public JavaCodeModel.ExceptionType[] getExceptions() {
+        return exceptions;
     }
 }

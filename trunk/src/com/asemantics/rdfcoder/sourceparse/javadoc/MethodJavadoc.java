@@ -16,20 +16,21 @@
  */
 
 
-package com.asemantics.rdfcoder.sourceparse;
+package com.asemantics.rdfcoder.sourceparse.javadoc;
 
 import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
+import com.asemantics.rdfcoder.sourceparse.javadoc.JavadocEntry;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * Represents the Javadoc of to a class constructor.
+ * Represents the Javadoc associated to a Java class method.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
-public class ConstructorJavadoc extends JavadocEntry {
+public class MethodJavadoc extends JavadocEntry {
 
     private JavaCodeModel.JType[] signature;
 
@@ -37,16 +38,19 @@ public class ConstructorJavadoc extends JavadocEntry {
 
     private String[] parameterNames;
 
-    private JavaCodeModel.ExceptionType[] exceptions;
+    private JavaCodeModel.JType returnType; 
+
+    private JavaCodeModel.ExceptionType[] thrownExceptions;
 
     /**
      * Constructor.
      *
-     * @param constructorIdentifier
+     * @param pathToMethod
      * @param signature
      * @param signatureStr
-     * @param paramNames
-     * @param exceptions
+     * @param parameterNames
+     * @param returnType
+     * @param thrownExceptions
      * @param modifiers
      * @param visibility
      * @param sd
@@ -55,38 +59,38 @@ public class ConstructorJavadoc extends JavadocEntry {
      * @param row
      * @param col
      */
-    public ConstructorJavadoc(
-            Identifier constructorIdentifier,
+    public MethodJavadoc(
+            Identifier pathToMethod,
             JavaCodeModel.JType[] signature,
             String signatureStr,
-            String[] paramNames,
-            JavaCodeModel.ExceptionType[] exceptions,
+            String[] parameterNames,
+            JavaCodeModel.JType returnType,
+            JavaCodeModel.ExceptionType[] thrownExceptions,
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
             String sd, String ld, Map<String, List<String>> attrs, int row, int col
     ) {
-        super(constructorIdentifier, sd, ld, attrs, row, col, modifiers, visibility);
-        if(constructorIdentifier == null) {
-            throw new NullPointerException("identifier cannot be null.");
+        super(pathToMethod, sd, ld, attrs, row, col, modifiers, visibility);
+        if(pathToMethod == null){
+            throw new NullPointerException();
         }
-        if(signature == null || signatureStr == null) {
+        if(signature == null || signatureStr == null){
             throw new NullPointerException("signature cannot be null.");
         }
-        if(paramNames == null) {
+        if(parameterNames == null) {
             throw new NullPointerException("parameter names list cannot be null.");
         }
-        if(exceptions == null) {
-            throw new NullPointerException("exception types cannot be null.");
+        if(returnType == null) {
+            throw new NullPointerException("return type cannot be null.");
         }
-        if(signature.length != paramNames.length) {
-            throw new IllegalArgumentException(
-                    "The size of signature must correspond with the size of parameters names."
-            );
+        if(thrownExceptions == null) {
+            throw new NullPointerException("thrown exceptions list cannot be null.");
         }
         this.signature = signature;
         this.signatureStr = signatureStr;
-        this.parameterNames = paramNames;
-        this.exceptions = exceptions;
+        this.parameterNames = parameterNames;
+        this.returnType = returnType;
+        this.thrownExceptions = thrownExceptions;
     }
 
     public JavaCodeModel.JType[] getSignature() {
@@ -101,7 +105,11 @@ public class ConstructorJavadoc extends JavadocEntry {
         return parameterNames;
     }
 
-    public JavaCodeModel.ExceptionType[] getExceptions() {
-        return exceptions;
+    public JavaCodeModel.ExceptionType[] getThrownExceptions() {
+        return thrownExceptions;
+    }
+
+    public JavaCodeModel.JType getReturnType() {
+        return returnType;
     }
 }
