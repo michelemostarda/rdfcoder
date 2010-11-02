@@ -30,6 +30,7 @@ import com.asemantics.rdfcoder.model.TripleIterator;
 import com.asemantics.rdfcoder.sourceparse.ClassJavadoc;
 import com.asemantics.rdfcoder.sourceparse.ConstructorJavadoc;
 import com.asemantics.rdfcoder.sourceparse.FieldJavadoc;
+import com.asemantics.rdfcoder.sourceparse.JavadocEntry;
 import com.asemantics.rdfcoder.sourceparse.MethodJavadoc;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -391,51 +392,22 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
             JavaCodeModel.JType[] parameterTypes,
             JavaCodeModel.ExceptionType[] exceptions
     ) {
-       if(modifiers == null || visibility == null) {
-            throw new IllegalArgumentException();
-        }
+
         if(containersStack.isEmpty()) {
             throw new CodeHandlerException("Must be inside a class to define a prefPTCO.");
         }
-        // Validating arguments.
-        int paramNamesSize = parameterNames == null ? 0 : parameterNames.length;
-        int paramTypesSize = parameterTypes == null ? 0 : parameterTypes.length;
-        if(paramNamesSize != paramTypesSize) {
-            throw new IllegalArgumentException(
-                "The number of parameter names differs from the number of parameters types: "
-                + paramNamesSize + " <> " + paramTypesSize
-            );
-        }
-        int exceptionsSize = exceptions == null ? 0 : exceptions.length;
 
         // Creating structure.
-        Identifier pathToClass = peekContainer();
-        String classIdentifier = pathToClass.getIdentifier();
-        String identifier = IdentifierBuilder
-                .create(pathToClass)
-                .pushFragment( "_" + signatureHashCode, JavaCodeModel.CONSTRUCTOR_KEY).build().getIdentifier();
-        model.addTriple(identifier, CodeModel.SUBCLASSOF, JavaCodeModel.JCONSTRUCTOR);
-        model.addTripleLiteral(
-                identifier,
-                JavaCodeModel.HAS_MODIFIERS,
-                JavaCodeModel.JModifier.toByte(modifiers).toString()
+        final Identifier pathToClass = peekContainer();
+        internalConstructor(
+                pathToClass,
+                modifiers,
+                visibility,
+                signatureHashCode,
+                parameterNames,
+                parameterTypes,
+                exceptions
         );
-        model.addTripleLiteral(identifier, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
-        String qualifiedParameter;
-        for(int i = 0; i < paramNamesSize; i++) {
-            qualifiedParameter = qualifyParameterName( pathToClass, parameterNames[i]);
-            model.addTriple( qualifiedParameter, CodeModel.SUBCLASSOF, JavaCodeModel.JPARAMETER);
-            model.addTripleLiteral(
-                    qualifiedParameter,
-                    JavaCodeModel.PARAMETER_TYPE,
-                    parameterTypes[i].getIdentifier().getIdentifier()
-            );
-            model.addTriple( identifier, JavaCodeModel.CONTAINS_PARAMETER, qualifiedParameter);
-        }
-        for(int i = 0; i < exceptionsSize; i++) {
-            model.addTriple(identifier, JavaCodeModel.THROWS, exceptions[i].getIdentifier().getIdentifier());
-        }
-        model.addTriple(classIdentifier, JavaCodeModel.CONTAINS_CONSTRUCTOR, identifier);
     }
 
     public void method(
@@ -571,22 +543,23 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
                 entry.getExtendedClass(),
                 entry.getImplementedInterfaces()
         );
-        // TODO: add specific triples generation.
+        addJavadocTriples(entry);
     }
 
     public void fieldJavadoc(FieldJavadoc entry) {
         attribute(
                 entry.getModifiers(),
                 entry.getVisibility(),
-                entry.getPathToField(),
+                entry.getIdentifier(),
                 entry.getPathToType(),
                 entry.getFieldValue()
         );
-        // TODO: add specific triples generation.
+        addJavadocTriples(entry);
     }
 
     public void constructorJavadoc(ConstructorJavadoc entry) {
-        constructor(
+        internalConstructor(
+                entry.getIdentifier(),
                 entry.getModifiers(),
                 entry.getVisibility(),
                 entry.getSignatureStr().hashCode(),
@@ -594,20 +567,21 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
                 entry.getSignature(),
                 entry.getExceptions()
         );
-        // TODO: add specific triples generation.
+        addJavadocTriples(entry);
     }
 
     public void methodJavadoc(MethodJavadoc entry) {
         method(
                 entry.getModifiers(),
                 entry.getVisibility(),
-                entry.getPathToMethod(),
+                entry.getIdentifier(),
                 entry.getSignatureStr().hashCode(),
                 entry.getParameterNames(),
                 entry.getSignature(),
                 entry.getReturnType(),
                 entry.getThrownExceptions()
         );
+        addJavadocTriples(entry);
     }
 
     public Identifier generateTempUniqueIdentifier() {
@@ -709,6 +683,58 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         }
     }
 
+    private void internalConstructor(
+            Identifier pathToClass,
+            JavaCodeModel.JModifier[] modifiers,
+            JavaCodeModel.JVisibility visibility,
+            int signatureHashCode,
+            String[] parameterNames,
+            JavaCodeModel.JType[] parameterTypes,
+            JavaCodeModel.ExceptionType[] exceptions
+    ) {
+        if(modifiers == null || visibility == null) {
+            throw new IllegalArgumentException();
+        }
+
+        // Validating arguments.
+        int paramNamesSize = parameterNames == null ? 0 : parameterNames.length;
+        int paramTypesSize = parameterTypes == null ? 0 : parameterTypes.length;
+        if(paramNamesSize != paramTypesSize) {
+            throw new IllegalArgumentException(
+                "The number of parameter names differs from the number of parameters types: "
+                + paramNamesSize + " <> " + paramTypesSize
+            );
+        }
+        int exceptionsSize = exceptions == null ? 0 : exceptions.length;
+
+        String classIdentifier = pathToClass.getIdentifier();
+        String identifier = IdentifierBuilder
+                .create(pathToClass)
+                .pushFragment( "_" + signatureHashCode, JavaCodeModel.CONSTRUCTOR_KEY).build().getIdentifier();
+        model.addTriple(identifier, CodeModel.SUBCLASSOF, JavaCodeModel.JCONSTRUCTOR);
+        model.addTripleLiteral(
+                identifier,
+                JavaCodeModel.HAS_MODIFIERS,
+                JavaCodeModel.JModifier.toByte(modifiers).toString()
+        );
+        model.addTripleLiteral(identifier, JavaCodeModel.HAS_VISIBILITY, visibility.getIdentifier());
+        String qualifiedParameter;
+        for(int i = 0; i < paramNamesSize; i++) {
+            qualifiedParameter = qualifyParameterName( pathToClass, parameterNames[i]);
+            model.addTriple( qualifiedParameter, CodeModel.SUBCLASSOF, JavaCodeModel.JPARAMETER);
+            model.addTripleLiteral(
+                    qualifiedParameter,
+                    JavaCodeModel.PARAMETER_TYPE,
+                    parameterTypes[i].getIdentifier().getIdentifier()
+            );
+            model.addTriple( identifier, JavaCodeModel.CONTAINS_PARAMETER, qualifiedParameter);
+        }
+        for(int i = 0; i < exceptionsSize; i++) {
+            model.addTriple(identifier, JavaCodeModel.THROWS, exceptions[i].getIdentifier().getIdentifier());
+        }
+        model.addTriple(classIdentifier, JavaCodeModel.CONTAINS_CONSTRUCTOR, identifier);
+    }
+
     /**
      * Qualifies a parameter name.
      *
@@ -775,6 +801,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         }
     }
 
+    //TODO: add this instead of signature hashcode.
     private String generateSignatureIdentifier(JavaCodeModel.JType[] types) {
         StringBuilder sb = new StringBuilder();
         for(JavaCodeModel.JType type : types) {
@@ -790,6 +817,41 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * Adds the triples specific for a Javadoc entry.
+     *
+     * @param javadocEntry the input Javadoc entry to be triplified.
+     */
+    private void addJavadocTriples(JavadocEntry javadocEntry) {
+        final String identifier = javadocEntry.getIdentifier().getIdentifier();
+        model.addTripleLiteral(
+                identifier,
+                JavaCodeModel.HAS_SHORT_COMMENT,
+                javadocEntry.getShortDescription()
+        );
+        model.addTripleLiteral(
+                identifier,
+                JavaCodeModel.HAS_LONG_COMMENT,
+                javadocEntry.getLongDescription()
+        );
+
+        for(String attributeName : javadocEntry.getAttributeNames()) {
+            final String attributeId = IdentifierBuilder.create(javadocEntry.getIdentifier())
+                    .pushFragment(attributeName, JavaCodeModel.JDOC_ATTRIBUTE_PREFIX)
+                    .build()
+                    .getIdentifier();
+            model.addTriple(identifier, JavaCodeModel.HAS_JDOC_ATTR, attributeId);
+            model.addTripleCollection(
+                    attributeId,
+                    JavaCodeModel.HAS_JDOC_ATTR_VALUE,
+                    javadocEntry.getAttributeValues(attributeName)
+            );
+        }
+
+        model.addTripleLiteral(identifier, JavaCodeModel.HAS_ROW   , Integer.toString(javadocEntry.getRow()));
+        model.addTripleLiteral(identifier, JavaCodeModel.HAS_COLUMN, Integer.toString(javadocEntry.getCol()));
     }
 
 }

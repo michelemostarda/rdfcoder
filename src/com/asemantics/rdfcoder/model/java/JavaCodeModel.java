@@ -30,8 +30,9 @@ import java.util.List;
 /**
  * This abstract class describes a <i>Java Code Model</i>.
  *
- * A code org.asemantics.model is a rapresentation of a code structure
- * containing packages, classes, attributes methods and so on.
+ * A code model is a representation of the code structure
+ * and expresses packages, classes, attributes methods,
+ * and their containment relationships.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
  */
@@ -620,6 +621,9 @@ public abstract class JavaCodeModel extends CodeModelBase {
 
     public static final String PRIMITIVE_KEY    = "jprimitive";
 
+    public static final String JDOC_ATTRIBUTE_KEY = "jdocattribute";
+
+
     /* END:   Vocabulary terms. */
 
 
@@ -668,6 +672,8 @@ public abstract class JavaCodeModel extends CodeModelBase {
 
     public static final String PARAMETER_PREFIX   = toPrefix(PARAMETER_KEY);
 
+    public static final String JDOC_ATTRIBUTE_PREFIX = toPrefix(JDOC_ATTRIBUTE_KEY);
+
     /* END:   Entity prefixes. */
 
 
@@ -696,7 +702,7 @@ public abstract class JavaCodeModel extends CodeModelBase {
     /**
      * Connects a class to a contained constructor.
      */
-    public static final String CONTAINS_CONSTRUCTOR = toPropertyURI("contains_contructor");
+    public static final String CONTAINS_CONSTRUCTOR = toPropertyURI("contains_constructor");
 
     /**
      * The attribute type.
@@ -774,9 +780,34 @@ public abstract class JavaCodeModel extends CodeModelBase {
     public static final String HAS_MODIFIERS      = toPropertyURI("has_modifiers");
 
     /**
-     * Defines the comment associated to an entity.
+     * Defines the short comment associated to an entity.
      */
-    public static final String HAS_COMMENT        = toPropertyURI("has_comment");
+    public static final String HAS_SHORT_COMMENT  = toPropertyURI("has_short_comment");
+
+    /**
+     * Defines the extended comment associated to an entity.
+     */
+    public static final String HAS_LONG_COMMENT   = toPropertyURI("has_long_comment");
+
+    /**
+     * Defines the javadoc attribute associate to an entity.
+     */
+    public static final String HAS_JDOC_ATTR       = toPropertyURI("has_jdoc_attr");
+
+    /**
+     * Defines the javadoc attribute value associate to an attribute.
+     */
+    public static final String HAS_JDOC_ATTR_VALUE = toPropertyURI("has_jdoc_attr_value");
+
+    /**
+     * Defines the row location of an entity.
+     */
+    public static final String HAS_ROW    = toPropertyURI("has_row");
+
+    /**
+     * Defines the column location of an entity.
+     */
+    public static final String HAS_COLUMN = toPropertyURI("has_column");
 
     /* END:   Vocabulary properties. */
 
