@@ -110,12 +110,21 @@ public interface CodeModel {
      * Allows to remove a triple from the model.
      * NOTE: this method accepts only literal object.
      *
-     * @param subject
-     * @param predicate
-     * @param object
+     * @param subject the triple subject.
+     * @param predicate the triple predicate.
+     * @param object the triple object.
      * @see #addTripleLiteral(String, String, String)
      */
     void removeTripleLiteral(String subject, String predicate, String object);
+
+    /**
+     * Adds a triple which object is a collection.
+     *
+     * @param subject the triple subject.
+     * @param predicate the triple predicate.
+     * @param values the triple values list.
+     */
+    void addTripleCollection(Object subject, String predicate, String[] values);
 
     /**
      *  Remove the entire content of the model.
