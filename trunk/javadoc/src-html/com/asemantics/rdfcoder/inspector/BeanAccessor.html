@@ -24,86 +24,105 @@
 <FONT color="green">021</FONT>    import java.beans.BeanInfo;<a name="line.21"></a>
 <FONT color="green">022</FONT>    import java.beans.Introspector;<a name="line.22"></a>
 <FONT color="green">023</FONT>    import java.beans.PropertyDescriptor;<a name="line.23"></a>
-<FONT color="green">024</FONT>    import java.lang.reflect.Method;<a name="line.24"></a>
-<FONT color="green">025</FONT>    <a name="line.25"></a>
-<FONT color="green">026</FONT>    /**<a name="line.26"></a>
-<FONT color="green">027</FONT>     * Utility class to handle bean properties.<a name="line.27"></a>
-<FONT color="green">028</FONT>     */<a name="line.28"></a>
-<FONT color="green">029</FONT>    public class BeanAccessor {<a name="line.29"></a>
-<FONT color="green">030</FONT>    <a name="line.30"></a>
-<FONT color="green">031</FONT>        /**<a name="line.31"></a>
-<FONT color="green">032</FONT>         * Returns the property value for the specified &lt;i&gt;bean&lt;/i&gt;.<a name="line.32"></a>
-<FONT color="green">033</FONT>         *<a name="line.33"></a>
-<FONT color="green">034</FONT>         * @param bean<a name="line.34"></a>
-<FONT color="green">035</FONT>         * @param propertyName<a name="line.35"></a>
-<FONT color="green">036</FONT>         * @return the property of the bean.<a name="line.36"></a>
-<FONT color="green">037</FONT>         */<a name="line.37"></a>
-<FONT color="green">038</FONT>        public static Object getProperty(Object bean, String propertyName) throws PatternException {<a name="line.38"></a>
-<FONT color="green">039</FONT>            if(bean == null) {<a name="line.39"></a>
-<FONT color="green">040</FONT>                throw new NullPointerException();<a name="line.40"></a>
-<FONT color="green">041</FONT>            }<a name="line.41"></a>
-<FONT color="green">042</FONT>            try {<a name="line.42"></a>
-<FONT color="green">043</FONT>                Method method = null;<a name="line.43"></a>
-<FONT color="green">044</FONT>                String[] candidateMethodNames = getMethodGetterName(propertyName);<a name="line.44"></a>
-<FONT color="green">045</FONT>                for(String candidateMethodName : candidateMethodNames) {<a name="line.45"></a>
-<FONT color="green">046</FONT>                    try {<a name="line.46"></a>
-<FONT color="green">047</FONT>                        method = bean.getClass().getMethod( candidateMethodName );<a name="line.47"></a>
-<FONT color="green">048</FONT>                        return method.invoke( bean );<a name="line.48"></a>
-<FONT color="green">049</FONT>                    } catch (NoSuchMethodException e) {}<a name="line.49"></a>
-<FONT color="green">050</FONT>                }<a name="line.50"></a>
-<FONT color="green">051</FONT>                throw new PatternException(<a name="line.51"></a>
-<FONT color="green">052</FONT>                        "Cannot find property '" + propertyName + "' on bean '" + bean + "'"<a name="line.52"></a>
-<FONT color="green">053</FONT>                );<a name="line.53"></a>
-<FONT color="green">054</FONT>            } catch (Exception e) {<a name="line.54"></a>
-<FONT color="green">055</FONT>                throw new PatternException(<a name="line.55"></a>
-<FONT color="green">056</FONT>                        "Error while retrieving property " + propertyName + "' from bean '" + bean + "'",<a name="line.56"></a>
-<FONT color="green">057</FONT>                        e<a name="line.57"></a>
-<FONT color="green">058</FONT>                );<a name="line.58"></a>
-<FONT color="green">059</FONT>            }<a name="line.59"></a>
-<FONT color="green">060</FONT>        }<a name="line.60"></a>
-<FONT color="green">061</FONT>    <a name="line.61"></a>
-<FONT color="green">062</FONT>        /**<a name="line.62"></a>
-<FONT color="green">063</FONT>         * Describes a given &lt;i&gt;bean&lt;/i&gt;.<a name="line.63"></a>
-<FONT color="green">064</FONT>         * <a name="line.64"></a>
-<FONT color="green">065</FONT>         * @param bean<a name="line.65"></a>
-<FONT color="green">066</FONT>         * @return the bean description of the bean.<a name="line.66"></a>
-<FONT color="green">067</FONT>         * @throws PatternException<a name="line.67"></a>
-<FONT color="green">068</FONT>         */<a name="line.68"></a>
-<FONT color="green">069</FONT>        public static String describeBean(Object bean) throws PatternException {<a name="line.69"></a>
-<FONT color="green">070</FONT>            if( bean == null ) {<a name="line.70"></a>
-<FONT color="green">071</FONT>                throw new NullPointerException("Invalid null bean");<a name="line.71"></a>
-<FONT color="green">072</FONT>            }<a name="line.72"></a>
-<FONT color="green">073</FONT>    <a name="line.73"></a>
-<FONT color="green">074</FONT>            try {<a name="line.74"></a>
-<FONT color="green">075</FONT>                BeanInfo beanInfo = Introspector.getBeanInfo( bean.getClass() );<a name="line.75"></a>
-<FONT color="green">076</FONT>                PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();<a name="line.76"></a>
-<FONT color="green">077</FONT>                StringBuilder sb = new StringBuilder();<a name="line.77"></a>
-<FONT color="green">078</FONT>                sb.append("{\n");<a name="line.78"></a>
-<FONT color="green">079</FONT>                for(PropertyDescriptor propertyDescriptor : propertyDescriptors) {<a name="line.79"></a>
-<FONT color="green">080</FONT>                    sb.append(propertyDescriptor.getName())<a name="line.80"></a>
-<FONT color="green">081</FONT>                            .append(":")<a name="line.81"></a>
-<FONT color="green">082</FONT>                    .append( propertyDescriptor.getPropertyType().getName() )<a name="line.82"></a>
-<FONT color="green">083</FONT>                            .append("\n");<a name="line.83"></a>
-<FONT color="green">084</FONT>                }<a name="line.84"></a>
-<FONT color="green">085</FONT>                sb.append("}\n");<a name="line.85"></a>
-<FONT color="green">086</FONT>                return sb.toString();<a name="line.86"></a>
-<FONT color="green">087</FONT>            } catch (Exception e) {<a name="line.87"></a>
-<FONT color="green">088</FONT>                throw new PatternException("Error while inspecting bean: '" + bean + "'", e);<a name="line.88"></a>
-<FONT color="green">089</FONT>            }<a name="line.89"></a>
-<FONT color="green">090</FONT>        }<a name="line.90"></a>
-<FONT color="green">091</FONT>    <a name="line.91"></a>
-<FONT color="green">092</FONT>        /**<a name="line.92"></a>
-<FONT color="green">093</FONT>         * Returns the expected name for the getter method of given &lt;i&gt;propertyName&lt;/i&gt;.<a name="line.93"></a>
-<FONT color="green">094</FONT>         *<a name="line.94"></a>
-<FONT color="green">095</FONT>         * @param propertyName name of a bean property.<a name="line.95"></a>
-<FONT color="green">096</FONT>         * @return the name of a method.<a name="line.96"></a>
-<FONT color="green">097</FONT>         */<a name="line.97"></a>
-<FONT color="green">098</FONT>        private static String[] getMethodGetterName(String propertyName) {<a name="line.98"></a>
-<FONT color="green">099</FONT>            final String methodName = propertyName.substring(0,1);<a name="line.99"></a>
-<FONT color="green">100</FONT>            final String postfix = methodName.toUpperCase() + propertyName.substring(1);;<a name="line.100"></a>
-<FONT color="green">101</FONT>            return new String[] { "get" + postfix, "is" + postfix, methodName};<a name="line.101"></a>
+<FONT color="green">024</FONT>    import java.lang.reflect.Array;<a name="line.24"></a>
+<FONT color="green">025</FONT>    import java.lang.reflect.Method;<a name="line.25"></a>
+<FONT color="green">026</FONT>    <a name="line.26"></a>
+<FONT color="green">027</FONT>    /**<a name="line.27"></a>
+<FONT color="green">028</FONT>     * Utility class to handle bean properties.<a name="line.28"></a>
+<FONT color="green">029</FONT>     */<a name="line.29"></a>
+<FONT color="green">030</FONT>    public class BeanAccessor {<a name="line.30"></a>
+<FONT color="green">031</FONT>    <a name="line.31"></a>
+<FONT color="green">032</FONT>        private BeanAccessor(){}<a name="line.32"></a>
+<FONT color="green">033</FONT>    <a name="line.33"></a>
+<FONT color="green">034</FONT>        /**<a name="line.34"></a>
+<FONT color="green">035</FONT>         * Returns the property value for the specified &lt;i&gt;bean&lt;/i&gt;.<a name="line.35"></a>
+<FONT color="green">036</FONT>         *<a name="line.36"></a>
+<FONT color="green">037</FONT>         * @param bean<a name="line.37"></a>
+<FONT color="green">038</FONT>         * @param propertyName<a name="line.38"></a>
+<FONT color="green">039</FONT>         * @return the property of the bean.<a name="line.39"></a>
+<FONT color="green">040</FONT>         */<a name="line.40"></a>
+<FONT color="green">041</FONT>        public static Object getProperty(Object bean, String propertyName) throws PatternException {<a name="line.41"></a>
+<FONT color="green">042</FONT>            if(bean == null) {<a name="line.42"></a>
+<FONT color="green">043</FONT>                throw new NullPointerException();<a name="line.43"></a>
+<FONT color="green">044</FONT>            }<a name="line.44"></a>
+<FONT color="green">045</FONT>            try {<a name="line.45"></a>
+<FONT color="green">046</FONT>                Method method = null;<a name="line.46"></a>
+<FONT color="green">047</FONT>                String[] candidateMethodNames = getMethodGetterName(propertyName);<a name="line.47"></a>
+<FONT color="green">048</FONT>                for(String candidateMethodName : candidateMethodNames) {<a name="line.48"></a>
+<FONT color="green">049</FONT>                    try {<a name="line.49"></a>
+<FONT color="green">050</FONT>                        method = bean.getClass().getMethod( candidateMethodName );<a name="line.50"></a>
+<FONT color="green">051</FONT>                        return method.invoke( bean );<a name="line.51"></a>
+<FONT color="green">052</FONT>                    } catch (NoSuchMethodException e) {}<a name="line.52"></a>
+<FONT color="green">053</FONT>                }<a name="line.53"></a>
+<FONT color="green">054</FONT>                throw new PatternException(<a name="line.54"></a>
+<FONT color="green">055</FONT>                        "Cannot find property '" + propertyName + "' on bean '" + bean + "'"<a name="line.55"></a>
+<FONT color="green">056</FONT>                );<a name="line.56"></a>
+<FONT color="green">057</FONT>            } catch (Exception e) {<a name="line.57"></a>
+<FONT color="green">058</FONT>                throw new PatternException(<a name="line.58"></a>
+<FONT color="green">059</FONT>                        "Error while retrieving property " + propertyName + "' from bean '" + bean + "'",<a name="line.59"></a>
+<FONT color="green">060</FONT>                        e<a name="line.60"></a>
+<FONT color="green">061</FONT>                );<a name="line.61"></a>
+<FONT color="green">062</FONT>            }<a name="line.62"></a>
+<FONT color="green">063</FONT>        }<a name="line.63"></a>
+<FONT color="green">064</FONT>    <a name="line.64"></a>
+<FONT color="green">065</FONT>        /**<a name="line.65"></a>
+<FONT color="green">066</FONT>         * Describes a given &lt;i&gt;bean&lt;/i&gt;.<a name="line.66"></a>
+<FONT color="green">067</FONT>         * <a name="line.67"></a>
+<FONT color="green">068</FONT>         * @param bean<a name="line.68"></a>
+<FONT color="green">069</FONT>         * @return the bean description of the bean.<a name="line.69"></a>
+<FONT color="green">070</FONT>         * @throws PatternException<a name="line.70"></a>
+<FONT color="green">071</FONT>         */<a name="line.71"></a>
+<FONT color="green">072</FONT>        public static String describeBean(Object bean) throws PatternException {<a name="line.72"></a>
+<FONT color="green">073</FONT>            if( bean == null ) {<a name="line.73"></a>
+<FONT color="green">074</FONT>                throw new NullPointerException("Invalid null bean");<a name="line.74"></a>
+<FONT color="green">075</FONT>            }<a name="line.75"></a>
+<FONT color="green">076</FONT>    <a name="line.76"></a>
+<FONT color="green">077</FONT>            try {<a name="line.77"></a>
+<FONT color="green">078</FONT>                BeanInfo beanInfo = Introspector.getBeanInfo( bean.getClass() );<a name="line.78"></a>
+<FONT color="green">079</FONT>                PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();<a name="line.79"></a>
+<FONT color="green">080</FONT>                StringBuilder sb = new StringBuilder();<a name="line.80"></a>
+<FONT color="green">081</FONT>                sb.append("{\n");<a name="line.81"></a>
+<FONT color="green">082</FONT>                for(PropertyDescriptor propertyDescriptor : propertyDescriptors) {<a name="line.82"></a>
+<FONT color="green">083</FONT>                    final String propertyName = propertyDescriptor.getName();<a name="line.83"></a>
+<FONT color="green">084</FONT>                    if("class".equals(propertyName)) {<a name="line.84"></a>
+<FONT color="green">085</FONT>                        continue;<a name="line.85"></a>
+<FONT color="green">086</FONT>                    }<a name="line.86"></a>
+<FONT color="green">087</FONT>                    sb.append(propertyName)<a name="line.87"></a>
+<FONT color="green">088</FONT>                            .append(":")<a name="line.88"></a>
+<FONT color="green">089</FONT>                    .append(<a name="line.89"></a>
+<FONT color="green">090</FONT>                            getHumanDescription(<a name="line.90"></a>
+<FONT color="green">091</FONT>                                    propertyDescriptor.getPropertyType(),<a name="line.91"></a>
+<FONT color="green">092</FONT>                                    propertyDescriptor.getReadMethod().invoke(bean)<a name="line.92"></a>
+<FONT color="green">093</FONT>                            )<a name="line.93"></a>
+<FONT color="green">094</FONT>                    )<a name="line.94"></a>
+<FONT color="green">095</FONT>                    .append("\n");<a name="line.95"></a>
+<FONT color="green">096</FONT>                }<a name="line.96"></a>
+<FONT color="green">097</FONT>                sb.append("}\n");<a name="line.97"></a>
+<FONT color="green">098</FONT>                return sb.toString();<a name="line.98"></a>
+<FONT color="green">099</FONT>            } catch (Exception e) {<a name="line.99"></a>
+<FONT color="green">100</FONT>                throw new PatternException("Error while inspecting bean: '" + bean + "'", e);<a name="line.100"></a>
+<FONT color="green">101</FONT>            }<a name="line.101"></a>
 <FONT color="green">102</FONT>        }<a name="line.102"></a>
-<FONT color="green">103</FONT>    }<a name="line.103"></a>
+<FONT color="green">103</FONT>    <a name="line.103"></a>
+<FONT color="green">104</FONT>        /**<a name="line.104"></a>
+<FONT color="green">105</FONT>         * Returns the expected name for the getter method of given &lt;i&gt;propertyName&lt;/i&gt;.<a name="line.105"></a>
+<FONT color="green">106</FONT>         *<a name="line.106"></a>
+<FONT color="green">107</FONT>         * @param propertyName name of a bean property.<a name="line.107"></a>
+<FONT color="green">108</FONT>         * @return the name of a method.<a name="line.108"></a>
+<FONT color="green">109</FONT>         */<a name="line.109"></a>
+<FONT color="green">110</FONT>        private static String[] getMethodGetterName(String propertyName) {<a name="line.110"></a>
+<FONT color="green">111</FONT>            final String methodName = propertyName.substring(0,1);<a name="line.111"></a>
+<FONT color="green">112</FONT>            final String postfix = methodName.toUpperCase() + propertyName.substring(1);;<a name="line.112"></a>
+<FONT color="green">113</FONT>            return new String[] { "get" + postfix, "is" + postfix, methodName};<a name="line.113"></a>
+<FONT color="green">114</FONT>        }<a name="line.114"></a>
+<FONT color="green">115</FONT>    <a name="line.115"></a>
+<FONT color="green">116</FONT>        private static String getHumanDescription(Class c, Object o) {<a name="line.116"></a>
+<FONT color="green">117</FONT>            if(c.isArray()) {<a name="line.117"></a>
+<FONT color="green">118</FONT>                return String.format("%s[%s]", c.getComponentType().getName(), Array.getLength(o));<a name="line.118"></a>
+<FONT color="green">119</FONT>            }<a name="line.119"></a>
+<FONT color="green">120</FONT>            return c.getName();<a name="line.120"></a>
+<FONT color="green">121</FONT>        }<a name="line.121"></a>
+<FONT color="green">122</FONT>    }<a name="line.122"></a>
 
 
 

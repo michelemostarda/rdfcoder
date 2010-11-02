@@ -31,7 +31,7 @@
 <FONT color="green">028</FONT>    import com.asemantics.rdfcoder.profile.Profile;<a name="line.28"></a>
 <FONT color="green">029</FONT>    import com.asemantics.rdfcoder.repository.Repository;<a name="line.29"></a>
 <FONT color="green">030</FONT>    import com.asemantics.rdfcoder.repository.RepositoryException;<a name="line.30"></a>
-<FONT color="green">031</FONT>    import com.asemantics.rdfcoder.sourceparse.ObjectsTable;<a name="line.31"></a>
+<FONT color="green">031</FONT>    import com.asemantics.rdfcoder.parser.ObjectsTable;<a name="line.31"></a>
 <FONT color="green">032</FONT>    import com.asemantics.rdfcoder.storage.CodeStorage;<a name="line.32"></a>
 <FONT color="green">033</FONT>    <a name="line.33"></a>
 <FONT color="green">034</FONT>    import java.io.IOException;<a name="line.34"></a>
@@ -121,7 +121,7 @@
 <FONT color="green">118</FONT>        public void setValidating(boolean f) {<a name="line.118"></a>
 <FONT color="green">119</FONT>            if(f) {<a name="line.119"></a>
 <FONT color="green">120</FONT>                if( validatingCodeModel == null) {<a name="line.120"></a>
-<FONT color="green">121</FONT>                    validatingCodeModel = new ValidatingCodeModel(codeModelBase, new JavaOntology() ); //TODO HIGH geberalize this (ontology is related to profiles)<a name="line.121"></a>
+<FONT color="green">121</FONT>                    validatingCodeModel = new ValidatingCodeModel(codeModelBase, new JavaOntology() ); //TODO: LOW - generalize this (ontology is related to profiles).<a name="line.121"></a>
 <FONT color="green">122</FONT>                }<a name="line.122"></a>
 <FONT color="green">123</FONT>                currentModel = validatingCodeModel;<a name="line.123"></a>
 <FONT color="green">124</FONT>            } else {<a name="line.124"></a>
@@ -336,7 +336,7 @@
 <FONT color="green">333</FONT>        }<a name="line.333"></a>
 <FONT color="green">334</FONT>    <a name="line.334"></a>
 <FONT color="green">335</FONT>        /**<a name="line.335"></a>
-<FONT color="green">336</FONT>         * Destroies the model content.<a name="line.336"></a>
+<FONT color="green">336</FONT>         * Destroys the model content.<a name="line.336"></a>
 <FONT color="green">337</FONT>         */<a name="line.337"></a>
 <FONT color="green">338</FONT>        protected void destroy() {<a name="line.338"></a>
 <FONT color="green">339</FONT>            // Empty.<a name="line.339"></a>
