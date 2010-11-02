@@ -18,7 +18,6 @@
 
 package com.asemantics.rdfcoder.storage;
 
-import com.asemantics.rdfcoder.model.SPARQLQuerableCodeModel;
 import com.asemantics.rdfcoder.model.java.JavaCoderFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -31,9 +30,9 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  */
 public class JenaCoderFactory extends JavaCoderFactory {
 
-    public SPARQLQuerableCodeModel createCodeModel() {
+    public JenaCodeModel createCodeModel() {
         Model model = ModelFactory.createDefaultModel();
-        SPARQLQuerableCodeModel jcm = new JenaCodeModel(model);
+        JenaCodeModel jcm = new JenaCodeModel(model);
         return jcm;
     }
 
