@@ -16,9 +16,12 @@
  */
 
 
-package com.asemantics.rdfcoder.sourceparse;
+package com.asemantics.rdfcoder.sourceparse.javacc;
 
 import com.asemantics.rdfcoder.model.java.JavaCodeHandlerDebugImpl;
+import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
+import com.asemantics.rdfcoder.sourceparse.ParserException;
+import com.asemantics.rdfcoder.sourceparse.javacc.JavaSourceFileParser;
 import net.sourceforge.jrefactory.parser.ParseException;
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +31,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Test case for {@link com.asemantics.rdfcoder.sourceparse.JavaSourceFileParser}.
+ * Test case for {@link com.asemantics.rdfcoder.sourceparse.javacc.JavaSourceFileParser}.
  */
 public class JavaSourceFileParserTest {
 
