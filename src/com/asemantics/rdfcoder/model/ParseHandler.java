@@ -21,7 +21,7 @@ package com.asemantics.rdfcoder.model;
 /**
  * Defines the interface exposed by a <i>Parse Handler</i>, that
  * is the handler receiving messages from a
- * {@link com.asemantics.rdfcoder.sourceparse.CodeParser}.
+ * {@link com.asemantics.rdfcoder.parser.CodeParser}.
  */
 public interface ParseHandler {
 

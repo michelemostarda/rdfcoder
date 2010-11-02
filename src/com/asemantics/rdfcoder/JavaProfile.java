@@ -28,14 +28,14 @@ import com.asemantics.rdfcoder.profile.Profile;
 import com.asemantics.rdfcoder.profile.ProfileException;
 import com.asemantics.rdfcoder.repository.Repository;
 import com.asemantics.rdfcoder.repository.RepositoryException;
-import com.asemantics.rdfcoder.sourceparse.DirectoryParser;
-import com.asemantics.rdfcoder.sourceparse.FileParser;
-import com.asemantics.rdfcoder.sourceparse.JStatistics;
-import com.asemantics.rdfcoder.sourceparse.bytecode.JavaBytecodeFileParser;
-import com.asemantics.rdfcoder.sourceparse.bytecode.JavaBytecodeJarParser;
-import com.asemantics.rdfcoder.sourceparse.javacc.JavaSourceFileParser;
-import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
-import com.asemantics.rdfcoder.sourceparse.ParserException;
+import com.asemantics.rdfcoder.parser.DirectoryParser;
+import com.asemantics.rdfcoder.parser.FileParser;
+import com.asemantics.rdfcoder.parser.JStatistics;
+import com.asemantics.rdfcoder.parser.bytecode.JavaBytecodeFileParser;
+import com.asemantics.rdfcoder.parser.bytecode.JavaBytecodeJarParser;
+import com.asemantics.rdfcoder.parser.javacc.JavaSourceFileParser;
+import com.asemantics.rdfcoder.parser.ObjectsTable;
+import com.asemantics.rdfcoder.parser.ParserException;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import org.apache.log4j.Logger;
 
@@ -371,7 +371,7 @@ public class JavaProfile implements Profile<JavaQueryModel> {
     }
 
     /**
-     * Serializes the content of the JRE {@link com.asemantics.rdfcoder.sourceparse.ObjectsTable}
+     * Serializes the content of the JRE {@link com.asemantics.rdfcoder.parser.ObjectsTable}
      * into the repository.
      *
      * @param objectsTable
@@ -393,7 +393,7 @@ public class JavaProfile implements Profile<JavaQueryModel> {
     }
 
     /**
-     * Deserializes the content of the <i>JRE</i> {@link com.asemantics.rdfcoder.sourceparse.ObjectsTable}
+     * Deserializes the content of the <i>JRE</i> {@link com.asemantics.rdfcoder.parser.ObjectsTable}
      * from the repository.
      * 
      * @param jreName

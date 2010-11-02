@@ -26,7 +26,7 @@ import com.asemantics.rdfcoder.model.SPARQLException;
 import com.asemantics.rdfcoder.model.SPARQLQuerableCodeModel;
 import com.asemantics.rdfcoder.model.java.JavaQueryModel;
 import com.asemantics.rdfcoder.profile.ProfileException;
-import com.asemantics.rdfcoder.sourceparse.JStatistics;
+import com.asemantics.rdfcoder.parser.JStatistics;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.CodeStorageException;
 import jline.ConsoleReader;

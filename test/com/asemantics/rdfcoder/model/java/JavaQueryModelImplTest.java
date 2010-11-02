@@ -21,7 +21,7 @@ package com.asemantics.rdfcoder.model.java;
 import com.asemantics.rdfcoder.model.IdentifierReader;
 import com.asemantics.rdfcoder.model.QueryModelException;
 import com.asemantics.rdfcoder.model.QueryModelTest;
-import com.asemantics.rdfcoder.sourceparse.ParserException;
+import com.asemantics.rdfcoder.parser.ParserException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

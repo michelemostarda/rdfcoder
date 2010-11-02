@@ -18,7 +18,7 @@
 
 package com.asemantics.rdfcoder;
 
-import com.asemantics.rdfcoder.sourceparse.JStatistics;
+import com.asemantics.rdfcoder.parser.JStatistics;
 
 import java.io.File;
 
