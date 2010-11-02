@@ -31,11 +31,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test case for the {@link com.asemantics.rdfcoder.model.java.JavaCodeModel}.
+ * Test case for the
+ * {@link com.asemantics.rdfcoder.model.java.JavaCodeHandlerImpl}.
+ *
+ * TODO: add testing of specific Javadoc methods.
  */
-public class JavaCodeHandlerTest {
+public class JavaCodeHandlerImplTest {
 
-    private static Logger logger = Logger.getLogger(JavaCodeHandlerTest.class);
+    private static Logger logger = Logger.getLogger(JavaCodeHandlerImplTest.class);
 
     private JenaCoderFactory jcmf;
 
@@ -48,13 +51,16 @@ public class JavaCodeHandlerTest {
     /**
      * Simulates a test sequence called <i>Class1</i>.
      *
-     * @param jch
+     * @param jch input java code handler.
      */
     public static void simulateClass1Sequence(JavaCodeHandler jch) {
         jch.startClass(
                 new JavaCodeModel.JModifier[]{JavaCodeModel.JModifier.STATIC},
                 JavaCodeModel.JVisibility.PUBLIC,
-                IdentifierReader.readPackage("p0.p1.p2.p3").copy().pushFragment("class1", JavaCodeModel.CLASS_KEY).build(),
+                IdentifierReader.readPackage("p0.p1.p2.p3")
+                        .copy()
+                        .pushFragment("class1", JavaCodeModel.CLASS_KEY)
+                        .build(),
                 null,
                 null
         );
@@ -119,7 +125,7 @@ public class JavaCodeHandlerTest {
     /**
      * Simulates a test sequence called <i>Class2</i>.
      *
-     * @param jch
+     * @param jch input java code handler.
      */
     public static void simulateClass2Sequence(JavaCodeHandler jch) {
         jch.startClass(
@@ -199,8 +205,8 @@ public class JavaCodeHandlerTest {
     /**
      * Provides to the given handler a sequence defining a test class. 
      *
-     * @param jch
-     * @throws com.asemantics.rdfcoder.model.QueryModelException
+     * @param jch input java code handler.
+     * @throws QueryModelException
      */
     public static void simulateHandlerSequence(JavaCodeHandler jch) throws QueryModelException {
         // Loading model.
@@ -223,10 +229,11 @@ public class JavaCodeHandlerTest {
     }
 
     /**
-     * Checks the content of the model through the given {@link com.asemantics.rdfcoder.model.java.JavaQueryModel}
+     * Checks the content of the model through the given
+     * {@link com.asemantics.rdfcoder.model.java.JavaQueryModel}
      * verifying the existence of a specific structure.
      *
-     * @param qm
+     * @param qm input query model.
      * @throws QueryModelException
      * @see #simulateHandlerSequence(com.asemantics.rdfcoder.model.java.JavaCodeHandler)
      */
@@ -377,7 +384,7 @@ public class JavaCodeHandlerTest {
     /**
      * Constructor.
      */
-    public JavaCodeHandlerTest() {}
+    public JavaCodeHandlerImplTest() {}
 
     @Before
     public void setUp() {
