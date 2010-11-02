@@ -16,12 +16,15 @@
  */
 
 
-package com.asemantics.rdfcoder.sourceparse;
+package com.asemantics.rdfcoder.sourceparse.javacc;
 
 import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.IdentifierReader;
 import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
+import com.asemantics.rdfcoder.sourceparse.FileParser;
+import com.asemantics.rdfcoder.sourceparse.ImportsContext;
+import com.asemantics.rdfcoder.sourceparse.ParserException;
 import net.sourceforge.jrefactory.ast.ASTClassDeclaration;
 import net.sourceforge.jrefactory.ast.ASTClassOrInterfaceType;
 import net.sourceforge.jrefactory.ast.ASTCompilationUnit;

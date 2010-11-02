@@ -21,6 +21,7 @@ import com.asemantics.rdfcoder.CoderUtils;
 import com.asemantics.rdfcoder.model.CodeModelBase;
 import com.asemantics.rdfcoder.model.CoderFactory;
 import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
+import com.asemantics.rdfcoder.sourceparse.javacc.JavaSourceFileParser;
 import com.asemantics.rdfcoder.storage.JenaCoderFactory;
 import org.apache.log4j.Logger;
 import org.junit.After;

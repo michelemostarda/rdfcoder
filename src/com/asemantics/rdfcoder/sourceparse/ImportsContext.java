@@ -30,7 +30,7 @@ import java.util.List;
  * This class represents the imports of a class
  * and it is able to fully qualify an object.
  */
-class ImportsContext {
+public class ImportsContext {
 
     /**
      * The current package of the object.
@@ -48,7 +48,7 @@ class ImportsContext {
     private List<Identifier> starredPackages;
 
 
-    ImportsContext(){}
+    public ImportsContext(){}
 
     public void setContextPackage(String pkg) {
         contextPackage = IdentifierReader.readPackage(pkg);

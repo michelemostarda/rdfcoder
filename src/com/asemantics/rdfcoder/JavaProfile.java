@@ -33,7 +33,7 @@ import com.asemantics.rdfcoder.sourceparse.FileParser;
 import com.asemantics.rdfcoder.sourceparse.JStatistics;
 import com.asemantics.rdfcoder.sourceparse.bytecode.JavaBytecodeFileParser;
 import com.asemantics.rdfcoder.sourceparse.bytecode.JavaBytecodeJarParser;
-import com.asemantics.rdfcoder.sourceparse.JavaSourceFileParser;
+import com.asemantics.rdfcoder.sourceparse.javacc.JavaSourceFileParser;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
 import com.asemantics.rdfcoder.sourceparse.ParserException;
 import com.asemantics.rdfcoder.storage.CodeStorage;
