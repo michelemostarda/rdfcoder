@@ -1,5 +1,5 @@
 
 /**
- * <p>This package defines a <i>Profile</i>.</p> 
+ * <p>This package defines a <i>language Profile</i>.</p> 
  */
-package com.asemantics.profile;
+package com.asemantics.rdfcoder.profile;
