@@ -16,7 +16,10 @@
  */
 
 
-package com.asemantics.rdfcoder.sourceparse;
+package com.asemantics.rdfcoder.sourceparse.bytecode;
+
+import com.asemantics.rdfcoder.sourceparse.CodeParser;
+import com.asemantics.rdfcoder.sourceparse.ParserException;
 
 import java.io.File;
 import java.io.IOException;

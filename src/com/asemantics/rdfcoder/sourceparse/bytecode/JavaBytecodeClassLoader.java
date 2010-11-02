@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.rdfcoder.sourceparse;
+package com.asemantics.rdfcoder.sourceparse.bytecode;
 
 import com.asemantics.rdfcoder.CoderUtils;
 import org.apache.bcel.classfile.ClassParser;
@@ -30,10 +30,10 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * This class helps the {@link com.asemantics.rdfcoder.sourceparse.JavaBytecodeFileParser}
+ * This class helps the {@link JavaBytecodeFileParser}
  * to load inner classes and parse it.
  *
- * @see com.asemantics.rdfcoder.sourceparse.JavaBytecodeFileParser
+ * @see JavaBytecodeFileParser
  */
 public interface JavaBytecodeClassLoader {
 

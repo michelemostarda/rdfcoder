@@ -25,7 +25,7 @@ import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 import com.asemantics.rdfcoder.sourceparse.DirectoryParser;
 import com.asemantics.rdfcoder.sourceparse.JStatistics;
-import com.asemantics.rdfcoder.sourceparse.JavaBytecodeFileParser;
+import com.asemantics.rdfcoder.sourceparse.bytecode.JavaBytecodeFileParser;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
 import com.asemantics.rdfcoder.storage.JenaCoderFactory;
 import org.junit.After;

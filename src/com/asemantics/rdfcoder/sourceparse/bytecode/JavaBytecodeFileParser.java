@@ -16,12 +16,15 @@
  */
 
 
-package com.asemantics.rdfcoder.sourceparse;
+package com.asemantics.rdfcoder.sourceparse.bytecode;
 
 import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.IdentifierReader;
 import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
+import com.asemantics.rdfcoder.sourceparse.FileParser;
+import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
+import com.asemantics.rdfcoder.sourceparse.ParserException;
 import org.apache.bcel.Constants;
 import org.apache.bcel.classfile.AccessFlags;
 import org.apache.bcel.classfile.Attribute;

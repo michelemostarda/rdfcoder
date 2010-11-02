@@ -16,10 +16,13 @@
  */
 
 
-package com.asemantics.rdfcoder.sourceparse;
+package com.asemantics.rdfcoder.sourceparse.bytecode;
 
 import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.model.java.JavaCodeHandlerDebugImpl;
+import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
+import com.asemantics.rdfcoder.sourceparse.ParserException;
+import com.asemantics.rdfcoder.sourceparse.bytecode.JavaBytecodeFileParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +31,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Test case for the {@link com.asemantics.rdfcoder.sourceparse.JavaBytecodeFileParser}.
+ * Test case for the {@link com.asemantics.rdfcoder.sourceparse.bytecode.JavaBytecodeFileParser}.
  */
 public class JavaBytecodeFileParserTest {
 
