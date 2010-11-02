@@ -4,7 +4,6 @@ import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.IdentifierReader;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
 import com.asemantics.rdfcoder.model.java.JavadocHandler;
-import com.asemantics.rdfcoder.sourceparse.FieldJavadoc;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

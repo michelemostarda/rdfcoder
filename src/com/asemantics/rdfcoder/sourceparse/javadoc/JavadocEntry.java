@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.rdfcoder.sourceparse;
+package com.asemantics.rdfcoder.sourceparse.javadoc;
 
 import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;

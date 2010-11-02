@@ -16,7 +16,7 @@
  */
 
 
-package com.asemantics.rdfcoder.sourceparse;
+package com.asemantics.rdfcoder.sourceparse.javadoc;
 
 import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.java.JavaCodeModel;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Implementation of {@link com.asemantics.rdfcoder.sourceparse.JavadocEntry}
+ * Implementation of {@link JavadocEntry}
  * for class Javadoc representation.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
