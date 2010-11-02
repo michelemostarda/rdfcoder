@@ -30,7 +30,7 @@
 <FONT color="green">027</FONT>     *<a name="line.27"></a>
 <FONT color="green">028</FONT>     * @author Michele Mostarda (michele.mostarda@gmail.com)<a name="line.28"></a>
 <FONT color="green">029</FONT>     */<a name="line.29"></a>
-<FONT color="green">030</FONT>    //TODO: extract the Base class.<a name="line.30"></a>
+<FONT color="green">030</FONT>    //TODO: LOW - extract the Base class.<a name="line.30"></a>
 <FONT color="green">031</FONT>    public abstract class JBase {<a name="line.31"></a>
 <FONT color="green">032</FONT>    <a name="line.32"></a>
 <FONT color="green">033</FONT>        /**<a name="line.33"></a>
@@ -158,7 +158,7 @@
 <FONT color="green">155</FONT>         */<a name="line.155"></a>
 <FONT color="green">156</FONT>        protected final JBase makeHierarchy(JavaQueryModel qm, Identifier entity)<a name="line.156"></a>
 <FONT color="green">157</FONT>        throws QueryModelException {<a name="line.157"></a>
-<FONT color="green">158</FONT>            Identifier parentIdentifier = entity.getPreTail();<a name="line.158"></a>
+<FONT color="green">158</FONT>            Identifier parentIdentifier = entity.getParent();<a name="line.158"></a>
 <FONT color="green">159</FONT>            if(parentIdentifier.size() == 0) {<a name="line.159"></a>
 <FONT color="green">160</FONT>                return null;<a name="line.160"></a>
 <FONT color="green">161</FONT>            }<a name="line.161"></a>

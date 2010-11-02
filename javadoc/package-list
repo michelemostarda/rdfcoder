@@ -3,7 +3,10 @@ com.asemantics.rdfcoder.inspector
 com.asemantics.rdfcoder.model
 com.asemantics.rdfcoder.model.java
 com.asemantics.rdfcoder.model.ontology
+com.asemantics.rdfcoder.parser
+com.asemantics.rdfcoder.parser.bytecode
+com.asemantics.rdfcoder.parser.javacc
+com.asemantics.rdfcoder.parser.javadoc
 com.asemantics.rdfcoder.profile
 com.asemantics.rdfcoder.repository
-com.asemantics.rdfcoder.sourceparse
 com.asemantics.rdfcoder.storage

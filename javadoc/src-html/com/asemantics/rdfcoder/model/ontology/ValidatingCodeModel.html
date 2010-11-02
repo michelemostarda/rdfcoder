@@ -35,68 +35,70 @@
 <FONT color="green">032</FONT>    public class ValidatingCodeModel extends CodeModelBase {<a name="line.32"></a>
 <FONT color="green">033</FONT>    <a name="line.33"></a>
 <FONT color="green">034</FONT>        /**<a name="line.34"></a>
-<FONT color="green">035</FONT>         * Validation error message.<a name="line.35"></a>
+<FONT color="green">035</FONT>         * Decorated code model.<a name="line.35"></a>
 <FONT color="green">036</FONT>         */<a name="line.36"></a>
-<FONT color="green">037</FONT>        private static String VALIDATION_ERROR = "Validation error";<a name="line.37"></a>
+<FONT color="green">037</FONT>        private CodeModel decorated;<a name="line.37"></a>
 <FONT color="green">038</FONT>    <a name="line.38"></a>
 <FONT color="green">039</FONT>        /**<a name="line.39"></a>
-<FONT color="green">040</FONT>         * Decorated code model.<a name="line.40"></a>
+<FONT color="green">040</FONT>         * Applied ontology.<a name="line.40"></a>
 <FONT color="green">041</FONT>         */<a name="line.41"></a>
-<FONT color="green">042</FONT>        private CodeModel decorated;<a name="line.42"></a>
+<FONT color="green">042</FONT>        private Ontology ontology;<a name="line.42"></a>
 <FONT color="green">043</FONT>    <a name="line.43"></a>
-<FONT color="green">044</FONT>        /**<a name="line.44"></a>
-<FONT color="green">045</FONT>         * Applied ontology.<a name="line.45"></a>
-<FONT color="green">046</FONT>         */<a name="line.46"></a>
-<FONT color="green">047</FONT>        private Ontology ontology;<a name="line.47"></a>
+<FONT color="green">044</FONT>        public ValidatingCodeModel(CodeModel codeModel, Ontology otlg) {<a name="line.44"></a>
+<FONT color="green">045</FONT>            if(codeModel == null || otlg == null) {<a name="line.45"></a>
+<FONT color="green">046</FONT>                throw new IllegalArgumentException();<a name="line.46"></a>
+<FONT color="green">047</FONT>            }<a name="line.47"></a>
 <FONT color="green">048</FONT>    <a name="line.48"></a>
-<FONT color="green">049</FONT>        public ValidatingCodeModel(CodeModel codeModel, Ontology otlg) {<a name="line.49"></a>
-<FONT color="green">050</FONT>            if(codeModel == null || otlg == null) {<a name="line.50"></a>
-<FONT color="green">051</FONT>                throw new IllegalArgumentException();<a name="line.51"></a>
-<FONT color="green">052</FONT>            }<a name="line.52"></a>
-<FONT color="green">053</FONT>    <a name="line.53"></a>
-<FONT color="green">054</FONT>            decorated = codeModel;<a name="line.54"></a>
-<FONT color="green">055</FONT>            ontology  = otlg;<a name="line.55"></a>
-<FONT color="green">056</FONT>        }<a name="line.56"></a>
-<FONT color="green">057</FONT>    <a name="line.57"></a>
-<FONT color="green">058</FONT>        public TripleIterator searchTriples(String subject, String predicate, String object) {<a name="line.58"></a>
-<FONT color="green">059</FONT>            return decorated.searchTriples(subject, predicate, object);<a name="line.59"></a>
-<FONT color="green">060</FONT>        }<a name="line.60"></a>
-<FONT color="green">061</FONT>    <a name="line.61"></a>
-<FONT color="green">062</FONT>        public void addTriple(String subject, String predicate, String object) {<a name="line.62"></a>
-<FONT color="green">063</FONT>            try {<a name="line.63"></a>
-<FONT color="green">064</FONT>                ontology.validateTriple(subject, predicate, object);<a name="line.64"></a>
-<FONT color="green">065</FONT>            } catch (OntologyException oe) {<a name="line.65"></a>
-<FONT color="green">066</FONT>                throw createRuntimeException(oe, subject, predicate, object);<a name="line.66"></a>
-<FONT color="green">067</FONT>            }<a name="line.67"></a>
-<FONT color="green">068</FONT>            decorated.addTriple(subject, predicate, object);<a name="line.68"></a>
-<FONT color="green">069</FONT>        }<a name="line.69"></a>
-<FONT color="green">070</FONT>    <a name="line.70"></a>
-<FONT color="green">071</FONT>        public void removeTriple(String subject, String predicate, String object) {<a name="line.71"></a>
-<FONT color="green">072</FONT>            decorated.removeTriple(subject, predicate, object);<a name="line.72"></a>
-<FONT color="green">073</FONT>        }<a name="line.73"></a>
-<FONT color="green">074</FONT>    <a name="line.74"></a>
-<FONT color="green">075</FONT>        public void addTripleLiteral(String subject, String predicate, String literal) {<a name="line.75"></a>
-<FONT color="green">076</FONT>            try {<a name="line.76"></a>
-<FONT color="green">077</FONT>                ontology.validateTripleLiteral(subject, predicate);<a name="line.77"></a>
-<FONT color="green">078</FONT>            } catch (OntologyException oe) {<a name="line.78"></a>
-<FONT color="green">079</FONT>                throw createRuntimeException(oe, subject, predicate, literal);<a name="line.79"></a>
-<FONT color="green">080</FONT>            }<a name="line.80"></a>
-<FONT color="green">081</FONT>            decorated.addTripleLiteral(subject, predicate, literal);<a name="line.81"></a>
-<FONT color="green">082</FONT>        }<a name="line.82"></a>
-<FONT color="green">083</FONT>    <a name="line.83"></a>
-<FONT color="green">084</FONT>        public void removeTripleLiteral(String subject, String predicate, String object) {<a name="line.84"></a>
-<FONT color="green">085</FONT>            decorated.removeTripleLiteral(subject, predicate, object);<a name="line.85"></a>
-<FONT color="green">086</FONT>        }<a name="line.86"></a>
-<FONT color="green">087</FONT>    <a name="line.87"></a>
-<FONT color="green">088</FONT>        public void clearAll() {<a name="line.88"></a>
-<FONT color="green">089</FONT>            decorated.clearAll();<a name="line.89"></a>
-<FONT color="green">090</FONT>        }<a name="line.90"></a>
-<FONT color="green">091</FONT>    <a name="line.91"></a>
-<FONT color="green">092</FONT>        // TODO: improve replace the RuntimeException wih OntologyException.<a name="line.92"></a>
-<FONT color="green">093</FONT>        private RuntimeException createRuntimeException(OntologyException oe, String s, String p, String o) {<a name="line.93"></a>
-<FONT color="green">094</FONT>            return new RuntimeException(VALIDATION_ERROR + ": " + oe.getMessage() + " in triple &lt;" + s + "," + p + "," + o + "&gt;", oe);<a name="line.94"></a>
-<FONT color="green">095</FONT>        }<a name="line.95"></a>
-<FONT color="green">096</FONT>    }<a name="line.96"></a>
+<FONT color="green">049</FONT>            decorated = codeModel;<a name="line.49"></a>
+<FONT color="green">050</FONT>            ontology  = otlg;<a name="line.50"></a>
+<FONT color="green">051</FONT>        }<a name="line.51"></a>
+<FONT color="green">052</FONT>    <a name="line.52"></a>
+<FONT color="green">053</FONT>        public TripleIterator searchTriples(String subject, String predicate, String object) {<a name="line.53"></a>
+<FONT color="green">054</FONT>            return decorated.searchTriples(subject, predicate, object);<a name="line.54"></a>
+<FONT color="green">055</FONT>        }<a name="line.55"></a>
+<FONT color="green">056</FONT>    <a name="line.56"></a>
+<FONT color="green">057</FONT>        public void addTriple(String subject, String predicate, String object) {<a name="line.57"></a>
+<FONT color="green">058</FONT>            try {<a name="line.58"></a>
+<FONT color="green">059</FONT>                ontology.validateTriple(subject, predicate, object);<a name="line.59"></a>
+<FONT color="green">060</FONT>            } catch (OntologyException oe) {<a name="line.60"></a>
+<FONT color="green">061</FONT>                throw createException(oe, subject, predicate, object);<a name="line.61"></a>
+<FONT color="green">062</FONT>            }<a name="line.62"></a>
+<FONT color="green">063</FONT>            decorated.addTriple(subject, predicate, object);<a name="line.63"></a>
+<FONT color="green">064</FONT>        }<a name="line.64"></a>
+<FONT color="green">065</FONT>    <a name="line.65"></a>
+<FONT color="green">066</FONT>        public void removeTriple(String subject, String predicate, String object) {<a name="line.66"></a>
+<FONT color="green">067</FONT>            decorated.removeTriple(subject, predicate, object);<a name="line.67"></a>
+<FONT color="green">068</FONT>        }<a name="line.68"></a>
+<FONT color="green">069</FONT>    <a name="line.69"></a>
+<FONT color="green">070</FONT>        public void addTripleLiteral(String subject, String predicate, String literal) {<a name="line.70"></a>
+<FONT color="green">071</FONT>            try {<a name="line.71"></a>
+<FONT color="green">072</FONT>                ontology.validateTripleLiteral(subject, predicate);<a name="line.72"></a>
+<FONT color="green">073</FONT>            } catch (OntologyException oe) {<a name="line.73"></a>
+<FONT color="green">074</FONT>                throw createException(oe, subject, predicate, literal);<a name="line.74"></a>
+<FONT color="green">075</FONT>            }<a name="line.75"></a>
+<FONT color="green">076</FONT>            decorated.addTripleLiteral(subject, predicate, literal);<a name="line.76"></a>
+<FONT color="green">077</FONT>        }<a name="line.77"></a>
+<FONT color="green">078</FONT>    <a name="line.78"></a>
+<FONT color="green">079</FONT>        public void removeTripleLiteral(String subject, String predicate, String object) {<a name="line.79"></a>
+<FONT color="green">080</FONT>            decorated.removeTripleLiteral(subject, predicate, object);<a name="line.80"></a>
+<FONT color="green">081</FONT>        }<a name="line.81"></a>
+<FONT color="green">082</FONT>    <a name="line.82"></a>
+<FONT color="green">083</FONT>        public void addTripleCollection(Object subject, String predicate, String[] list) {<a name="line.83"></a>
+<FONT color="green">084</FONT>            decorated.addTripleCollection(subject, predicate, list);<a name="line.84"></a>
+<FONT color="green">085</FONT>        }<a name="line.85"></a>
+<FONT color="green">086</FONT>    <a name="line.86"></a>
+<FONT color="green">087</FONT>        public void clearAll() {<a name="line.87"></a>
+<FONT color="green">088</FONT>            decorated.clearAll();<a name="line.88"></a>
+<FONT color="green">089</FONT>        }<a name="line.89"></a>
+<FONT color="green">090</FONT>    <a name="line.90"></a>
+<FONT color="green">091</FONT>        private RuntimeException createException(OntologyException cause, String s, String p, String o) {<a name="line.91"></a>
+<FONT color="green">092</FONT>            return new RuntimeException(<a name="line.92"></a>
+<FONT color="green">093</FONT>                    String.format("An error occurred while validating triple { %s %s %s }", s, p, o),<a name="line.93"></a>
+<FONT color="green">094</FONT>                    cause<a name="line.94"></a>
+<FONT color="green">095</FONT>            );<a name="line.95"></a>
+<FONT color="green">096</FONT>        }<a name="line.96"></a>
+<FONT color="green">097</FONT>        <a name="line.97"></a>
+<FONT color="green">098</FONT>    }<a name="line.98"></a>
 
 
 

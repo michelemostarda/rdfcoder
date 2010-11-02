@@ -44,7 +44,7 @@
 <FONT color="green">041</FONT>    <a name="line.41"></a>
 <FONT color="green">042</FONT>        private CodeModel codeModel;<a name="line.42"></a>
 <FONT color="green">043</FONT>    <a name="line.43"></a>
-<FONT color="green">044</FONT>        public JavaQueryModelImpl(CodeModel codeModel) {  // Protecting creation.<a name="line.44"></a>
+<FONT color="green">044</FONT>        public JavaQueryModelImpl(CodeModel codeModel) {<a name="line.44"></a>
 <FONT color="green">045</FONT>            this.codeModel = codeModel;<a name="line.45"></a>
 <FONT color="green">046</FONT>        }<a name="line.46"></a>
 <FONT color="green">047</FONT>    <a name="line.47"></a>
@@ -387,170 +387,216 @@
 <FONT color="green">384</FONT>            return JavaCoderFactory.createJMethod(this, pathToMethod);<a name="line.384"></a>
 <FONT color="green">385</FONT>        }<a name="line.385"></a>
 <FONT color="green">386</FONT>    <a name="line.386"></a>
-<FONT color="green">387</FONT>        public JEnumeration[] getEnumerationsInto(Identifier pathToContainer) throws QueryModelException {<a name="line.387"></a>
+<FONT color="green">387</FONT>        public JEnumeration[] getAllEnumerations() {<a name="line.387"></a>
 <FONT color="green">388</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.388"></a>
-<FONT color="green">389</FONT>                   JavaCodeModel.ALL_MATCH,<a name="line.389"></a>
-<FONT color="green">390</FONT>                   JavaCodeModel.CONTAINS_ENUMERATION,<a name="line.390"></a>
-<FONT color="green">391</FONT>                   JavaCodeModel.ALL_MATCH<a name="line.391"></a>
+<FONT color="green">389</FONT>                    JavaCodeModel.ALL_MATCH,<a name="line.389"></a>
+<FONT color="green">390</FONT>                    JavaCodeModel.SUBCLASSOF,<a name="line.390"></a>
+<FONT color="green">391</FONT>                    JavaCodeModel.JENUMERATION<a name="line.391"></a>
 <FONT color="green">392</FONT>            );<a name="line.392"></a>
-<FONT color="green">393</FONT>            List&lt;JEnumeration&gt; enumerations = new ArrayList&lt;JEnumeration&gt;();<a name="line.393"></a>
-<FONT color="green">394</FONT>            try {<a name="line.394"></a>
-<FONT color="green">395</FONT>                while(t1.next()) {<a name="line.395"></a>
-<FONT color="green">396</FONT>                    enumerations.add(<a name="line.396"></a>
-<FONT color="green">397</FONT>                            JavaCoderFactory.createJEnumeration(this, IdentifierReader.readIdentifier(t1.getObject() ))<a name="line.397"></a>
-<FONT color="green">398</FONT>                    );<a name="line.398"></a>
-<FONT color="green">399</FONT>                }<a name="line.399"></a>
-<FONT color="green">400</FONT>            } finally {<a name="line.400"></a>
-<FONT color="green">401</FONT>                t1.close();<a name="line.401"></a>
-<FONT color="green">402</FONT>            }<a name="line.402"></a>
-<FONT color="green">403</FONT>            return enumerations.toArray( new JEnumeration[enumerations.size()] );<a name="line.403"></a>
-<FONT color="green">404</FONT>        }<a name="line.404"></a>
-<FONT color="green">405</FONT>    <a name="line.405"></a>
-<FONT color="green">406</FONT>        public JEnumeration getEnumeration(Identifier pathToEnumeration) throws QueryModelException {<a name="line.406"></a>
-<FONT color="green">407</FONT>            return JavaCoderFactory.createJEnumeration(this, pathToEnumeration);<a name="line.407"></a>
-<FONT color="green">408</FONT>        }<a name="line.408"></a>
-<FONT color="green">409</FONT>    <a name="line.409"></a>
-<FONT color="green">410</FONT>        public String[] getElements(Identifier pathToEnumeration) {<a name="line.410"></a>
-<FONT color="green">411</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.411"></a>
-<FONT color="green">412</FONT>                   pathToEnumeration.getIdentifier(),<a name="line.412"></a>
-<FONT color="green">413</FONT>                   JavaCodeModel.CONTAINS_ELEMENT,<a name="line.413"></a>
-<FONT color="green">414</FONT>                   JavaCodeModel.ALL_MATCH<a name="line.414"></a>
-<FONT color="green">415</FONT>            );<a name="line.415"></a>
-<FONT color="green">416</FONT>            List&lt;String&gt; enumerations = new ArrayList&lt;String&gt;();<a name="line.416"></a>
-<FONT color="green">417</FONT>            try {<a name="line.417"></a>
-<FONT color="green">418</FONT>                while(t1.next()) {<a name="line.418"></a>
-<FONT color="green">419</FONT>                    enumerations.add( t1.getObject() );<a name="line.419"></a>
-<FONT color="green">420</FONT>                }<a name="line.420"></a>
-<FONT color="green">421</FONT>            } finally {<a name="line.421"></a>
-<FONT color="green">422</FONT>                t1.close();<a name="line.422"></a>
-<FONT color="green">423</FONT>            }<a name="line.423"></a>
-<FONT color="green">424</FONT>            return enumerations.toArray( new String[enumerations.size()] );<a name="line.424"></a>
-<FONT color="green">425</FONT>        }<a name="line.425"></a>
-<FONT color="green">426</FONT>    <a name="line.426"></a>
-<FONT color="green">427</FONT>        public JSignature[] getSignatures(Identifier pathToMethod) throws QueryModelException {<a name="line.427"></a>
-<FONT color="green">428</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.428"></a>
-<FONT color="green">429</FONT>                    pathToMethod.getIdentifier(),<a name="line.429"></a>
-<FONT color="green">430</FONT>                    JavaCodeModel.CONTAINS_SIGNATURE,<a name="line.430"></a>
-<FONT color="green">431</FONT>                    JavaCodeModel.ALL_MATCH<a name="line.431"></a>
-<FONT color="green">432</FONT>            );<a name="line.432"></a>
-<FONT color="green">433</FONT>            TripleIterator t2;<a name="line.433"></a>
-<FONT color="green">434</FONT>            TripleIterator t3;<a name="line.434"></a>
-<FONT color="green">435</FONT>            List&lt;JSignature&gt; signatures = new ArrayList&lt;JSignature&gt;();<a name="line.435"></a>
-<FONT color="green">436</FONT>            List&lt;JavaCodeModel.JType&gt; parametersIntoSignature = new ArrayList&lt;JavaCodeModel.JType&gt;();<a name="line.436"></a>
-<FONT color="green">437</FONT>            try {<a name="line.437"></a>
-<FONT color="green">438</FONT>                while(t1.next()) { //Signatures<a name="line.438"></a>
-<FONT color="green">439</FONT>                    t2 = codeModel.searchTriples(t1.getObject(), JavaCodeModel.PARAMETER_TYPE, JavaCodeModel.ALL_MATCH);<a name="line.439"></a>
-<FONT color="green">440</FONT>                    parametersIntoSignature.clear();<a name="line.440"></a>
-<FONT color="green">441</FONT>                    try {<a name="line.441"></a>
-<FONT color="green">442</FONT>                        while(t2.next()) { //Types.<a name="line.442"></a>
-<FONT color="green">443</FONT>                            parametersIntoSignature.add( JavaCodeModel.rdfTypeToJType(t2.getSubject()) );<a name="line.443"></a>
-<FONT color="green">444</FONT>                        } <a name="line.444"></a>
-<FONT color="green">445</FONT>                    } finally {<a name="line.445"></a>
-<FONT color="green">446</FONT>                        t2.close();<a name="line.446"></a>
-<FONT color="green">447</FONT>                    }<a name="line.447"></a>
-<FONT color="green">448</FONT>                    t3 = codeModel.searchTriples(t1.getObject(), JavaCodeModel.RETURN_TYPE, JavaCodeModel.ALL_MATCH);<a name="line.448"></a>
-<FONT color="green">449</FONT>                    try {<a name="line.449"></a>
-<FONT color="green">450</FONT>                        if( ! t3.next() ) {<a name="line.450"></a>
-<FONT color="green">451</FONT>                            throw new QueryModelException(<a name="line.451"></a>
-<FONT color="green">452</FONT>                                    "Cannot find the return type for the method '" + pathToMethod + "'."<a name="line.452"></a>
-<FONT color="green">453</FONT>                            );<a name="line.453"></a>
-<FONT color="green">454</FONT>                        }<a name="line.454"></a>
-<FONT color="green">455</FONT>                        signatures.add(<a name="line.455"></a>
-<FONT color="green">456</FONT>                            JavaCoderFactory.createJSignature(<a name="line.456"></a>
-<FONT color="green">457</FONT>                                    this,<a name="line.457"></a>
-<FONT color="green">458</FONT>                                    IdentifierReader.readIdentifier(t1.getObject()),<a name="line.458"></a>
-<FONT color="green">459</FONT>                                    ( parametersIntoSignature.toArray(new JavaCodeModel.JType[parametersIntoSignature.size()]) ),<a name="line.459"></a>
-<FONT color="green">460</FONT>                                    JavaCodeModel.rdfTypeToJType( t3.getObject() )<a name="line.460"></a>
-<FONT color="green">461</FONT>                                )<a name="line.461"></a>
-<FONT color="green">462</FONT>                        );<a name="line.462"></a>
-<FONT color="green">463</FONT>                    } finally {<a name="line.463"></a>
-<FONT color="green">464</FONT>                        t3.close();<a name="line.464"></a>
-<FONT color="green">465</FONT>                    }<a name="line.465"></a>
-<FONT color="green">466</FONT>                }<a name="line.466"></a>
-<FONT color="green">467</FONT>            } finally {<a name="line.467"></a>
-<FONT color="green">468</FONT>                t1.close();<a name="line.468"></a>
-<FONT color="green">469</FONT>            }<a name="line.469"></a>
-<FONT color="green">470</FONT>            return signatures.toArray( new JSignature[signatures.size()] );<a name="line.470"></a>
-<FONT color="green">471</FONT>        }<a name="line.471"></a>
-<FONT color="green">472</FONT>    <a name="line.472"></a>
-<FONT color="green">473</FONT>        public JavaCodeModel.JType[] getParameters(Identifier pathToSignature) throws QueryModelException {<a name="line.473"></a>
-<FONT color="green">474</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.474"></a>
-<FONT color="green">475</FONT>                pathToSignature.getIdentifier(),<a name="line.475"></a>
-<FONT color="green">476</FONT>                JavaCodeModel.CONTAINS_PARAMETER,<a name="line.476"></a>
-<FONT color="green">477</FONT>                JavaCodeModel.ALL_MATCH<a name="line.477"></a>
-<FONT color="green">478</FONT>            );<a name="line.478"></a>
-<FONT color="green">479</FONT>            List&lt;JavaCodeModel.JType&gt; result;<a name="line.479"></a>
-<FONT color="green">480</FONT>            try {<a name="line.480"></a>
-<FONT color="green">481</FONT>                result = new ArrayList&lt;JavaCodeModel.JType&gt;();<a name="line.481"></a>
-<FONT color="green">482</FONT>                while(t1.next()) {<a name="line.482"></a>
-<FONT color="green">483</FONT>                    result.add( JavaCodeModel.rdfTypeToJType( t1.getObject() ) );<a name="line.483"></a>
-<FONT color="green">484</FONT>                }<a name="line.484"></a>
-<FONT color="green">485</FONT>            } finally{<a name="line.485"></a>
-<FONT color="green">486</FONT>                t1.close();<a name="line.486"></a>
-<FONT color="green">487</FONT>            }<a name="line.487"></a>
-<FONT color="green">488</FONT>            return result.toArray( new JavaCodeModel.JType[result.size()] );<a name="line.488"></a>
-<FONT color="green">489</FONT>        }<a name="line.489"></a>
-<FONT color="green">490</FONT>    <a name="line.490"></a>
-<FONT color="green">491</FONT>        public JavaCodeModel.JType getReturnType(Identifier pathToSignature) throws QueryModelException {<a name="line.491"></a>
-<FONT color="green">492</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.492"></a>
-<FONT color="green">493</FONT>                pathToSignature.getIdentifier(),<a name="line.493"></a>
-<FONT color="green">494</FONT>                JavaCodeModel.RETURN_TYPE,<a name="line.494"></a>
-<FONT color="green">495</FONT>                JavaCodeModel.ALL_MATCH<a name="line.495"></a>
-<FONT color="green">496</FONT>            );<a name="line.496"></a>
-<FONT color="green">497</FONT>            try {<a name="line.497"></a>
-<FONT color="green">498</FONT>                if( t1.next() ) {<a name="line.498"></a>
-<FONT color="green">499</FONT>                    return JavaCodeModel.rdfTypeToJType( t1.getObject() );<a name="line.499"></a>
-<FONT color="green">500</FONT>                } else {<a name="line.500"></a>
-<FONT color="green">501</FONT>                    throw new QueryModelException("Cannot find return type.");<a name="line.501"></a>
-<FONT color="green">502</FONT>                }<a name="line.502"></a>
-<FONT color="green">503</FONT>            } finally{<a name="line.503"></a>
-<FONT color="green">504</FONT>                t1.close();<a name="line.504"></a>
-<FONT color="green">505</FONT>            }<a name="line.505"></a>
-<FONT color="green">506</FONT>        }<a name="line.506"></a>
-<FONT color="green">507</FONT>    <a name="line.507"></a>
-<FONT color="green">508</FONT>        public JavaCodeModel.JVisibility getVisibility(Identifier pathToEntity) throws QueryModelException {<a name="line.508"></a>
-<FONT color="green">509</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.509"></a>
-<FONT color="green">510</FONT>                    pathToEntity.getIdentifier(),<a name="line.510"></a>
-<FONT color="green">511</FONT>                    JavaCodeModel.HAS_VISIBILITY,<a name="line.511"></a>
-<FONT color="green">512</FONT>                    JavaCodeModel.ALL_MATCH<a name="line.512"></a>
-<FONT color="green">513</FONT>            );<a name="line.513"></a>
-<FONT color="green">514</FONT>            String result = null;<a name="line.514"></a>
-<FONT color="green">515</FONT>            try {<a name="line.515"></a>
-<FONT color="green">516</FONT>                if( t1.next() ) {<a name="line.516"></a>
-<FONT color="green">517</FONT>                    result = t1.getObject();<a name="line.517"></a>
-<FONT color="green">518</FONT>                }<a name="line.518"></a>
-<FONT color="green">519</FONT>            } finally {<a name="line.519"></a>
-<FONT color="green">520</FONT>                t1.close();<a name="line.520"></a>
-<FONT color="green">521</FONT>            }<a name="line.521"></a>
-<FONT color="green">522</FONT>            return result == null ? JavaCodeModel.JVisibility.DEFAULT : JavaCodeModel.JVisibility.toJVisibility(result);<a name="line.522"></a>
-<FONT color="green">523</FONT>        }<a name="line.523"></a>
-<FONT color="green">524</FONT>    <a name="line.524"></a>
-<FONT color="green">525</FONT>        public JavaCodeModel.JModifier[] getModifiers(Identifier pathToEntity) throws QueryModelException {<a name="line.525"></a>
-<FONT color="green">526</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.526"></a>
-<FONT color="green">527</FONT>                    pathToEntity.getIdentifier(),<a name="line.527"></a>
-<FONT color="green">528</FONT>                    JavaCodeModel.HAS_MODIFIERS,<a name="line.528"></a>
-<FONT color="green">529</FONT>                    JavaCodeModel.ALL_MATCH<a name="line.529"></a>
-<FONT color="green">530</FONT>            );<a name="line.530"></a>
-<FONT color="green">531</FONT>            String result = null;<a name="line.531"></a>
-<FONT color="green">532</FONT>            try {<a name="line.532"></a>
-<FONT color="green">533</FONT>                if( t1.next() ) {<a name="line.533"></a>
-<FONT color="green">534</FONT>                    result = t1.getObject();<a name="line.534"></a>
-<FONT color="green">535</FONT>                }<a name="line.535"></a>
-<FONT color="green">536</FONT>            } finally {<a name="line.536"></a>
-<FONT color="green">537</FONT>                t1.close();<a name="line.537"></a>
-<FONT color="green">538</FONT>            }<a name="line.538"></a>
-<FONT color="green">539</FONT>            return result == null ? EMPTY_MODIFIERS_LIST : JavaCodeModel.JModifier.toModifiers( result );<a name="line.539"></a>
-<FONT color="green">540</FONT>        }<a name="line.540"></a>
-<FONT color="green">541</FONT>    <a name="line.541"></a>
-<FONT color="green">542</FONT>        public String toString() {<a name="line.542"></a>
-<FONT color="green">543</FONT>            return JavaQueryModelImpl.class.getName() + "{ " +<a name="line.543"></a>
-<FONT color="green">544</FONT>                    "packages: "   + getAllPackages().length  + ", " +<a name="line.544"></a>
-<FONT color="green">545</FONT>                    "classes: "    + getAllClasses().length   + ", " +<a name="line.545"></a>
-<FONT color="green">546</FONT>                    "interfaces: " + getAllInterfaces().length       +<a name="line.546"></a>
-<FONT color="green">547</FONT>                    "}";<a name="line.547"></a>
-<FONT color="green">548</FONT>        }<a name="line.548"></a>
-<FONT color="green">549</FONT>    <a name="line.549"></a>
-<FONT color="green">550</FONT>    }<a name="line.550"></a>
+<FONT color="green">393</FONT>            List&lt;JEnumeration&gt; packages = new ArrayList&lt;JEnumeration&gt;();<a name="line.393"></a>
+<FONT color="green">394</FONT>            String subject;<a name="line.394"></a>
+<FONT color="green">395</FONT>            try {<a name="line.395"></a>
+<FONT color="green">396</FONT>                while(t1.next()) {<a name="line.396"></a>
+<FONT color="green">397</FONT>                    subject = t1.getSubject();<a name="line.397"></a>
+<FONT color="green">398</FONT>                    try {<a name="line.398"></a>
+<FONT color="green">399</FONT>                        packages.add(<a name="line.399"></a>
+<FONT color="green">400</FONT>                                JavaCoderFactory.createJEnumeration(this, IdentifierReader.readIdentifier( subject) )<a name="line.400"></a>
+<FONT color="green">401</FONT>                        );<a name="line.401"></a>
+<FONT color="green">402</FONT>                    } catch (QueryModelException cme) {<a name="line.402"></a>
+<FONT color="green">403</FONT>                        throw new RuntimeException("Error while retrieving enumerations.", cme);<a name="line.403"></a>
+<FONT color="green">404</FONT>                    }<a name="line.404"></a>
+<FONT color="green">405</FONT>                }<a name="line.405"></a>
+<FONT color="green">406</FONT>            } finally {<a name="line.406"></a>
+<FONT color="green">407</FONT>                t1.close();<a name="line.407"></a>
+<FONT color="green">408</FONT>            }<a name="line.408"></a>
+<FONT color="green">409</FONT>            return packages.toArray( new JEnumeration[packages.size()] );<a name="line.409"></a>
+<FONT color="green">410</FONT>        }<a name="line.410"></a>
+<FONT color="green">411</FONT>    <a name="line.411"></a>
+<FONT color="green">412</FONT>        public JEnumeration[] getEnumerationsInto(Identifier pathToContainer) throws QueryModelException {<a name="line.412"></a>
+<FONT color="green">413</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.413"></a>
+<FONT color="green">414</FONT>                   JavaCodeModel.ALL_MATCH,<a name="line.414"></a>
+<FONT color="green">415</FONT>                   JavaCodeModel.CONTAINS_ENUMERATION,<a name="line.415"></a>
+<FONT color="green">416</FONT>                   JavaCodeModel.ALL_MATCH<a name="line.416"></a>
+<FONT color="green">417</FONT>            );<a name="line.417"></a>
+<FONT color="green">418</FONT>            List&lt;JEnumeration&gt; enumerations = new ArrayList&lt;JEnumeration&gt;();<a name="line.418"></a>
+<FONT color="green">419</FONT>            try {<a name="line.419"></a>
+<FONT color="green">420</FONT>                while(t1.next()) {<a name="line.420"></a>
+<FONT color="green">421</FONT>                    enumerations.add(<a name="line.421"></a>
+<FONT color="green">422</FONT>                            JavaCoderFactory.createJEnumeration(this, IdentifierReader.readIdentifier(t1.getObject() ))<a name="line.422"></a>
+<FONT color="green">423</FONT>                    );<a name="line.423"></a>
+<FONT color="green">424</FONT>                }<a name="line.424"></a>
+<FONT color="green">425</FONT>            } finally {<a name="line.425"></a>
+<FONT color="green">426</FONT>                t1.close();<a name="line.426"></a>
+<FONT color="green">427</FONT>            }<a name="line.427"></a>
+<FONT color="green">428</FONT>            return enumerations.toArray( new JEnumeration[enumerations.size()] );<a name="line.428"></a>
+<FONT color="green">429</FONT>        }<a name="line.429"></a>
+<FONT color="green">430</FONT>    <a name="line.430"></a>
+<FONT color="green">431</FONT>        public JEnumeration getEnumeration(Identifier pathToEnumeration) throws QueryModelException {<a name="line.431"></a>
+<FONT color="green">432</FONT>            return JavaCoderFactory.createJEnumeration(this, pathToEnumeration);<a name="line.432"></a>
+<FONT color="green">433</FONT>        }<a name="line.433"></a>
+<FONT color="green">434</FONT>    <a name="line.434"></a>
+<FONT color="green">435</FONT>        public String[] getElements(Identifier pathToEnumeration) {<a name="line.435"></a>
+<FONT color="green">436</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.436"></a>
+<FONT color="green">437</FONT>                   pathToEnumeration.getIdentifier(),<a name="line.437"></a>
+<FONT color="green">438</FONT>                   JavaCodeModel.CONTAINS_ELEMENT,<a name="line.438"></a>
+<FONT color="green">439</FONT>                   JavaCodeModel.ALL_MATCH<a name="line.439"></a>
+<FONT color="green">440</FONT>            );<a name="line.440"></a>
+<FONT color="green">441</FONT>            List&lt;String&gt; enumerations = new ArrayList&lt;String&gt;();<a name="line.441"></a>
+<FONT color="green">442</FONT>            try {<a name="line.442"></a>
+<FONT color="green">443</FONT>                while(t1.next()) {<a name="line.443"></a>
+<FONT color="green">444</FONT>                    enumerations.add( t1.getObject() );<a name="line.444"></a>
+<FONT color="green">445</FONT>                }<a name="line.445"></a>
+<FONT color="green">446</FONT>            } finally {<a name="line.446"></a>
+<FONT color="green">447</FONT>                t1.close();<a name="line.447"></a>
+<FONT color="green">448</FONT>            }<a name="line.448"></a>
+<FONT color="green">449</FONT>            return enumerations.toArray( new String[enumerations.size()] );<a name="line.449"></a>
+<FONT color="green">450</FONT>        }<a name="line.450"></a>
+<FONT color="green">451</FONT>    <a name="line.451"></a>
+<FONT color="green">452</FONT>        public JSignature[] getSignatures(Identifier pathToMethod) throws QueryModelException {<a name="line.452"></a>
+<FONT color="green">453</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.453"></a>
+<FONT color="green">454</FONT>                    pathToMethod.getIdentifier(),<a name="line.454"></a>
+<FONT color="green">455</FONT>                    JavaCodeModel.CONTAINS_SIGNATURE,<a name="line.455"></a>
+<FONT color="green">456</FONT>                    JavaCodeModel.ALL_MATCH<a name="line.456"></a>
+<FONT color="green">457</FONT>            );<a name="line.457"></a>
+<FONT color="green">458</FONT>            TripleIterator t2;<a name="line.458"></a>
+<FONT color="green">459</FONT>            TripleIterator t3;<a name="line.459"></a>
+<FONT color="green">460</FONT>            List&lt;JSignature&gt; signatures = new ArrayList&lt;JSignature&gt;();<a name="line.460"></a>
+<FONT color="green">461</FONT>            List&lt;JavaCodeModel.JType&gt; parametersIntoSignature = new ArrayList&lt;JavaCodeModel.JType&gt;();<a name="line.461"></a>
+<FONT color="green">462</FONT>            try {<a name="line.462"></a>
+<FONT color="green">463</FONT>                while(t1.next()) { //Signatures<a name="line.463"></a>
+<FONT color="green">464</FONT>                    t2 = codeModel.searchTriples(t1.getObject(), JavaCodeModel.PARAMETER_TYPE, JavaCodeModel.ALL_MATCH);<a name="line.464"></a>
+<FONT color="green">465</FONT>                    parametersIntoSignature.clear();<a name="line.465"></a>
+<FONT color="green">466</FONT>                    try {<a name="line.466"></a>
+<FONT color="green">467</FONT>                        while(t2.next()) { //Types.<a name="line.467"></a>
+<FONT color="green">468</FONT>                            parametersIntoSignature.add( JavaCodeModel.rdfTypeToJType(t2.getSubject()) );<a name="line.468"></a>
+<FONT color="green">469</FONT>                        } <a name="line.469"></a>
+<FONT color="green">470</FONT>                    } finally {<a name="line.470"></a>
+<FONT color="green">471</FONT>                        t2.close();<a name="line.471"></a>
+<FONT color="green">472</FONT>                    }<a name="line.472"></a>
+<FONT color="green">473</FONT>                    t3 = codeModel.searchTriples(t1.getObject(), JavaCodeModel.RETURN_TYPE, JavaCodeModel.ALL_MATCH);<a name="line.473"></a>
+<FONT color="green">474</FONT>                    try {<a name="line.474"></a>
+<FONT color="green">475</FONT>                        if( ! t3.next() ) {<a name="line.475"></a>
+<FONT color="green">476</FONT>                            throw new QueryModelException(<a name="line.476"></a>
+<FONT color="green">477</FONT>                                    "Cannot find the return type for the method '" + pathToMethod + "'."<a name="line.477"></a>
+<FONT color="green">478</FONT>                            );<a name="line.478"></a>
+<FONT color="green">479</FONT>                        }<a name="line.479"></a>
+<FONT color="green">480</FONT>                        signatures.add(<a name="line.480"></a>
+<FONT color="green">481</FONT>                            JavaCoderFactory.createJSignature(<a name="line.481"></a>
+<FONT color="green">482</FONT>                                    this,<a name="line.482"></a>
+<FONT color="green">483</FONT>                                    IdentifierReader.readIdentifier(t1.getObject()),<a name="line.483"></a>
+<FONT color="green">484</FONT>                                    ( parametersIntoSignature.toArray(new JavaCodeModel.JType[parametersIntoSignature.size()]) ),<a name="line.484"></a>
+<FONT color="green">485</FONT>                                    JavaCodeModel.rdfTypeToJType( t3.getObject() )<a name="line.485"></a>
+<FONT color="green">486</FONT>                                )<a name="line.486"></a>
+<FONT color="green">487</FONT>                        );<a name="line.487"></a>
+<FONT color="green">488</FONT>                    } finally {<a name="line.488"></a>
+<FONT color="green">489</FONT>                        t3.close();<a name="line.489"></a>
+<FONT color="green">490</FONT>                    }<a name="line.490"></a>
+<FONT color="green">491</FONT>                }<a name="line.491"></a>
+<FONT color="green">492</FONT>            } finally {<a name="line.492"></a>
+<FONT color="green">493</FONT>                t1.close();<a name="line.493"></a>
+<FONT color="green">494</FONT>            }<a name="line.494"></a>
+<FONT color="green">495</FONT>            return signatures.toArray( new JSignature[signatures.size()] );<a name="line.495"></a>
+<FONT color="green">496</FONT>        }<a name="line.496"></a>
+<FONT color="green">497</FONT>    <a name="line.497"></a>
+<FONT color="green">498</FONT>        public JavaCodeModel.JType[] getParameters(Identifier pathToSignature) throws QueryModelException {<a name="line.498"></a>
+<FONT color="green">499</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.499"></a>
+<FONT color="green">500</FONT>                pathToSignature.getIdentifier(),<a name="line.500"></a>
+<FONT color="green">501</FONT>                JavaCodeModel.CONTAINS_PARAMETER,<a name="line.501"></a>
+<FONT color="green">502</FONT>                JavaCodeModel.ALL_MATCH<a name="line.502"></a>
+<FONT color="green">503</FONT>            );<a name="line.503"></a>
+<FONT color="green">504</FONT>    <a name="line.504"></a>
+<FONT color="green">505</FONT>            // Retrieve parameter names.<a name="line.505"></a>
+<FONT color="green">506</FONT>            List&lt;String&gt; parameterNames = new ArrayList&lt;String&gt;();<a name="line.506"></a>
+<FONT color="green">507</FONT>            try {<a name="line.507"></a>
+<FONT color="green">508</FONT>                while(t1.next()) {<a name="line.508"></a>
+<FONT color="green">509</FONT>                    parameterNames.add(t1.getObject());<a name="line.509"></a>
+<FONT color="green">510</FONT>                }<a name="line.510"></a>
+<FONT color="green">511</FONT>            } finally{<a name="line.511"></a>
+<FONT color="green">512</FONT>                t1.close();<a name="line.512"></a>
+<FONT color="green">513</FONT>            }<a name="line.513"></a>
+<FONT color="green">514</FONT>    <a name="line.514"></a>
+<FONT color="green">515</FONT>            // Retrieve parameter types.<a name="line.515"></a>
+<FONT color="green">516</FONT>            List&lt;JavaCodeModel.JType&gt; result = new ArrayList&lt;JavaCodeModel.JType&gt;();<a name="line.516"></a>
+<FONT color="green">517</FONT>            for (String parameterName : parameterNames) {<a name="line.517"></a>
+<FONT color="green">518</FONT>                TripleIterator t2 = codeModel.searchTriples(<a name="line.518"></a>
+<FONT color="green">519</FONT>                        parameterName,<a name="line.519"></a>
+<FONT color="green">520</FONT>                        JavaCodeModel.PARAMETER_TYPE,<a name="line.520"></a>
+<FONT color="green">521</FONT>                        JavaCodeModel.ALL_MATCH<a name="line.521"></a>
+<FONT color="green">522</FONT>                );<a name="line.522"></a>
+<FONT color="green">523</FONT>                try {<a name="line.523"></a>
+<FONT color="green">524</FONT>                    t2.next(); // Expected to be found.<a name="line.524"></a>
+<FONT color="green">525</FONT>                    result.add(JavaCodeModel.rdfTypeToJType( t2.getObject()) );<a name="line.525"></a>
+<FONT color="green">526</FONT>                } finally {<a name="line.526"></a>
+<FONT color="green">527</FONT>                    t2.close();<a name="line.527"></a>
+<FONT color="green">528</FONT>                }<a name="line.528"></a>
+<FONT color="green">529</FONT>            }<a name="line.529"></a>
+<FONT color="green">530</FONT>    <a name="line.530"></a>
+<FONT color="green">531</FONT>            return result.toArray( new JavaCodeModel.JType[result.size()] );<a name="line.531"></a>
+<FONT color="green">532</FONT>        }<a name="line.532"></a>
+<FONT color="green">533</FONT>    <a name="line.533"></a>
+<FONT color="green">534</FONT>        public JavaCodeModel.JType getReturnType(Identifier pathToSignature) throws QueryModelException {<a name="line.534"></a>
+<FONT color="green">535</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.535"></a>
+<FONT color="green">536</FONT>                pathToSignature.getIdentifier(),<a name="line.536"></a>
+<FONT color="green">537</FONT>                JavaCodeModel.RETURN_TYPE,<a name="line.537"></a>
+<FONT color="green">538</FONT>                JavaCodeModel.ALL_MATCH<a name="line.538"></a>
+<FONT color="green">539</FONT>            );<a name="line.539"></a>
+<FONT color="green">540</FONT>            try {<a name="line.540"></a>
+<FONT color="green">541</FONT>                if( t1.next() ) {<a name="line.541"></a>
+<FONT color="green">542</FONT>                    return JavaCodeModel.rdfTypeToJType( t1.getObject() );<a name="line.542"></a>
+<FONT color="green">543</FONT>                } else {<a name="line.543"></a>
+<FONT color="green">544</FONT>                    throw new QueryModelException("Cannot find return type.");<a name="line.544"></a>
+<FONT color="green">545</FONT>                }<a name="line.545"></a>
+<FONT color="green">546</FONT>            } finally{<a name="line.546"></a>
+<FONT color="green">547</FONT>                t1.close();<a name="line.547"></a>
+<FONT color="green">548</FONT>            }<a name="line.548"></a>
+<FONT color="green">549</FONT>        }<a name="line.549"></a>
+<FONT color="green">550</FONT>    <a name="line.550"></a>
+<FONT color="green">551</FONT>        public JavaCodeModel.JVisibility getVisibility(Identifier pathToEntity) throws QueryModelException {<a name="line.551"></a>
+<FONT color="green">552</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.552"></a>
+<FONT color="green">553</FONT>                    pathToEntity.getIdentifier(),<a name="line.553"></a>
+<FONT color="green">554</FONT>                    JavaCodeModel.HAS_VISIBILITY,<a name="line.554"></a>
+<FONT color="green">555</FONT>                    JavaCodeModel.ALL_MATCH<a name="line.555"></a>
+<FONT color="green">556</FONT>            );<a name="line.556"></a>
+<FONT color="green">557</FONT>            String result = null;<a name="line.557"></a>
+<FONT color="green">558</FONT>            try {<a name="line.558"></a>
+<FONT color="green">559</FONT>                if( t1.next() ) {<a name="line.559"></a>
+<FONT color="green">560</FONT>                    result = t1.getObject();<a name="line.560"></a>
+<FONT color="green">561</FONT>                }<a name="line.561"></a>
+<FONT color="green">562</FONT>            } finally {<a name="line.562"></a>
+<FONT color="green">563</FONT>                t1.close();<a name="line.563"></a>
+<FONT color="green">564</FONT>            }<a name="line.564"></a>
+<FONT color="green">565</FONT>            return result == null ? JavaCodeModel.JVisibility.DEFAULT : JavaCodeModel.JVisibility.toJVisibility(result);<a name="line.565"></a>
+<FONT color="green">566</FONT>        }<a name="line.566"></a>
+<FONT color="green">567</FONT>    <a name="line.567"></a>
+<FONT color="green">568</FONT>        public JavaCodeModel.JModifier[] getModifiers(Identifier pathToEntity) throws QueryModelException {<a name="line.568"></a>
+<FONT color="green">569</FONT>            TripleIterator t1 = codeModel.searchTriples(<a name="line.569"></a>
+<FONT color="green">570</FONT>                    pathToEntity.getIdentifier(),<a name="line.570"></a>
+<FONT color="green">571</FONT>                    JavaCodeModel.HAS_MODIFIERS,<a name="line.571"></a>
+<FONT color="green">572</FONT>                    JavaCodeModel.ALL_MATCH<a name="line.572"></a>
+<FONT color="green">573</FONT>            );<a name="line.573"></a>
+<FONT color="green">574</FONT>            String result = null;<a name="line.574"></a>
+<FONT color="green">575</FONT>            try {<a name="line.575"></a>
+<FONT color="green">576</FONT>                if( t1.next() ) {<a name="line.576"></a>
+<FONT color="green">577</FONT>                    result = t1.getObject();<a name="line.577"></a>
+<FONT color="green">578</FONT>                }<a name="line.578"></a>
+<FONT color="green">579</FONT>            } finally {<a name="line.579"></a>
+<FONT color="green">580</FONT>                t1.close();<a name="line.580"></a>
+<FONT color="green">581</FONT>            }<a name="line.581"></a>
+<FONT color="green">582</FONT>            return result == null ? EMPTY_MODIFIERS_LIST : JavaCodeModel.JModifier.toModifiers( result );<a name="line.582"></a>
+<FONT color="green">583</FONT>        }<a name="line.583"></a>
+<FONT color="green">584</FONT>    <a name="line.584"></a>
+<FONT color="green">585</FONT>        public String toString() {<a name="line.585"></a>
+<FONT color="green">586</FONT>            return String.format(<a name="line.586"></a>
+<FONT color="green">587</FONT>                    "%s{packages: %s, classes: %s, interfaces: %s, enumerations: %s}",<a name="line.587"></a>
+<FONT color="green">588</FONT>                    this.getClass().getName(),<a name="line.588"></a>
+<FONT color="green">589</FONT>                    getAllPackages().length,<a name="line.589"></a>
+<FONT color="green">590</FONT>                    getAllClasses().length,<a name="line.590"></a>
+<FONT color="green">591</FONT>                    getAllInterfaces().length,<a name="line.591"></a>
+<FONT color="green">592</FONT>                    getAllEnumerations().length<a name="line.592"></a>
+<FONT color="green">593</FONT>            );<a name="line.593"></a>
+<FONT color="green">594</FONT>        }<a name="line.594"></a>
+<FONT color="green">595</FONT>    <a name="line.595"></a>
+<FONT color="green">596</FONT>    }<a name="line.596"></a>
 
 
 
