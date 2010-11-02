@@ -28,7 +28,7 @@ import com.asemantics.rdfcoder.model.ontology.ValidatingCodeModel;
 import com.asemantics.rdfcoder.profile.Profile;
 import com.asemantics.rdfcoder.repository.Repository;
 import com.asemantics.rdfcoder.repository.RepositoryException;
-import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
+import com.asemantics.rdfcoder.parser.ObjectsTable;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 
 import java.io.IOException;

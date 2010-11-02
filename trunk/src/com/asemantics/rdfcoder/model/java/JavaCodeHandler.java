@@ -21,7 +21,7 @@ package com.asemantics.rdfcoder.model.java;
 import com.asemantics.rdfcoder.model.CodeHandler;
 import com.asemantics.rdfcoder.model.ErrorListener;
 import com.asemantics.rdfcoder.model.Identifier;
-import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
+import com.asemantics.rdfcoder.parser.ObjectsTable;
 
 /**
  * This interface defines the <i> Java Code Handler</i>.

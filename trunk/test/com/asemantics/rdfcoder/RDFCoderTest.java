@@ -24,12 +24,11 @@ import com.asemantics.rdfcoder.model.QueryResult;
 import com.asemantics.rdfcoder.model.java.JAttribute;
 import com.asemantics.rdfcoder.model.java.JavaQueryModel;
 import com.asemantics.rdfcoder.profile.ProfileException;
-import com.asemantics.rdfcoder.sourceparse.JStatistics;
+import com.asemantics.rdfcoder.parser.JStatistics;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 
 /**

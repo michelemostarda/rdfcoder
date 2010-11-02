@@ -19,10 +19,10 @@
 package com.asemantics.rdfcoder.model.java;
 
 import com.asemantics.rdfcoder.model.ParseHandler;
-import com.asemantics.rdfcoder.sourceparse.javadoc.ClassJavadoc;
-import com.asemantics.rdfcoder.sourceparse.javadoc.ConstructorJavadoc;
-import com.asemantics.rdfcoder.sourceparse.javadoc.FieldJavadoc;
-import com.asemantics.rdfcoder.sourceparse.javadoc.MethodJavadoc;
+import com.asemantics.rdfcoder.parser.javadoc.ClassJavadoc;
+import com.asemantics.rdfcoder.parser.javadoc.ConstructorJavadoc;
+import com.asemantics.rdfcoder.parser.javadoc.FieldJavadoc;
+import com.asemantics.rdfcoder.parser.javadoc.MethodJavadoc;
 
 /**
  * Defines a consumer for <i>Javadoc</i> parsing events.
