@@ -22,7 +22,7 @@ import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.model.java.JavaQueryModel;
 import com.asemantics.rdfcoder.model.java.JavaQueryModelImpl;
 import com.asemantics.rdfcoder.sourceparse.JStatistics;
-import com.asemantics.rdfcoder.sourceparse.JavaBytecodeJarParser;
+import com.asemantics.rdfcoder.sourceparse.bytecode.JavaBytecodeJarParser;
 import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
 import com.asemantics.rdfcoder.sourceparse.ParserException;
 import com.asemantics.rdfcoder.storage.JenaCoderFactory;

@@ -16,9 +16,12 @@
  */
 
 
-package com.asemantics.rdfcoder.sourceparse;
+package com.asemantics.rdfcoder.sourceparse.bytecode;
 
 import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
+import com.asemantics.rdfcoder.sourceparse.JStatistics;
+import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
+import com.asemantics.rdfcoder.sourceparse.ParserException;
 import com.asemantics.rdfcoder.storage.JenaCodeModel;
 import com.asemantics.rdfcoder.storage.JenaCoderFactory;
 import org.apache.log4j.Logger;
@@ -30,7 +33,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Test case for the {@link com.asemantics.rdfcoder.sourceparse.JavaBytecodeJarParser}.
+ * Test case for the {@link com.asemantics.rdfcoder.sourceparse.bytecode.JavaBytecodeJarParser}.
  */
 public class JavaBytecodeJarParserTest {
 

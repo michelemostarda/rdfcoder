@@ -16,11 +16,14 @@
  */
 
 
-package com.asemantics.rdfcoder.sourceparse;
+package com.asemantics.rdfcoder.sourceparse.bytecode;
 
 import com.asemantics.rdfcoder.CoderUtils;
 import com.asemantics.rdfcoder.model.CodeModelException;
 import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
+import com.asemantics.rdfcoder.sourceparse.DirectoryParser;
+import com.asemantics.rdfcoder.sourceparse.JStatistics;
+import com.asemantics.rdfcoder.sourceparse.ObjectsTable;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.JenaCodeModel;
 import com.asemantics.rdfcoder.storage.JenaCodeStorage;
