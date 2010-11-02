@@ -30,6 +30,7 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Bag;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -147,6 +148,23 @@ public class JenaCodeModel extends SPARQLQuerableCodeModel {
         Property p = jenaModel.createProperty(predicate);
         Literal  l = jenaModel.createLiteral(object);
         jenaModel.remove(s, p, l);
+    }
+
+    public void addTripleCollection(Object subject, String predicate, String[] object) {
+        final Resource s;
+        if(subject instanceof String) {
+            s = jenaModel.createResource((String) subject);
+        } else if(subject instanceof Resource) {
+            s = (Resource) subject;
+        } else {
+            throw new IllegalArgumentException("Invalid subject.");
+        }
+        Property p = jenaModel.createProperty(predicate);
+        Bag      b = jenaModel.createBag();
+        for(String bagElem : object) {
+            b.add(bagElem);
+        }
+        jenaModel.add(s, p, b);
     }
 
     public void clearAll() {

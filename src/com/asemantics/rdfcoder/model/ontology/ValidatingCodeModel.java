@@ -80,6 +80,10 @@ public class ValidatingCodeModel extends CodeModelBase {
         decorated.removeTripleLiteral(subject, predicate, object);
     }
 
+    public void addTripleCollection(Object subject, String predicate, String[] list) {
+        decorated.addTripleCollection(subject, predicate, list);
+    }
+
     public void clearAll() {
         decorated.clearAll();
     }
