@@ -33,6 +33,8 @@ import java.util.Map;
 
 /**
  * Default implementation of {@link com.asemantics.rdfcoder.model.ontology.Ontology} interface.
+ *
+ * // TODO: add support for validating addTripleCollection(Object subject, String predicate, String[] values)
  */
 public class DefaultOntology implements Ontology {
 
