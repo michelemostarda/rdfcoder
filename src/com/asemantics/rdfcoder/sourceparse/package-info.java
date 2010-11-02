@@ -2,7 +2,7 @@
 /**
  *<p>
  * This package defines a set of parser interfaces and
- * implementations plus auxiliary classes.
+ * implementations.
  * </p>
  */
 package com.asemantics.rdfcoder.sourceparse;
