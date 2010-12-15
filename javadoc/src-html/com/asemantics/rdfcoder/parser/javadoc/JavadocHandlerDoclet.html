@@ -1,0 +1,407 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    /*<a name="line.1"></a>
+<FONT color="green">002</FONT>     * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).<a name="line.2"></a>
+<FONT color="green">003</FONT>     * All Rights Reserved.<a name="line.3"></a>
+<FONT color="green">004</FONT>     *<a name="line.4"></a>
+<FONT color="green">005</FONT>     * Licensed under the Apache License, Version 2.0 (the 'License');<a name="line.5"></a>
+<FONT color="green">006</FONT>     * you may not use this file except in compliance with the License.<a name="line.6"></a>
+<FONT color="green">007</FONT>     * You may obtain a copy of the License at<a name="line.7"></a>
+<FONT color="green">008</FONT>     *<a name="line.8"></a>
+<FONT color="green">009</FONT>     *     http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<FONT color="green">010</FONT>     *<a name="line.10"></a>
+<FONT color="green">011</FONT>     * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<FONT color="green">012</FONT>     * distributed under the License is distributed on an 'AS IS' BASIS,<a name="line.12"></a>
+<FONT color="green">013</FONT>     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<FONT color="green">014</FONT>     * See the License for the specific language governing permissions and<a name="line.14"></a>
+<FONT color="green">015</FONT>     * limitations under the License.<a name="line.15"></a>
+<FONT color="green">016</FONT>     */<a name="line.16"></a>
+<FONT color="green">017</FONT>    <a name="line.17"></a>
+<FONT color="green">018</FONT>    package com.asemantics.rdfcoder.parser.javadoc;<a name="line.18"></a>
+<FONT color="green">019</FONT>    <a name="line.19"></a>
+<FONT color="green">020</FONT>    import com.asemantics.rdfcoder.model.Identifier;<a name="line.20"></a>
+<FONT color="green">021</FONT>    import com.asemantics.rdfcoder.model.IdentifierReader;<a name="line.21"></a>
+<FONT color="green">022</FONT>    import com.asemantics.rdfcoder.model.java.JavaCodeModel;<a name="line.22"></a>
+<FONT color="green">023</FONT>    import com.asemantics.rdfcoder.model.java.JavadocHandler;<a name="line.23"></a>
+<FONT color="green">024</FONT>    import com.sun.javadoc.ClassDoc;<a name="line.24"></a>
+<FONT color="green">025</FONT>    import com.sun.javadoc.ConstructorDoc;<a name="line.25"></a>
+<FONT color="green">026</FONT>    import com.sun.javadoc.Doc;<a name="line.26"></a>
+<FONT color="green">027</FONT>    import com.sun.javadoc.DocErrorReporter;<a name="line.27"></a>
+<FONT color="green">028</FONT>    import com.sun.javadoc.FieldDoc;<a name="line.28"></a>
+<FONT color="green">029</FONT>    import com.sun.javadoc.MethodDoc;<a name="line.29"></a>
+<FONT color="green">030</FONT>    import com.sun.javadoc.Parameter;<a name="line.30"></a>
+<FONT color="green">031</FONT>    import com.sun.javadoc.ProgramElementDoc;<a name="line.31"></a>
+<FONT color="green">032</FONT>    import com.sun.javadoc.RootDoc;<a name="line.32"></a>
+<FONT color="green">033</FONT>    import com.sun.javadoc.Tag;<a name="line.33"></a>
+<FONT color="green">034</FONT>    import com.sun.javadoc.Type;<a name="line.34"></a>
+<FONT color="green">035</FONT>    <a name="line.35"></a>
+<FONT color="green">036</FONT>    import java.io.File;<a name="line.36"></a>
+<FONT color="green">037</FONT>    import java.util.ArrayList;<a name="line.37"></a>
+<FONT color="green">038</FONT>    import java.util.HashMap;<a name="line.38"></a>
+<FONT color="green">039</FONT>    import java.util.List;<a name="line.39"></a>
+<FONT color="green">040</FONT>    import java.util.Map;<a name="line.40"></a>
+<FONT color="green">041</FONT>    <a name="line.41"></a>
+<FONT color="green">042</FONT>    /**<a name="line.42"></a>
+<FONT color="green">043</FONT>     * Implementation of a &lt;i&gt;doclet&lt;/i&gt; able to produce<a name="line.43"></a>
+<FONT color="green">044</FONT>     * {@link com.asemantics.rdfcoder.model.java.JavadocHandler} messages.<a name="line.44"></a>
+<FONT color="green">045</FONT>     *<a name="line.45"></a>
+<FONT color="green">046</FONT>     * @author Michele Mostarda (michele.mostarda@gmail.com)<a name="line.46"></a>
+<FONT color="green">047</FONT>     */<a name="line.47"></a>
+<FONT color="green">048</FONT>    public class JavadocHandlerDoclet {<a name="line.48"></a>
+<FONT color="green">049</FONT>    <a name="line.49"></a>
+<FONT color="green">050</FONT>        public static final Identifier OBJECT_SUPERCLASS = IdentifierReader.readFullyQualifiedClass("java.lang.Object");<a name="line.50"></a>
+<FONT color="green">051</FONT>    <a name="line.51"></a>
+<FONT color="green">052</FONT>        public static final String SERIALIZATION_FILE_OPTION = "-serializationFile";<a name="line.52"></a>
+<FONT color="green">053</FONT>    <a name="line.53"></a>
+<FONT color="green">054</FONT>        private JavadocHandlerSerializer javadocHandlerSerializer;<a name="line.54"></a>
+<FONT color="green">055</FONT>    <a name="line.55"></a>
+<FONT color="green">056</FONT>        private JavadocHandler javadocHandler;<a name="line.56"></a>
+<FONT color="green">057</FONT>    <a name="line.57"></a>
+<FONT color="green">058</FONT>        public static boolean start(RootDoc root) {<a name="line.58"></a>
+<FONT color="green">059</FONT>            final JavadocHandlerDoclet doclet = new JavadocHandlerDoclet();<a name="line.59"></a>
+<FONT color="green">060</FONT>            doclet.handleRoot(root);<a name="line.60"></a>
+<FONT color="green">061</FONT>            return true;<a name="line.61"></a>
+<FONT color="green">062</FONT>        }<a name="line.62"></a>
+<FONT color="green">063</FONT>    <a name="line.63"></a>
+<FONT color="green">064</FONT>        public static boolean validOptions(String[][] options, DocErrorReporter reporter) {<a name="line.64"></a>
+<FONT color="green">065</FONT>            return true;<a name="line.65"></a>
+<FONT color="green">066</FONT>        }<a name="line.66"></a>
+<FONT color="green">067</FONT>    <a name="line.67"></a>
+<FONT color="green">068</FONT>        public static int optionLength(String option) {<a name="line.68"></a>
+<FONT color="green">069</FONT>            if(option.equals(SERIALIZATION_FILE_OPTION)) {<a name="line.69"></a>
+<FONT color="green">070</FONT>                    return 2;<a name="line.70"></a>
+<FONT color="green">071</FONT>            }<a name="line.71"></a>
+<FONT color="green">072</FONT>            return 0;<a name="line.72"></a>
+<FONT color="green">073</FONT>        }<a name="line.73"></a>
+<FONT color="green">074</FONT>    <a name="line.74"></a>
+<FONT color="green">075</FONT>        public JavadocHandlerDoclet() {<a name="line.75"></a>
+<FONT color="green">076</FONT>            javadocHandlerSerializer = new JavadocHandlerSerializer();<a name="line.76"></a>
+<FONT color="green">077</FONT>            javadocHandler           = javadocHandlerSerializer.getHandler();<a name="line.77"></a>
+<FONT color="green">078</FONT>        }<a name="line.78"></a>
+<FONT color="green">079</FONT>    <a name="line.79"></a>
+<FONT color="green">080</FONT>        private void handleRoot(RootDoc rootDoc) {<a name="line.80"></a>
+<FONT color="green">081</FONT>            final File serializationFile = getSerializationFile( rootDoc.options() );<a name="line.81"></a>
+<FONT color="green">082</FONT>    <a name="line.82"></a>
+<FONT color="green">083</FONT>            javadocHandler.startCompilationUnit(rootDoc.name());<a name="line.83"></a>
+<FONT color="green">084</FONT>            final String position = rootDoc.position() == null ? "&lt;unknown&gt;" : rootDoc.position().toString();<a name="line.84"></a>
+<FONT color="green">085</FONT>            javadocHandler.startParsing("javadoc-lib", position);<a name="line.85"></a>
+<FONT color="green">086</FONT>            try {<a name="line.86"></a>
+<FONT color="green">087</FONT>                ClassDoc[] classes = rootDoc.classes();<a name="line.87"></a>
+<FONT color="green">088</FONT>                for (ClassDoc clazz : classes) {<a name="line.88"></a>
+<FONT color="green">089</FONT>                    handleClass(clazz);<a name="line.89"></a>
+<FONT color="green">090</FONT>                }<a name="line.90"></a>
+<FONT color="green">091</FONT>            } finally {<a name="line.91"></a>
+<FONT color="green">092</FONT>                javadocHandler.endParsing();<a name="line.92"></a>
+<FONT color="green">093</FONT>                javadocHandler.endCompilationUnit();<a name="line.93"></a>
+<FONT color="green">094</FONT>                try {<a name="line.94"></a>
+<FONT color="green">095</FONT>                    javadocHandlerSerializer.serialize(serializationFile);<a name="line.95"></a>
+<FONT color="green">096</FONT>                } catch (JavadocHandlerSerializerException jhse) {<a name="line.96"></a>
+<FONT color="green">097</FONT>                    throw new JavadocHandlerDocletException("An error occurred while serializing Javadoc.", jhse);<a name="line.97"></a>
+<FONT color="green">098</FONT>                }<a name="line.98"></a>
+<FONT color="green">099</FONT>            }<a name="line.99"></a>
+<FONT color="green">100</FONT>        }<a name="line.100"></a>
+<FONT color="green">101</FONT>    <a name="line.101"></a>
+<FONT color="green">102</FONT>        private JavaCodeModel.JVisibility getVisibility(ProgramElementDoc doc) {<a name="line.102"></a>
+<FONT color="green">103</FONT>            if(doc.isPublic()) {<a name="line.103"></a>
+<FONT color="green">104</FONT>                return JavaCodeModel.JVisibility.PUBLIC;<a name="line.104"></a>
+<FONT color="green">105</FONT>            }<a name="line.105"></a>
+<FONT color="green">106</FONT>            if(doc.isProtected()) {<a name="line.106"></a>
+<FONT color="green">107</FONT>                return JavaCodeModel.JVisibility.PROTECTED;<a name="line.107"></a>
+<FONT color="green">108</FONT>            }<a name="line.108"></a>
+<FONT color="green">109</FONT>            if(doc.isPrivate()) {<a name="line.109"></a>
+<FONT color="green">110</FONT>                return JavaCodeModel.JVisibility.PRIVATE;<a name="line.110"></a>
+<FONT color="green">111</FONT>            }<a name="line.111"></a>
+<FONT color="green">112</FONT>            return JavaCodeModel.JVisibility.DEFAULT;<a name="line.112"></a>
+<FONT color="green">113</FONT>        }<a name="line.113"></a>
+<FONT color="green">114</FONT>    <a name="line.114"></a>
+<FONT color="green">115</FONT>        private JavaCodeModel.JModifier[] getModifiers(MethodDoc doc){<a name="line.115"></a>
+<FONT color="green">116</FONT>            final List&lt;JavaCodeModel.JModifier&gt; modifiers = new ArrayList&lt;JavaCodeModel.JModifier&gt;();<a name="line.116"></a>
+<FONT color="green">117</FONT>            if(doc.isAbstract()) {<a name="line.117"></a>
+<FONT color="green">118</FONT>                modifiers.add(JavaCodeModel.JModifier.ABSTRACT);<a name="line.118"></a>
+<FONT color="green">119</FONT>            }<a name="line.119"></a>
+<FONT color="green">120</FONT>            if(doc.isFinal()) {<a name="line.120"></a>
+<FONT color="green">121</FONT>                modifiers.add(JavaCodeModel.JModifier.FINAL);<a name="line.121"></a>
+<FONT color="green">122</FONT>            }<a name="line.122"></a>
+<FONT color="green">123</FONT>            if(doc.isNative()) {<a name="line.123"></a>
+<FONT color="green">124</FONT>                modifiers.add(JavaCodeModel.JModifier.NATIVE);<a name="line.124"></a>
+<FONT color="green">125</FONT>            }<a name="line.125"></a>
+<FONT color="green">126</FONT>            if(doc.isStatic()) {<a name="line.126"></a>
+<FONT color="green">127</FONT>                modifiers.add(JavaCodeModel.JModifier.STATIC);<a name="line.127"></a>
+<FONT color="green">128</FONT>            }<a name="line.128"></a>
+<FONT color="green">129</FONT>            if(doc.isSynchronized()) {<a name="line.129"></a>
+<FONT color="green">130</FONT>                modifiers.add(JavaCodeModel.JModifier.SYNCHRONIZED);<a name="line.130"></a>
+<FONT color="green">131</FONT>            }<a name="line.131"></a>
+<FONT color="green">132</FONT>            return modifiers.toArray( new JavaCodeModel.JModifier[modifiers.size()]);<a name="line.132"></a>
+<FONT color="green">133</FONT>        }<a name="line.133"></a>
+<FONT color="green">134</FONT>    <a name="line.134"></a>
+<FONT color="green">135</FONT>        private JavaCodeModel.JModifier[] getModifiers(ConstructorDoc doc){<a name="line.135"></a>
+<FONT color="green">136</FONT>            final List&lt;JavaCodeModel.JModifier&gt; modifiers = new ArrayList&lt;JavaCodeModel.JModifier&gt;();<a name="line.136"></a>
+<FONT color="green">137</FONT>            if(doc.isFinal()) {<a name="line.137"></a>
+<FONT color="green">138</FONT>                modifiers.add(JavaCodeModel.JModifier.FINAL);<a name="line.138"></a>
+<FONT color="green">139</FONT>            }<a name="line.139"></a>
+<FONT color="green">140</FONT>            if(doc.isNative()) {<a name="line.140"></a>
+<FONT color="green">141</FONT>                modifiers.add(JavaCodeModel.JModifier.NATIVE);<a name="line.141"></a>
+<FONT color="green">142</FONT>            }<a name="line.142"></a>
+<FONT color="green">143</FONT>            if(doc.isStatic()) {<a name="line.143"></a>
+<FONT color="green">144</FONT>                modifiers.add(JavaCodeModel.JModifier.STATIC);<a name="line.144"></a>
+<FONT color="green">145</FONT>            }<a name="line.145"></a>
+<FONT color="green">146</FONT>            if(doc.isSynchronized()) {<a name="line.146"></a>
+<FONT color="green">147</FONT>                modifiers.add(JavaCodeModel.JModifier.SYNCHRONIZED);<a name="line.147"></a>
+<FONT color="green">148</FONT>            }<a name="line.148"></a>
+<FONT color="green">149</FONT>            return modifiers.toArray( new JavaCodeModel.JModifier[modifiers.size()]);<a name="line.149"></a>
+<FONT color="green">150</FONT>        }<a name="line.150"></a>
+<FONT color="green">151</FONT>    <a name="line.151"></a>
+<FONT color="green">152</FONT>        private JavaCodeModel.JModifier[] getModifiers(ClassDoc doc){<a name="line.152"></a>
+<FONT color="green">153</FONT>            final List&lt;JavaCodeModel.JModifier&gt; modifiers = new ArrayList&lt;JavaCodeModel.JModifier&gt;();<a name="line.153"></a>
+<FONT color="green">154</FONT>            if(doc.isAbstract()) {<a name="line.154"></a>
+<FONT color="green">155</FONT>                modifiers.add(JavaCodeModel.JModifier.ABSTRACT);<a name="line.155"></a>
+<FONT color="green">156</FONT>            }<a name="line.156"></a>
+<FONT color="green">157</FONT>            if(doc.isFinal()) {<a name="line.157"></a>
+<FONT color="green">158</FONT>                modifiers.add(JavaCodeModel.JModifier.FINAL);<a name="line.158"></a>
+<FONT color="green">159</FONT>            }<a name="line.159"></a>
+<FONT color="green">160</FONT>            if(doc.isStatic()) {<a name="line.160"></a>
+<FONT color="green">161</FONT>                modifiers.add(JavaCodeModel.JModifier.STATIC);<a name="line.161"></a>
+<FONT color="green">162</FONT>            }<a name="line.162"></a>
+<FONT color="green">163</FONT>            return modifiers.toArray( new JavaCodeModel.JModifier[modifiers.size()]);<a name="line.163"></a>
+<FONT color="green">164</FONT>        }<a name="line.164"></a>
+<FONT color="green">165</FONT>    <a name="line.165"></a>
+<FONT color="green">166</FONT>        private JavaCodeModel.JModifier[] getModifiers(FieldDoc doc){<a name="line.166"></a>
+<FONT color="green">167</FONT>            final List&lt;JavaCodeModel.JModifier&gt; modifiers = new ArrayList&lt;JavaCodeModel.JModifier&gt;();<a name="line.167"></a>
+<FONT color="green">168</FONT>            if(doc.isStatic()) {<a name="line.168"></a>
+<FONT color="green">169</FONT>                modifiers.add(JavaCodeModel.JModifier.STATIC);<a name="line.169"></a>
+<FONT color="green">170</FONT>            }<a name="line.170"></a>
+<FONT color="green">171</FONT>            if(doc.isTransient()) {<a name="line.171"></a>
+<FONT color="green">172</FONT>                modifiers.add(JavaCodeModel.JModifier.TRANSIENT);<a name="line.172"></a>
+<FONT color="green">173</FONT>            }<a name="line.173"></a>
+<FONT color="green">174</FONT>            if(doc.isVolatile()) {<a name="line.174"></a>
+<FONT color="green">175</FONT>                modifiers.add(JavaCodeModel.JModifier.VOLATILE);<a name="line.175"></a>
+<FONT color="green">176</FONT>            }<a name="line.176"></a>
+<FONT color="green">177</FONT>            return modifiers.toArray( new JavaCodeModel.JModifier[modifiers.size()]);<a name="line.177"></a>
+<FONT color="green">178</FONT>        }<a name="line.178"></a>
+<FONT color="green">179</FONT>    <a name="line.179"></a>
+<FONT color="green">180</FONT>        private Identifier[] getInterfaces(ClassDoc classDoc) {<a name="line.180"></a>
+<FONT color="green">181</FONT>            ClassDoc[] ifaces = classDoc.interfaces();<a name="line.181"></a>
+<FONT color="green">182</FONT>            Identifier[] result = new Identifier[ifaces.length];<a name="line.182"></a>
+<FONT color="green">183</FONT>            for(int i =0; i &lt; ifaces.length; i++) {<a name="line.183"></a>
+<FONT color="green">184</FONT>                result[i] = IdentifierReader.readFullyQualifiedInterface(ifaces[i].qualifiedName());<a name="line.184"></a>
+<FONT color="green">185</FONT>            }<a name="line.185"></a>
+<FONT color="green">186</FONT>            return result;<a name="line.186"></a>
+<FONT color="green">187</FONT>        }<a name="line.187"></a>
+<FONT color="green">188</FONT>    <a name="line.188"></a>
+<FONT color="green">189</FONT>    <a name="line.189"></a>
+<FONT color="green">190</FONT>        // TODO: handle all Types (interfaces, objects, exceptions...).<a name="line.190"></a>
+<FONT color="green">191</FONT>        private JavaCodeModel.JType typeToJType(Type t) {<a name="line.191"></a>
+<FONT color="green">192</FONT>            if (t.isPrimitive()) {<a name="line.192"></a>
+<FONT color="green">193</FONT>                return JavaCodeModel.javaTypeToJType(t.qualifiedTypeName());<a name="line.193"></a>
+<FONT color="green">194</FONT>            } else {<a name="line.194"></a>
+<FONT color="green">195</FONT>                return new JavaCodeModel.ObjectType(<a name="line.195"></a>
+<FONT color="green">196</FONT>                        IdentifierReader.readFullyQualifiedClass(t.qualifiedTypeName())<a name="line.196"></a>
+<FONT color="green">197</FONT>                );<a name="line.197"></a>
+<FONT color="green">198</FONT>            }<a name="line.198"></a>
+<FONT color="green">199</FONT>        }<a name="line.199"></a>
+<FONT color="green">200</FONT>    <a name="line.200"></a>
+<FONT color="green">201</FONT>        private JavaCodeModel.JType[] getSignature(Parameter[] parameters) {<a name="line.201"></a>
+<FONT color="green">202</FONT>            final JavaCodeModel.JType[] signature = new JavaCodeModel.JType[parameters.length];<a name="line.202"></a>
+<FONT color="green">203</FONT>            for(int i = 0; i &lt; parameters.length; i++) {<a name="line.203"></a>
+<FONT color="green">204</FONT>                signature[i] = typeToJType(parameters[i].type());<a name="line.204"></a>
+<FONT color="green">205</FONT>            }<a name="line.205"></a>
+<FONT color="green">206</FONT>            return signature;<a name="line.206"></a>
+<FONT color="green">207</FONT>        }<a name="line.207"></a>
+<FONT color="green">208</FONT>    <a name="line.208"></a>
+<FONT color="green">209</FONT>        private String[] getParameterNames(Parameter[] parameters) {<a name="line.209"></a>
+<FONT color="green">210</FONT>            final String[] parameterNames = new String[parameters.length];<a name="line.210"></a>
+<FONT color="green">211</FONT>            for(int i = 0; i &lt; parameters.length; i++) {<a name="line.211"></a>
+<FONT color="green">212</FONT>                parameterNames[i] = parameters[i].name();<a name="line.212"></a>
+<FONT color="green">213</FONT>            }<a name="line.213"></a>
+<FONT color="green">214</FONT>            return parameterNames;<a name="line.214"></a>
+<FONT color="green">215</FONT>        }<a name="line.215"></a>
+<FONT color="green">216</FONT>    <a name="line.216"></a>
+<FONT color="green">217</FONT>        private JavaCodeModel.ExceptionType[] getExceptions(ClassDoc[] thrownExceptions) {<a name="line.217"></a>
+<FONT color="green">218</FONT>            final JavaCodeModel.ExceptionType[] exceptionTypes = new JavaCodeModel.ExceptionType[thrownExceptions.length];<a name="line.218"></a>
+<FONT color="green">219</FONT>            for(int i = 0; i &lt; thrownExceptions.length; i++) {<a name="line.219"></a>
+<FONT color="green">220</FONT>                exceptionTypes[i] = new JavaCodeModel.ExceptionType(<a name="line.220"></a>
+<FONT color="green">221</FONT>                        IdentifierReader.readFullyQualifiedClass( thrownExceptions[i].qualifiedName() )<a name="line.221"></a>
+<FONT color="green">222</FONT>                );<a name="line.222"></a>
+<FONT color="green">223</FONT>            }<a name="line.223"></a>
+<FONT color="green">224</FONT>            return exceptionTypes;<a name="line.224"></a>
+<FONT color="green">225</FONT>        }<a name="line.225"></a>
+<FONT color="green">226</FONT>    <a name="line.226"></a>
+<FONT color="green">227</FONT>        private Identifier getSuperclass(ClassDoc classDoc) {<a name="line.227"></a>
+<FONT color="green">228</FONT>            ClassDoc superClass = classDoc.superclass();<a name="line.228"></a>
+<FONT color="green">229</FONT>            if(superClass == null) {<a name="line.229"></a>
+<FONT color="green">230</FONT>                return OBJECT_SUPERCLASS;<a name="line.230"></a>
+<FONT color="green">231</FONT>            }<a name="line.231"></a>
+<FONT color="green">232</FONT>            return IdentifierReader.readFullyQualifiedClass(classDoc.superclass().qualifiedName());<a name="line.232"></a>
+<FONT color="green">233</FONT>        }<a name="line.233"></a>
+<FONT color="green">234</FONT>    <a name="line.234"></a>
+<FONT color="green">235</FONT>        private void handleClass(ClassDoc classDoc) {<a name="line.235"></a>
+<FONT color="green">236</FONT>            final ClassJavadoc je = new ClassJavadoc(<a name="line.236"></a>
+<FONT color="green">237</FONT>                IdentifierReader.readFullyQualifiedClass(classDoc.qualifiedName()),<a name="line.237"></a>
+<FONT color="green">238</FONT>                getSuperclass(classDoc),<a name="line.238"></a>
+<FONT color="green">239</FONT>                getInterfaces(classDoc),<a name="line.239"></a>
+<FONT color="green">240</FONT>                getModifiers(classDoc),<a name="line.240"></a>
+<FONT color="green">241</FONT>                getVisibility(classDoc),<a name="line.241"></a>
+<FONT color="green">242</FONT>                classDoc.getRawCommentText(),<a name="line.242"></a>
+<FONT color="green">243</FONT>                classDoc.commentText(),<a name="line.243"></a>
+<FONT color="green">244</FONT>                getTags(classDoc),<a name="line.244"></a>
+<FONT color="green">245</FONT>                classDoc.position().line(),<a name="line.245"></a>
+<FONT color="green">246</FONT>                classDoc.position().column()<a name="line.246"></a>
+<FONT color="green">247</FONT>            );<a name="line.247"></a>
+<FONT color="green">248</FONT>            javadocHandler.classJavadoc(je);<a name="line.248"></a>
+<FONT color="green">249</FONT>    <a name="line.249"></a>
+<FONT color="green">250</FONT>            for(FieldDoc fieldDoc : classDoc.fields()) {<a name="line.250"></a>
+<FONT color="green">251</FONT>                handleField(fieldDoc);<a name="line.251"></a>
+<FONT color="green">252</FONT>            }<a name="line.252"></a>
+<FONT color="green">253</FONT>            for (ConstructorDoc constructorDoc : classDoc.constructors()) {<a name="line.253"></a>
+<FONT color="green">254</FONT>              handleConstructor(constructorDoc);<a name="line.254"></a>
+<FONT color="green">255</FONT>            }<a name="line.255"></a>
+<FONT color="green">256</FONT>            for (MethodDoc methodDoc : classDoc.methods()) {<a name="line.256"></a>
+<FONT color="green">257</FONT>                handleMethod(methodDoc);<a name="line.257"></a>
+<FONT color="green">258</FONT>            }<a name="line.258"></a>
+<FONT color="green">259</FONT>        }<a name="line.259"></a>
+<FONT color="green">260</FONT>    <a name="line.260"></a>
+<FONT color="green">261</FONT>        private void handleField(FieldDoc fieldDoc) {<a name="line.261"></a>
+<FONT color="green">262</FONT>            final FieldJavadoc je = new FieldJavadoc(<a name="line.262"></a>
+<FONT color="green">263</FONT>                    IdentifierReader.readFullyQualifiedAttribute(fieldDoc.qualifiedName()),<a name="line.263"></a>
+<FONT color="green">264</FONT>                    typeToJType(fieldDoc.type()),<a name="line.264"></a>
+<FONT color="green">265</FONT>                    fieldDoc.constantValue() != null ? fieldDoc.constantValue().toString() : null,<a name="line.265"></a>
+<FONT color="green">266</FONT>                    getModifiers(fieldDoc),<a name="line.266"></a>
+<FONT color="green">267</FONT>                    getVisibility(fieldDoc),<a name="line.267"></a>
+<FONT color="green">268</FONT>                    fieldDoc.getRawCommentText(),<a name="line.268"></a>
+<FONT color="green">269</FONT>                    fieldDoc.commentText(),<a name="line.269"></a>
+<FONT color="green">270</FONT>                    getTags(fieldDoc),<a name="line.270"></a>
+<FONT color="green">271</FONT>                    fieldDoc.position().line(),<a name="line.271"></a>
+<FONT color="green">272</FONT>                    fieldDoc.position().column()<a name="line.272"></a>
+<FONT color="green">273</FONT>            );<a name="line.273"></a>
+<FONT color="green">274</FONT>            javadocHandler.fieldJavadoc(je);<a name="line.274"></a>
+<FONT color="green">275</FONT>        }<a name="line.275"></a>
+<FONT color="green">276</FONT>    <a name="line.276"></a>
+<FONT color="green">277</FONT>        private void handleConstructor(ConstructorDoc constructorDoc) {<a name="line.277"></a>
+<FONT color="green">278</FONT>            constructorDoc.signature();<a name="line.278"></a>
+<FONT color="green">279</FONT>            final ConstructorJavadoc je = new ConstructorJavadoc(<a name="line.279"></a>
+<FONT color="green">280</FONT>                    IdentifierReader.readFullyQualifiedConstructor(constructorDoc.qualifiedName()),<a name="line.280"></a>
+<FONT color="green">281</FONT>                    getSignature( constructorDoc.parameters() ),<a name="line.281"></a>
+<FONT color="green">282</FONT>                    constructorDoc.signature(),<a name="line.282"></a>
+<FONT color="green">283</FONT>                    getParameterNames( constructorDoc.parameters() ),<a name="line.283"></a>
+<FONT color="green">284</FONT>                    getExceptions( constructorDoc.thrownExceptions() ),<a name="line.284"></a>
+<FONT color="green">285</FONT>                    getModifiers(constructorDoc),<a name="line.285"></a>
+<FONT color="green">286</FONT>                    getVisibility(constructorDoc),<a name="line.286"></a>
+<FONT color="green">287</FONT>                    constructorDoc.getRawCommentText(),<a name="line.287"></a>
+<FONT color="green">288</FONT>                    constructorDoc.commentText(),<a name="line.288"></a>
+<FONT color="green">289</FONT>                    getTags(constructorDoc),<a name="line.289"></a>
+<FONT color="green">290</FONT>                    constructorDoc.position().line(),<a name="line.290"></a>
+<FONT color="green">291</FONT>                    constructorDoc.position().column()<a name="line.291"></a>
+<FONT color="green">292</FONT>            );<a name="line.292"></a>
+<FONT color="green">293</FONT>            javadocHandler.constructorJavadoc(je);<a name="line.293"></a>
+<FONT color="green">294</FONT>        }<a name="line.294"></a>
+<FONT color="green">295</FONT>    <a name="line.295"></a>
+<FONT color="green">296</FONT>        private void handleMethod(MethodDoc methodDoc) {<a name="line.296"></a>
+<FONT color="green">297</FONT>            final MethodJavadoc je = new MethodJavadoc(<a name="line.297"></a>
+<FONT color="green">298</FONT>                    IdentifierReader.readFullyQualifiedMethod(methodDoc.qualifiedName()),<a name="line.298"></a>
+<FONT color="green">299</FONT>                    getSignature( methodDoc.parameters() ),<a name="line.299"></a>
+<FONT color="green">300</FONT>                    methodDoc.signature(),<a name="line.300"></a>
+<FONT color="green">301</FONT>                    getParameterNames( methodDoc.parameters() ),<a name="line.301"></a>
+<FONT color="green">302</FONT>                    typeToJType(methodDoc.returnType()),<a name="line.302"></a>
+<FONT color="green">303</FONT>                    getExceptions( methodDoc.thrownExceptions() ),<a name="line.303"></a>
+<FONT color="green">304</FONT>                    getModifiers(methodDoc),<a name="line.304"></a>
+<FONT color="green">305</FONT>                    getVisibility(methodDoc),<a name="line.305"></a>
+<FONT color="green">306</FONT>                    methodDoc.getRawCommentText(),<a name="line.306"></a>
+<FONT color="green">307</FONT>                    methodDoc.commentText(),<a name="line.307"></a>
+<FONT color="green">308</FONT>                    getTags(methodDoc),<a name="line.308"></a>
+<FONT color="green">309</FONT>                    methodDoc.position().line(),<a name="line.309"></a>
+<FONT color="green">310</FONT>                    methodDoc.position().column()<a name="line.310"></a>
+<FONT color="green">311</FONT>            );<a name="line.311"></a>
+<FONT color="green">312</FONT>            javadocHandler.methodJavadoc(je);<a name="line.312"></a>
+<FONT color="green">313</FONT>        }<a name="line.313"></a>
+<FONT color="green">314</FONT>    <a name="line.314"></a>
+<FONT color="green">315</FONT>        private File getSerializationFile(String[][] options) {<a name="line.315"></a>
+<FONT color="green">316</FONT>            for(int i = 0; i &lt; options.length; i++) {<a name="line.316"></a>
+<FONT color="green">317</FONT>                if( SERIALIZATION_FILE_OPTION.equals(options[i][0]) ) {<a name="line.317"></a>
+<FONT color="green">318</FONT>                    if(options[i].length != 2) {<a name="line.318"></a>
+<FONT color="green">319</FONT>                        throw new JavadocHandlerDocletException(<a name="line.319"></a>
+<FONT color="green">320</FONT>                                String.format("Expected just one option value for %s", SERIALIZATION_FILE_OPTION)<a name="line.320"></a>
+<FONT color="green">321</FONT>                        );<a name="line.321"></a>
+<FONT color="green">322</FONT>                    }<a name="line.322"></a>
+<FONT color="green">323</FONT>                    return new File(options[i][1]);<a name="line.323"></a>
+<FONT color="green">324</FONT>                }<a name="line.324"></a>
+<FONT color="green">325</FONT>            }<a name="line.325"></a>
+<FONT color="green">326</FONT>            throw new JavadocHandlerDocletException( String.format("Cannot find option %s", SERIALIZATION_FILE_OPTION) );<a name="line.326"></a>
+<FONT color="green">327</FONT>        }<a name="line.327"></a>
+<FONT color="green">328</FONT>    <a name="line.328"></a>
+<FONT color="green">329</FONT>        private Map&lt;String, List&lt;String&gt;&gt; getTags(Doc doc) {<a name="line.329"></a>
+<FONT color="green">330</FONT>            Map&lt;String,List&lt;String&gt;&gt; result = new HashMap&lt;String, List&lt;String&gt;&gt;();<a name="line.330"></a>
+<FONT color="green">331</FONT>            for( Tag tag : doc.tags() ) {<a name="line.331"></a>
+<FONT color="green">332</FONT>                List&lt;String&gt; values = result.get( tag.name() );<a name="line.332"></a>
+<FONT color="green">333</FONT>                if(values == null) {<a name="line.333"></a>
+<FONT color="green">334</FONT>                    values = new ArrayList&lt;String&gt;();<a name="line.334"></a>
+<FONT color="green">335</FONT>                }<a name="line.335"></a>
+<FONT color="green">336</FONT>                values.add(tag.text());<a name="line.336"></a>
+<FONT color="green">337</FONT>            }<a name="line.337"></a>
+<FONT color="green">338</FONT>            return result;<a name="line.338"></a>
+<FONT color="green">339</FONT>        }<a name="line.339"></a>
+<FONT color="green">340</FONT>    <a name="line.340"></a>
+<FONT color="green">341</FONT>    }<a name="line.341"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>
