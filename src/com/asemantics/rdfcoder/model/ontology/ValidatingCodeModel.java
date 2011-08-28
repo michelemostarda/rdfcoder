@@ -81,6 +81,14 @@ public class ValidatingCodeModel extends CodeModelBase {
     }
 
     public void addTripleCollection(Object subject, String predicate, String[] list) {
+        if (subject instanceof String) {
+            final String subjectStr = (String) subject;
+            try {
+                ontology.validateTriple(subjectStr, predicate, list);
+            } catch (OntologyException oe) {
+                throw createException(oe, subjectStr, predicate, list);
+            }
+        }
         decorated.addTripleCollection(subject, predicate, list);
     }
 
@@ -88,7 +96,7 @@ public class ValidatingCodeModel extends CodeModelBase {
         decorated.clearAll();
     }
 
-    private RuntimeException createException(OntologyException cause, String s, String p, String o) {
+    private RuntimeException createException(OntologyException cause, String s, String p, Object o) {
         return new RuntimeException(
                 String.format("An error occurred while validating triple { %s %s %s }", s, p, o),
                 cause
