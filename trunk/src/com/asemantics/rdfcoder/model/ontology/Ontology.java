@@ -39,6 +39,17 @@ public interface Ontology {
 
     /**
      * Defines a relation <i>Subject</i>, <i>predicate</i>,
+     * <i>list</i> in the ontology.
+     *
+     * @param subjectPrefix
+     * @param predicate
+     * @param listBounds
+     * @throws OntologyException
+     */
+    void defineRelation(String subjectPrefix, URL predicate, ListBounds listBounds) throws OntologyException;
+
+    /**
+     * Defines a relation <i>Subject</i>, <i>predicate</i>,
      * <i>literal object</i> in the ontology.
      *
      * @param subjectPrefix
@@ -71,13 +82,21 @@ public interface Ontology {
     void undefineRelation(String subjectPrefix, URL predicate) throws OntologyException;
 
     /**
+     * Removes an already defined relation wich object is a list.
+     *
+     * @param subjectPrefix
+     * @param predicate
+     */
+    void undefineRelationList(String subjectPrefix, URL predicate) throws OntologyException;
+
+    /**
      * Validates a triple over the current ontology.
      *
      * @param subject the triple subject.
      * @param predicate the triple predicate.
      * @param object the triple object.
      */
-    void validateTriple(String subject, String predicate, String object) throws OntologyException;
+    void validateTriple(String subject, String predicate, Object object) throws OntologyException;
 
     /**
      * Validates a triple literal over the current ontology.
@@ -141,4 +160,56 @@ public interface Ontology {
      */
     void toOWL(OutputStream os);
 
+    /**
+     * Declares the restriction bounds for an array.
+     */
+    class ListBounds {
+
+        int minSize;
+        int maxSize;
+
+        /**
+         * Constructor for bounds in interval <i>[minSize, maxSize]</i>.
+         *
+         * @param minSize minimum accepted size.
+         * @param maxSize maximum expected size.
+         */
+        public ListBounds(int minSize, int maxSize) {
+            this.minSize = minSize;
+            this.maxSize = maxSize;
+        }
+
+        public ListBounds() {
+            this(0, Integer.MAX_VALUE);
+        }
+
+        boolean inBounds(String[] values) {
+            return values.length >= minSize && values.length <= maxSize;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s %d %d", ListBounds.this.getClass().getSimpleName(), minSize, maxSize);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if(obj == null) {
+                return false;
+            }
+            if(obj == this) {
+                return true;
+            }
+            if(obj instanceof ListBounds) {
+                final ListBounds other = (ListBounds) obj;
+                return minSize == other.minSize && maxSize == other.maxSize;
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return minSize * maxSize;
+        }
+    }
 }

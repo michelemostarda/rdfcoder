@@ -19,11 +19,13 @@
 package com.asemantics.rdfcoder.model.ontology;
 
 import com.asemantics.rdfcoder.model.CodeModel;
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,6 +36,8 @@ import java.util.Set;
  * Test case for the {@link com.asemantics.rdfcoder.model.ontology.DefaultOntology} class.
  */
 public class DefaultOntologyTest {
+
+    private static final Logger logger = Logger.getLogger(DefaultOntologyTest.class);
 
     private Ontology ontology;
 
@@ -62,13 +66,21 @@ public class DefaultOntologyTest {
      */
     @Test
     public void testDefineRelation() throws OntologyException, MalformedURLException {
-       for(int i = 0; i < SIZE; i++) {
-           ontology.defineRelation(
-                   SUB_PREFIX + i + CodeModel.PREFIX_SEPARATOR,
-                   new URL(PREDICATE + (i % 2) ),
-                   OBJ_PREFIX + i + CodeModel.PREFIX_SEPARATOR
-           );
-       }
+       loadRelations(ontology);
+       Assert.assertEquals(ontology.getRelationsCount(), SIZE);
+    }
+
+    /**
+     * Tests the
+     * {@link com.asemantics.rdfcoder.model.ontology.Ontology#defineRelation(String, java.net.URL, com.asemantics.rdfcoder.model.ontology.Ontology.ListBounds)}
+     * method.
+     *
+     * @throws OntologyException
+     * @throws MalformedURLException
+     */
+    @Test
+    public void testDefineRelationsList() throws OntologyException, MalformedURLException {
+       loadRelationsList(ontology);
        Assert.assertEquals(ontology.getRelationsCount(), SIZE);
     }
 
@@ -98,22 +110,27 @@ public class DefaultOntologyTest {
      */
     @Test
     public void testPrint() throws MalformedURLException, OntologyException {
-        testDefineRelation();
+        loadRelations(ontology);
+        loadRelationsList(ontology);
 
         final Counter counter = new Counter();
-        ontology.printOntology(new PrintStream(System.out) {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final PrintStream ps = new PrintStream(baos) {
 
             public void println() {
                 super.println();
                 counter.increment();
             }
-        });
+        };
+        ontology.printOntology(ps);
+        ps.flush();
+        logger.info(baos.toString());
 
-        Assert.assertEquals(SIZE, counter.count);
+        Assert.assertEquals(SIZE * 2, counter.count);
     }
 
     /**
-     * Tests method {@link com.asemantics.rdfcoder.model.ontology.Ontology#validateTriple(String, String, String)}
+     * Tests method {@link com.asemantics.rdfcoder.model.ontology.Ontology#validateTriple(String, String, Object)}
      * on valid triples.
      *
      * @throws MalformedURLException
@@ -132,7 +149,26 @@ public class DefaultOntologyTest {
     }
 
     /**
-     * Tests method {@link com.asemantics.rdfcoder.model.ontology.Ontology#validateTriple(String, String, String)}
+     * Tests method {@link com.asemantics.rdfcoder.model.ontology.Ontology#validateTriple(String, String, Object)}
+     * on valid object triples.
+     *
+     * @throws MalformedURLException
+     * @throws OntologyException
+     */
+    @Test
+    public void testListPositiveValidation() throws MalformedURLException, OntologyException {
+        testDefineRelationsList();
+        for(int i = 0; i < SIZE; i++) {
+            ontology.validateTriple(
+                    SUB_PREFIX + i + CodeModel.PREFIX_SEPARATOR + "postfix",
+                    PREDICATE  + (i % 2),
+                    new String[]{"1", "2", "3", "4", "5"}
+             );
+        }
+    }
+
+    /**
+     * Tests method {@link com.asemantics.rdfcoder.model.ontology.Ontology#validateTriple(String, String, Object)}
      * on invalid triples.
      *
      * @throws MalformedURLException
@@ -146,6 +182,28 @@ public class DefaultOntologyTest {
                     SUB_PREFIX + 0 + CodeModel.PREFIX_SEPARATOR + "postfix",
                     PREDICATE + 1,
                     OBJ_PREFIX + 0 + CodeModel.PREFIX_SEPARATOR + "postfix2"
+            );
+            Assert.fail();
+        } catch (OntologyException oe) {
+            // Ok.
+        }
+    }
+
+    /**
+     * Tests method {@link com.asemantics.rdfcoder.model.ontology.Ontology#validateTriple(String, String, Object)}
+     * on invalid list triples.
+     *
+     * @throws MalformedURLException
+     * @throws OntologyException
+     */
+    @Test
+    public void testListNegativeValidation() throws MalformedURLException, OntologyException {
+        testDefineRelationsList();
+        try {
+            ontology.validateTriple(
+                    SUB_PREFIX + 0 + CodeModel.PREFIX_SEPARATOR + "postfix",
+                    PREDICATE + 1,
+                    new String[]{"1", "2", "3"}
             );
             Assert.fail();
         } catch (OntologyException oe) {
@@ -192,6 +250,26 @@ public class DefaultOntologyTest {
         Assert.assertEquals(SIZE, count);
 
         found.clear();
+    }
+
+    private void loadRelations(Ontology ontology) throws MalformedURLException, OntologyException {
+        for (int i = 0; i < SIZE; i++) {
+            ontology.defineRelation(
+                    SUB_PREFIX + i + CodeModel.PREFIX_SEPARATOR,
+                    new URL(PREDICATE + (i % 2)),
+                    OBJ_PREFIX + i + CodeModel.PREFIX_SEPARATOR
+            );
+        }
+    }
+
+    private void loadRelationsList(Ontology ontology) throws MalformedURLException, OntologyException {
+        for (int i = 0; i < SIZE; i++) {
+            ontology.defineRelation(
+                    SUB_PREFIX + i + CodeModel.PREFIX_SEPARATOR,
+                    new URL(PREDICATE + (i % 2)),
+                    new Ontology.ListBounds(5, 10)
+            );
+        }
     }
 
     /**

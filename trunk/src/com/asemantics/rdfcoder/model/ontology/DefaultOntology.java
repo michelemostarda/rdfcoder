@@ -18,8 +18,8 @@
 
 package com.asemantics.rdfcoder.model.ontology;
 
-import com.asemantics.rdfcoder.model.IdentifierReader;
 import com.asemantics.rdfcoder.model.CodeModel;
+import com.asemantics.rdfcoder.model.IdentifierReader;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -33,15 +33,241 @@ import java.util.Map;
 
 /**
  * Default implementation of {@link com.asemantics.rdfcoder.model.ontology.Ontology} interface.
- *
- * // TODO: add support for validating addTripleCollection(Object subject, String predicate, String[] values)
  */
 public class DefaultOntology implements Ontology {
 
     /**
+     * Map connecting predicate names with properties.
+     */
+    private final Map<String, List<PropertyObjectBase>> predicateIndex;
+
+    public DefaultOntology() {
+        predicateIndex = new HashMap<String, List<PropertyObjectBase>>();
+    }
+
+    public void defineRelation(String subjectPrefix, URL predicate, String objectPrefix) throws OntologyException {
+        validatePrefix(subjectPrefix);
+        validatePrefix(objectPrefix);
+
+        final String predicateStr = predicate.toString();
+        final List<PropertyObjectBase> properties = getProperties(predicateStr);
+        final URIObjectProperty property = new URIObjectProperty(subjectPrefix, predicateStr, objectPrefix);
+        addPropertyInList(properties, property);
+    }
+
+    public void defineRelation(String subjectPrefix, URL predicate, ListBounds listBounds) throws OntologyException {
+        validatePrefix(subjectPrefix);
+
+        final String predicateStr = predicate.toString();
+        final List<PropertyObjectBase> properties = getProperties(predicateStr);
+        final ListObjectProperty property = new ListObjectProperty(subjectPrefix, predicateStr, listBounds);
+        addPropertyInList(properties, property);
+    }
+
+    public void defineRelation(String subjectPrefix, URL predicate) throws OntologyException {
+        validatePrefix(subjectPrefix);
+
+        final String predicateStr = predicate.toString();
+        final List<PropertyObjectBase> properties = getProperties(predicateStr);
+        final LiteralObjectProperty property = new LiteralObjectProperty(subjectPrefix, predicateStr);
+        addPropertyInList(properties, property);
+    }
+
+    public void defineRelation(URL predicate) throws OntologyException {
+        final String predicateStr = predicate.toString();
+        final List<PropertyObjectBase> properties = getProperties(predicateStr);
+        final URIObjectProperty property = new URIObjectProperty(null, predicateStr, null);
+        addPropertyInList(properties, property);
+    }
+
+    public void undefineRelation(String subjectPrefix, URL predicate) throws OntologyException {
+        validatePrefix(subjectPrefix);
+
+        final String predicateStr = predicate.toString();
+        final List<PropertyObjectBase> properties = getPropertiesOrException(predicateStr, "Cannot undefine relation");
+        for(PropertyObjectBase base : properties) {
+            if( ((LiteralObjectProperty) base).subPrefixStr.equals( subjectPrefix ) ) {
+                properties.remove(base);
+            }
+        }
+        updateSession();
+    }
+
+    public void undefineRelationList(String subjectPrefix, URL predicate) throws OntologyException {
+        undefineRelation(subjectPrefix, predicate);
+    }
+
+    public void undefineRelation(String subjectPrefix, URL predicate, String objectPrefix) throws OntologyException {
+        validatePrefix(subjectPrefix);
+
+        final String predicateStr = predicate.toString();
+        final List<PropertyObjectBase> properties = getPropertiesOrException(predicateStr, "Cannot undefine relation");
+        for(PropertyObjectBase base : properties) {
+            URIObjectProperty property = (URIObjectProperty) base;
+            if(
+                    property.subPrefixStr.equals( subjectPrefix )
+                        &&
+                    property.objPrefixStr.equals( objectPrefix  )
+            ) {
+                properties.remove(property);
+            }
+        }
+        updateSession();
+    }
+
+    protected void validatePrefix(String prefix) throws OntologyException {
+        if( prefix == null ) {
+            throw new OntologyException( String.format("invalid prefix: '%s'", prefix) );
+        }
+    }
+
+    protected void updateSession() {
+        session++;
+    }
+
+    protected List<PropertyObjectBase> getProperties(String predicate) {
+        List<PropertyObjectBase> properties = predicateIndex.get(predicate);
+        if(properties == null) {
+            properties = new ArrayList<PropertyObjectBase>();
+            predicateIndex.put(predicate, properties);
+        }
+        return properties;
+    }
+
+
+    protected List<PropertyObjectBase> getPropertiesOrException(String predicate, String msgPrefix)
+    throws OntologyException {
+        List<PropertyObjectBase> properties = predicateIndex.get(predicate);
+        if (properties == null) {
+            throw new OntologyException(
+                    String.format("%s '%s' because is undefined.", msgPrefix, predicate)
+            );
+        }
+        return properties;
+    }
+
+    protected void addPropertyInList( List<PropertyObjectBase> properties, PropertyObjectBase property)
+    throws OntologyException {
+        if(properties.contains(property)) {
+            throw new OntologyException("Property rule redefinition");
+        }
+        properties.add(property);
+        updateSession();
+    }
+
+    /**
+     * Validates a triple over the predicates list.
+     *
+     * @param subject
+     * @param predicate
+     * @param object
+     * @param literal
+     * @return the property base applicable on validation.
+     * @throws OntologyException
+     */
+    protected PropertyObjectBase validateTerms(String subject, String predicate, Object object, boolean literal)
+    throws OntologyException {
+        List<PropertyObjectBase> properties = predicateIndex.get(predicate);
+
+        if(properties == null) {
+            throw new OntologyException( String.format("predicate '%s' is not defined.", predicate) );
+        }
+
+        List<OntologyException> causes = new ArrayList<OntologyException>();
+        for(PropertyObjectBase property : properties) {
+            try {
+                if( literal == property.isLiteral() ) {
+                    property.validate(subject, predicate, object);                    
+                    return property;
+                }
+            } catch (OntologyException oe) {
+                causes.add(oe);
+            }
+        }
+        throw new OntologyException(
+                String.format("No property matches specified terms for predicate: '%s'", predicate)
+        );
+    }
+
+    public void validateTriple(String subject, String predicate, Object object) throws OntologyException {
+        validateTerms(subject, predicate,  object, false);
+    }
+
+    public void validateTripleLiteral(String subject, String predicate) throws OntologyException {
+        validateTerms(subject, predicate,  null, true);
+    }
+
+    /**
+     * Current session.
+     */
+    private long session = 0L;
+
+    /**
+     * Session in which properties has been defined last time.
+     */
+    private long propertiesSession;
+
+    /**
+     * List of ordered properties.
+     */
+    private PropertyObjectBase[] properties;
+
+    /**
+     * Populates the properties array.
+     */
+    private void orderRelations() {
+        List<PropertyObjectBase> relationsList = new ArrayList<PropertyObjectBase>();
+        for(List<PropertyObjectBase> propertyList :  predicateIndex.values() ) {
+            relationsList.addAll( propertyList );
+        }
+        Collections.sort( relationsList );
+        properties = relationsList.toArray( new PropertyObjectBase[ relationsList.size() ] );
+        propertiesSession = session;
+    }
+
+    public int getRelationsCount() {
+        if(properties == null || propertiesSession != session) {
+            orderRelations();
+        }
+        return properties.length;
+    }
+
+    public boolean isLiteralRelation(int i) {
+        return properties[i].isLiteral();
+    }
+
+    public String getRelationSubjectPrefix(int i) {
+        return ((LiteralObjectProperty) properties[i]).getSubjectPrefix();
+    }
+
+    public URL getRelationPredicate(int i) {
+        try {
+            return new URL( ((LiteralObjectProperty) properties[i]).getPredicate() );
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException();
+        }
+    }
+
+    public String getRelationObjectPrefix(int t) {
+        return ((URIObjectProperty) properties[t]).getObjectPrefix();
+    }
+
+    public void printOntology(PrintStream ps) {
+        orderRelations();
+        for(PropertyObjectBase rb : properties) {
+            rb.print(ps);
+        }
+    }
+
+    public void toOWL(OutputStream os) {
+        //TODO: LOW - implement this.
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Defines a base property.
      */
-    abstract class PropertyBase implements Comparable {
+    abstract class PropertyObjectBase implements Comparable {
 
         /**
          * Returns the prefix of a term.
@@ -66,18 +292,19 @@ public class DefaultOntology implements Ontology {
          * @param object
          * @throws OntologyException
          */
-        abstract void validate(String subject, String predicate, String object) throws OntologyException;
+        abstract void validate(String subject, String predicate, Object object) throws OntologyException;
 
         /**
          * Returns <code>true</code> if this is a literal property, <code>false</code>
          * otherwise.
-         * 
+         *
          * @return
          */
         abstract boolean isLiteral();
 
         /**
-         * Prints the current property in a umar readable manner on the given print stream.
+         * Prints the current property as a human readable string on the given print stream.
+         *
          * @param ps
          */
         abstract void print(PrintStream ps);
@@ -87,17 +314,17 @@ public class DefaultOntology implements Ontology {
     /**
      * Represents a literal property.
      */
-    class LiteralProperty extends PropertyBase {
+    class LiteralObjectProperty extends PropertyObjectBase {
 
         /**
          * The subject expected prefix.
          */
-        String subPrefixStr;
+        final String subPrefixStr;
 
         /**
          * predicate string.
          */
-        String predicateStr;
+        final String predicateStr;
 
         /**
          * Constructor.
@@ -105,7 +332,7 @@ public class DefaultOntology implements Ontology {
          * @param subjectPrefix
          * @param predicate
          */
-        LiteralProperty(String subjectPrefix, String predicate) {
+        LiteralObjectProperty(String subjectPrefix, String predicate) {
             subPrefixStr = subjectPrefix;
             predicateStr = predicate;
         }
@@ -118,17 +345,17 @@ public class DefaultOntology implements Ontology {
             return predicateStr;
         }
 
-        public void validate(String subject, String predicate, String object) throws OntologyException {
+        public void validate(String subject, String predicate, Object object) throws OntologyException {
             if( subPrefixStr == null ) {
                 return;
             }
-            
+
             String subPrefix = getPrefix(subject);
             if(
                 ! subPrefixStr.equals( subPrefix )
             ) {
                 throw new OntologyException(
-                    String.format("Invalid subject prefix: '%s' for predicate: '%s'", subPrefix, predicateStr) 
+                    String.format("Invalid subject prefix: '%s' for predicate: '%s'", subPrefix, predicateStr)
                 );
             }
         }
@@ -149,8 +376,8 @@ public class DefaultOntology implements Ontology {
             if(obj == this) {
                 return true;
             }
-            if(obj instanceof LiteralProperty) {
-                LiteralProperty other = (LiteralProperty) obj;
+            if(obj instanceof LiteralObjectProperty) {
+                LiteralObjectProperty other = (LiteralObjectProperty) obj;
                 return
                         subPrefixStr.equals(other.subPrefixStr)
                                 &&
@@ -165,21 +392,21 @@ public class DefaultOntology implements Ontology {
 
         /**
          * Ordered over predicate strings.
-         * 
+         *
          * @param obj
          * @return
          */
         public int compareTo(Object obj) {
-            LiteralProperty literalProperty = (LiteralProperty) obj;
-            int cmp = predicateStr.compareTo(literalProperty.predicateStr);
-            return cmp != 0 ? cmp : subPrefixStr.compareTo(literalProperty.subPrefixStr);
+            LiteralObjectProperty literalObjectProperty = (LiteralObjectProperty) obj;
+            int cmp = predicateStr.compareTo(literalObjectProperty.predicateStr);
+            return cmp != 0 ? cmp : subPrefixStr.compareTo(literalObjectProperty.subPrefixStr);
         }
     }
 
     /**
      * Represents a property.
      */
-    class Property extends LiteralProperty {
+    class URIObjectProperty extends LiteralObjectProperty {
 
         /**
          * Object prefix string.
@@ -193,7 +420,7 @@ public class DefaultOntology implements Ontology {
          * @param predicate
          * @param objectPrefix
          */
-        Property(String subjectPrefix, String predicate, String objectPrefix) {
+        URIObjectProperty(String subjectPrefix, String predicate, String objectPrefix) {
             super(subjectPrefix, predicate);
             objPrefixStr = objectPrefix;
         }
@@ -202,14 +429,20 @@ public class DefaultOntology implements Ontology {
             return objPrefixStr;
         }
 
-        public void validate(String subject, String predicate, String object) throws OntologyException {
-            super.validate(subject, predicate, object);
+        public void validate(String subject, String predicate, Object object) throws OntologyException {
+            if( ! (object instanceof String) ) {
+                throw new IllegalArgumentException("object must be a string.");
+            }
+
+            final String objectStr = (String) object;
+
+            super.validate(subject, predicate, objectStr);
 
             if(objPrefixStr == null) {
                 return;
             }
 
-            String objPrefix = getPrefix(object); 
+            String objPrefix = getPrefix(objectStr);
             if(
                 ! objPrefix.equals( objPrefixStr )
             ) {
@@ -240,8 +473,8 @@ public class DefaultOntology implements Ontology {
                 return false;
             }
 
-            if(obj instanceof Property) {
-                Property other = (Property) obj;
+            if(obj instanceof URIObjectProperty) {
+                URIObjectProperty other = (URIObjectProperty) obj;
                 return objPrefixStr.equals(other.objPrefixStr);
             }
             return false;
@@ -252,241 +485,57 @@ public class DefaultOntology implements Ontology {
         }
     }
 
-    /**
-     * Map connecting predicate names with properties.
-     */
-    private final Map<String, List<PropertyBase>> predicateIndex;
+    class ListObjectProperty extends LiteralObjectProperty {
 
-    public DefaultOntology() {
-        predicateIndex = new HashMap<String, List<PropertyBase>>();
-    }
+        private ListBounds listBounds;
 
-    protected void validatePrefix(String prefix) throws OntologyException {
-        if( prefix == null ) {
-            throw new OntologyException( String.format("invalid prefix: '%s'", prefix) );
-        }
-    }
-
-    public void defineRelation(String subjectPrefix, URL predicate, String objectPrefix) throws OntologyException {
-        validatePrefix(subjectPrefix);
-        validatePrefix(objectPrefix);
-
-        String predicateStr = predicate.toString();
-
-        List<PropertyBase> properties = predicateIndex.get(predicateStr);
-        if(properties == null) {
-            properties = new ArrayList<PropertyBase>();
+        ListObjectProperty(String subjectPrefix, String predicate, ListBounds listBounds) {
+            super(subjectPrefix, predicate);
+            this.listBounds = listBounds;
         }
 
-        Property property = new Property(subjectPrefix, predicateStr, objectPrefix);
+        public void validate(String subject, String predicate, Object object) throws OntologyException {
+            if( ! (object.getClass().isArray() && object.getClass().getComponentType().equals(String.class)) ) {
+                throw new IllegalArgumentException("object must be an String array.");
+            }
 
-        if(properties.contains(property)) {
-            throw new OntologyException("Property redefinition");
-        }
+            super.validate(subject, predicate, object);
 
-        properties.add(property);
-        predicateIndex.put(predicateStr, properties);
-
-        session++;
-    }
-
-    public void defineRelation(String subjectPrefix, URL predicate) throws OntologyException {
-        validatePrefix(subjectPrefix);
-
-        String predicateStr = predicate.toString();
-
-        List<PropertyBase> properties = predicateIndex.get(predicateStr);
-        if(properties == null) {
-            properties = new ArrayList<PropertyBase>();
-        }
-
-        LiteralProperty literalProperty = new LiteralProperty(subjectPrefix, predicateStr);
-
-        if(properties.contains(literalProperty)) {
-            throw new OntologyException("Property redefinition");
-        }
-
-        properties.add(literalProperty);
-        predicateIndex.put(predicateStr, properties);
-
-        session++;
-    }
-
-    public void defineRelation(URL predicate) throws OntologyException {
-        String predicateStr = predicate.toString();
-
-        List<PropertyBase> properties = predicateIndex.get(predicateStr);
-        if(properties == null) {
-            properties = new ArrayList<PropertyBase>();
-        }
-
-        Property property = new Property(null, predicateStr, null);
-
-        if(properties.contains(property)) {
-            throw new OntologyException("Property redefinition");
-        }
-
-        properties.add(property);
-        predicateIndex.put(predicateStr, properties);
-
-        session++;
-    }
-
-    public void undefineRelation(String subjectPrefix, URL predicate) throws OntologyException {
-        validatePrefix(subjectPrefix);
-
-        String predicateStr = predicate.toString();
-
-        List<PropertyBase> properties = predicateIndex.get(predicateStr);
-
-        if(properties == null) {
-           throw new OntologyException(
-                   String.format("Cannot undefine relation '%s' bacause is not defined.", predicateStr)
-           );
-        }
-
-        for(PropertyBase base : properties) {
-            if( ((LiteralProperty) base).subPrefixStr.equals( subjectPrefix ) ) {
-                properties.remove(base);
+            if( ! listBounds.inBounds( (String[]) object )) {
+                throw new OntologyException("Invalid object size.");
             }
         }
 
-        session++;
-    }
-
-    public void undefineRelation(String subjectPrefix, URL predicate, String objectPrefix) throws OntologyException {
-        validatePrefix(subjectPrefix);
-
-        String predicateStr = predicate.toString();
-
-        List<PropertyBase> properties = predicateIndex.get(predicateStr);
-
-        if(properties == null) {
-           throw new OntologyException(
-                   String.format("Cannot undefine relation '%s' because is not defined.", predicateStr)
-           );
+        @Override
+        boolean isLiteral() {
+            return false;
         }
 
-        for(PropertyBase base : properties) {
-            Property property = (Property) base;
-            if(
-                    property.subPrefixStr.equals( subjectPrefix )
-                        &&
-                    property.objPrefixStr.equals( objectPrefix  )
-            ) {
-                properties.remove(property);
+        @Override
+        void print(PrintStream ps) {
+            ps.printf("[%s] --[%s]--> %s", subPrefixStr, predicateStr, listBounds);
+            ps.println();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if(obj == null) {
+                return false;
             }
-        }
-
-        session++;
-    }
-
-    /**
-     * Validates a triple over the predicates list.
-     *
-     * @param subject
-     * @param predicate
-     * @param object
-     * @param literal
-     * @return the property base applicable on validation.
-     * @throws OntologyException
-     */
-    protected PropertyBase validateTerms(String subject, String predicate, String object, boolean literal)
-    throws OntologyException {
-        List<PropertyBase> properties = predicateIndex.get(predicate);
-
-        if(properties == null) {
-            throw new OntologyException( String.format("predicate '%s' is not defined.", predicate) );
-        }
-
-        List<OntologyException> causes = new ArrayList<OntologyException>();
-        for(PropertyBase property : properties) {
-            try {
-                if( literal == property.isLiteral() ) {
-                    property.validate(subject, predicate, object);                    
-                    return property;
-                }
-            } catch (OntologyException oe) {
-                causes.add(oe);
+            if(obj == this) {
+                return true;
             }
+            if(obj instanceof ListObjectProperty) {
+                final ListObjectProperty other = (ListObjectProperty) obj;
+                return super.equals(other) && listBounds.equals(other.listBounds);
+            }
+            return false;
         }
-        throw new OntologyException(
-                String.format("No property matches specified terms for predicate: '%s'", predicate)
-        );
-    }
 
-    public void validateTriple(String subject, String predicate, String object) throws OntologyException {
-        validateTerms(subject, predicate,  object, false);
-    }
-
-    public void validateTripleLiteral(String subject, String predicate) throws OntologyException {
-        validateTerms(subject, predicate,  null, true);
-    }
-
-    /**
-     * Current session.
-     */
-    private long session = 0L;
-
-    /**
-     * Session in which properties has been defined last time.
-     */
-    private long propertiesSession;
-
-    /**
-     * List of ordered properties.
-     */
-    private PropertyBase[] properties;
-
-    /**
-     * Populates the properties array.
-     */
-    private void orderRelations() {
-        List<PropertyBase> relationsList = new ArrayList<PropertyBase>();
-        for(List<PropertyBase> propertyList :  predicateIndex.values() ) {
-            relationsList.addAll( propertyList );
-        }
-        Collections.sort( relationsList );
-        properties = relationsList.toArray( new PropertyBase[ relationsList.size() ] );
-        propertiesSession = session;
-    }
-
-    public int getRelationsCount() {
-        if(properties == null || propertiesSession != session) {
-            orderRelations();
-        }
-        return properties.length;
-    }
-
-    public boolean isLiteralRelation(int i) {
-        return properties[i].isLiteral();
-    }
-
-    public String getRelationSubjectPrefix(int i) {
-        return ((LiteralProperty) properties[i]).getSubjectPrefix();
-    }
-
-    public URL getRelationPredicate(int i) {
-        try {
-            return new URL( ((LiteralProperty) properties[i]).getPredicate() );
-        } catch (MalformedURLException e) {
-            throw new IllegalStateException();
+        @Override
+        public int hashCode() {
+            return super.hashCode() * listBounds.hashCode();
         }
     }
 
-    public String getRelationObjectPrefix(int t) {
-        return ((Property) properties[t]).getObjectPrefix();
-    }
-
-    public void printOntology(PrintStream ps) {
-        orderRelations();
-        for(PropertyBase rb : properties) {
-            rb.print(ps);
-        }
-    }
-
-    public void toOWL(OutputStream os) {
-        //TODO: LOW - implement this.
-        throw new UnsupportedOperationException();
-    }
 }
