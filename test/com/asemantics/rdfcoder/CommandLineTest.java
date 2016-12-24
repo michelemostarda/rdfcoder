@@ -90,7 +90,7 @@ public class CommandLineTest {
     public void testPwdCommand() throws IOException {
         Assert.assertTrue( commandLine.processLine("pwd") );
         printStreamWrapper.dumpLines();
-        printStreamWrapper.assertContent("trunk");
+        printStreamWrapper.assertContent("rdfcoder-github");
     }
 
     @Test
@@ -219,7 +219,6 @@ public class CommandLineTest {
         printStreamWrapper.assertContent("| s | p | o |");
     }
 
-
     @Test
     public void testInspectModelCommand() throws IllegalAccessException, InvocationTargetException, IOException {
         Assert.assertTrue(commandLine.processLine("loadclasspath uml jar:lib/UmlGraph.jar"));
@@ -262,6 +261,14 @@ public class CommandLineTest {
     @Test
     public void testLoadJar() throws IllegalAccessException, InvocationTargetException, IOException {
         Assert.assertTrue(commandLine.processLine("loadclasspath junit jar:lib/junit-4.4.jar"));
+        printStreamWrapper.dumpLines();
+        printStreamWrapper.assertContent("parse errors[0]");
+        printStreamWrapper.assertContent("unresolved [0]");
+    }
+
+    @Test
+    public void testLoadJavadoc() throws IOException {
+        Assert.assertTrue(commandLine.processLine("loadclasspath local-src javadoc:" + new File("src").getAbsolutePath()));
         printStreamWrapper.dumpLines();
         printStreamWrapper.assertContent("parse errors[0]");
         printStreamWrapper.assertContent("unresolved [0]");

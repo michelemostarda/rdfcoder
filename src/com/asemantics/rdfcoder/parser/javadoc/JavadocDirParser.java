@@ -14,26 +14,14 @@ import java.io.PrintWriter;
  * Implementation of {@link com.asemantics.rdfcoder.parser.CodeParser} for handling javadoc.
  *
  * @author Michele Mostarda (michele.mostarda@gmail.com)
- * TODO: Integrate in command line.
  */
 public class JavadocDirParser extends CodeParser {
-
-    private JavadocHandler javadocHandler;
 
     private ByteArrayOutputStream errBuffer    = new ByteArrayOutputStream();
     private ByteArrayOutputStream warnBuffer   = new ByteArrayOutputStream();
     private ByteArrayOutputStream noticeBuffer = new ByteArrayOutputStream();
 
-    public JavadocDirParser(JavadocHandler jh){
-        if(jh == null) {
-            throw new NullPointerException("javadocHandler cannot be null.");
-        }
-        javadocHandler = jh;
-    }
-
-    public JavadocHandler getJavadocHandler() {
-        return javadocHandler;
-    }
+    public JavadocDirParser(){}
 
     public String getErrBuffer() {
         return errBuffer.toString();
@@ -47,19 +35,39 @@ public class JavadocDirParser extends CodeParser {
         return noticeBuffer.toString();
     }
 
-    public void parseSourceDir(File srcDir) throws JavadocDirParserException {
+    public void parseSourceDir(String libName, File srcDir) throws JavadocDirParserException {
         if(srcDir == null) {
             throw new NullPointerException("The source dir cannot be null.");
         }
         if( ! srcDir.exists() ) {
             throw new JavadocDirParserException("Cannot find source dir.");
         }
+
+        startParsing(libName, srcDir);
         try {
             File serializationFile = executeDoclet(srcDir);
             JavadocHandlerSerializer handlerSerializer = new JavadocHandlerSerializer();
-            handlerSerializer.deserialize(serializationFile, getJavadocHandler());
+            handlerSerializer.deserialize(serializationFile, (JavadocHandler) getParseHandler());
         } catch (Exception e) {
             throw new JavadocDirParserException("An error occurred during the Javadoc parsing.", e);
+        } finally {
+            endParsing();
+        }
+    }
+
+    private void startParsing(String libName, File location) {
+        try {
+            getParseHandler().startParsing(libName, location.getAbsolutePath());
+        } catch (Exception e) {
+            throw new RuntimeException("Error while notifying begin parsing.", e);
+        }
+    }
+
+    private void endParsing() {
+        try {
+            getParseHandler().endParsing();
+        } catch (Exception e) {
+            throw new RuntimeException("Error while notifying end parsing.", e);
         }
     }
 

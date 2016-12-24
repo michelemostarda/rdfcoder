@@ -24,18 +24,20 @@ import com.asemantics.rdfcoder.model.java.JavaCoderFactory;
 import com.asemantics.rdfcoder.model.java.JavaOntology;
 import com.asemantics.rdfcoder.model.java.JavaQueryModel;
 import com.asemantics.rdfcoder.model.java.JavaQueryModelImpl;
+import com.asemantics.rdfcoder.parser.DirectoryParser;
+import com.asemantics.rdfcoder.parser.FileParser;
+import com.asemantics.rdfcoder.parser.JStatistics;
+import com.asemantics.rdfcoder.parser.ObjectsTable;
+import com.asemantics.rdfcoder.parser.ParserException;
+import com.asemantics.rdfcoder.parser.bytecode.JavaBytecodeFileParser;
+import com.asemantics.rdfcoder.parser.bytecode.JavaBytecodeJarParser;
+import com.asemantics.rdfcoder.parser.javacc.JavaSourceFileParser;
+import com.asemantics.rdfcoder.parser.javadoc.JavadocDirParser;
+import com.asemantics.rdfcoder.parser.javadoc.JavadocDirParserException;
 import com.asemantics.rdfcoder.profile.Profile;
 import com.asemantics.rdfcoder.profile.ProfileException;
 import com.asemantics.rdfcoder.repository.Repository;
 import com.asemantics.rdfcoder.repository.RepositoryException;
-import com.asemantics.rdfcoder.parser.DirectoryParser;
-import com.asemantics.rdfcoder.parser.FileParser;
-import com.asemantics.rdfcoder.parser.JStatistics;
-import com.asemantics.rdfcoder.parser.bytecode.JavaBytecodeFileParser;
-import com.asemantics.rdfcoder.parser.bytecode.JavaBytecodeJarParser;
-import com.asemantics.rdfcoder.parser.javacc.JavaSourceFileParser;
-import com.asemantics.rdfcoder.parser.ObjectsTable;
-import com.asemantics.rdfcoder.parser.ParserException;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import org.apache.log4j.Logger;
 
@@ -321,6 +323,14 @@ public class JavaProfile implements Profile<JavaQueryModel> {
         return loadJava(libName, srcPath, new JavaSourceFileParser(), new CoderUtils.JavaSourceFilenameFilter());
     }
 
+    public JStatistics loadJavadoc(String libName, String javadocPath) {
+        try {
+            return loadJava(libName, javadocPath, new JavadocDirParser());
+        } catch (JavadocDirParserException jdpe) {
+            throw new RuntimeException("Error while parsing Javadoc dir.", jdpe);
+        }
+    }
+
     public JStatistics loadClasses(String libName, String clsPath) {
         return loadJava(libName, clsPath, new JavaBytecodeFileParser(), new CoderUtils.JavaClassFilenameFilter());
     }
@@ -347,26 +357,48 @@ public class JavaProfile implements Profile<JavaQueryModel> {
     }
 
     /**
+     * @return a new {@link JavaCodeHandler} instance.
+     */
+    private JavaCodeHandler createCodeHandler() {
+        return model.getCoderFactory().createHandlerOnModel( model.getCodeModelBase() );
+    }
+
+    /**
      * Loads Java resources.
      * 
      * @param libName
      * @param path
      * @param fileParser
+     * @param filenameFilter
      * @return
      */
     private JStatistics loadJava(String libName, String path, FileParser fileParser, FilenameFilter filenameFilter) {
-        JavaCodeHandler ch = model.getCoderFactory().createHandlerOnModel( model.getCodeModelBase() );
-
+        JavaCodeHandler ch = createCodeHandler();
         DirectoryParser directoryParser = new DirectoryParser( fileParser, filenameFilter );
         JStatistics statistics = new JStatistics();
         JavaCodeHandler sch = statistics.createStatisticsCodeHandler(ch);
-
         directoryParser.initialize(sch, model.getObjectsTable() );
         directoryParser.parseDirectory(libName, new File(path) );
-
         directoryParser.dispose();
-        ch = null;
+        return statistics;
+    }
 
+    /**
+     * Loads Java resources.
+     *
+     * @param libName
+     * @param path
+     * @param javadocDirParser
+     * @return
+     */
+    private JStatistics loadJava(String libName, String path, JavadocDirParser javadocDirParser)
+    throws JavadocDirParserException {
+        JavaCodeHandler ch = createCodeHandler();
+        JStatistics statistics = new JStatistics();
+        JavaCodeHandler sch = statistics.createStatisticsCodeHandler(ch);
+        javadocDirParser.initialize( sch, model.getObjectsTable() );
+        javadocDirParser.parseSourceDir(libName, new File(path));
+        javadocDirParser.dispose();
         return statistics;
     }
 

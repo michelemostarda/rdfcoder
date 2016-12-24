@@ -11,7 +11,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -39,16 +38,14 @@ public class JavadocHandlerSerializer implements Serializable {
     public JavadocHandler getHandler() {
         return (JavadocHandler) Proxy.newProxyInstance(
                 this.getClass().getClassLoader(),
-                new Class[]{JavadocHandler.class}, 
-                new InvocationHandler(){
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if(! (proxy instanceof JavadocHandler) ) {
-                    throw new IllegalArgumentException("Unexpected object proxy.");
-                }
-                invocations.add(new Invocation(method.getName(), args));
-                return null;
-            }
-        });
+                new Class[]{JavadocHandler.class},
+                (proxy, method, args) -> {
+                    if(! (proxy instanceof JavadocHandler) ) {
+                        throw new IllegalArgumentException("Unexpected object proxy.");
+                    }
+                    invocations.add(new Invocation(method.getName(), args));
+                    return null;
+                });
     }
 
     public void serialize(OutputStream os) throws IOException {
@@ -68,12 +65,19 @@ public class JavadocHandlerSerializer implements Serializable {
 
     @SuppressWarnings("unchecked")
     public void deserialize(InputStream is, JavadocHandler jh) throws JavadocHandlerSerializerException {
+        Invocation invocation;
         try {
             final ObjectInputStream ois = new ObjectInputStream(is);
             final List<Invocation> invocations = (List<Invocation>) ois.readObject();
             final Class<JavadocHandler> javadocHandlerClass = JavadocHandler.class;
             Method method;
-            for (Invocation invocation : invocations) {
+            for (int i = 0; i < invocations.size(); i++) {
+                invocation = invocations.get(i);
+                if(invocation.methodName.equals("startParsing")) {
+                    continue;
+                } else if(invocation.methodName.equals("endParsing")) {
+                    continue;
+                }
                 method = javadocHandlerClass.getMethod(invocation.methodName, toClasses(invocation.args));
                 method.invoke(jh, invocation.args);
             }
@@ -112,7 +116,7 @@ public class JavadocHandlerSerializer implements Serializable {
         }
         @Override
          public String toString() {
-            return String.format("%s %s (%s)", this.getClass().getSimpleName(), methodName, Arrays.toString(args) );
+            return String.format("Invoke %s (%s)", methodName, Arrays.toString(args) );
         }
     }
 

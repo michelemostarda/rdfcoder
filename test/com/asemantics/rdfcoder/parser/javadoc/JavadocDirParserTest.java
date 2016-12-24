@@ -3,6 +3,7 @@ package com.asemantics.rdfcoder.parser.javadoc;
 import com.asemantics.rdfcoder.model.java.JavaCodeHandler;
 import com.asemantics.rdfcoder.model.java.JavadocHandler;
 import com.asemantics.rdfcoder.parser.JStatistics;
+import com.asemantics.rdfcoder.parser.ObjectsTable;
 import junit.framework.Assert;
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -30,10 +31,11 @@ public class JavadocDirParserTest {
 
     @Before
     public void setUp() {
-        JavaCodeHandler mockCodeHandler = mock(JavaCodeHandler.class);
+        JavaCodeHandler mockCodeHandler  = mock(JavaCodeHandler.class);
         statistics = new JStatistics();
         javadocHandler = statistics.createStatisticsCodeHandler(mockCodeHandler);   
-        javadocDirParser = new JavadocDirParser(javadocHandler);
+        javadocDirParser = new JavadocDirParser();
+        javadocDirParser.initialize(javadocHandler, new ObjectsTable() );
     }
 
     @After
@@ -45,9 +47,8 @@ public class JavadocDirParserTest {
 
     @Test
     public void testParseSourceDir() throws JavadocDirParserException {
-        javadocDirParser.parseSourceDir( new File("./src") );
+        javadocDirParser.parseSourceDir("test-javadoc-src", new File("./src") );
         logger.info("Statistics: " + statistics.toStringReport() );
-
         Assert.assertTrue("Unexpected number of classes."     , statistics.getClassesJavadoc()      > 130);
         Assert.assertTrue("Unexpected number of fields."      , statistics.getFieldsJavadoc()       > 340);
         Assert.assertTrue("Unexpected number of constructors.", statistics.getConstructorsJavadoc() > 150);

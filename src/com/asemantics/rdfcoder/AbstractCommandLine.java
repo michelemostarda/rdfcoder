@@ -684,7 +684,9 @@ public abstract class AbstractCommandLine {
 
                     try {
                         System.out.print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
-                        jprofile.loadJavadoc( libraries.get(i).name, libraries.get(i).location.getAbsolutePath() );
+                        statistics.add(
+                            jprofile.loadJavadoc( libraries.get(i).name, libraries.get(i).location.getAbsolutePath() )
+                        );
                         System.out.println(" done");
                     } catch (Exception e) {
                         throw new IllegalArgumentException(
