@@ -478,6 +478,11 @@ public class JStatistics {
             methodsJavadoc++;
         }
 
+        @Override
+        public void endClassJavadoc() {
+            wrapped.endClassJavadoc();
+        }
+
         public Identifier generateTempUniqueIdentifier() {
             if(wrapped == null) { throw new IllegalStateException(); }
             generatedTempIds++;
