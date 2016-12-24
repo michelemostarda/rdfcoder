@@ -385,7 +385,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_help() {
-        return "prints this help\n\tto obtain more informations about a specific command type: help <command>";
+        return "prints this help\n\t\t\t\tto obtain more information about a specific command type: help <command>";
     }
 
     public String ___command_help() {
