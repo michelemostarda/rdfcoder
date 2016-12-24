@@ -682,18 +682,15 @@ public abstract class AbstractCommandLine {
 
             } else if(libraries.get(i).type == LibraryType.JAVADOC_DIR ) {
 
-                // TODO: implement this.
-                throw new UnsupportedOperationException();
-
-//                    try {
-//                        System.out.print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
-//                        javadocDirectoryParser.parseDirectory( libraries.get(i).name, libraries.get(i).location );
-//                        System.out.println(" done");
-//                    } catch (Exception e) {
-//                        throw new IllegalArgumentException(
-//                              "Error while reading JAVADOC dir: '" + libraries.get(i).location + "'", e
-//                        );
-//                    }
+                    try {
+                        System.out.print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
+                        jprofile.loadJavadoc( libraries.get(i).name, libraries.get(i).location.getAbsolutePath() );
+                        System.out.println(" done");
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException(
+                              "Error while reading JAVADOC dir: '" + libraries.get(i).location + "'", e
+                        );
+                    }
 
             } else if(libraries.get(i).type == LibraryType.CLASS_DIR ) {
 
