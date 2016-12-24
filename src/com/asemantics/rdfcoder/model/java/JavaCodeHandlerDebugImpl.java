@@ -258,6 +258,13 @@ public class JavaCodeHandlerDebugImpl implements JavaCodeHandler {
         }
     }
 
+    @Override
+    public void endClassJavadoc() {
+        if(logger.isDebugEnabled()) {
+            logger.debug("endClassJavadoc");
+        }
+    }
+
     public Identifier generateTempUniqueIdentifier() {
         throw new UnsupportedOperationException();
     }

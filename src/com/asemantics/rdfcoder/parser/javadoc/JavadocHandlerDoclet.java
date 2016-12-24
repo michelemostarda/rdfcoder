@@ -80,17 +80,17 @@ public class JavadocHandlerDoclet {
     private void handleRoot(RootDoc rootDoc) {
         final File serializationFile = getSerializationFile( rootDoc.options() );
 
-        javadocHandler.startCompilationUnit(rootDoc.name());
         final String position = rootDoc.position() == null ? "<unknown>" : rootDoc.position().toString();
         javadocHandler.startParsing("javadoc-lib", position);
+        javadocHandler.startCompilationUnit(rootDoc.name());
         try {
             ClassDoc[] classes = rootDoc.classes();
             for (ClassDoc clazz : classes) {
                 handleClass(clazz);
             }
         } finally {
-            javadocHandler.endParsing();
             javadocHandler.endCompilationUnit();
+            javadocHandler.endParsing();
             try {
                 javadocHandlerSerializer.serialize(serializationFile);
             } catch (JavadocHandlerSerializerException jhse) {
@@ -256,6 +256,8 @@ public class JavadocHandlerDoclet {
         for (MethodDoc methodDoc : classDoc.methods()) {
             handleMethod(methodDoc);
         }
+
+        javadocHandler.endClassJavadoc();
     }
 
     private void handleField(FieldDoc fieldDoc) {
@@ -327,11 +329,11 @@ public class JavadocHandlerDoclet {
     }
 
     private Map<String, List<String>> getTags(Doc doc) {
-        Map<String,List<String>> result = new HashMap<String, List<String>>();
+        Map<String,List<String>> result = new HashMap<>();
         for( Tag tag : doc.tags() ) {
             List<String> values = result.get( tag.name() );
             if(values == null) {
-                values = new ArrayList<String>();
+                values = new ArrayList<>();
             }
             values.add(tag.text());
         }

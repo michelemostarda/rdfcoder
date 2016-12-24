@@ -56,4 +56,9 @@ public interface JavadocHandler extends ParseHandler {
      * @param entry
      */
     void methodJavadoc(MethodJavadoc entry);
+
+    /**
+     * Ends a {@link #classJavadoc(ClassJavadoc)} sequence.
+     */
+    void endClassJavadoc();
 }

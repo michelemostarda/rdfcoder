@@ -584,6 +584,11 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         addJavadocTriples(entry);
     }
 
+    @Override
+    public void endClassJavadoc() {
+        endClass();
+    }
+
     public Identifier generateTempUniqueIdentifier() {
         return model.generateTempUniqueIdentifier();
     }
@@ -826,16 +831,20 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
      */
     private void addJavadocTriples(JavadocEntry javadocEntry) {
         final String identifier = javadocEntry.getIdentifier().getIdentifier();
-        model.addTripleLiteral(
-                identifier,
-                JavaCodeModel.HAS_SHORT_COMMENT,
-                javadocEntry.getShortDescription()
-        );
-        model.addTripleLiteral(
-                identifier,
-                JavaCodeModel.HAS_LONG_COMMENT,
-                javadocEntry.getLongDescription()
-        );
+        String shortDescription = javadocEntry.getShortDescription();
+        if(shortDescription.length() > 0)
+            model.addTripleLiteral(
+                    identifier,
+                    JavaCodeModel.HAS_SHORT_COMMENT,
+                    shortDescription
+            );
+        String longDescription = javadocEntry.getLongDescription();
+        if(longDescription.length() > 0)
+            model.addTripleLiteral(
+                    identifier,
+                    JavaCodeModel.HAS_LONG_COMMENT,
+                    longDescription
+            );
 
         for(String attributeName : javadocEntry.getAttributeNames()) {
             final String attributeId = IdentifierBuilder.create(javadocEntry.getIdentifier())
