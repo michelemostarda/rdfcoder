@@ -1,0 +1,10 @@
+*.iml 
+.idea
+classes/
+dist/
+jrefactory-2.9.19-full/classes/
+jrefactory-2.9.19-full/dist/
+jrefactory-2.9.19-full/jrefactory-2.9.19-full.iml
+out/
+reports/
+target_test/
