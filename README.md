@@ -47,3 +47,8 @@ RDF Coder is mantained on [Github] (https://github.com/michelemostarda/rdfcoder)
 ## Issue tracker
 
 Please refer to the internal [issue tracker] (https://github.com/michelemostarda/rdfcoder/projects/1).
+
+## Getting involved
+
+I'm always looking for feedback and collaboration.
+Please feel free to write [me] (me@michelemostarda.com) and [fork](https://github.com/michelemostarda/rdfcoder#fork-destination-box) this project to improve it.
