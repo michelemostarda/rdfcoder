@@ -74,7 +74,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_debug() {
-        return "shows/sets the debug flag";
+        return "Show/set the debug flag";
     }
 
     public String ___command_debug() {
@@ -94,7 +94,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_pwd() {
-        return "prints the current directory";
+        return "Print the current directory";
     }
 
     public String ___command_pwd() {
@@ -109,7 +109,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_cd() {
-        return "changes the current directory";
+        return "Change the current directory";
     }
 
     public String ___command_cd() {
@@ -168,7 +168,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_ls() {
-        return "Lists the content of the current directory";
+        return "List content of current directory";
     }
 
     public String ___command_ls() {
@@ -192,7 +192,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_newmodel() {
-       return "creates a new model";
+       return "Create a new model";
     }
     public String ___command_newmodel() {
         return
@@ -219,7 +219,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_removemodel() {
-       return "removes the current model";
+       return "Remove the current model";
     }
 
     public String ___command_removemodel() {
@@ -244,7 +244,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
      public String __command_clearmodel() {
-        return "clears the current model";
+        return "Cleanup the current model";
     }
 
     public String ___command_clearmodel() {
@@ -272,7 +272,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_setmodel() {
-        return "sets a new model";
+        return "Set a new model";
     }
 
     public String ___command_setmodel() {
@@ -305,7 +305,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_savemodel() {
-        return "Saves the current model";
+        return "Save the current model on file system";
     }
 
     public String ___command_savemodel() {
@@ -343,7 +343,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_loadmodel() {
-        return "Loads a model from a storage";
+        return "Load a model from file system";
     }
 
     public String ___command_loadmodel() {
@@ -385,7 +385,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_help() {
-        return "prints this help\n\t\t\t\tto obtain more information about a specific command type: help <command>";
+        return "Print this help\n\t\t\t\tto obtain more information about a command type: help <command>";
     }
 
     public String ___command_help() {
@@ -412,7 +412,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_list() {
-        return "lists the loaded models";
+        return "List the loaded models";
     }
 
     public String ___command_list() {
@@ -436,7 +436,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_querymodel() {
-        return "allows to query the current model";
+        return "Query the active model";
     }
 
     public String ___command_querymodel() {
@@ -455,7 +455,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_inspect() {
-        return "allows to inspect the active model";
+        return "Inspect the active model";
     }
 
     public String ___command_inspect() {
@@ -477,7 +477,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_describe() {
-        return "describes the object referenced by the given path";
+        return "Describe the object referenced by the given path";
     }
 
     public String ___command_describe() {
@@ -507,7 +507,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_loadclasspath() {
-        return "loads a classpath on the current model";
+        return "Load a classpath on the active model";
     }
 
     public String ___command_loadclasspath() {
