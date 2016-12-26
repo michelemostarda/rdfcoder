@@ -211,10 +211,16 @@ Performs a parsing of the given set of resources
 and loads extracted data within the current model
 ```
 
-Now the model is ready to be queried but it is still persisted in memory.
-To store it on file system you can use the command _savemodel_.
-This command accepts a driver (*fs* or *db*) and additional attributes to store the information.
-To store the data on a file, just invoke:
+Now the model is ready to be queried. It is possible to query a model in two ways:
+using the _querymodel_ command of inspecting it.
+
+TODO
+
+
+
+All models are persisted in memory. To store them on file system you can use the command _savemodel_.
+This command accepts a driver (*fs* or *db*) and additional attributes depending on the selected driver to perform the operation.
+To store the data on a file, you must specify the *fs* driver and the *filename* for the output file:
 
 ```
 .~test> savemodel fs filename=test.rdf
