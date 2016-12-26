@@ -223,7 +223,7 @@ using the _querymodel_ command or using the _inspect_ command.
 
 The _inspect_ command allows to perform predefined queries about the structure of packages, classes, methods and relations among them.
 
-The _querymodel_ instead allows to run generic [SPARQL] (https://www.w3.org/TR/sparql11-query/) (SPARQL Protocol and RDF Query Language) queries but require a specific degree of knowledge about such technology. For further reading about SPARQL and RDF please refer section (Background)[#Background].
+The _querymodel_ instead allows to run generic [SPARQL] (https://www.w3.org/TR/sparql11-query/) (SPARQL Protocol and RDF Query Language) queries but require a specific degree of knowledge about such technology. For further reading about SPARQL and RDF please refer section [#background].
 
 To _inspect_ is used in combination with _describe_ command. The _describe_ command shows the structure of the specified element, while the _inspect_ command allows to retrieve the content of the specified element.
 
