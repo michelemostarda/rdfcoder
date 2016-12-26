@@ -72,7 +72,7 @@ Using the CLI you can:
 
 To start let's invoke the help command:
 
-```{bash}
+```
 .~default> help
 Usage: <command> <parameters>
 
@@ -101,13 +101,13 @@ Usage: <command> <parameters>
 
 Let's start creating a new model called _test_:
 
-```{bash}
+```
 .~default> newmodel test
 Model 'test' created.
 ```
 Now let's check that _test_ model has been created:
 
-```{bash}
+```
 .~default> list
 Models:
         default[X]
