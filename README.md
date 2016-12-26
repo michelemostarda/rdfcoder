@@ -22,6 +22,10 @@ Currently RDF Coder supports only the Java language.
 - *Code issue*: troubleshouting large project dependencies, find conflicts.
 - *Custom Documentation*: generate custom documentation, on compiled or incomplete code.
 
+## Background
+
+TODO
+
 ## Requirements
 - JDK  +1.5
 - Apache Ant +1.7.0
@@ -212,15 +216,67 @@ and loads extracted data within the current model
 ```
 
 Now the model is ready to be queried. It is possible to query a model in two ways:
-using the _querymodel_ command of inspecting it.
+using the _querymodel_ command or using the _inspect_ command.
 
-TODO
+The _inspect_ command allows to perform predefined queries about the structure of packages, classes, methods and relations among them.
 
+The _querymodel_ instead allows to run generic [SPARQL] (https://www.w3.org/TR/sparql11-query/) (SPARQL Protocol and RDF Query Language) queries but require a specific degree of knowledge about such technology. For further reading about SPARQL and RDF please refer section (Background)[#Background].
 
+To _inspect_ is used in combination with _describe_ command. The _describe_ command shows the structure of the specified element, while the _inspect_ command allows to retrieve the content of the specified element.
 
-All models are persisted in memory. To store them on file system you can use the command _savemodel_.
-This command accepts a driver (*fs* or *db*) and additional attributes depending on the selected driver to perform the operation.
-To store the data on a file, you must specify the *fs* driver and the *filename* for the output file:
+These two commands accept an _accessor_ expression with format ```obj1.obj2...``` or ```obj1[i].obj2[j]...``` or combinations of these expression.
+
+The root element for the active model inspection is the _model_ object.
+
+```
+.~test> describe model
+{
+allClasses:com.asemantics.rdfcoder.model.java.JClass[494]
+allEnumerations:com.asemantics.rdfcoder.model.java.JEnumeration[0]
+allInterfaces:com.asemantics.rdfcoder.model.java.JInterface[49]
+allPackages:com.asemantics.rdfcoder.model.java.JPackage[31]
+asset:com.asemantics.rdfcoder.model.Asset
+libraries:java.lang.String[1]
+}
+```
+The command _describe_ lists all the available accessors for the current object and the relative data type.
+For example, to access all the declared classes in model you must use the _allClasses_ accessor which returns a list of
+_com.asemantics.rdfcoder.model.java.JClass_ objects. To see all the available accessors of a _com.asemantics.rdfcoder.model.java.JClass_ object simply run:
+
+```
+.~test> describe model.allClasses[0]
+{
+attributes:com.asemantics.rdfcoder.model.java.JAttribute[3]
+enumerations:com.asemantics.rdfcoder.model.java.JEnumeration[0]
+identifier:com.asemantics.rdfcoder.model.Identifier
+innerClass:boolean
+innerClasses:com.asemantics.rdfcoder.model.java.JClass[0]
+methods:com.asemantics.rdfcoder.model.java.JMethod[7]
+modifiers:com.asemantics.rdfcoder.model.java.JavaCodeModel$JModifier[1]
+name:java.lang.String
+parent:com.asemantics.rdfcoder.model.java.JContainer
+parentClass:com.asemantics.rdfcoder.model.java.JClass
+parentPackage:com.asemantics.rdfcoder.model.java.JPackage
+path:com.asemantics.rdfcoder.model.java.JContainer[3]
+queryModel:com.asemantics.rdfcoder.model.java.JavaQueryModel
+visibility:com.asemantics.rdfcoder.model.java.JavaCodeModel$JVisibility
+}
+```
+
+To get the content of an _accessor_ use the _inspect_ command: 
+```
+.~test> inspect model.allClasses[0] 
+Identifier<http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmd.jclass:QExec>
+.~test> 
+```
+with any depth:
+
+```
+.~default> inspect model.allClasses[0].parentPackage
+Identifier<http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmd>
+```
+
+Let's end this tutorial describing the model persistence. All models are persisted in memory. To store them on file system you can use the command _savemodel_. This command accepts a driver (*fs* or *db*) and additional attributes depending on the selected driver to perform the operation. To store the data on a file, you must specify the *fs* driver and the *filename* for the output file:
 
 ```
 .~test> savemodel fs filename=test.rdf
