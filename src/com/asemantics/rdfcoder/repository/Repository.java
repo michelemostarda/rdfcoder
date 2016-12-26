@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2008 Michele Mostarda ( michele.mostarda@gmail.com ).
+ * Copyright 2007-2017 Michele Mostarda ( michele.mostarda@gmail.com ).
  * All Rights Reserved.
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the 'License');
