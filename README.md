@@ -170,7 +170,7 @@ For this tutorial we can use the content of the _lib_ directory:
 Let's choose the _arq.jar_ for the test.
 
 ```
-rdfcoder-github~test> loadclasspath arq jar:lib/arq.jar
+.~test> loadclasspath arq jar:lib/arq.jar
 loading /Users/hardest/repository/RDFCoder/rdfcoder-github/lib/arq.jar ... done
 parsing time (secs):0.0
 parsed files: 543
@@ -199,7 +199,7 @@ The loadclasspath command accepts an identifier for the library and classpath re
 Read the command documentation with:
 
 ```
-rdfcoder-github~test> help loadclasspath
+.~test> help loadclasspath
 Load a classpath on the active model
 syntax: loadclasspath <library_name> <library_location> [<library_name> <library_location>]+
 where <library_location> can be expressed as
@@ -210,6 +210,18 @@ where <library_location> can be expressed as
 Performs a parsing of the given set of resources
 and loads extracted data within the current model
 ```
+
+Now the model is ready to be queried but it is still persisted in memory.
+To store it on file system you can use the command _savemodel_.
+This command accepts a driver (*fs* or *db*) and additional attributes to store the information.
+To store the data on a file, just invoke:
+
+```
+.~test> savemodel fs filename=test.rdf
+Model saved.
+```
+
+this will create a file named test.rdf in the current path.
 
 ## Project Resources
 
