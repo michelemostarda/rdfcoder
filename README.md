@@ -24,7 +24,10 @@ Currently RDF Coder supports only the Java language.
 
 ## Background
 
-TODO
+To fully master the key concepts of this tool it is strongly recommended to have a general understaning of RDF and SPARQL.
+
+- [RDF] (https://www.w3.org/RDF) (Resource Description Framework) is a standard model for data interchange on the Web. RDF has features that facilitate data merging even if the underlying schemas differ, and it specifically supports the evolution of schemas over time without requiring all the data consumers to be changed.
+- [SPARQL] (https://www.w3.org/TR/sparql11-query/). SPARQL (SPARQL Protocol and RDF Query Language) is an RDF query language, that is, a semantic query language for databases, able to retrieve and manipulate data stored in Resource Description Framework (RDF) format. 
 
 ## Requirements
 - JDK  +1.5
