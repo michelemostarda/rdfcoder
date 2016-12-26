@@ -14,6 +14,10 @@ create code dependency graphs, generate custom documentation.
 
 Currently RDF Coder supports only the Java language.
 
+## Requirements
+- JDK  +1.5
+- Apache Ant +1.7.0
+
 ## Installation
 
 Clone or download the latest version on [Github] (https://github.com/michelemostarda/rdfcoder), build and use it.
@@ -23,7 +27,7 @@ git clone https://github.com/michelemostarda/rdfcoder.git
 
 cd rdfcoder
 
-ant dist
+ant clean dist
 
 bin/rdfcoder
 ```
