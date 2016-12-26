@@ -81,21 +81,19 @@ Usage: <command> <parameters>
         debug                           Show/set the debug flag
         setmodel                        Set a new model
         removemodel                     Remove the current model
-        ls                              List the content of the current directory
-        clearmodel                      Clear the current model
-        loadclasspath                   Load a classpath on the current model
+        ls                              List content of current directory
+        clearmodel                      Cleanup the current model
+        loadclasspath                   Load a classpath on the active model
         list                            List the loaded models
-        savemodel                       Save the current model on filesystem
+        savemodel                       Save the current model on file system
         help                            Print this help
-                                        to obtain more information about a specific command type: help <command>
+                                        to obtain more information about a command type: help <command>
         newmodel                        Create a new model
-        loadmodel                       Load a model from filesystem
+        loadmodel                       Load a model from file system
         inspect                         Inspect the active model
         describe                        Describe the object referenced by the given path
         pwd                             Print the current directory
-        querymodel                      Query the current model
-
-.~default> 
+        querymodel                      Query the active model
 
 ```
 
