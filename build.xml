@@ -65,7 +65,7 @@
 	<path id="jena.classpath">
 		<pathelement path="${lib.dir}/antlr-2.7.5.jar"/>
 		<pathelement path="${lib.dir}/arq.jar"/>
-		<pathelement path="${lib.dir}/bcel-5.2.jar"/>
+		<pathelement path="${lib.dir}/bcel-6.0.jar"/>
 		<pathelement path="${lib.dir}/commons-logging.jar"/>
 		<pathelement path="${lib.dir}/concurrent.jar"/>
 		<pathelement path="${lib.dir}/icu4j_3_4.jar"/>
