@@ -114,6 +114,103 @@ Models:
 
 We see two models, _default_ (the active one is marked with _[X]_) and _test_.
 
+Let's change now the active model to _test_:
+
+```
+.~default> setmodel test
+Model set to 'test'
+.~test> 
+```
+we can see the new model into the prompt.
+
+It's time now to load statements into the active model. RDFCoder supports two sources of data:
+- JAR files;
+- source code directories.
+To parse data from any source we always use the command _loadclasspath_.
+
+The _loadclasspath_ command accepts both relative and absolue paths, to use relative path the RDF CLI must be avare
+of a current directory.
+
+You can check your current directory with _pwd_:
+
+```
+.~test> pwd
+/Users/hardest/repository/RDFCoder/rdfcoder-github/.
+```
+You can also list the content of the current directory with _ls_:
+
+```
+.~test> ls 
+/Users/hardest/repository/RDFCoder/rdfcoder-github/.
+d       bin                     rwed    170
+-       build.xml               rwed    9938
+d       classes                 rwed    102
+d       dist                    rwed    102
+d       doc                     rwed    102
+d       javadoc                 rwed    612
+d       lib                     rwed    782
+[...]
+```
+
+For this tutorial we can use the content of the _lib_ directory:
+
+```
+.~test> ls lib
+/Users/hardest/repository/RDFCoder/rdfcoder-github/./lib
+
+-       antlr-2.7.5.jar                 rwed    435563
+-       arq.jar                         rwed    818802
+-       bcel-6.0.jar                    rwed    670734
+-       commons-logging.jar             rwed    38015
+-       concurrent.jar                  rwed    126474
+[...]
+.~test> 
+```
+
+Let's choose the _arq.jar_ for the test.
+
+```
+rdfcoder-github~test> loadclasspath arq jar:lib/arq.jar
+loading /Users/hardest/repository/RDFCoder/rdfcoder-github/lib/arq.jar ... done
+parsing time (secs):0.0
+parsed files: 543
+parsed classes: 494
+parsed interfaces: 49
+parsed attributes: 1853
+parsed constructors: 768
+parsed methods: 3748
+parsed enumerations: 0
+javadoc entries: 0
+classes javadoc: 0
+fields javadoc: 0
+constructors javadoc: 0
+methods javadoc: 0
+generated temporary identifiers: 0
+replaced entries: 0
+unresolved [0] {
+}
+parse errors[0] {
+}
+```
+
+The command output shows the data extraction statistics in term of detected entities.
+
+The loadclasspath command accepts an identifier for the library and classpath resolutor, expressed with syntax ```<format>:<path>```.
+Read the command documentation with:
+
+```
+rdfcoder-github~test> help loadclasspath
+Load a classpath on the active model
+syntax: loadclasspath <library_name> <library_location> [<library_name> <library_location>]+
+where <library_location> can be expressed as
+    a jar    file:  jar:/path/to/jarfile.jar
+    a source  dir:  src:/path/to/src
+    a javadoc dir:  javadoc:/path/to/src
+    a class   dir:  class:/path/to/class
+Performs a parsing of the given set of resources
+and loads extracted data within the current model
+```
+
 ## Project Resources
 
 RDF Coder is mantained on [Github] (https://github.com/michelemostarda/rdfcoder)
