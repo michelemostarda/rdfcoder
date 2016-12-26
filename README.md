@@ -8,11 +8,18 @@ Author: Michele Mostarda ( me@michelemostarda.com )
 
 ## About
 
-RDF Coder is a CLI and a library to extract RDF models of Java language libraries.
-RDF Coder is written in Java and can be used to perform multi level code inspection, 
-create code dependency graphs, generate custom documentation.
+RDF Coder is a CLI and a [flexible](architecture.md) library designed to generate RDF [models] (model.md) from Java code, 
+both source and bytecode.
+
+RDF Coder is written in Java and can be used to perform multi level code inspection, create code dependency graphs, generate custom documentation.
 
 Currently RDF Coder supports only the Java language.
+
+## Use cases
+
+- Code Analysis of large package structures, classes, signatures and dependencies.
+- Code Refactoring: find library issues and relationships.
+- Custom Documentation: generate custom documentation.
 
 ## Requirements
 - JDK  +1.5
