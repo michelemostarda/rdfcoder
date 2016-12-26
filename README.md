@@ -17,9 +17,10 @@ Currently RDF Coder supports only the Java language.
 
 ## Use cases
 
-- Code Analysis of large package structures, classes, signatures and dependencies.
-- Code Refactoring: find library issues and relationships.
-- Custom Documentation: generate custom documentation.
+- Code inspection: navigate large package structures, classes, methods, signatures and dependencies among them.
+- Code Refactoring: find package, classe and method relationships, planify refactoring.
+- Code issue: troubleshouting large project dependencies, find conflicts.
+- Custom Documentation: generate custom documentation, on compiled or incomplete code.
 
 ## Requirements
 - JDK  +1.5
@@ -43,4 +44,6 @@ bin/rdfcoder
 
 RDF Coder is mantained on [Github] (https://github.com/michelemostarda/rdfcoder)
 
+## Issue tracker
 
+Please refer to the internal [issue tracker] (https://github.com/michelemostarda/rdfcoder/projects/1).
