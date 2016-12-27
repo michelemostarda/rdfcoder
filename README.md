@@ -63,6 +63,7 @@ JRE model loaded.
 RDFCoder command line console [version 0.5]
 .~default>
 ```
+### Understanding the workflow
 
 A _model_ is a container of RDF _statements_.
 RDFCoder provides a default model containing the statements representing the JRE (Java Runtime Environment).
@@ -76,6 +77,8 @@ Using the CLI you can:
 - inspect the structure of data stored in a model;
 - query a model;
 - dump the content of a model on the file system.
+
+### Getting help
 
 To start let's invoke the help command:
 
@@ -102,7 +105,10 @@ Usage: <command> <parameters>
         pwd                             Print the current directory
         querymodel                      Query the active model
 
+
 ```
+
+### Create a new model
 
 Let's start creating a new model called _test_:
 
@@ -121,6 +127,8 @@ Models:
 
 We see two models, _default_ (the active one is marked with _[X]_) and _test_.
 
+### Switch active model
+
 Let's change now the active model to _test_:
 
 ```
@@ -130,6 +138,8 @@ Model set to 'test'
 ```
 we can see the new model into the prompt.
 
+### Process classpath
+
 It's time now to load statements into the active model. RDFCoder supports two sources of data:
 - JAR files;
 - source code directories.
@@ -137,6 +147,8 @@ To parse data from any source we always use the command _loadclasspath_.
 
 The _loadclasspath_ command accepts both relative and absolue paths, to use relative path the RDF CLI must be avare
 of a current directory.
+
+#### Move across filesystem
 
 You can check your current directory with _pwd_:
 
@@ -173,6 +185,8 @@ For this tutorial we can use the content of the _lib_ directory:
 [...]
 .~test> 
 ```
+
+#### Load a classpath
 
 Let's choose the _arq.jar_ for the test.
 
@@ -217,6 +231,8 @@ where <library_location> can be expressed as
 Performs a parsing of the given set of resources
 and loads extracted data within the current model
 ```
+
+### Inspect model data
 
 Now the model is ready to be queried. It is possible to query a model in two ways:
 using the _querymodel_ command or using the _inspect_ command.
@@ -278,6 +294,7 @@ with any depth:
 .~default> inspect model.allClasses[0].parentPackage
 Identifier<http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmd>
 ```
+### Persist model data
 
 Let's end this tutorial describing the model persistence. All models are persisted in memory. To store them on file system you can use the command _savemodel_. This command accepts a driver (*fs* or *db*) and additional attributes depending on the selected driver to perform the operation. To store the data on a file, you must specify the *fs* driver and the *filename* for the output file:
 
