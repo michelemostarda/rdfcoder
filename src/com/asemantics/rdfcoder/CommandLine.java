@@ -287,7 +287,6 @@ public class CommandLine extends AbstractCommandLine {
      * Command to save a model on the storage specified with parameters.
      *
      * @param args
-     * @throws IOException
      */
     public void command_savemodel(String[] args) throws CodeStorageException {
         if(args.length < 1) {
@@ -301,7 +300,7 @@ public class CommandLine extends AbstractCommandLine {
             parameters = databaseStorageParams(args);
         }
         saveModel(parameters);
-        System.out.println("Model saved.");
+        System.out.println("Model saved with parameters " + parameters.toString());
     }
 
     public String __command_savemodel() {
@@ -325,7 +324,6 @@ public class CommandLine extends AbstractCommandLine {
      * Command to load a model.
      *
      * @param args
-     * @throws IOException
      */
     public void command_loadmodel(String[] args) throws CodeStorageException {
         if(args.length < 1) {
@@ -494,7 +492,7 @@ public class CommandLine extends AbstractCommandLine {
     /**
      * Command to load a classpath on the active model.
      *
-     * Expected: load <lib_name> file1 [, file2, ...]
+     * Expected: load &lt;lib_name&gt; file1 [, file2, ...]
      *
      * @param args
      * @throws IOException

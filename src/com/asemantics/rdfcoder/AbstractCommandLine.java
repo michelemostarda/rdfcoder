@@ -305,8 +305,6 @@ public abstract class AbstractCommandLine {
      * Returns an array of the available argsBuffer declared in this class.
      *
      * @return
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
      */
     public Command[] getCommands() {
         loadCommands();
@@ -318,8 +316,6 @@ public abstract class AbstractCommandLine {
      * Returns an array of the available command names.
      *
      * @return
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
      */
     public String[] getCommandNames() {
         loadCommands();
@@ -727,7 +723,6 @@ public abstract class AbstractCommandLine {
      * Saves a model on the basis of the given parameters.
      *
      * @param parameters
-     * @throws IOException
      * @throws com.asemantics.rdfcoder.storage.CodeStorageException
      */
     protected void saveModel(Map<String,String> parameters) throws CodeStorageException {
@@ -741,7 +736,6 @@ public abstract class AbstractCommandLine {
      * Loads a model on the basis of the given parameters.
      *
      * @param parameters
-     * @throws IOException
      * @throws com.asemantics.rdfcoder.storage.CodeStorageException
      */
     protected void loadModel(Map<String,String> parameters) throws CodeStorageException {
@@ -774,9 +768,19 @@ public abstract class AbstractCommandLine {
      * @return
      */
     protected Map<String,String> fileStorageParams(String[] args) {
+        String fsParamString = retrieveParam(CodeStorage.FS_FILENAME, args);
+        if(fsParamString == null) {
+            throw new IllegalArgumentException("Cannot find required parameter " + CodeStorage.FS_FILENAME);
+        }
+        File fsParam = new File(fsParamString);
+        File fullPath;
+        if(fsParam.isAbsolute()) {
+            fullPath = fsParam;
+        } else {
+            fullPath = new File(getCurrentDirectory().getAbsolutePath(), fsParamString);
+        }
         Map parameters = new HashMap();
-        String filename = retrieveParam(CodeStorage.FS_FILENAME, args);
-        parameters.put(CodeStorage.FS_FILENAME, filename);
+        parameters.put(CodeStorage.FS_FILENAME, fullPath.getAbsolutePath());
         return parameters;
     }
 
