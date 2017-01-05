@@ -1,104 +1,117 @@
-<HTML>
-<BODY BGCOLOR="white">
-<PRE>
-<FONT color="green">001</FONT>    /*<a name="line.1"></a>
-<FONT color="green">002</FONT>     * Copyright 2007-2017 Michele Mostarda ( michele.mostarda@gmail.com ).<a name="line.2"></a>
-<FONT color="green">003</FONT>     * All Rights Reserved.<a name="line.3"></a>
-<FONT color="green">004</FONT>     *<a name="line.4"></a>
-<FONT color="green">005</FONT>     * Licensed under the Apache License, Version 2.0 (the 'License');<a name="line.5"></a>
-<FONT color="green">006</FONT>     * you may not use this file except in compliance with the License.<a name="line.6"></a>
-<FONT color="green">007</FONT>     * You may obtain a copy of the License at<a name="line.7"></a>
-<FONT color="green">008</FONT>     *<a name="line.8"></a>
-<FONT color="green">009</FONT>     *     http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
-<FONT color="green">010</FONT>     *<a name="line.10"></a>
-<FONT color="green">011</FONT>     * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
-<FONT color="green">012</FONT>     * distributed under the License is distributed on an 'AS IS' BASIS,<a name="line.12"></a>
-<FONT color="green">013</FONT>     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
-<FONT color="green">014</FONT>     * See the License for the specific language governing permissions and<a name="line.14"></a>
-<FONT color="green">015</FONT>     * limitations under the License.<a name="line.15"></a>
-<FONT color="green">016</FONT>     */<a name="line.16"></a>
-<FONT color="green">017</FONT>    <a name="line.17"></a>
-<FONT color="green">018</FONT>    <a name="line.18"></a>
-<FONT color="green">019</FONT>    package com.asemantics.rdfcoder.model.ontology;<a name="line.19"></a>
-<FONT color="green">020</FONT>    <a name="line.20"></a>
-<FONT color="green">021</FONT>    import com.asemantics.rdfcoder.model.CodeModel;<a name="line.21"></a>
-<FONT color="green">022</FONT>    import com.asemantics.rdfcoder.model.CodeModelBase;<a name="line.22"></a>
-<FONT color="green">023</FONT>    import com.asemantics.rdfcoder.model.TripleIterator;<a name="line.23"></a>
-<FONT color="green">024</FONT>    <a name="line.24"></a>
-<FONT color="green">025</FONT>    /**<a name="line.25"></a>
-<FONT color="green">026</FONT>     * This decorator validates addition of model triples over a given<a name="line.26"></a>
-<FONT color="green">027</FONT>     * ontology.<a name="line.27"></a>
-<FONT color="green">028</FONT>     *<a name="line.28"></a>
-<FONT color="green">029</FONT>     * @see com.asemantics.rdfcoder.model.CodeModel<a name="line.29"></a>
-<FONT color="green">030</FONT>     * @see com.asemantics.rdfcoder.model.ontology.Ontology<a name="line.30"></a>
-<FONT color="green">031</FONT>     */<a name="line.31"></a>
-<FONT color="green">032</FONT>    public class ValidatingCodeModel extends CodeModelBase {<a name="line.32"></a>
-<FONT color="green">033</FONT>    <a name="line.33"></a>
-<FONT color="green">034</FONT>        /**<a name="line.34"></a>
-<FONT color="green">035</FONT>         * Decorated code model.<a name="line.35"></a>
-<FONT color="green">036</FONT>         */<a name="line.36"></a>
-<FONT color="green">037</FONT>        private CodeModel decorated;<a name="line.37"></a>
-<FONT color="green">038</FONT>    <a name="line.38"></a>
-<FONT color="green">039</FONT>        /**<a name="line.39"></a>
-<FONT color="green">040</FONT>         * Applied ontology.<a name="line.40"></a>
-<FONT color="green">041</FONT>         */<a name="line.41"></a>
-<FONT color="green">042</FONT>        private Ontology ontology;<a name="line.42"></a>
-<FONT color="green">043</FONT>    <a name="line.43"></a>
-<FONT color="green">044</FONT>        public ValidatingCodeModel(CodeModel codeModel, Ontology otlg) {<a name="line.44"></a>
-<FONT color="green">045</FONT>            if(codeModel == null || otlg == null) {<a name="line.45"></a>
-<FONT color="green">046</FONT>                throw new IllegalArgumentException();<a name="line.46"></a>
-<FONT color="green">047</FONT>            }<a name="line.47"></a>
-<FONT color="green">048</FONT>    <a name="line.48"></a>
-<FONT color="green">049</FONT>            decorated = codeModel;<a name="line.49"></a>
-<FONT color="green">050</FONT>            ontology  = otlg;<a name="line.50"></a>
-<FONT color="green">051</FONT>        }<a name="line.51"></a>
-<FONT color="green">052</FONT>    <a name="line.52"></a>
-<FONT color="green">053</FONT>        public TripleIterator searchTriples(String subject, String predicate, String object) {<a name="line.53"></a>
-<FONT color="green">054</FONT>            return decorated.searchTriples(subject, predicate, object);<a name="line.54"></a>
-<FONT color="green">055</FONT>        }<a name="line.55"></a>
-<FONT color="green">056</FONT>    <a name="line.56"></a>
-<FONT color="green">057</FONT>        public void addTriple(String subject, String predicate, String object) {<a name="line.57"></a>
-<FONT color="green">058</FONT>            try {<a name="line.58"></a>
-<FONT color="green">059</FONT>                ontology.validateTriple(subject, predicate, object);<a name="line.59"></a>
-<FONT color="green">060</FONT>            } catch (OntologyException oe) {<a name="line.60"></a>
-<FONT color="green">061</FONT>                throw createException(oe, subject, predicate, object);<a name="line.61"></a>
-<FONT color="green">062</FONT>            }<a name="line.62"></a>
-<FONT color="green">063</FONT>            decorated.addTriple(subject, predicate, object);<a name="line.63"></a>
-<FONT color="green">064</FONT>        }<a name="line.64"></a>
-<FONT color="green">065</FONT>    <a name="line.65"></a>
-<FONT color="green">066</FONT>        public void removeTriple(String subject, String predicate, String object) {<a name="line.66"></a>
-<FONT color="green">067</FONT>            decorated.removeTriple(subject, predicate, object);<a name="line.67"></a>
-<FONT color="green">068</FONT>        }<a name="line.68"></a>
-<FONT color="green">069</FONT>    <a name="line.69"></a>
-<FONT color="green">070</FONT>        public void addTripleLiteral(String subject, String predicate, String literal) {<a name="line.70"></a>
-<FONT color="green">071</FONT>            try {<a name="line.71"></a>
-<FONT color="green">072</FONT>                ontology.validateTripleLiteral(subject, predicate);<a name="line.72"></a>
-<FONT color="green">073</FONT>            } catch (OntologyException oe) {<a name="line.73"></a>
-<FONT color="green">074</FONT>                throw createException(oe, subject, predicate, literal);<a name="line.74"></a>
-<FONT color="green">075</FONT>            }<a name="line.75"></a>
-<FONT color="green">076</FONT>            decorated.addTripleLiteral(subject, predicate, literal);<a name="line.76"></a>
-<FONT color="green">077</FONT>        }<a name="line.77"></a>
-<FONT color="green">078</FONT>    <a name="line.78"></a>
-<FONT color="green">079</FONT>        public void removeTripleLiteral(String subject, String predicate, String object) {<a name="line.79"></a>
-<FONT color="green">080</FONT>            decorated.removeTripleLiteral(subject, predicate, object);<a name="line.80"></a>
-<FONT color="green">081</FONT>        }<a name="line.81"></a>
-<FONT color="green">082</FONT>    <a name="line.82"></a>
-<FONT color="green">083</FONT>        public void addTripleCollection(Object subject, String predicate, String[] list) {<a name="line.83"></a>
-<FONT color="green">084</FONT>            decorated.addTripleCollection(subject, predicate, list);<a name="line.84"></a>
-<FONT color="green">085</FONT>        }<a name="line.85"></a>
-<FONT color="green">086</FONT>    <a name="line.86"></a>
-<FONT color="green">087</FONT>        public void clearAll() {<a name="line.87"></a>
-<FONT color="green">088</FONT>            decorated.clearAll();<a name="line.88"></a>
-<FONT color="green">089</FONT>        }<a name="line.89"></a>
-<FONT color="green">090</FONT>    <a name="line.90"></a>
-<FONT color="green">091</FONT>        private RuntimeException createException(OntologyException cause, String s, String p, String o) {<a name="line.91"></a>
-<FONT color="green">092</FONT>            return new RuntimeException(<a name="line.92"></a>
-<FONT color="green">093</FONT>                    String.format("An error occurred while validating triple { %s %s %s }", s, p, o),<a name="line.93"></a>
-<FONT color="green">094</FONT>                    cause<a name="line.94"></a>
-<FONT color="green">095</FONT>            );<a name="line.95"></a>
-<FONT color="green">096</FONT>        }<a name="line.96"></a>
-<FONT color="green">097</FONT>        <a name="line.97"></a>
-<FONT color="green">098</FONT>    }<a name="line.98"></a>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Copyright 2007-2017 Michele Mostarda ( michele.mostarda@gmail.com ).<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * All Rights Reserved.<a name="line.3"></a>
+<span class="sourceLineNo">004</span> *<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * Licensed under the Apache License, Version 2.0 (the 'License');<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * you may not use this file except in compliance with the License.<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *     http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an 'AS IS' BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span><a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>package com.asemantics.rdfcoder.model.ontology;<a name="line.19"></a>
+<span class="sourceLineNo">020</span><a name="line.20"></a>
+<span class="sourceLineNo">021</span>import com.asemantics.rdfcoder.model.CodeModel;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import com.asemantics.rdfcoder.model.CodeModelBase;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import com.asemantics.rdfcoder.model.TripleIterator;<a name="line.23"></a>
+<span class="sourceLineNo">024</span><a name="line.24"></a>
+<span class="sourceLineNo">025</span>/**<a name="line.25"></a>
+<span class="sourceLineNo">026</span> * This decorator validates addition of model triples over a given<a name="line.26"></a>
+<span class="sourceLineNo">027</span> * ontology.<a name="line.27"></a>
+<span class="sourceLineNo">028</span> *<a name="line.28"></a>
+<span class="sourceLineNo">029</span> * @see com.asemantics.rdfcoder.model.CodeModel<a name="line.29"></a>
+<span class="sourceLineNo">030</span> * @see com.asemantics.rdfcoder.model.ontology.Ontology<a name="line.30"></a>
+<span class="sourceLineNo">031</span> */<a name="line.31"></a>
+<span class="sourceLineNo">032</span>public class ValidatingCodeModel extends CodeModelBase {<a name="line.32"></a>
+<span class="sourceLineNo">033</span><a name="line.33"></a>
+<span class="sourceLineNo">034</span>    /**<a name="line.34"></a>
+<span class="sourceLineNo">035</span>     * Decorated code model.<a name="line.35"></a>
+<span class="sourceLineNo">036</span>     */<a name="line.36"></a>
+<span class="sourceLineNo">037</span>    private CodeModel decorated;<a name="line.37"></a>
+<span class="sourceLineNo">038</span><a name="line.38"></a>
+<span class="sourceLineNo">039</span>    /**<a name="line.39"></a>
+<span class="sourceLineNo">040</span>     * Applied ontology.<a name="line.40"></a>
+<span class="sourceLineNo">041</span>     */<a name="line.41"></a>
+<span class="sourceLineNo">042</span>    private Ontology ontology;<a name="line.42"></a>
+<span class="sourceLineNo">043</span><a name="line.43"></a>
+<span class="sourceLineNo">044</span>    public ValidatingCodeModel(CodeModel codeModel, Ontology otlg) {<a name="line.44"></a>
+<span class="sourceLineNo">045</span>        if(codeModel == null || otlg == null) {<a name="line.45"></a>
+<span class="sourceLineNo">046</span>            throw new IllegalArgumentException();<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        }<a name="line.47"></a>
+<span class="sourceLineNo">048</span><a name="line.48"></a>
+<span class="sourceLineNo">049</span>        decorated = codeModel;<a name="line.49"></a>
+<span class="sourceLineNo">050</span>        ontology  = otlg;<a name="line.50"></a>
+<span class="sourceLineNo">051</span>    }<a name="line.51"></a>
+<span class="sourceLineNo">052</span><a name="line.52"></a>
+<span class="sourceLineNo">053</span>    public TripleIterator searchTriples(String subject, String predicate, String object) {<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        return decorated.searchTriples(subject, predicate, object);<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    }<a name="line.55"></a>
+<span class="sourceLineNo">056</span><a name="line.56"></a>
+<span class="sourceLineNo">057</span>    public void addTriple(String subject, String predicate, String object) {<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        try {<a name="line.58"></a>
+<span class="sourceLineNo">059</span>            ontology.validateTriple(subject, predicate, object);<a name="line.59"></a>
+<span class="sourceLineNo">060</span>        } catch (OntologyException oe) {<a name="line.60"></a>
+<span class="sourceLineNo">061</span>            throw createException(oe, subject, predicate, object);<a name="line.61"></a>
+<span class="sourceLineNo">062</span>        }<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        decorated.addTriple(subject, predicate, object);<a name="line.63"></a>
+<span class="sourceLineNo">064</span>    }<a name="line.64"></a>
+<span class="sourceLineNo">065</span><a name="line.65"></a>
+<span class="sourceLineNo">066</span>    public void removeTriple(String subject, String predicate, String object) {<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        decorated.removeTriple(subject, predicate, object);<a name="line.67"></a>
+<span class="sourceLineNo">068</span>    }<a name="line.68"></a>
+<span class="sourceLineNo">069</span><a name="line.69"></a>
+<span class="sourceLineNo">070</span>    public void addTripleLiteral(String subject, String predicate, String literal) {<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        try {<a name="line.71"></a>
+<span class="sourceLineNo">072</span>            ontology.validateTripleLiteral(subject, predicate);<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        } catch (OntologyException oe) {<a name="line.73"></a>
+<span class="sourceLineNo">074</span>            throw createException(oe, subject, predicate, literal);<a name="line.74"></a>
+<span class="sourceLineNo">075</span>        }<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        decorated.addTripleLiteral(subject, predicate, literal);<a name="line.76"></a>
+<span class="sourceLineNo">077</span>    }<a name="line.77"></a>
+<span class="sourceLineNo">078</span><a name="line.78"></a>
+<span class="sourceLineNo">079</span>    public void removeTripleLiteral(String subject, String predicate, String object) {<a name="line.79"></a>
+<span class="sourceLineNo">080</span>        decorated.removeTripleLiteral(subject, predicate, object);<a name="line.80"></a>
+<span class="sourceLineNo">081</span>    }<a name="line.81"></a>
+<span class="sourceLineNo">082</span><a name="line.82"></a>
+<span class="sourceLineNo">083</span>    public void addTripleCollection(Object subject, String predicate, String[] list) {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        if (subject instanceof String) {<a name="line.84"></a>
+<span class="sourceLineNo">085</span>            final String subjectStr = (String) subject;<a name="line.85"></a>
+<span class="sourceLineNo">086</span>            try {<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                ontology.validateTriple(subjectStr, predicate, list);<a name="line.87"></a>
+<span class="sourceLineNo">088</span>            } catch (OntologyException oe) {<a name="line.88"></a>
+<span class="sourceLineNo">089</span>                throw createException(oe, subjectStr, predicate, list);<a name="line.89"></a>
+<span class="sourceLineNo">090</span>            }<a name="line.90"></a>
+<span class="sourceLineNo">091</span>        }<a name="line.91"></a>
+<span class="sourceLineNo">092</span>        decorated.addTripleCollection(subject, predicate, list);<a name="line.92"></a>
+<span class="sourceLineNo">093</span>    }<a name="line.93"></a>
+<span class="sourceLineNo">094</span><a name="line.94"></a>
+<span class="sourceLineNo">095</span>    public void clearAll() {<a name="line.95"></a>
+<span class="sourceLineNo">096</span>        decorated.clearAll();<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    }<a name="line.97"></a>
+<span class="sourceLineNo">098</span><a name="line.98"></a>
+<span class="sourceLineNo">099</span>    private RuntimeException createException(OntologyException cause, String s, String p, Object o) {<a name="line.99"></a>
+<span class="sourceLineNo">100</span>        return new RuntimeException(<a name="line.100"></a>
+<span class="sourceLineNo">101</span>                String.format("An error occurred while validating triple { %s %s %s }", s, p, o),<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                cause<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        );<a name="line.103"></a>
+<span class="sourceLineNo">104</span>    }<a name="line.104"></a>
+<span class="sourceLineNo">105</span>    <a name="line.105"></a>
+<span class="sourceLineNo">106</span>}<a name="line.106"></a>
 
 
 
@@ -159,6 +172,7 @@
 
 
 
-</PRE>
-</BODY>
-</HTML>
+</pre>
+</div>
+</body>
+</html>
