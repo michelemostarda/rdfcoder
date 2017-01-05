@@ -359,9 +359,9 @@ public abstract class AbstractCommandLine {
         return new File( getCurrentDirectory(), in );
     }
 
-    protected void initOrLoadJRE(JavaProfile jprofile) throws ProfileException {
+    protected void initLoadJRE(JavaProfile jprofile) throws ProfileException {
             System.out.println("Initializing JRE ...");
-            JREReport report = jprofile.initOrLoadJRE();
+            JREReport report = jprofile.initLoadJRE();
             if (report == null) {
                 System.out.println("JRE model loaded.");
             } else {
@@ -372,8 +372,8 @@ public abstract class AbstractCommandLine {
             }
     }
 
-    protected void initOrLoadJRE() throws ProfileException {
-        initOrLoadJRE( modelHandlers.get( getSelectedModel() ).javaProfile );
+    protected void initLoadJRE() throws ProfileException {
+        initLoadJRE( modelHandlers.get( getSelectedModel() ).javaProfile );
     }
 
     /**
@@ -392,7 +392,7 @@ public abstract class AbstractCommandLine {
         final JavaProfile jprofile = (JavaProfile) model.getProfile(JAVA_PROFILE);
 
         if (!jreIntializationDone) {
-            initOrLoadJRE(jprofile);
+            initLoadJRE(jprofile);
             jreIntializationDone = true;
         }
 
@@ -714,6 +714,7 @@ public abstract class AbstractCommandLine {
 
         for(JStatistics stats : statistics) {
             ps.print( stats.toStringReport() );
+            ps.flush();
         }
 
         toBeSaved.add(selectedModel);

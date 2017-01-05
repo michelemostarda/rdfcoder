@@ -268,13 +268,14 @@ public class JavaProfile implements Profile<JavaQueryModel> {
     }
 
     /**
-     * Loads an existing JRE data.
+     * Initializes the {@link ObjectsTable} data structure.
      *
      * @param pathToJRE
      */
-    public void loadJRE(File pathToJRE) {
+    public void loadJREObjectsTable(File pathToJRE) {
         try {
             model.getObjectsTable().load( deserializeJREObjectsTable( pathToJRE.getName() ) );
+            logger.info("Objects Table loaded.");
         } catch (RepositoryException re) {
             logger.info("Cannot retrieve Objects Table.", re);
         } catch (InvalidClassException ice) {
@@ -285,38 +286,60 @@ public class JavaProfile implements Profile<JavaQueryModel> {
         }
     }
 
+    public void loadJREModel(File pathToJRE) {
+        try {
+            Repository.Resource jreModelResource = repository.getResource(getJREModelResourceName(pathToJRE.getName()));
+            logger.info("Loading JRE model ...");
+            model.load(jreModelResource);
+            logger.info("JRE model loaded.");
+        } catch (RepositoryException re) {
+            logger.info("Cannot retrieve JRE Model.", re);
+        }
+
+    }
+
     /**
-     * This utility method initializes or loads the given <i>JRE</i> profile depending if it exists or not.
+     * Loads an existing JRE data.
+     *
+     * @param pathToJRE
+     */
+    public void loadJRE(File pathToJRE) {
+        loadJREObjectsTable(pathToJRE);
+        // loadJREModel(pathToJRE);
+    }
+
+    /**
+     * This utility method initializes if needed and then loads the given <i>JRE</i> profile depending if it exists or not.
      *
      * @param pathToJRE the location of the JRE.
      * @return the initialization report if the init happened, <code>null</code> otherwise.
      * @throws ProfileException
      */
-    public JREReport initOrLoadJRE(File pathToJRE) throws ProfileException {
+    public JREReport initLoadJRE(File pathToJRE) throws ProfileException {
+        JREReport initReport = null;
         if ( ! checkJREInit(pathToJRE)) {
             try {
-                return initJRE(pathToJRE);
+                initReport = initJRE(pathToJRE);
             } catch (Throwable t) {
                 throw new ProfileException("An error occurred while init the JRE profile.", t);
             }
-        } else {
-            try {
-                loadJRE(pathToJRE);
-                return null;
-            } catch (Throwable t) {
-                throw new ProfileException("An error occurred while loading the JRE profile.", t);
-            }
         }
+        try {
+            loadJRE(pathToJRE);
+        } catch (Throwable t) {
+            throw new ProfileException("An error occurred while loading the JRE profile.", t);
+        }
+        return initReport;
     }
 
     /**
-     * This utility method initializes or loads the default <i>JRE</i> profile depending if it exists or not.
+     * This utility method initializes if needed and then loads the default <i>JRE</i> profile depending if it exists or not.
      *
      * @return the initialization report if the init happened, <code>null</code> otherwise.
      * @throws ProfileException
      */
-    public JREReport initOrLoadJRE() throws ProfileException {
-        return initOrLoadJRE( getJRELocation() );
+    public JREReport initLoadJRE() throws ProfileException {
+        return initLoadJRE( getJRELocation() );
     }
 
     public JStatistics loadSources(String libName, String srcPath) {

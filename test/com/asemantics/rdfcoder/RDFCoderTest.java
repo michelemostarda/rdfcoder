@@ -83,7 +83,7 @@ public class RDFCoderTest {
         }
 
         // Initializes the JRE model if not yet done.
-        JREReport report = jprofile.initOrLoadJRE();
+        JREReport report = jprofile.initLoadJRE();
         if(report != null) {
             logger.info("JRE analysis report: " + report);
         } else {

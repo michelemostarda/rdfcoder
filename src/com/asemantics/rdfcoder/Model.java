@@ -191,13 +191,10 @@ public class Model<T extends CoderFactory> {
      * Loads the content of the resource name into the current
      * <i>Model</i>.
      *
-     * @param resouceName name of the model containing the resource
+     * @param resource reference to the resource to be loaded
      */
-    public void load(String resouceName) {
-
-        // Retrieve resource.
-        Repository.Resource resource = retrieveResource( getModelResourceName(resouceName) );
-
+    public void load(Repository.Resource resource) {
+        if(resource == null) throw new IllegalArgumentException("a valid resource must be specified.");
         // Load model.
         InputStream inputStream = null;
         CodeStorage codeStorage = getCoderFactory().createCodeStorage();
@@ -215,7 +212,16 @@ public class Model<T extends CoderFactory> {
                 }
             }
         }
+    }
 
+    /**
+     * Loads the content of the resource name into the current
+     * <i>Model</i>.
+     *
+     * @param resouceName name of the model containing the resource
+     */
+    public void load(String resouceName) {
+        load( retrieveResource( getModelResourceName(resouceName) ) );
     }
 
     /**
