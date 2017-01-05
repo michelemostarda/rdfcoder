@@ -327,6 +327,9 @@ public class CommandLineTest {
         }
 
         void dumpLines() {
+            System.out.flush();
+            dumpLines(System.out);
+            System.err.flush();
             dumpLines(System.err);
         }
 
