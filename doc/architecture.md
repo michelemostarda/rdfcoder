@@ -21,3 +21,39 @@ By using the Model Inspector it is possible to navigate Java objects representin
 ## Architectural Diagram
 
 ![Architectural Diagram](rdf_coder_architecture.jpg)
+
+## Code Organization
+
+### Parsing
+[*Objects Table*](../javadoc/com/asemantics/rdfcoder/sourceparse/ObjectsTable.html)
+This class defines a table to resolve objects.
+
+[*Java Source File Parser*](../javadoc/com/asemantics/rdfcoder/sourceparse/JavaSourceFileParser.html)
+This class is able to scan a java source file and generate corresponding triples.
+
+[*Javadoc File Parser*](../javadoc/com/asemantics/rdfcoder/sourceparse/JavadocFileParser.html)
+The Javadoc file parser.
+
+[*Java Bytecode File Parser*](../javadoc/com/asemantics/rdfcoder/sourceparse/JavaBytecodeFileParser.html)
+The Java bytecode parser.
+
+[*Java Bytecode Jar Parser*](../javadoc/com/asemantics/rdfcoder/sourceparse/JavaBytecodeJarParser.html)
+This class provides methods to process the content of a Jar file.
+
+[*Directory Parser*](../javadoc/com/asemantics/rdfcoder/sourceparse/DirectoryParser.html)
+Scans a given directory.
+
+### Modeling
+
+[*Code Handler*](../javadoc/com/asemantics/rdfcoder/model/CodeHandler.html)
+This interface represents a code handler. An handler is something able to receive code analysis events and use it to perform some analysis.
+
+[*Code Model*](../javadoc/com/asemantics/rdfcoder/model/CodeModel.html)
+This abstract class describes a code org.asemantics.model. A code org.asemantics.model is a rapresentation of a code structure containing packages, classes, attributes methods and so on.
+
+[*Query Model*](../javadoc/com/asemantics/rdfcoder/model/QueryModel.html)
+Common interface to perform queries on representational model.
+
+### Storing
+[*Code Storage*](../javadoc/com/asemantics/rdfcoder/storage/CodeStorage.html)
+Defines a persistent sotrage for a CodeModel.
