@@ -103,6 +103,7 @@
 
     <path id="test.classpath">
         <path        refid = "test.build.classpath"/>
+		<pathelement path  = "${lib.dir}/tools.jar"/>
         <pathelement path  = "${test.dir}"/>
     </path>
 
@@ -153,6 +154,7 @@
 			srcdir ="${src.dir}"
 			destdir="${classes.dir}"
 			debug="${debug}"
+			includeantruntime="true"
 		>
 			<classpath refid="build.classpath"/>
 		</javac>
@@ -279,7 +281,7 @@
          <mkdir dir="${test.reports}"/>
          <junit
                  printsummary="yes"
-                 haltonfailure="yes"
+                 haltonfailure="no"
                  dir="."
           >
              <classpath>
