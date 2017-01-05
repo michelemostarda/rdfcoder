@@ -376,3 +376,8 @@ Please refer to the internal [issue tracker] (https://github.com/michelemostarda
 
 I'm always looking for feedback and collaboration.
 Please feel free to write [me] (me@michelemostarda.com) and [fork](https://github.com/michelemostarda/rdfcoder#fork-destination-box) this project to improve it.
+
+## License
+RDF Coder is released under the Apache 2 License [the Apache License 2.0](LICENSE.txt).
+
+
