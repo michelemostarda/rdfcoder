@@ -32,7 +32,6 @@ public class JMethod extends JModifiable {
      * Constructor by path.
      * @param queryModel
      * @param pathToMethod
-     * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
     protected JMethod(JavaQueryModel queryModel, Identifier pathToMethod)
             throws QueryModelException {
@@ -52,7 +51,6 @@ public class JMethod extends JModifiable {
      * Returns the signatures of a method.
      *
      * @return list of signatures.
-     * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
     public JSignature[] getSignatures() throws QueryModelException {
         return getQueryModel().getSignatures( super.getIdentifier() );

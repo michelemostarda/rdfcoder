@@ -31,7 +31,7 @@ import java.util.regex.Matcher;
  *      <li>List</li>
  * </ul>
  *
- * <br/>
+ * <br>
  *
  * Pattern format:
  * <i> &lt;attribute_name&gt;[&lt;index&gt;] </i>

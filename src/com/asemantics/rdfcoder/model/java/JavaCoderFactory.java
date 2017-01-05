@@ -130,7 +130,6 @@ public abstract class JavaCoderFactory implements CoderFactory<JavaCodeHandler> 
      * @param parameterTypes
      * @param returnType
      * @return the created object.
-     * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
     public static final JSignature createJSignature(
              JavaQueryModel qm,

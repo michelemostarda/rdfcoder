@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
  *      <li>method</li>
  * </ul>
  *
- * <br/>
+ * <br>
  *
  * Pattern format:
  * <i> &lt;attribute_name&gt; </i>

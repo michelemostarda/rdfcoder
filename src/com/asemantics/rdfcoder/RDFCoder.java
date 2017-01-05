@@ -211,7 +211,7 @@ public class RDFCoder {
     }
 
     /**
-     * Returns <code>true<code> if model <i>name</i> exists, false otherwise.
+     * Returns <code>true</code> if model <i>name</i> exists, false otherwise.
      * 
      * @param name
      * @return <code>true</code> exists.

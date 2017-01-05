@@ -31,7 +31,6 @@ public class JEnumeration extends JObject {
      *
      * @param queryModel
      * @param pathToMethod
-     * @throws com.asemantics.rdfcoder.model.CodeModelException
      *
      */
     protected JEnumeration(JavaQueryModel queryModel, Identifier pathToMethod)

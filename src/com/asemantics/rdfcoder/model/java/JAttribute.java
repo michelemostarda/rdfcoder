@@ -42,7 +42,6 @@ public class JAttribute extends JModifiable {
      * Constructor.
      * @param qm
      * @param pathToAttribute
-     * @throws com.asemantics.rdfcoder.model.CodeModelException
      */
     protected JAttribute(JavaQueryModel qm, Identifier pathToAttribute)
     throws QueryModelException {
