@@ -92,6 +92,7 @@ Usage: <command> <parameters>
         setmodel                        Set a new model
         removemodel                     Remove the current model
         ls                              List content of current directory
+        loadjre                         Load the JRE data into the active model
         clearmodel                      Cleanup the current model
         loadclasspath                   Load a classpath on the active model
         list                            List the loaded models
