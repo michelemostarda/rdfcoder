@@ -90,6 +90,11 @@
 		<pathelement path="${lib.dir}/commons-jexl-1.1.jar"/>
   	</path>
 
+	<path id="javadoc.classpath">
+		<path refid="build.classpath"/>
+		<pathelement path="${lib.dir}/tools.jar"/>
+	</path>
+
   	<path id="test.build.classpath">
 	    <path        refid = "build.classpath"/>
 		<pathelement path  = "${lib.dir}/junit-4.4.jar"/>
@@ -214,15 +219,14 @@
             <fileset dir="${src.dir}">
 				<include name="**/*.java"/>
 			</fileset>
-			<classpath refid = "build.classpath"/>
+			<classpath refid = "javadoc.classpath"/>
             <doctitle><![CDATA[<h1>${Name} API</h1>]]></doctitle>
-			<bottom><![CDATA[<i>Copyright &#169; 2008 Michele Mostarda. All Rights Reserved.</i>]]></bottom>	
+			<bottom><![CDATA[<i>Copyright &#169; 2017 Michele Mostarda. All Rights Reserved.</i>]]></bottom>
 		    <group title="CommandLine" packages="org.asemantics.*"/>
 			<group title="Model API Packages" packages="org.asemantics.model.*"/>
 			<group title="Model Implementation Packages" packages="org.asemantics.modelimpl.*"/>
 		    <group title="Parsing Packages" packages="org.asemantics.sourceparse.*"/>
-            <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
-            <link href="http://jena.sourceforge.net/javadoc/"/>
+            <link href="https://jena.apache.org"/>
         </javadoc>
 	</target>
 	
