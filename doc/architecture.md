@@ -20,4 +20,4 @@ By using the Model Inspector it is possible to navigate Java objects representin
 
 ## Architectural Diagram
 
-![Architectural Diagram](doc/rdf_coder_architecture.jpg)
+![Architectural Diagram](rdf_coder_architecture.jpg)
