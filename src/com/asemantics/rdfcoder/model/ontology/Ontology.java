@@ -118,7 +118,7 @@ public interface Ontology {
      * <code>false</code> otherwise.
      * 
      * @param i
-     * @return <code>true<code> if literal.
+     * @return <code>true</code> if literal.
      */
     boolean isLiteralRelation(int i);
 
