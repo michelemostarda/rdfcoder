@@ -173,7 +173,7 @@ public class CommandLineTest {
                 commandLine.processLine( String.format("savemodel fs filename=%s", tmpFile))
         );
         Assert.assertTrue(file.exists());
-        printStreamWrapper.assertContent("Model saved.");
+        printStreamWrapper.assertContent("Model saved with parameters");
     }
 
     @Test
