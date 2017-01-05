@@ -226,7 +226,7 @@
 			<group title="Model API Packages" packages="org.asemantics.model.*"/>
 			<group title="Model Implementation Packages" packages="org.asemantics.modelimpl.*"/>
 		    <group title="Parsing Packages" packages="org.asemantics.sourceparse.*"/>
-            <link href="https://jena.apache.org"/>
+            <link href="https://jena.apache.org/documentation/javadoc/jena/"/>
         </javadoc>
 	</target>
 	
