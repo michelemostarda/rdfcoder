@@ -294,6 +294,65 @@ with any depth:
 .~default> inspect model.allClasses[0].parentPackage
 Identifier<http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmd>
 ```
+
+### Query model data with SPARQL
+
+A simple way to obtain all interfaces declared within the active model is using the following query:
+
+```
+.~test> querymodel "select ?a ?b ?c where {?a <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.rdfcoder.org/2007/1.0#JInterface>}"  
+---------------------------------------------------------------------------------------------------------------------------
+| a                                                                                                               | b | c |
+===========================================================================================================================
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.util.jinterface:Callback>                      |   |   |
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.lang.sparql.jinterface:SPARQLParserConstants>  |   |   |
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.lang.rdql.jinterface:NodeValue>                |   |   |
+[...]
+```
+
+similarly to get all classes
+
+```
+.~test> querymodel "select ?a ?b ?c where {?a <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.rdfcoder.org/2007/1.0#JClass>}"     
+-----------------------------------------------------------------------------------------------------------------------------------
+| a                                                                                                                       | b | c |
+===================================================================================================================================
+| <http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmd.jclass:QExec>                                                        |   |   |
+| <http://www.rdfcoder.org/2007/1.0#jpackage:arq.jclass:rdql>                                                             |   |   |
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.serializer.jclass:FmtExprAbstract>                     |   |   |
+[...]
+```
+
+and all methods
+
+```
+.~test> querymodel "select ?a ?b ?c where {?a <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.rdfcoder.org/2007/1.0#JMethod>}" 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+| a                                                                                                                                                 | b | c |
+=============================================================================================================================================================
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.resultset.jclass:OutputBase.jmethod:class$>                                      |   |   |
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.core.jclass:DataSourceImpl.jmethod:replaceNamedModel>                            |   |   |
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.engine1.jclass:BindingImmutable.jmethod:equals>                                  |   |   |
+
+```
+
+Get details about a specific method
+```
+.~test> querymodel "select * where {<http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmdline.jclass:CmdLineArgs.jmethod:getValue> ?p ?o}" 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| p                                                     | o                                                                                                                  |
+==============================================================================================================================================================================
+| <http://www.rdfcoder.org/2007/1.0/contains_signature> | <http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmdline.jclass:CmdLineArgs.jmethod:getValue.jsignature:_-378625919> |
+| <http://www.rdfcoder.org/2007/1.0/contains_signature> | <http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmdline.jclass:CmdLineArgs.jmethod:getValue.jsignature:_-450679132> |
+| <http://www.rdfcoder.org/2007/1.0/has_visibility>     | "public"                                                                                                           |
+| <http://www.rdfcoder.org/2007/1.0/has_modifiers>      | "0"                                                                                                                |
+| <http://www.w3.org/2000/01/rdf-schema#subClassOf>     | <http://www.rdfcoder.org/2007/1.0#JMethod>                                                                         |
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+```
+
+.~test> querymodel "select * where {<http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmdline.jclass:CmdLineArgs.jmethod:getValue> ?p ?o}"  
+
 ### Persist model data
 
 Let's end this tutorial describing the model persistence. All models are persisted in memory. To store them on file system you can use the command _savemodel_. This command accepts a driver (*fs* or *db*) and additional attributes depending on the selected driver to perform the operation. To store the data on a file, you must specify the *fs* driver and the *filename* for the output file:
