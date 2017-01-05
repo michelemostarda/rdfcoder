@@ -105,9 +105,9 @@ Usage: <command> <parameters>
         describe                        Describe the object referenced by the given path
         pwd                             Print the current directory
         querymodel                      Query the active model
-
-
 ```
+
+A description of all available CLI commands can be found [here](doc/commandline.md).
 
 ### Create a new model
 
