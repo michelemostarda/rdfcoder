@@ -25,8 +25,8 @@ import com.asemantics.rdfcoder.model.QueryResult;
 import com.asemantics.rdfcoder.model.SPARQLException;
 import com.asemantics.rdfcoder.model.SPARQLQuerableCodeModel;
 import com.asemantics.rdfcoder.model.java.JavaQueryModel;
-import com.asemantics.rdfcoder.profile.ProfileException;
 import com.asemantics.rdfcoder.parser.JStatistics;
+import com.asemantics.rdfcoder.profile.ProfileException;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.CodeStorageException;
 import jline.ConsoleReader;
@@ -35,6 +35,7 @@ import jline.History;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -480,7 +481,7 @@ public abstract class AbstractCommandLine {
         Inspector inspector = getInspectorForModel(modelName);
         try {
             Object o = inspector.inspect(qry);
-            ps.println(o);
+            printObject(o, ps);
         } catch (Exception e) {
             throw new IllegalArgumentException("Cannot perform inspection query.", e);
         }
@@ -1153,6 +1154,33 @@ public abstract class AbstractCommandLine {
     private void printHello() {
         System.out.println("RDFCoder command line console [version " + VERSION_MAJOR + "." + VERSION_MINOR + "]");
         System.out.println();
+    }
+
+    private void printObject(Object o, PrintStream ps) {
+        final StringBuilder sb = new StringBuilder();
+        if (o.getClass().isArray()) {
+            int length = Array.getLength(o);
+            Object e;
+            for (int i = 0; i < length; i++) {
+                e = Array.get(o, i);
+                sb.append(e).append('\n');
+            }
+            ps.print(sb.toString());
+        } else if(o instanceof Collection<?>) {
+            final Collection c = (Collection<?>)o;
+            for(Object e : c) {
+                  sb.append(e).append('\n');
+            }
+            ps.print(sb.toString());
+        } else if(o instanceof Map<?,?>) {
+            final Map<?,?> m = (Map<?,?>)o;
+            for(Map.Entry<?,?> e : m.entrySet()) {
+                  sb.append(e.getKey()).append(": ").append(e.getValue()).append('\n');
+            }
+            ps.print(sb.toString());
+        } else {
+            ps.println(o.toString());
+        }
     }
 
     private String readInput(String prompt) throws IOException {
