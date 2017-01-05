@@ -522,6 +522,20 @@ public class CommandLine extends AbstractCommandLine {
                 "\n\tand loads extracted data within the current model";
     }
 
+    public void command_loadjre(String[] args) throws IOException{
+        getJavaProfile().loadJREModel();
+    }
+
+    public String __command_loadjre() { return "Load the JRE data into the active model"; }
+
+    public String ___command_loadjre() {
+        return
+                __command_loadjre() +
+                "\nsyntax: loadjre" +
+                "\n" +
+                "\n\tThis can take minutes to complete.";
+    }
+
     protected void configureCommandCompletors(ConsoleReader cr) {
         CandidateListCompletionHandler completionHandler = new CandidateListCompletionHandler();
         cr.setCompletionHandler(completionHandler);

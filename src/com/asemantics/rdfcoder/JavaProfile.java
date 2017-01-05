@@ -290,12 +290,22 @@ public class JavaProfile implements Profile<JavaQueryModel> {
         try {
             Repository.Resource jreModelResource = repository.getResource(getJREModelResourceName(pathToJRE.getName()));
             logger.info("Loading JRE model ...");
+            final long start = System.currentTimeMillis();
             model.load(jreModelResource);
-            logger.info("JRE model loaded.");
+            final long end = System.currentTimeMillis();
+            logger.info(String.format("JRE model loaded in %ds.", (end - start)/1000));
         } catch (RepositoryException re) {
-            logger.info("Cannot retrieve JRE Model.", re);
+            logger.info("Cannot retrieve JRE model.", re);
         }
 
+    }
+
+    public void loadJREModel() {
+        try {
+            loadJREModel(getJRELocation());
+        } catch (ProfileException pe) {
+            throw new IllegalStateException("Cannot retrieve JRE location.", pe);
+        }
     }
 
     /**

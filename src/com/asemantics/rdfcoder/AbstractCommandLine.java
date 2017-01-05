@@ -360,13 +360,13 @@ public abstract class AbstractCommandLine {
     }
 
     protected void initLoadJRE(JavaProfile jprofile) throws ProfileException {
-            System.out.println("Initializing JRE ...");
+            System.out.println("Initializing JRE data ...");
             JREReport report = jprofile.initLoadJRE();
             if (report == null) {
-                System.out.println("JRE model loaded.");
+                System.out.println("JRE data loaded.");
             } else {
                 System.out.println("-------------------------------------------------------------------------------");
-                System.out.println("JRE model initialized.");
+                System.out.println("JRE data initialized.");
                 System.out.println(report.toString());
                 System.out.println("-------------------------------------------------------------------------------");
             }
