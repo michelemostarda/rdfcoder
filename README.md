@@ -8,7 +8,7 @@ Author: Michele Mostarda ( me@michelemostarda.com )
 
 ## About
 
-RDF Coder is a CLI and a [flexible](architecture.md) library designed to generate RDF [models] (model.md) from Java code, 
+RDF Coder is a CLI and a [flexible](doc/architecture.md) library designed to generate RDF [models] (doc/model.md) from Java code, 
 both source and bytecode.
 
 RDF Coder is written in Java and can be used to perform multi level code inspection, create code dependency graphs, generate custom documentation.
