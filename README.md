@@ -30,8 +30,8 @@ To fully master the key concepts of this tool it is strongly recommended to have
 - [SPARQL] (https://www.w3.org/TR/sparql11-query/) (SPARQL Protocol and RDF Query Language) is an RDF query language, that is, a semantic query language for databases, able to retrieve and manipulate data stored in Resource Description Framework (RDF) format. 
 
 ## Requirements
-- JDK  +1.5
-- Apache Ant +1.7.0
+- JDK  +1.8
+- Apache Ant +1.9.3
 
 ## Installation
 
