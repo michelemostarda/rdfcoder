@@ -511,7 +511,7 @@ public class CommandLine extends AbstractCommandLine {
     public String ___command_loadclasspath() {
         return
                 __command_loadclasspath() +
-                "\nsyntax: loadclasspath <library_name> <library_location> [<library_name> <library_location>]+" +
+                "\nsyntax: loadclasspath [<library_name> <library_location>]+" +
                 "\n\twhere <library_location> can be expressed as" +
                 "\n\t\ta jar    file:  jar:/path/to/jarfile.jar" +
                 "\n\t\ta source  dir:  src:/path/to/src" +
