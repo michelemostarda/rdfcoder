@@ -167,6 +167,8 @@
 	>
 		<mkdir dir="${classes.dir}"/>
 		<javac
+			compiler="javac1.8"
+			target="1.8"
 			srcdir ="${test.dir}"
 			destdir="${classes.dir}"
 			debug="${debug}"
