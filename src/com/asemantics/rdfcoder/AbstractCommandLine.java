@@ -84,6 +84,11 @@ public abstract class AbstractCommandLine {
     protected static final String COMMAND_PREFIX = "command_";
 
     /**
+     * Defines the separator of multiple commands specified in the same line.
+     */
+    protected static final String COMMAND_SEPARATOR = ";";
+
+    /**
      * Short command description prefix.
      */
     protected static final String SHORT_COMMAND_DESCRIPTION_PREFIX = "__"  + COMMAND_PREFIX;
@@ -877,14 +882,13 @@ public abstract class AbstractCommandLine {
     }
 
     /**
-     * Processes a single command line input.
+     * Processes a single command.
      *
-     * @param line the input command line.
+     * @param command
      * @return
-     * @throws IOException
      */
-    protected boolean processLine(String line) throws IOException {
-        String[] arguments = extractArgs(line);
+    protected boolean processCommand(String command) throws IOException {
+        String[] arguments = extractArgs(command);
         if (isExit(arguments) && confirmExit()) {
             return false;
         }
@@ -894,6 +898,23 @@ public abstract class AbstractCommandLine {
             handleIllegalArgumentException(iae);
         } catch (Throwable t) {
             handleGenericException(t);
+        }
+        return true;
+    }
+
+    /**
+     * Processes a single command line input.
+     *
+     * @param line the input command line.
+     * @return
+     * @throws IOException
+     */
+    protected boolean processLine(String line) throws IOException {
+        String[] commands = line.split(COMMAND_SEPARATOR);
+        for(String command : commands) {
+            if(!processCommand(command)) {
+                return false;
+            }
         }
         return true;
     }
