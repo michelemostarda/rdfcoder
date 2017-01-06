@@ -383,6 +383,31 @@ public abstract class AbstractCommandLine {
     protected abstract void configureCommandCompletors(ConsoleReader cr);
 
     /**
+     * Prints the input string on the out stream.
+     *
+     * @param out
+     */
+    protected void print(String out) {
+        System.out.print(out);
+    }
+
+    /**
+     * Prints the input string on the out stream with trailing newline.
+     *
+     * @param out
+     */
+    protected void println(String out) {
+        System.out.println(out);
+    }
+
+    /**
+     * Prints new line on out stream.
+     */
+    protected void println() {
+        System.out.println();
+    }
+
+    /**
      * Sets the selected model.
      *
      * @param modelName
@@ -412,15 +437,15 @@ public abstract class AbstractCommandLine {
     }
 
     protected void initLoadJRE(JavaProfile jprofile) throws ProfileException {
-            System.out.println("Initializing JRE data ...");
+            println("Initializing JRE data ...");
             JREReport report = jprofile.initLoadJRE();
             if (report == null) {
-                System.out.println("JRE data loaded.");
+                println("JRE data loaded.");
             } else {
-                System.out.println("-------------------------------------------------------------------------------");
-                System.out.println("JRE data initialized.");
-                System.out.println(report.toString());
-                System.out.println("-------------------------------------------------------------------------------");
+                println("-------------------------------------------------------------------------------");
+                println("JRE data initialized.");
+                println(report.toString());
+                println("-------------------------------------------------------------------------------");
             }
     }
 
@@ -701,11 +726,11 @@ public abstract class AbstractCommandLine {
             if( currentLibrary.type == LibraryType.JAR_FILE ) {
 
                 try {
-                    System.out.print("loading " + currentLibrary.location.getAbsolutePath() + " ...");
+                    print("loading " + currentLibrary.location.getAbsolutePath() + " ...");
                     statistics.add(
                             jprofile.loadJar( currentLibrary.name, currentLibrary.location.getAbsolutePath() )
                     );
-                    System.out.println(" done");
+                    println(" done");
                 } catch (Exception e) {
                     throw new IllegalArgumentException(
                             String.format("Error while loading JAR: '%s'", currentLibrary.location),
@@ -716,11 +741,11 @@ public abstract class AbstractCommandLine {
             } else if( libraries.get(i).type == LibraryType.SOURCE_DIR ) {
 
                 try {
-                    System.out.format( "loading '%s' ...", currentLibrary.location.getAbsolutePath() );
+                    print(String.format("loading '%s' ...", currentLibrary.location.getAbsolutePath()));
                     statistics.add(
                         jprofile.loadSources( currentLibrary.name, currentLibrary.location.getAbsolutePath() )
                     );
-                    System.out.println(" done");
+                    println(" done");
                 } catch(Exception e) {
                     throw new IllegalArgumentException(
                             String.format("Error while reading SRC dir: '%s'", libraries.get(i).location),
@@ -731,11 +756,11 @@ public abstract class AbstractCommandLine {
             } else if(libraries.get(i).type == LibraryType.JAVADOC_DIR ) {
 
                     try {
-                        System.out.print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
+                        print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
                         statistics.add(
                             jprofile.loadJavadoc( libraries.get(i).name, libraries.get(i).location.getAbsolutePath() )
                         );
-                        System.out.println(" done");
+                        println(" done");
                     } catch (Exception e) {
                         throw new IllegalArgumentException(
                               "Error while reading JAVADOC dir: '" + libraries.get(i).location + "'", e
@@ -745,12 +770,12 @@ public abstract class AbstractCommandLine {
             } else if(libraries.get(i).type == LibraryType.CLASS_DIR ) {
 
                 try {
-                    System.out.print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
+                    print("loading " + libraries.get(i).location.getAbsolutePath() + " ...");
 //                        classDirectoryParser.parseDirectory( libraries.get(i).name, libraries.get(i).location );
                     statistics.add(
                         jprofile.loadClasses( currentLibrary.name, currentLibrary.location.getAbsolutePath() )
                     );
-                    System.out.println(" done");
+                    println(" done");
                 } catch (Exception e) {
                     throw new IllegalArgumentException(
                             String.format("Error while reading CLASS dir: '%s'", libraries.get(i).location),
@@ -805,11 +830,12 @@ public abstract class AbstractCommandLine {
      */
     protected void printUsage(PrintStream ps) throws IllegalAccessException, InvocationTargetException {
         ps.println("Usage: <command> <parameters>");
-        ps.println();
         ps.println("\tavailable commands:");
         Command[] availableCommands = getCommands();
+        final int lastNLIndex = availableCommands.length - 1;
         for(int i = 0; i < availableCommands.length; i++) {
-            ps.printf("\t%s\t\t\t\t%s\n", availableCommands[i].name, availableCommands[i].shortDescription);
+            ps.printf("\t%s\t\t\t\t%s", availableCommands[i].name, availableCommands[i].shortDescription);
+            if(i < lastNLIndex) ps.append('\n');
         }
         ps.println();
     }
@@ -975,7 +1001,7 @@ public abstract class AbstractCommandLine {
     protected void mainCycle() throws IllegalAccessException, InvocationTargetException, IOException {
         printHello();
         while ( processLine( readInput( getPrompt() ) )  );
-        System.out.println("Bye");
+        println("Bye");
     }
 
     /**
@@ -1158,12 +1184,12 @@ public abstract class AbstractCommandLine {
      * @param cmd
      */
     private void handleIllegalArgumentException(IllegalArgumentException iae, String cmd) {
-        System.out.println("ERROR: " + iae.getMessage() );
+        println("ERROR: " + iae.getMessage() );
         if(debug) { iae.printStackTrace(); }
         Throwable cause = iae.getCause();
         int causeLevel = 0;
         while(cause != null) {
-            System.out.println("[" + (causeLevel++) + "] with cause: '" + iae.getCause().getMessage() + "'");
+            println("[" + (causeLevel++) + "] with cause: '" + iae.getCause().getMessage() + "'");
             if(debug) { iae.getCause().printStackTrace(); }
             cause = cause.getCause();
         }
@@ -1172,7 +1198,7 @@ public abstract class AbstractCommandLine {
             if(cmd == null) {
                 printUsage(System.out);
             } else {
-                System.out.println(getLongCommandDescription(cmd));
+                println(getLongCommandDescription(cmd));
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -1196,7 +1222,7 @@ public abstract class AbstractCommandLine {
      * @param t
      */
     private void handleGenericException(Throwable t) {
-        System.out.println(
+        println(
                 String.format(
                         "SEVERE ERROR: an expected exception occurred: %s with message'%s'",
                         t.getClass().getName(),
@@ -1207,7 +1233,7 @@ public abstract class AbstractCommandLine {
             t.printStackTrace();
         }
         if(t.getCause() != null) {
-            System.out.println("with cause: '" + t.getCause().getMessage() + "'");
+            println("with cause: '" + t.getCause().getMessage() + "'");
             if(debug) {
                 t.getCause().printStackTrace();
             }
@@ -1218,8 +1244,8 @@ public abstract class AbstractCommandLine {
      * Prints a <i>Hello</i> message.
      */
     private void printHello() {
-        System.out.println("RDFCoder command line console [version " + VERSION_MAJOR + "." + VERSION_MINOR + "]");
-        System.out.println();
+        println("RDFCoder command line console [version " + VERSION_MAJOR + "." + VERSION_MINOR + "]");
+        println();
     }
 
     private void printObject(Object o, PrintStream ps) {
@@ -1250,9 +1276,8 @@ public abstract class AbstractCommandLine {
     }
 
     private String readInput(String prompt) throws IOException {
-        System.out.print(prompt);
-        String ret = consoleReader.readLine();
-        return ret;
+        print(prompt);
+        return consoleReader.readLine();
     }
 
     /**
@@ -1263,9 +1288,9 @@ public abstract class AbstractCommandLine {
      */
     private boolean confirmExit() throws IOException {
        if( ! toBeSaved.isEmpty() ) { // There are models not yes stored.
-            System.out.println("Following models has been modified but not stored:");
+            println("Following models has been modified but not stored:");
             for(String m : toBeSaved ) {
-                System.out.println("\t" + m);
+                println("\t" + m);
             }
             while(true) {
                 String response = readInput("Are you sure do you want to exit? [Yes/No]");

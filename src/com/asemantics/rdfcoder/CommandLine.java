@@ -63,7 +63,7 @@ public class CommandLine extends AbstractCommandLine {
      */
     public void command_debug(String[] args) {
         if( args.length == 0 ) {
-            System.out.println("debug: " + isDebug());
+            println("debug: " + isDebug());
         } else if(args.length == 1 && "true".equals(args[0]) ) {
             setDebug(true);
         }  else if(args.length == 1 && "false".equals(args[0]) ) {
@@ -90,7 +90,7 @@ public class CommandLine extends AbstractCommandLine {
      * @param args
      */
     public void command_pwd(String[] args) {
-        System.out.println( getCurrentDirectory().getAbsolutePath() );
+        println(getCurrentDirectory().getAbsolutePath());
     }
 
     public String __command_pwd() {
@@ -133,25 +133,27 @@ public class CommandLine extends AbstractCommandLine {
             return;
         }
         if( target.isFile() ) {
-            System.out.println( target.getAbsolutePath() );
-            System.out.println();
+            println(target.getAbsolutePath());
             return;
         }
         File[] content = target.listFiles();
         FilePermission fp;
-        System.out.println( target.getAbsolutePath() );
-        System.out.println();
-        for(File f : content) {
+        println( target.getAbsolutePath() );
+        StringBuilder sb = new StringBuilder();
+        final int lastNLIndex = content.length - 1;
+        for(int i = 0; i < content.length; i++) {
+            File f = content[i];
             fp = new FilePermission(f.getAbsolutePath(), "read,write,execute,delete");
-            System.out.printf(
-                    "%s\t%s\t\t\t%s\t%d\n",
+            sb.append(String.format(
+                    "%s\t%s\t\t\t%s\t%d",
                     ( f.isDirectory() ? "d" : "-"),
                     f.getName(),
                     rewriteActions( fp.getActions() ),
                     f.length()
-            );
+            ));
+            if(i < lastNLIndex) sb.append('\n');
         }
-        System.out.println();
+        println(sb.toString());
     }
 
     /**
@@ -188,7 +190,7 @@ public class CommandLine extends AbstractCommandLine {
         }
         String modelName = args[0];
         createModelHandler(modelName);
-        System.out.println( String.format("Model '%s' created.", modelName) );
+        println( String.format("Model '%s' created.", modelName) );
     }
 
     public String __command_newmodel() {
@@ -212,9 +214,9 @@ public class CommandLine extends AbstractCommandLine {
         }
         String modelName = args[0];
         if( removeModelHandler(modelName) ) {
-            System.out.println(String.format("Model '%s' deleted.", modelName));
+            println(String.format("Model '%s' deleted.", modelName));
         } else {
-            System.out.println(String.format("Model '%s' cannot be deleted.", modelName));
+            println(String.format("Model '%s' cannot be deleted.", modelName));
         }
     }
 
@@ -240,7 +242,7 @@ public class CommandLine extends AbstractCommandLine {
         }
         String modelName = args[0];
         clearModelHandler(modelName);
-        System.out.println(String.format("Model '%s' cleaned up.", modelName));
+        println(String.format("Model '%s' cleaned up.", modelName));
     }
 
      public String __command_clearmodel() {
@@ -261,11 +263,11 @@ public class CommandLine extends AbstractCommandLine {
      */
     public void command_setmodel(String[] args) {
         if(args.length == 0) {
-            System.out.println("selected model: " + getSelectedModel());
+            println("selected model: " + getSelectedModel());
         } else if( args.length == 1 ) {
             String modelName = args[0];
             setSelectedModel(modelName);
-            System.out.println( String.format("Model set to '%s'", modelName) );
+            println(String.format("Model set to '%s'", modelName));
         } else {
             throw new IllegalArgumentException();
         }
@@ -300,7 +302,7 @@ public class CommandLine extends AbstractCommandLine {
             parameters = databaseStorageParams(args);
         }
         saveModel(parameters);
-        System.out.println("Model saved with parameters " + parameters.toString());
+        println("Model saved with parameters " + parameters.toString());
     }
 
     public String __command_savemodel() {
@@ -337,7 +339,7 @@ public class CommandLine extends AbstractCommandLine {
             parameters = databaseStorageParams(args);
         }
         loadModel(parameters);
-        System.out.println("Model loaded.");
+        println("Model loaded.");
     }
 
     public String __command_loadmodel() {
@@ -372,14 +374,14 @@ public class CommandLine extends AbstractCommandLine {
         if(args.length == 1) {
             String longHelp = getLongCommandDescription(args[0]);
             if(longHelp == null) {
-                System.out.println("cannot find help for command '" + args[0] + "'");
+                println("cannot find help for command '" + args[0] + "'");
             } else {
-                System.out.println(longHelp);
+                println(longHelp);
             }
             return;
         }
-        System.out.println("invalid command");
-        System.out.println( __command_help() );
+        println("invalid command");
+        println( __command_help() );
     }
 
     public String __command_help() {
@@ -401,12 +403,11 @@ public class CommandLine extends AbstractCommandLine {
         if(args.length > 0) {
             throw new IllegalArgumentException();
         }
-        System.out.println("Models:");
+        println("Models:");
         final String selectedModel = getSelectedModel();
         for(String mhn : getModelHandlerNames()) {
-            System.out.println("\t" + mhn + (mhn.equals(selectedModel) ? "[X]" : "") );
+            println("\t" + mhn + (mhn.equals(selectedModel) ? "[X]" : "") );
         }
-        System.out.println();
     }
 
     public String __command_list() {
