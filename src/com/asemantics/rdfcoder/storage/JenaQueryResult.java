@@ -19,12 +19,17 @@
 package com.asemantics.rdfcoder.storage;
 
 import com.asemantics.rdfcoder.model.QueryResult;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.query.core.ResultBinding;
 
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 
@@ -98,7 +103,40 @@ public class JenaQueryResult implements QueryResult {
     }
 
     public void toTabularView(PrintStream ps) {
-         ResultSetFormatter.out(ps, resultSet, query) ;
+         ResultSetFormatter.out(ps, resultSet, query);
+    }
+
+    @Override
+    public void toJSONView(PrintStream ps) {
+        JsonFactory factory = new JsonFactory();
+        String[] vars = getVariables();
+        try {
+            JsonGenerator generator = factory.createGenerator(new BufferedOutputStream(ps));
+            generator.writeStartObject();
+            generator.writeFieldName("success");
+            generator.writeObject(true);
+            generator.writeFieldName("query");
+            generator.writeObject(query.toString());
+            generator.writeFieldName("bindings");
+            generator.writeStartArray();
+            for(String var : vars) generator.writeObject(var);
+            generator.writeEndArray();
+            generator.writeFieldName("data");
+            generator.writeStartArray();
+            while(resultSet.hasNext()) {
+                ResultBinding rb = (ResultBinding) resultSet.nextSolution();
+                generator.writeStartArray();
+                for(String var : vars) {
+                    generator.writeObject(rb.get(var).toString());
+                }
+                generator.writeEndArray();
+            }
+            generator.writeEndArray();
+            generator.writeEndObject();
+            generator.flush();
+        } catch (IOException ioe) {
+            throw new RuntimeException("Error while instantiating a generator.", ioe);
+        }
     }
 
     public void finalize() {

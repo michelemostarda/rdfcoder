@@ -70,5 +70,11 @@ public interface QueryResult {
      * @param ps
      */
     public void toTabularView(PrintStream ps);
+
+    /**
+     * Prints a JSON view of the result set on the given out stream.
+     * @param ps
+     */
+    public void toJSONView(PrintStream ps);
     
 }

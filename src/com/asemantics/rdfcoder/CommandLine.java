@@ -431,7 +431,7 @@ public class CommandLine extends AbstractCommandLine {
             throw new IllegalArgumentException();
         }
         String qry = args[0];
-        performQueryOnModel(qry, System.out);
+        performQueryOnModel(qry);
     }
 
     public String __command_querymodel() {

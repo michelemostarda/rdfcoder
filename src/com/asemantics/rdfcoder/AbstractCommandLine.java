@@ -58,6 +58,14 @@ import java.util.Set;
 public abstract class AbstractCommandLine {
 
     /**
+     * Enumeration of all supported CLI output types.
+     */
+    public enum OutputType {
+        TEXT,
+        JSON
+    }
+
+    /**
      * Enumeration on library types.
      */
     private enum LibraryType {
@@ -145,6 +153,11 @@ public abstract class AbstractCommandLine {
      * Java profile name.
      */
     private static final String JAVA_PROFILE = "java-profile";
+
+    /**
+     * The format for the output type.
+     */
+    private static final OutputType outputType = OutputType.JSON;
 
     /**
      * Arguments buffer.
@@ -383,12 +396,21 @@ public abstract class AbstractCommandLine {
     protected abstract void configureCommandCompletors(ConsoleReader cr);
 
     /**
+     * Returns the current output stream.
+     *
+     * @return
+     */
+    protected PrintStream getOutputStream() {
+        return System.out;
+    }
+
+    /**
      * Prints the input string on the out stream.
      *
      * @param out
      */
     protected void print(String out) {
-        System.out.print(out);
+        getOutputStream().print(out);
     }
 
     /**
@@ -397,7 +419,7 @@ public abstract class AbstractCommandLine {
      * @param out
      */
     protected void println(String out) {
-        System.out.println(out);
+        getOutputStream().println(out);
     }
 
     /**
@@ -512,9 +534,8 @@ public abstract class AbstractCommandLine {
      *
      * @param modelName
      * @param qry
-     * @param ps
      */
-    protected void performQueryOnModel(String modelName, String qry, PrintStream ps) {
+    protected void performQueryOnModel(String modelName, String qry) {
         if( ! modelHandlers.containsKey(modelName)) {
             throw new IllegalArgumentException("model with name " + modelName + " doesn't exist.");
         }
@@ -528,7 +549,14 @@ public abstract class AbstractCommandLine {
         QueryResult qr = null;
         try {
             qr = qcm.performQuery(qry);
-            qr.toTabularView(ps);
+            if(outputType == OutputType.TEXT) {
+                qr.toTabularView(getOutputStream());
+            } else if(outputType == OutputType.JSON) {
+                qr.toJSONView(getOutputStream());
+                println();
+            } else {
+                throw new IllegalStateException();
+            }
         } catch (SPARQLException e) {
             throw new IllegalArgumentException("Cannot perform SPARQL query.");
         } finally {
@@ -540,10 +568,9 @@ public abstract class AbstractCommandLine {
      * Performs a SPARQL query on the selected model.
      *
      * @param qry
-     * @param ps
      */
-    protected void performQueryOnModel(String qry, PrintStream ps) {
-        performQueryOnModel(selectedModel, qry, ps);
+    protected void performQueryOnModel(String qry) {
+        performQueryOnModel(selectedModel, qry);
     }
 
     /**
