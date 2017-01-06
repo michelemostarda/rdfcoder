@@ -92,6 +92,7 @@ Usage: <command> <parameters>
         setmodel                        Set a new model
         removemodel                     Remove the current model
         ls                              List content of current directory
+        loadjre                         Load the JRE data into the active model
         clearmodel                      Cleanup the current model
         loadclasspath                   Load a classpath on the active model
         list                            List the loaded models
@@ -104,9 +105,9 @@ Usage: <command> <parameters>
         describe                        Describe the object referenced by the given path
         pwd                             Print the current directory
         querymodel                      Query the active model
-
-
 ```
+
+A description of all available CLI commands can be found [here](doc/commandline.md).
 
 ### Create a new model
 
