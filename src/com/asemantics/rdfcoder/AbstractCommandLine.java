@@ -31,6 +31,12 @@ import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.CodeStorageException;
 import jline.ConsoleReader;
 import jline.History;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.io.IOException;
@@ -214,8 +220,48 @@ public abstract class AbstractCommandLine {
      */
     public static void main(String[] args)
     throws IOException, IllegalAccessException, InvocationTargetException, ProfileException {
-        CommandLine commandLine = new CommandLine(new File("."));
+        Options options = new Options();
+        Option input = new Option("h", "help", false, "Get help");
+        input.setRequired(false);
+        options.addOption(input);
+        Option output = new Option("c", "command", true, "Specify command");
+        output.setRequired(false);
+        options.addOption(output);
+        Option workingDir = new Option("d", "dir", true, "Specify working dir");
+        output.setRequired(false);
+        options.addOption(workingDir);
+
+        CommandLineParser parser = new DefaultParser();
+        HelpFormatter formatter = new HelpFormatter();
+        org.apache.commons.cli.CommandLine cmd;
+
+        try {
+            cmd = parser.parse(options, args);
+        } catch (ParseException pe) {
+            System.out.println(pe.getMessage());
+            formatter.printHelp("rdfcoder", options);
+            System.exit(1);
+            return;
+        }
+
+        final boolean isHelp = cmd.hasOption("h");
+        final String commandBLock = cmd.getOptionValue("c", null);
+        final File wDir = new File(cmd.getOptionValue("w", "."));
+        if(isHelp) {
+            formatter.printHelp("rdfcoder", options);
+            System.exit(0);
+            return;
+        }
+
+        CommandLine commandLine = new CommandLine(wDir);
+        if(commandBLock != null) {
+            final boolean blockSuccess = commandLine.processLine(commandBLock);
+            System.exit(blockSuccess ? 0 : 2);
+            return;
+        }
+
         commandLine.mainCycle();
+        System.exit(0);
     }
 
     /**
@@ -930,7 +976,6 @@ public abstract class AbstractCommandLine {
         printHello();
         while ( processLine( readInput( getPrompt() ) )  );
         System.out.println("Bye");
-        System.exit(0);
     }
 
     /**
