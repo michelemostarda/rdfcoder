@@ -68,7 +68,7 @@ public class CommandLineTest {
 
     @Test
     public void testRetrieveCommands() {
-        Assert.assertEquals("Unexpected number of commands.", 16, commandLine.getCommands().length);
+        Assert.assertEquals("Unexpected number of commands.", 17, commandLine.getCommands().length);
     }
 
     @Test
