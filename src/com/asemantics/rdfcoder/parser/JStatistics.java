@@ -269,20 +269,18 @@ public class JStatistics {
         sb.append("methods javadoc: ").append(methodsJavadoc).append("\n");
         sb.append("generated temporary identifiers: ").append(generatedTempIds).append("\n");
         sb.append("replaced entries: ").append(replacedEntries).append("\n");
-
-        sb.append("unresolved [").append( unresolved != null ? unresolved.length : 0).append("] {\n");
+        sb.append("unresolved [").append( unresolved != null ? unresolved.length : 0).append("]\n");
         if( unresolved != null ) {
             for( String u : unresolved) {
-                sb.append(u).append("\n");
+                sb.append('\t').append(u).append("\n");
             }
         }
-        sb.append("}\n");
-
-
-        sb.append("parse errors[").append(parseErrors).append("] {\n");
-        sb.append( errorMessages );
-        sb.append("}\n");
-
+        sb.append("parse errors[").append(parseErrors).append("]\n");
+        if(errorMessages.length() > 0) {
+            sb.append("==== BEGIN PARSE ERRORS ====\n");
+            sb.append(errorMessages);
+            sb.append("==== END PARSE ERRORS   ====\n");
+        }
         return sb.toString();
     }
 
