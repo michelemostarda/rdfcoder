@@ -849,9 +849,29 @@ public abstract class AbstractCommandLine {
             }
         }
 
-        for(JStatistics stats : statistics) {
-            ps.print( stats.toStringReport() );
+        if(outputType == OutputType.TEXT) {
+            for(JStatistics stats : statistics) {
+                ps.print(stats.toStringReport());
+            }
             ps.flush();
+        } else if(outputType == OutputType.JSON) {
+            final JsonGenerator generator = jsonFactory.createGenerator(new BufferedOutputStream(getOutputStream()));
+            generator.writeStartObject();
+            generator.writeFieldName("operation");
+            generator.writeObject("load_classpath");
+            generator.writeFieldName("result");
+            generator.writeStartArray();
+            for (JStatistics stats : statistics) {
+                stats.toJSONReport(generator);
+            }
+            generator.writeEndArray();
+            generator.writeFieldName("success");
+            generator.writeObject(true);
+            generator.writeEndObject();
+            generator.flush();
+            println();
+        } else {
+            throw new IllegalStateException();
         }
 
         toBeSaved.add(selectedModel);

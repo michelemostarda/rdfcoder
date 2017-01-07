@@ -26,7 +26,9 @@ import com.asemantics.rdfcoder.parser.javadoc.ClassJavadoc;
 import com.asemantics.rdfcoder.parser.javadoc.ConstructorJavadoc;
 import com.asemantics.rdfcoder.parser.javadoc.FieldJavadoc;
 import com.asemantics.rdfcoder.parser.javadoc.MethodJavadoc;
+import com.fasterxml.jackson.core.JsonGenerator;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -252,9 +254,13 @@ public class JStatistics {
         reset();
     }
 
+    public double getParsingTime() {
+        return (endParsingTime - startParsingTime) / 1000;
+    }
+
     public String toStringReport() {
         StringBuilder sb = new StringBuilder();
-        sb.append("parsing time (secs):").append( (endParsingTime - startParsingTime) / 1000 ).append("\n"); 
+        sb.append("parsing time (secs):").append(getParsingTime()).append("\n");
         sb.append("parsed files: ").append(parsedFiles).append("\n");
         sb.append("parsed classes: ").append(parsedClasses).append("\n");
         sb.append("parsed interfaces: ").append(parsedInterfaces).append("\n");
@@ -282,6 +288,51 @@ public class JStatistics {
             sb.append("==== END PARSE ERRORS   ====\n");
         }
         return sb.toString();
+    }
+
+    public void toJSONReport(JsonGenerator generator) throws IOException {
+        generator.writeStartObject();
+        generator.writeFieldName("parsing_time");
+        generator.writeObject(getParsingTime());
+        generator.writeFieldName("parsed_files");
+        generator.writeObject(parsedFiles);
+        generator.writeFieldName("parsed_classes");
+        generator.writeObject(parsedClasses);
+        generator.writeFieldName("parsed_interfaces");
+        generator.writeObject(parsedInterfaces);
+        generator.writeFieldName("parsed_attributes");
+        generator.writeObject(parsedAttributes);
+        generator.writeFieldName("parsed_constructors");
+        generator.writeObject(parsedConstructors);
+        generator.writeFieldName("parsed_methods");
+        generator.writeObject(parsedMethods);
+        generator.writeFieldName("parsed_enumerations");
+        generator.writeObject(parsedEnumarations);
+        generator.writeFieldName("javadoc_entries");
+        generator.writeObject(javadocEntries);
+        generator.writeFieldName("classes_javadoc");
+        generator.writeObject(classesJavadoc);
+        generator.writeFieldName("fields_javadoc");
+        generator.writeObject(fieldsJavadoc);
+        generator.writeFieldName("constructors_javadoc");
+        generator.writeObject(constructorsJavadoc);
+        generator.writeFieldName("methods_javadoc");
+        generator.writeObject(methodsJavadoc);
+        generator.writeFieldName("generated_temporary_identifiers");
+        generator.writeObject(generatedTempIds);
+        generator.writeFieldName("replaced_entries");
+        generator.writeObject(replacedEntries);
+        generator.writeFieldName("unresolved");
+        generator.writeStartArray();
+        if(unresolved != null) {
+            for(String e: unresolved) {
+                generator.writeObject(e);
+            }
+        }
+        generator.writeEndArray();
+        generator.writeFieldName("error_messages");
+        generator.writeObject(errorMessages.toString());
+        generator.writeEndObject();
     }
 
     public String toString() {
