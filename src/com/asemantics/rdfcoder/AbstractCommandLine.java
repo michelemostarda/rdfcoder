@@ -165,7 +165,7 @@ public abstract class AbstractCommandLine {
     /**
      * JSON factory.
      */
-    private static final JsonFactory factory = new JsonFactory();
+    private static final JsonFactory jsonFactory = new JsonFactory();
 
     /**
      * Arguments buffer.
@@ -561,7 +561,7 @@ public abstract class AbstractCommandLine {
                 qr.toTabularView(getOutputStream());
             } else if(outputType == OutputType.JSON) {
                 try {
-                    JsonGenerator generator = factory.createGenerator(new BufferedOutputStream(getOutputStream()));
+                    JsonGenerator generator = jsonFactory.createGenerator(new BufferedOutputStream(getOutputStream()));
                     generator.writeStartObject();
                     generator.writeFieldName("operation");
                     generator.writeObject("sparql_query");
@@ -629,8 +629,22 @@ public abstract class AbstractCommandLine {
     protected void describeModel(String modelName, String qry, PrintStream ps) {
         Inspector inspector = getInspectorForModel(modelName);
         try {
-            String description = inspector.describe(qry);
-            ps.println(description);
+            if(outputType == OutputType.TEXT) {
+                String description = inspector.describe(qry);
+                ps.print(description);
+            } else {
+                final JsonGenerator generator = jsonFactory.createGenerator(new BufferedOutputStream(getOutputStream()));
+                generator.writeStartObject();
+                generator.writeFieldName("operation");
+                generator.writeObject("describe_model");
+                generator.writeFieldName("result");
+                inspector.describeJSON(qry, generator);
+                generator.writeFieldName("success");
+                generator.writeObject(true);
+                generator.writeEndObject();
+                generator.flush();
+                println();
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException("Cannot perform inspection query.", e);
         }
@@ -1246,9 +1260,7 @@ public abstract class AbstractCommandLine {
             } else {
                 println(getLongCommandDescription(cmd));
             }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
@@ -1324,7 +1336,7 @@ public abstract class AbstractCommandLine {
     private void printObjectJSON(Object o, PrintStream ps) {
         JsonGenerator generator;
         try {
-            generator = factory.createGenerator(new BufferedOutputStream(ps));
+            generator = jsonFactory.createGenerator(new BufferedOutputStream(ps));
             generator.writeStartObject();
             generator.writeFieldName("operation");
             generator.writeObject("inspect");

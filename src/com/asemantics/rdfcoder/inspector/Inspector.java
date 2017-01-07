@@ -17,6 +17,8 @@
 
 package com.asemantics.rdfcoder.inspector;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,7 +105,7 @@ public class Inspector {
      */
     public String describe(String expression, Object bean) throws PatternException, InspectorParserException {
         Object obj = inspect(expression, bean);
-        return BeanAccessor.describeBean(obj);
+        return BeanAccessor.describeBeanHR(obj);
     }
 
     /**
@@ -114,5 +116,28 @@ public class Inspector {
      */
     public String describe(String expression) throws InspectorParserException, PatternException {
         return describe(expression, context);
+    }
+
+    /**
+     * Describes the bean addressed by the given expression on the given bean context in JSON format.
+     *
+     * @param expression
+     * @param generator
+     * @return the description.
+     */
+    public void describeJSON(String expression, Object bean, JsonGenerator generator) throws PatternException, InspectorParserException {
+        Object obj = inspect(expression, bean);
+        BeanAccessor.describeBeanJSON(obj, generator);
+    }
+
+    /**
+     * Describes the bean addressed by the given expression on the default context.
+     *
+     * @param expression
+     * @param generator
+     * @return the description.
+     */
+    public void describeJSON(String expression, JsonGenerator generator) throws InspectorParserException, PatternException {
+        describeJSON(expression, context, generator);
     }
 }

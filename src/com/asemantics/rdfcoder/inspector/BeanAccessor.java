@@ -18,6 +18,8 @@
 package com.asemantics.rdfcoder.inspector;
 
 
+import com.fasterxml.jackson.core.JsonGenerator;
+
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -63,13 +65,13 @@ public class BeanAccessor {
     }
 
     /**
-     * Describes a given <i>bean</i>.
+     * Describes a given <i>bean</i> in a human readable format.
      * 
      * @param bean
      * @return the bean description of the bean.
      * @throws PatternException
      */
-    public static String describeBean(Object bean) throws PatternException {
+    public static String describeBeanHR(Object bean) throws PatternException {
         if( bean == null ) {
             throw new NullPointerException("Invalid null bean");
         }
@@ -78,13 +80,13 @@ public class BeanAccessor {
             BeanInfo beanInfo = Introspector.getBeanInfo( bean.getClass() );
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             StringBuilder sb = new StringBuilder();
-            sb.append("{\n");
+            sb.append(bean.getClass().getCanonicalName()).append('\n');
             for(PropertyDescriptor propertyDescriptor : propertyDescriptors) {
                 final String propertyName = propertyDescriptor.getName();
                 if("class".equals(propertyName)) {
                     continue;
                 }
-                sb.append(propertyName)
+                sb.append('\t').append(propertyName)
                         .append(":")
                 .append(
                         getHumanDescription(
@@ -94,8 +96,54 @@ public class BeanAccessor {
                 )
                 .append("\n");
             }
-            sb.append("}\n");
             return sb.toString();
+        } catch (Exception e) {
+            throw new PatternException("Error while inspecting bean: '" + bean + "'", e);
+        }
+    }
+
+    /**
+     * Describes a given <i>bean</i> in JSON format.
+     *
+     * @param bean
+     * @return
+     */
+    public static void describeBeanJSON(Object bean, JsonGenerator generator) throws PatternException {
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
+            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            generator.writeStartObject();
+            generator.writeFieldName("object_class");
+            generator.writeObject(bean.getClass().getCanonicalName());
+            generator.writeFieldName("properties");
+            generator.writeStartArray();
+            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+                final String propertyName = propertyDescriptor.getName();
+                if ("class".equals(propertyName)) {
+                    continue;
+                }
+                generator.writeStartObject();
+                generator.writeFieldName("name");
+                generator.writeObject(propertyName);
+                Class type = propertyDescriptor.getPropertyType();
+                Object val = propertyDescriptor.getReadMethod().invoke(bean);
+                if (type.isArray()) {
+                    generator.writeFieldName("type");
+                    generator.writeObject(type.getComponentType().getName());
+                    generator.writeFieldName("is_array");
+                    generator.writeObject(true);
+                    generator.writeFieldName("length");
+                    generator.writeObject(Array.getLength(val));
+                } else {
+                    generator.writeFieldName("type");
+                    generator.writeObject(type.getName());
+                    generator.writeFieldName("is_array");
+                    generator.writeObject(false);
+                }
+                generator.writeEndObject();
+            }
+            generator.writeEndArray();
+            generator.writeEndObject();
         } catch (Exception e) {
             throw new PatternException("Error while inspecting bean: '" + bean + "'", e);
         }
