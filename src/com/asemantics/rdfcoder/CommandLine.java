@@ -450,7 +450,7 @@ public class CommandLine extends AbstractCommandLine {
             throw new IllegalArgumentException();
         }
         String qry = args[0];
-        inspectModel(qry, System.out);
+        inspectModel(qry);
     }
 
     public String __command_inspect() {

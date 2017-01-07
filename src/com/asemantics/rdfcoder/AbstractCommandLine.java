@@ -29,6 +29,8 @@ import com.asemantics.rdfcoder.parser.JStatistics;
 import com.asemantics.rdfcoder.profile.ProfileException;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.CodeStorageException;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import jline.ConsoleReader;
 import jline.History;
 import org.apache.commons.cli.CommandLineParser;
@@ -38,6 +40,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -158,6 +161,11 @@ public abstract class AbstractCommandLine {
      * The format for the output type.
      */
     private static final OutputType outputType = OutputType.JSON;
+
+    /**
+     * JSON factory.
+     */
+    private static final JsonFactory factory = new JsonFactory();
 
     /**
      * Arguments buffer.
@@ -552,7 +560,20 @@ public abstract class AbstractCommandLine {
             if(outputType == OutputType.TEXT) {
                 qr.toTabularView(getOutputStream());
             } else if(outputType == OutputType.JSON) {
-                qr.toJSONView(getOutputStream());
+                try {
+                    JsonGenerator generator = factory.createGenerator(new BufferedOutputStream(getOutputStream()));
+                    generator.writeStartObject();
+                    generator.writeFieldName("operation");
+                    generator.writeObject("sparql_query");
+                    generator.writeFieldName("result");
+                    qr.toJSONView(generator);
+                    generator.writeFieldName("success");
+                    generator.writeObject(true);
+                    generator.writeEndObject();
+                    generator.flush();
+                } catch(IOException ioe) {
+                    throw new RuntimeException("Error while composing JSON object.", ioe);
+                }
                 println();
             } else {
                 throw new IllegalStateException();
@@ -578,13 +599,12 @@ public abstract class AbstractCommandLine {
      *
      * @param modelName
      * @param qry
-     * @param ps
      */
-    protected void inspectModel(String modelName, String qry, PrintStream ps) {
+    protected void inspectModel(String modelName, String qry) {
         Inspector inspector = getInspectorForModel(modelName);
         try {
             Object o = inspector.inspect(qry);
-            printObject(o, ps);
+            printObject(o, getOutputStream());
         } catch (Exception e) {
             throw new IllegalArgumentException("Cannot perform inspection query.", e);
         }
@@ -594,10 +614,9 @@ public abstract class AbstractCommandLine {
      * Inspects the active code model as a bean.
      *
      * @param qry
-     * @param ps
      */
-    protected void inspectModel(String qry, PrintStream ps) {
-        inspectModel(selectedModel, qry, ps);
+    protected void inspectModel(String qry) {
+        inspectModel(selectedModel, qry);
     }
 
     /**
@@ -1275,7 +1294,7 @@ public abstract class AbstractCommandLine {
         println();
     }
 
-    private void printObject(Object o, PrintStream ps) {
+    private void printObjectHR(Object o, PrintStream ps) {
         final StringBuilder sb = new StringBuilder();
         if (o.getClass().isArray()) {
             int length = Array.getLength(o);
@@ -1299,6 +1318,61 @@ public abstract class AbstractCommandLine {
             ps.print(sb.toString());
         } else {
             ps.println(o.toString());
+        }
+    }
+
+    private void printObjectJSON(Object o, PrintStream ps) {
+        JsonGenerator generator;
+        try {
+            generator = factory.createGenerator(new BufferedOutputStream(ps));
+            generator.writeStartObject();
+            generator.writeFieldName("operation");
+            generator.writeObject("inspect");
+            generator.writeFieldName("result");
+            if (o.getClass().isArray()) {
+                int length = Array.getLength(o);
+                Object e;
+                generator.writeStartArray();
+                for (int i = 0; i < length; i++) {
+                    e = Array.get(o, i);
+                    generator.writeObject(e.toString());
+                }
+                generator.writeEndArray();
+            } else if (o instanceof Collection<?>) {
+                final Collection c = (Collection<?>) o;
+                generator.writeStartArray();
+                for (Object e : c) {
+                    generator.writeObject(e.toString());
+                }
+                generator.writeEndArray();
+            } else if (o instanceof Map<?, ?>) {
+                final Map<?, ?> m = (Map<?, ?>) o;
+                generator.writeStartObject();
+                for (Map.Entry<?, ?> e : m.entrySet()) {
+                    generator.writeFieldName(e.getKey().toString());
+                    generator.writeObject(e.getValue().toString());
+                }
+                generator.writeEndObject();
+            } else {
+                generator.writeObject(o.toString());
+            }
+            generator.writeFieldName("success");
+            generator.writeObject(true);
+            generator.writeEndObject();
+            generator.flush();
+            println();
+        } catch (IOException ioe) {
+            throw new RuntimeException("Error while building JSON data.", ioe);
+        }
+    }
+
+    private void printObject(Object o, PrintStream ps) {
+        if(outputType == OutputType.TEXT) {
+            printObjectHR(o, ps);
+        } else if(outputType == OutputType.JSON) {
+            printObjectJSON(o, ps);
+        } else {
+            throw new IllegalStateException();
         }
     }
 

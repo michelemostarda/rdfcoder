@@ -18,6 +18,9 @@
 
 package com.asemantics.rdfcoder.model;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+
+import java.io.IOException;
 import java.io.PrintStream;
 
 /**
@@ -73,8 +76,8 @@ public interface QueryResult {
 
     /**
      * Prints a JSON view of the result set on the given out stream.
-     * @param ps
+     * @param generator used to compose valid JSON data output.
      */
-    public void toJSONView(PrintStream ps);
+    public void toJSONView(JsonGenerator generator) throws IOException;
     
 }
