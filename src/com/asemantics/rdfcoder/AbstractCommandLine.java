@@ -31,6 +31,7 @@ import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.CodeStorageException;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.hp.hpl.jena.query.QueryParseException;
 import jline.ConsoleReader;
 import jline.History;
 import org.apache.commons.cli.CommandLineParser;
@@ -622,30 +623,33 @@ public abstract class AbstractCommandLine {
         QueryResult qr = null;
         try {
             qr = qcm.performQuery(qry);
-            if(outputType == OutputType.TEXT) {
-                qr.toTabularView(getOutputStream());
-            } else if(outputType == OutputType.JSON) {
-                try {
-                    JsonGenerator generator = jsonFactory.createGenerator(new BufferedOutputStream(getOutputStream()));
-                    generator.writeStartObject();
-                    generator.writeFieldName("operation");
-                    generator.writeObject("sparql_query");
-                    generator.writeFieldName("result");
-                    qr.toJSONView(generator);
-                    generator.writeEndObject();
-                    generator.flush();
-                } catch(IOException ioe) {
-                    throw new RuntimeException("Error while composing JSON object.", ioe);
-                }
-                println();
-            } else {
-                throw new IllegalStateException();
-            }
+        } catch (QueryParseException qpe) {
+            throw new IllegalArgumentException("Error while parsing SPARQL query.", qpe);
         } catch (SPARQLException e) {
-            throw new IllegalArgumentException("Cannot perform SPARQL query.");
+            throw new IllegalArgumentException("Cannot perform SPARQL query.", e);
         } finally {
             if(qr != null) { qr.close(); }
         }
+        if(outputType == OutputType.TEXT) {
+            qr.toTabularView(getOutputStream());
+        } else if(outputType == OutputType.JSON) {
+            try {
+                JsonGenerator generator = jsonFactory.createGenerator(new BufferedOutputStream(getOutputStream()));
+                generator.writeStartObject();
+                generator.writeFieldName("operation");
+                generator.writeObject("sparql_query");
+                generator.writeFieldName("result");
+                qr.toJSONView(generator);
+                generator.writeEndObject();
+                generator.flush();
+            } catch(IOException ioe) {
+                throw new RuntimeException("Error while composing JSON object.", ioe);
+            }
+            println();
+        } else {
+            throw new IllegalStateException();
+        }
+
     }
 
     /**
@@ -1336,7 +1340,29 @@ public abstract class AbstractCommandLine {
      */
     private void handleIllegalArgumentException(IllegalArgumentException iae, String cmd) {
         final String errMsg = iae.getMessage();
-        println(String.format("ERROR: %s%s", iae.getClass().getName(), errMsg != null ? String.format("(%s)", errMsg) : ""));
+        if (outputType == OutputType.TEXT) {
+            println(String.format("ERROR: %s%s", iae.getClass().getName(), errMsg != null ? String.format("(%s)", errMsg) : ""));
+        } else if(outputType == OutputType.JSON) {
+            try {
+                final JsonGenerator generator = getOutJSONGenerator();
+                generator.writeStartObject();
+                generator.writeFieldName("type");
+                generator.writeObject("exception");
+                generator.writeFieldName("class");
+                generator.writeObject(iae.getClass().getName());
+                generator.writeFieldName("msg");
+                generator.writeObject(errMsg);
+                generator.writeFieldName("cause");
+                generator.writeObject(iae.getCause().getClass().getName());
+                generator.writeEndObject();
+                generator.flush();
+                println();
+            } catch (IOException ioe) {
+                throw new RuntimeException("Error while generating JSON output.", ioe);
+            }
+        } else {
+            throw new IllegalStateException();
+        }
         if(debug) { iae.printStackTrace(); }
         Throwable cause = iae.getCause();
         int causeLevel = 0;
