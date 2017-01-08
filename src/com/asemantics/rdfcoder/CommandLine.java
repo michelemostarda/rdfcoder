@@ -32,7 +32,6 @@ import jline.NullCompletor;
 import jline.SimpleCompletor;
 
 import java.io.File;
-import java.io.FilePermission;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -91,7 +90,26 @@ public class CommandLine extends AbstractCommandLine {
      * @param args
      */
     public void command_pwd(String[] args) {
-        println(getCurrentDirectory().getAbsolutePath());
+        final String wd = getCurrentDirectory().getAbsolutePath();
+        if (getOutputType() == OutputType.JSON) {
+            try {
+                final JsonGenerator generator = getOutJSONGenerator();
+                generator.writeStartObject();
+                generator.writeFieldName("operation");
+                generator.writeObject("pwd");
+                generator.writeFieldName("result");
+                generator.writeObject(wd);
+                generator.writeEndObject();
+                generator.flush();
+                println();
+            } catch (IOException ioe) {
+                throw new RuntimeException("Error while generating JSON output.", ioe);
+            }
+        } else if (getOutputType() == OutputType.TEXT) {
+            println(wd);
+        } else {
+            throw new IllegalStateException();
+        }
     }
 
     public String __command_pwd() {
@@ -119,12 +137,11 @@ public class CommandLine extends AbstractCommandLine {
                 "\n\tsyntax: cd <path to new location>";
     }
 
-    private String rewriteActions(String in) {
+    private String rewriteActions(File f) {
         StringBuilder sb = new StringBuilder();
-        if(in.indexOf("read")    != -1) { sb.append("r"); }
-        if(in.indexOf("write")   != -1) { sb.append("w"); }
-        if(in.indexOf("execute") != -1) { sb.append("e"); }
-        if(in.indexOf("delete")  != -1) { sb.append("d"); }
+        if(f.canRead()) { sb.append("r"); }
+        if(f.canWrite()) { sb.append("w"); }
+        if(f.canExecute()) { sb.append("x"); }
         return sb.toString();
     }
 
@@ -138,23 +155,60 @@ public class CommandLine extends AbstractCommandLine {
             return;
         }
         File[] content = target.listFiles();
-        FilePermission fp;
-        println( target.getAbsolutePath() );
-        StringBuilder sb = new StringBuilder();
-        final int lastNLIndex = content.length - 1;
-        for(int i = 0; i < content.length; i++) {
-            File f = content[i];
-            fp = new FilePermission(f.getAbsolutePath(), "read,write,execute,delete");
-            sb.append(String.format(
-                    "%s\t%s\t\t\t%s\t%d",
-                    ( f.isDirectory() ? "d" : "-"),
-                    f.getName(),
-                    rewriteActions( fp.getActions() ),
-                    f.length()
-            ));
-            if(i < lastNLIndex) sb.append('\n');
+        if(getOutputType() == OutputType.JSON) {
+            try {
+                final JsonGenerator generator = getOutJSONGenerator();
+                generator.writeStartObject();
+                generator.writeFieldName("operation");
+                generator.writeObject("ls");
+                generator.writeFieldName("path");
+                generator.writeObject(target.getAbsolutePath());
+                generator.writeFieldName("result");
+                generator.writeStartArray();
+                for (int i = 0; i < content.length; i++) {
+                    File f = content[i];
+                    generator.writeStartObject();
+                    generator.writeFieldName("name");
+                    generator.writeObject(f.getName());
+                    generator.writeFieldName("is_dir");
+                    generator.writeObject(f.isDirectory());
+                    generator.writeFieldName("actions");
+                    generator.writeObject(rewriteActions(f));
+                    generator.writeFieldName("size");
+                    generator.writeObject(f.length());
+                    generator.writeEndObject();
+                }
+                generator.writeEndArray();
+                generator.writeEndObject();
+                generator.flush();
+                println();
+            } catch (IOException ioe) {
+                throw new RuntimeException("Error while generating JSON output.", ioe);
+            }
+        } else {
+            println( target.getAbsolutePath() );
+            final int lastNLIndex = content.length - 1;
+            StringBuilder sb = new StringBuilder();
+            int fileNameMaxLen = 0;
+            for (int i = 0; i < content.length; i++) {
+                File f = content[i];
+                int len = f.getName().length();
+                if(len > fileNameMaxLen) fileNameMaxLen = len;
+            }
+            fileNameMaxLen += 4;
+            for (int i = 0; i < content.length; i++) {
+                File f = content[i];
+                sb.append(String.format(
+                        "%s\t%-" + fileNameMaxLen + "s%s\t%d",
+                        (f.isDirectory() ? "d" : "-"),
+                        f.getName(),
+                        rewriteActions(f),
+                        f.length()
+                ));
+                if (i < lastNLIndex) sb.append('\n');
+            }
+            println(sb.toString());
         }
-        println(sb.toString());
     }
 
     /**
@@ -191,25 +245,7 @@ public class CommandLine extends AbstractCommandLine {
         }
         String modelName = args[0];
         createModelHandler(modelName);
-        if(getOutputType() == OutputType.JSON) {
-            try {
-                final JsonGenerator generator = getOutJSONGenerator();
-                generator.writeStartObject();
-                generator.writeFieldName("operation");
-                generator.writeObject("new_model");
-                generator.writeFieldName("model_name");
-                generator.writeObject(modelName);
-                generator.writeFieldName("success");
-                generator.writeObject(true);
-                generator.writeEndObject();
-                generator.flush();
-                println();
-            } catch (IOException ioe) {
-                throw new RuntimeException("Error while serializing JSON.", ioe);
-            }
-        } else {
-            println(String.format("Model '%s' created.", modelName));
-        }
+        reportBinaryCommand("new_model", true, String.format("Model '%s' created.", modelName));
     }
 
     public String __command_newmodel() {
@@ -232,11 +268,14 @@ public class CommandLine extends AbstractCommandLine {
             throw new IllegalArgumentException("a model name must be specified");
         }
         String modelName = args[0];
-        if( removeModelHandler(modelName) ) {
-            println(String.format("Model '%s' deleted.", modelName));
+        final String msg;
+        final boolean success = removeModelHandler(modelName);
+        if(success) {
+            msg = String.format("Model '%s' deleted.", modelName);
         } else {
-            println(String.format("Model '%s' cannot be deleted.", modelName));
+            msg = String.format("Model '%s' cannot be deleted.", modelName);
         }
+        reportBinaryCommand("remove_model", success, msg);
     }
 
     public String __command_removemodel() {
@@ -261,7 +300,7 @@ public class CommandLine extends AbstractCommandLine {
         }
         String modelName = args[0];
         clearModelHandler(modelName);
-        println(String.format("Model '%s' cleaned up.", modelName));
+        reportBinaryCommand("clear_model", true, String.format("Model '%s' cleaned up.", modelName));
     }
 
      public String __command_clearmodel() {
@@ -286,9 +325,9 @@ public class CommandLine extends AbstractCommandLine {
         } else if( args.length == 1 ) {
             String modelName = args[0];
             setSelectedModel(modelName);
-            println(String.format("Model set to '%s'", modelName));
+            reportBinaryCommand("set_model", true, String.format("Model set to '%s'", modelName));
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Expected model name");
         }
     }
 
@@ -321,7 +360,9 @@ public class CommandLine extends AbstractCommandLine {
             parameters = databaseStorageParams(args);
         }
         saveModel(parameters);
-        println("Model saved with parameters " + parameters.toString());
+        reportBinaryCommand("save_model", true,
+                String.format("Model '%s' cleaned up.", "Model saved with parameters " + parameters.toString())
+        );
     }
 
     public String __command_savemodel() {
@@ -358,7 +399,7 @@ public class CommandLine extends AbstractCommandLine {
             parameters = databaseStorageParams(args);
         }
         loadModel(parameters);
-        println("Model loaded.");
+        reportBinaryCommand("load_model", true, "Model loaded.");
     }
 
     public String __command_loadmodel() {
@@ -625,6 +666,28 @@ public class CommandLine extends AbstractCommandLine {
                 }
         );
         cr.addCompletor(multiCompletor);
+    }
+
+    private void reportBinaryCommand(String command, boolean success, String msg) {
+        if (getOutputType() == OutputType.JSON) {
+            try {
+                final JsonGenerator generator = getOutJSONGenerator();
+                generator.writeStartObject();
+                generator.writeFieldName("operation");
+                generator.writeObject(command);
+                generator.writeFieldName("success");
+                generator.writeObject(success);
+                generator.writeEndObject();
+                generator.flush();
+                println();
+            } catch (IOException ioe) {
+                throw new RuntimeException("Error while generating JSON output.", ioe);
+            }
+        } else if (getOutputType() == OutputType.TEXT) {
+            println(msg);
+        } else {
+            throw new IllegalStateException();
+        }
     }
 
 }
