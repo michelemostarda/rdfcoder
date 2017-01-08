@@ -46,11 +46,34 @@ ant clean dist
 
 bin/rdfcoder
 ```
+## CLI
+
+The RDFCoder executable provides a basic CLI
+```{bash}
+ bin/rdfcoder -h
+usage: rdfcoder
+ -c,--command <arg>   Specify command
+ -d,--dir <arg>       Specify working dir
+ -h,--help            Get help
+ -j,--json-out        Specify that all output is in JSON format.
+```
+
+If invoked without arguments the binary executable runs the _Interactive Console_.
+
+```{bash}
+$ bin/rdfcoder 
+Initializing JRE data ...
+Objects Table loaded.
+JRE data loaded.
+RDFCoder command line console [version 0.5]
+.~default>
+```
+
 ## Quick tutorial (5 minutes)
 
-### Run the CLI
+### Run the Interactive Console
 
-Assuming that you have downloaded and compiled RDFCoder successfully, now you can run the CLI
+Assuming that you have downloaded and compiled RDFCoder successfully, now you can run the Interactive Console
 
 ```{bash}
 bin/rdfcoder
