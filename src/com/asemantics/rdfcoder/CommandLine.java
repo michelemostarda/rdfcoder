@@ -191,7 +191,25 @@ public class CommandLine extends AbstractCommandLine {
         }
         String modelName = args[0];
         createModelHandler(modelName);
-        println( String.format("Model '%s' created.", modelName) );
+        if(getOutputType() == OutputType.JSON) {
+            try {
+                final JsonGenerator generator = getOutJSONGenerator();
+                generator.writeStartObject();
+                generator.writeFieldName("operation");
+                generator.writeObject("new_model");
+                generator.writeFieldName("model_name");
+                generator.writeObject(modelName);
+                generator.writeFieldName("success");
+                generator.writeObject(true);
+                generator.writeEndObject();
+                generator.flush();
+                println();
+            } catch (IOException ioe) {
+                throw new RuntimeException("Error while serializing JSON.", ioe);
+            }
+        } else {
+            println(String.format("Model '%s' created.", modelName));
+        }
     }
 
     public String __command_newmodel() {
