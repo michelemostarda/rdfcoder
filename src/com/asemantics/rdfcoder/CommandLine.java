@@ -21,6 +21,7 @@ package com.asemantics.rdfcoder;
 import com.asemantics.rdfcoder.profile.ProfileException;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.CodeStorageException;
+import com.fasterxml.jackson.core.JsonGenerator;
 import jline.ArgumentCompletor;
 import jline.CandidateListCompletionHandler;
 import jline.Completor;
@@ -405,8 +406,35 @@ public class CommandLine extends AbstractCommandLine {
         }
         println("Models:");
         final String selectedModel = getSelectedModel();
-        for(String mhn : getModelHandlerNames()) {
-            println("\t" + mhn + (mhn.equals(selectedModel) ? "[X]" : "") );
+        if(getOutputType() == OutputType.TEXT) {
+            for (String mhn : getModelHandlerNames()) {
+                println("\t" + mhn + (mhn.equals(selectedModel) ? "[X]" : ""));
+            }
+        } else if(getOutputType() == OutputType.JSON){
+            try {
+                final JsonGenerator generator = getOutJSONGenerator();
+                generator.writeStartObject();
+                generator.writeFieldName("operation");
+                generator.writeObject("list_models");
+                generator.writeFieldName("result");
+                generator.writeStartArray();
+                for (String mhn : getModelHandlerNames()) {
+                    generator.writeStartObject();
+                    generator.writeFieldName("model");
+                    generator.writeObject(mhn);
+                    generator.writeFieldName("active");
+                    generator.writeObject(mhn.equals(selectedModel));
+                    generator.writeEndObject();
+                }
+                generator.writeEndArray();
+                generator.writeEndObject();
+                generator.flush();
+                println();
+            } catch (IOException ioe) {
+                throw new RuntimeException("Error while generating JSON output.", ioe);
+            }
+        } else {
+            throw new IllegalStateException();
         }
     }
 

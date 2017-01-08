@@ -430,6 +430,25 @@ public abstract class AbstractCommandLine {
     }
 
     /**
+     * Get access to output type to extension classes.
+     *
+     * @return
+     */
+    protected OutputType getOutputType() {
+        return outputType;
+    }
+
+    /**
+     * Gets a generator for JSON output.
+     *
+     * @return
+     * @throws IOException
+     */
+    protected JsonGenerator getOutJSONGenerator() throws IOException {
+        return jsonFactory.createGenerator(getOutputStream());
+    }
+
+    /**
      * Prints the input string on the out stream.
      *
      * @param out
