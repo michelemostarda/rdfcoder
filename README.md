@@ -133,6 +133,17 @@ Using the CLI you can:
 - query a model;
 - dump the content of a model on the file system.
 
+### Run one or more commands
+
+A command can be run simply specifying its name and parameters when required.
+It is possible to specify multiple commands per line using the semi-column separator *;*
+example:
+```
+.~default> pwd
+.~default> ls
+.~default> pwd;ls;cd ..
+```
+
 ### Getting help
 
 To start let's invoke the help command:
