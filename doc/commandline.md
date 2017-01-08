@@ -1,6 +1,6 @@
-# RDFCoder CLI
+# RDFCoder Interactive Console
 
-The RDF Coder command line provides a way to handle code models. 
+The RDF Coder Interactive Console is a CLI providing methods to create, populate, query and store code models.
 A code model (for semplicity a _model_) is a representation of a _classpath_ that can be composed of
 source code (.java), compiled code(.class), documentation (.java documentation) and other supported formats.
 A _model_ can be queried with _SPARQL_ queries, or browsed via _inspection_. 
