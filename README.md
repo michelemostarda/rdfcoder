@@ -39,11 +39,8 @@ Clone or download the latest version on [Github] (https://github.com/michelemost
 
 ```{bash}
 git clone https://github.com/michelemostarda/rdfcoder.git
-
 cd rdfcoder
-
 ant clean dist
-
 bin/rdfcoder
 ```
 ## CLI
