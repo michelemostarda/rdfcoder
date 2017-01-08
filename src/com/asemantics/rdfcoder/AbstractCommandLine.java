@@ -48,6 +48,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -158,14 +159,20 @@ public abstract class AbstractCommandLine {
     private static final String JAVA_PROFILE = "java-profile";
 
     /**
-     * The format for the output type.
-     */
-    private static final OutputType outputType = OutputType.JSON;
-
-    /**
      * JSON factory.
      */
     private static final JsonFactory jsonFactory = new JsonFactory();
+
+    /**
+     * Out stream line buffer.
+     */
+    private final StringBuilder lineBuffer = new StringBuilder();
+
+    /**
+     * The format for the output type.
+     */
+    private static OutputType outputType = OutputType.TEXT;
+
 
     /**
      * Arguments buffer.
@@ -251,6 +258,9 @@ public abstract class AbstractCommandLine {
         Option workingDir = new Option("d", "dir", true, "Specify working dir");
         output.setRequired(false);
         options.addOption(workingDir);
+        Option outputTypeJSON = new Option("j", "json-out", false, "Specify that all output is in JSON format.");
+        output.setRequired(false);
+        options.addOption(outputTypeJSON);
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
@@ -268,6 +278,11 @@ public abstract class AbstractCommandLine {
         final boolean isHelp = cmd.hasOption("h");
         final String commandBLock = cmd.getOptionValue("c", null);
         final File wDir = new File(cmd.getOptionValue("w", "."));
+        final boolean isOutputTypeJSON = cmd.hasOption("j");
+        if(isOutputTypeJSON) {
+            outputType = OutputType.JSON;
+        }
+
         if(isHelp) {
             formatter.printHelp("rdfcoder", options);
             System.exit(0);
@@ -382,7 +397,9 @@ public abstract class AbstractCommandLine {
     public Command[] getCommands() {
         loadCommands();
         Collection<Command> result = commands.values();
-        return result.toArray( new Command[result.size()] );
+        Command[] commands = result.toArray( new Command[result.size()] );
+        Arrays.sort(commands, (c1, c2) -> c1.name.compareTo(c2.name));
+        return commands;
     }
 
     /**
@@ -418,7 +435,42 @@ public abstract class AbstractCommandLine {
      * @param out
      */
     protected void print(String out) {
-        getOutputStream().print(out);
+        if(outputType == OutputType.TEXT) {
+            getOutputStream().print(out);
+        } else if(outputType == OutputType.JSON) {
+            lineBuffer.append(out);
+        } else {
+            throw new IllegalStateException();
+        }
+    }
+
+    /**
+     * Prints new line on out stream.
+     */
+    protected void println() {
+        if(outputType == OutputType.TEXT) {
+            getOutputStream().println();
+        } else if(outputType == OutputType.JSON) {
+            getOutputStream().flush();
+            try {
+                if(lineBuffer.length() > 0) {
+                    JsonGenerator generator = jsonFactory.createGenerator(getOutputStream());
+                    generator.writeStartObject();
+                    generator.writeFieldName("type");
+                    generator.writeObject("out_message");
+                    generator.writeFieldName("content");
+                    generator.writeObject(lineBuffer.toString());
+                    generator.writeEndObject();
+                    generator.flush();
+                    lineBuffer.delete(0, lineBuffer.length());
+                }
+                getOutputStream().println();
+            } catch (IOException ioe) {
+                throw new RuntimeException("Error while composing JSON output.", ioe);
+            }
+        } else {
+            throw new IllegalStateException();
+        }
     }
 
     /**
@@ -427,14 +479,8 @@ public abstract class AbstractCommandLine {
      * @param out
      */
     protected void println(String out) {
-        getOutputStream().println(out);
-    }
-
-    /**
-     * Prints new line on out stream.
-     */
-    protected void println() {
-        System.out.println();
+        print(out);
+        println();
     }
 
     /**
@@ -567,8 +613,6 @@ public abstract class AbstractCommandLine {
                     generator.writeObject("sparql_query");
                     generator.writeFieldName("result");
                     qr.toJSONView(generator);
-                    generator.writeFieldName("success");
-                    generator.writeObject(true);
                     generator.writeEndObject();
                     generator.flush();
                 } catch(IOException ioe) {
@@ -639,8 +683,6 @@ public abstract class AbstractCommandLine {
                 generator.writeObject("describe_model");
                 generator.writeFieldName("result");
                 inspector.describeJSON(qry, generator);
-                generator.writeFieldName("success");
-                generator.writeObject(true);
                 generator.writeEndObject();
                 generator.flush();
                 println();
@@ -865,8 +907,6 @@ public abstract class AbstractCommandLine {
                 stats.toJSONReport(generator);
             }
             generator.writeEndArray();
-            generator.writeFieldName("success");
-            generator.writeObject(true);
             generator.writeEndObject();
             generator.flush();
             println();
@@ -901,23 +941,35 @@ public abstract class AbstractCommandLine {
         codeStorage.loadModel( getCodeModel(), parameters );
     }
 
+    private int getMaxCommandNameLength() {
+        int maxLen = 0;
+        for(Command command : getCommands()) {
+            if(command.name.length() > maxLen) {
+                maxLen = command.name.length();
+            }
+        }
+        return maxLen;
+    }
+
     /**
      * Prints the usage of the CommandLine interface.
      *
-     * @param ps
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    protected void printUsage(PrintStream ps) throws IllegalAccessException, InvocationTargetException {
-        ps.println("Usage: <command> <parameters>");
-        ps.println("\tavailable commands:");
+    protected void printUsage() throws IllegalAccessException, InvocationTargetException {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("Usage: <command> <parameters>\n");
+        sb.append("\tavailable commands:\n");
         Command[] availableCommands = getCommands();
         final int lastNLIndex = availableCommands.length - 1;
+        int nameTabLen = getMaxCommandNameLength() + 4;
         for(int i = 0; i < availableCommands.length; i++) {
-            ps.printf("\t%s\t\t\t\t%s", availableCommands[i].name, availableCommands[i].shortDescription);
-            if(i < lastNLIndex) ps.append('\n');
+            sb.append(String.format("\t%-" + nameTabLen + "s %s",
+                    availableCommands[i].name, availableCommands[i].shortDescription));
+            if(i < lastNLIndex) sb.append('\n');
         }
-        ps.println();
+        println(sb.toString());
     }
 
     /**
@@ -1264,7 +1316,8 @@ public abstract class AbstractCommandLine {
      * @param cmd
      */
     private void handleIllegalArgumentException(IllegalArgumentException iae, String cmd) {
-        println("ERROR: " + iae.getMessage() );
+        final String errMsg = iae.getMessage();
+        println(String.format("ERROR: %s%s", iae.getClass().getName(), errMsg != null ? String.format("(%s)", errMsg) : ""));
         if(debug) { iae.printStackTrace(); }
         Throwable cause = iae.getCause();
         int causeLevel = 0;
@@ -1276,7 +1329,7 @@ public abstract class AbstractCommandLine {
 
         try {
             if(cmd == null) {
-                printUsage(System.out);
+                printUsage();
             } else {
                 println(getLongCommandDescription(cmd));
             }
@@ -1323,7 +1376,6 @@ public abstract class AbstractCommandLine {
      */
     private void printHello() {
         println("RDFCoder command line console [version " + VERSION_MAJOR + "." + VERSION_MINOR + "]");
-        println();
     }
 
     private void printObjectHR(Object o, PrintStream ps) {
@@ -1388,8 +1440,6 @@ public abstract class AbstractCommandLine {
             } else {
                 generator.writeObject(o.toString());
             }
-            generator.writeFieldName("success");
-            generator.writeObject(true);
             generator.writeEndObject();
             generator.flush();
             println();
@@ -1409,7 +1459,7 @@ public abstract class AbstractCommandLine {
     }
 
     private String readInput(String prompt) throws IOException {
-        print(prompt);
+        getOutputStream().print(prompt);
         return consoleReader.readLine();
     }
 

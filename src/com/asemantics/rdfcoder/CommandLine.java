@@ -368,7 +368,7 @@ public class CommandLine extends AbstractCommandLine {
      */
     public void command_help(String[] args) throws IllegalAccessException, InvocationTargetException {
         if(args.length == 0) {
-            printUsage(System.out);
+            printUsage();
             return;
         }
         if(args.length == 1) {
@@ -385,7 +385,7 @@ public class CommandLine extends AbstractCommandLine {
     }
 
     public String __command_help() {
-        return "Print this help\n\t\t\t\tto obtain more information about a command type: help <command>";
+        return "Get help. For info about a command type: help <command>";
     }
 
     public String ___command_help() {
@@ -447,7 +447,7 @@ public class CommandLine extends AbstractCommandLine {
 
     public void command_inspect(String[] args) {
        if( args.length != 1 ) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Missing arguments");
         }
         String qry = args[0];
         inspectModel(qry);
