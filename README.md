@@ -8,7 +8,7 @@ Author: Michele Mostarda ( me@michelemostarda.com )
 
 ## About
 
-RDF Coder is a CLI and a [flexible](doc/architecture.md) library designed to generate RDF [models] (doc/model.md) from Java code, 
+RDF Coder is a CLI and a [flexible library](doc/architecture.md) designed to generate [RDF models](doc/model.md) from Java code, 
 both source and bytecode.
 
 RDF Coder is written in Java and can be used to perform multi level code inspection, create code dependency graphs, generate custom documentation.
@@ -48,8 +48,9 @@ bin/rdfcoder
 ```
 ## CLI
 
-The RDFCoder executable provides a basic CLI
-```{bash}
+The RDFCoder executable provides a CLI which works both in batch (via the _--command_ option) and interactive mode (default mode).
+To get help simply use the _-h_ option.
+```
  bin/rdfcoder -h
 usage: rdfcoder
  -c,--command <arg>   Specify command
@@ -58,14 +59,47 @@ usage: rdfcoder
  -j,--json-out        Specify that all output is in JSON format.
 ```
 
-If invoked without arguments the binary executable runs the _Interactive Console_.
+Using the RDFCoder in batch mode allows to execute a list of commands:
 
-```{bash}
+```
+$ bin/rdfcoder -c 'pwd;ls lib;loadclasspath arq jar:lib/arq.jar; inspect model'
+Initializing JRE data ...
+ INFO [main] (JavaProfile.java:278) - Objects Table loaded.
+JRE data loaded.
+/Users/hardest/rdfcoder-github/.
+-       antlr-2.7.5.jar                       rw        435563
+-       arq.jar                               rw        818802
+-       bcel-6.0.jar                          rw        670734
+[...]
+loading /Users/hardest/repository/RDFCoder/rdfcoder-github/./lib/arq.jar ... done
+parsing time (secs):0.0
+parsed files: 543
+parsed classes: 494
+[...]
+com.asemantics.rdfcoder.model.java.JavaQueryModelImpl{packages: 31, classes: 494, interfaces: 49, enumerations: 0}
+```
+
+If invoked with no arguments the binary executable runs the _Interactive Console_.
+
+```
 $ bin/rdfcoder 
 Initializing JRE data ...
 Objects Table loaded.
 JRE data loaded.
-RDFCoder command line console [version 0.5]
+RDFCoder interactive console [version 0.5]
+.~default>
+```
+
+The _--json-out_ option runs the CLI in _JSON output_ mode which means that every command output is espressed with a JSON object. 
+Such modality can be used to interact with the CLI in a programmatic way.
+
+```
+hardest@hardest-mac:~/repository/RDFCoder/rdfcoder-github$ bin/rdfcoder -j
+{"type":"out_message","content":"Initializing JRE data ..."}
+{"type":"out_message","content":"JRE data loaded."}
+{"type":"out_message","content":"RDFCoder command line console [version 0.5]"}
+.~default> pwd
+{"operation":"pwd","result":"/Users/hardest/rdfcoder-github/"}
 .~default>
 ```
 
