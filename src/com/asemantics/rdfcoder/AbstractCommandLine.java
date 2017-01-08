@@ -1420,7 +1420,7 @@ public abstract class AbstractCommandLine {
      * Prints a <i>Hello</i> message.
      */
     private void printHello() {
-        println("RDFCoder command line console [version " + VERSION_MAJOR + "." + VERSION_MINOR + "]");
+        println("RDFCoder interactive console [version " + VERSION_MAJOR + "." + VERSION_MINOR + "]");
     }
 
     private void printObjectHR(Object o, PrintStream ps) {
