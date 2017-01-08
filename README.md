@@ -97,13 +97,13 @@ Such modality can be used to interact with the CLI in a programmatic way.
 hardest@hardest-mac:~/repository/RDFCoder/rdfcoder-github$ bin/rdfcoder -j
 {"type":"out_message","content":"Initializing JRE data ..."}
 {"type":"out_message","content":"JRE data loaded."}
-{"type":"out_message","content":"RDFCoder command line console [version 0.5]"}
+{"type":"out_message","content":"RDFCoder interactive console [version 0.5]"}
 .~default> pwd
 {"operation":"pwd","result":"/Users/hardest/rdfcoder-github/"}
 .~default>
 ```
 
-## Quick tutorial (5 minutes)
+## Quick tutorial (10 minutes)
 
 ### Run the Interactive Console
 
@@ -117,7 +117,8 @@ You'll see a message confirming that the JRE model has been loaded into the _def
 ```
 Initializing JRE ...
 JRE model loaded.
-RDFCoder command line console [version 0.5]
+RDFCoder interactive console [version 0.5] 
+[version 0.5]
 .~default>
 ```
 ### Understanding the workflow
