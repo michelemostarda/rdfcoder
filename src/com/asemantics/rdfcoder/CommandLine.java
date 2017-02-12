@@ -22,18 +22,21 @@ import com.asemantics.rdfcoder.profile.ProfileException;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.CodeStorageException;
 import com.fasterxml.jackson.core.JsonGenerator;
-import jline.ArgumentCompletor;
-import jline.CandidateListCompletionHandler;
-import jline.Completor;
-import jline.ConsoleReader;
-import jline.FileNameCompletor;
-import jline.MultiCompletor;
-import jline.NullCompletor;
-import jline.SimpleCompletor;
+import org.jline.reader.Candidate;
+import org.jline.reader.Completer;
+import org.jline.reader.LineReader;
+import org.jline.reader.ParsedLine;
+import org.jline.reader.impl.completer.AggregateCompleter;
+import org.jline.reader.impl.completer.ArgumentCompleter;
+import org.jline.reader.impl.completer.FileNameCompleter;
+import org.jline.reader.impl.completer.NullCompleter;
+import org.jline.reader.impl.completer.StringsCompleter;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -41,6 +44,8 @@ import java.util.Map;
  * The Command line <i>RDFCoder</i> utility.
  */
 public class CommandLine extends AbstractCommandLine {
+
+    private final ModelNameCompleter modelNameCompleter = new ModelNameCompleter(this);
 
     /**
      * Constructor.
@@ -624,48 +629,97 @@ public class CommandLine extends AbstractCommandLine {
                 "\n\tThis can take minutes to complete.";
     }
 
-    protected void configureCommandCompletors(ConsoleReader cr) {
-        CandidateListCompletionHandler completionHandler = new CandidateListCompletionHandler();
-        cr.setCompletionHandler(completionHandler);
-
-        // help completor.
-        final ArgumentCompletor helpCompletor = new ArgumentCompletor(
-                new Completor[]{
-                        new SimpleCompletor(new String[]{"help"}),
-                        new SimpleCompletor(getCommandNames()),
-                        new NullCompletor()
-                }
+    protected Completer configureCommandCompletors() {
+        // cd completer.
+        final ArgumentCompleter cdCompleter = new ArgumentCompleter(
+                new StringsCompleter("cd"),
+                new FileNameCompleter(),
+                new NullCompleter()
         );
 
-        // loadclasspath completor.
-        final ArgumentCompletor loadClasspathCompletor = new ArgumentCompletor(
-                new Completor[]{
-                        new SimpleCompletor(new String[]{"loadclasspath"}),
-                        new SimpleCompletor("<modelname>"),
-                        new ArgumentCompletor(
-                            new FileNameCompletor()
-                        )
-                }
+        // debug completer.
+        final ArgumentCompleter debugCompleter = new ArgumentCompleter(
+                new StringsCompleter("debug"),
+                new StringsCompleter("true", "false"),
+                new NullCompleter()
         );
 
-        // Generic completor.
-        final ArgumentCompletor completor = new ArgumentCompletor(
-                new Completor[]{
-                        new SimpleCompletor(getCommandNames()),
-                        new ArgumentCompletor(
-                                new FileNameCompletor()
-                        )
-                }
+        // describe completer.
+        final ArgumentCompleter describeCompleter = new ArgumentCompleter(
+                new StringsCompleter("describe"),
+                new StringsCompleter("model.asset", "model.libraries"),
+                new NullCompleter()
         );
 
-        final MultiCompletor multiCompletor = new MultiCompletor(
-                new Completor[]{
-                        helpCompletor,
-                        loadClasspathCompletor,
-                        completor
-                }
+        // help completer.
+        final ArgumentCompleter helpCompletor = new ArgumentCompleter(
+                new StringsCompleter("help"),
+                new StringsCompleter(getCommandNames()),
+                new NullCompleter()
         );
-        cr.addCompletor(multiCompletor);
+
+        // loadclasspath completer.
+        final ArgumentCompleter loadClasspathCompleter = new ArgumentCompleter(
+                new StringsCompleter("loadclasspath"),
+                new StringsCompleter("<modelname>"),
+                new FileNameCompleter(),
+                new NullCompleter()
+        );
+
+        // ls completer.
+        final ArgumentCompleter lsCompleter = new ArgumentCompleter(
+                new StringsCompleter("ls"),
+                new FileNameCompleter(),
+                new NullCompleter()
+        );
+
+        // newmodel completer.
+        final ArgumentCompleter newmodelCompleter = new ArgumentCompleter(
+                new StringsCompleter("newmodel"),
+                new StringsCompleter("<modelname>"),
+                new NullCompleter()
+        );
+
+        // querymodel completer.
+        final ArgumentCompleter querymodelCompleter = new ArgumentCompleter(
+                new StringsCompleter("querymodel"),
+                new StringsCompleter("<SPARQL query>", "\"SELECT * WHERE {?s ?p ?o}\""),
+                new NullCompleter()
+        );
+
+        // removemodel completer.
+        final ArgumentCompleter removemodelCompleter = new ArgumentCompleter(
+                new StringsCompleter("removemodel"),
+                modelNameCompleter,
+                new NullCompleter()
+        );
+
+        // setmodel completer.
+        final ArgumentCompleter setmodelCompleter = new ArgumentCompleter(
+                new StringsCompleter("setmodel"),
+                modelNameCompleter,
+                new NullCompleter()
+        );
+
+        // Generic completer.
+        final ArgumentCompleter completer = new ArgumentCompleter(
+                new StringsCompleter(getCommandNames()),
+                new NullCompleter()
+        );
+
+        return new AggregateCompleter(
+                cdCompleter,
+                debugCompleter,
+                describeCompleter,
+                helpCompletor,
+                loadClasspathCompleter,
+                lsCompleter,
+                newmodelCompleter,
+                querymodelCompleter,
+                removemodelCompleter,
+                setmodelCompleter,
+                completer
+                );
     }
 
     private void reportBinaryCommand(String command, boolean success, String msg) {
@@ -687,6 +741,24 @@ public class CommandLine extends AbstractCommandLine {
             println(msg);
         } else {
             throw new IllegalStateException();
+        }
+    }
+
+    class ModelNameCompleter implements Completer {
+
+        private CommandLine cl;
+
+        ModelNameCompleter(CommandLine cl) {
+            this.cl = cl;
+        }
+
+        @Override
+        public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
+            final List<Candidate> modelCandidates = new ArrayList<>();
+            for(String modelName : cl.getModelHandlerNames()) {
+                modelCandidates.add(new Candidate(modelName));
+            }
+            candidates.addAll(modelCandidates);
         }
     }
 

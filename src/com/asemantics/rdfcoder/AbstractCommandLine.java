@@ -32,14 +32,21 @@ import com.asemantics.rdfcoder.storage.CodeStorageException;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.hp.hpl.jena.query.QueryParseException;
-import jline.ConsoleReader;
-import jline.History;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.jline.reader.Completer;
+import org.jline.reader.EndOfFileException;
+import org.jline.reader.History;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.UserInterruptException;
+import org.jline.reader.impl.history.DefaultHistory;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -212,7 +219,7 @@ public abstract class AbstractCommandLine {
     /**
      * Command line console reader.
      */
-    private ConsoleReader consoleReader;
+    private LineReader consoleReader;
 
     /**
      * Console history.
@@ -316,8 +323,8 @@ public abstract class AbstractCommandLine {
         }
         currentDirectory = file;
 
-        modelHandlers = new HashMap<String, ModelHandler>();
-        toBeSaved = new ArrayList<String>();
+        modelHandlers = new HashMap<>();
+        toBeSaved = new ArrayList<>();
 
         // Java profile initialization.
         rdfCoder = new RDFCoder("./rdfcoder-repository");
@@ -328,8 +335,7 @@ public abstract class AbstractCommandLine {
         createModelHandler(DEFAULT_CODE_MODEL);
         selectedModel = DEFAULT_CODE_MODEL;
 
-        // Init console reader and history.
-        consoleReader = new ConsoleReader();
+        // Init history file
         if(!HISTORY_FILE.exists()) {
             if( ! HISTORY_FILE.createNewFile() ) {
                 throw new IllegalStateException(
@@ -337,11 +343,21 @@ public abstract class AbstractCommandLine {
                 );
             }
         }
-        history = new History(HISTORY_FILE);
-        consoleReader.setHistory(history);
-        consoleReader.setUseHistory(true);
-        configureCommandCompletors(consoleReader);
-    }                                                   
+
+        // Init console reader and history.
+        final Terminal terminal = TerminalBuilder.builder()
+                .dumb(true)
+                .system(true)
+                .signalHandler(Terminal.SignalHandler.SIG_IGN)
+                .build();
+        final History history = new DefaultHistory();
+        final Completer completer = configureCommandCompletors();
+        consoleReader = LineReaderBuilder.builder()
+                .terminal(terminal)
+                .history(history)
+                .variable("history-file", HISTORY_FILE)
+                .completer(completer).build();
+    }
 
     public boolean isDebug() {
         return debug;
@@ -416,10 +432,8 @@ public abstract class AbstractCommandLine {
 
     /**
      * Configures the command line completors. 
-     *
-     * @param cr
      */
-    protected abstract void configureCommandCompletors(ConsoleReader cr);
+    protected abstract Completer configureCommandCompletors();
 
     /**
      * Returns the current output stream.
@@ -992,6 +1006,7 @@ public abstract class AbstractCommandLine {
                     availableCommands[i].name, availableCommands[i].shortDescription));
             if(i < lastNLIndex) sb.append('\n');
         }
+        sb.append(String.format("\n%s to terminate.\n", EXIT_COMMAND));
         println(sb.toString());
     }
 
@@ -1155,7 +1170,20 @@ public abstract class AbstractCommandLine {
      */
     protected void mainCycle() throws IllegalAccessException, InvocationTargetException, IOException {
         printHello();
-        while ( processLine( readInput( getPrompt() ) )  );
+        boolean b;
+        while (true) {
+            try {
+                b = processLine(readInput(getPrompt()));
+                if (!b) {
+                    break;
+                }
+            } catch (UserInterruptException uie) {
+                System.err.println("Interrupted by user, ignoring.");
+            } catch (EndOfFileException eofE) {
+                System.err.println("EOF received. Interrupting.");
+                break;
+            }
+        }
         println("Bye");
     }
 
@@ -1504,8 +1532,7 @@ public abstract class AbstractCommandLine {
     }
 
     private String readInput(String prompt) throws IOException {
-        getOutputStream().print(prompt);
-        return consoleReader.readLine();
+        return consoleReader.readLine(prompt);
     }
 
     /**

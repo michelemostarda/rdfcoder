@@ -88,7 +88,7 @@
 		<path refid="jena.classpath"/>
      	<pathelement path="${lib.dir}/${jrefactory.lib}"/>
 		<pathelement path="${lib.dir}/bcel-5.2.jar"/>
-		<pathelement path="${lib.dir}/jline-0.9.94.jar"/>
+		<pathelement path="${lib.dir}/jline-3.1.2.jar"/>
 		<pathelement path="${lib.dir}/commons-jexl-1.1.jar"/>
   	</path>
 
