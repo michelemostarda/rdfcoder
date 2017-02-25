@@ -1378,7 +1378,7 @@ public abstract class AbstractCommandLine {
     private void handleIllegalArgumentException(IllegalArgumentException iae, String cmd) {
         final String errMsg = iae.getMessage();
         if (outputType == OutputType.TEXT) {
-            println(String.format("ERROR: %s%s", iae.getClass().getName(), errMsg != null ? String.format("(%s)", errMsg) : ""));
+            println(String.format("ERROR: %s", errMsg != null ? errMsg : iae.getClass().getName()));
         } else if(outputType == OutputType.JSON) {
             try {
                 final JsonGenerator generator = getOutJSONGenerator();
