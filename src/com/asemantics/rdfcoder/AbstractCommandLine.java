@@ -531,6 +531,15 @@ public abstract class AbstractCommandLine {
     }
 
     /**
+     * Returns the inspector for the selected model.
+     *
+     * @return
+     */
+    protected Inspector getSelectedModelInspector() {
+        return getInspectorForModel(getSelectedModel());
+    }
+
+    /**
      * If <i>in</i>parameter is an absolute file it is returned unchanged,
      * otherwise a concatenation of #currentDirectory and the relative path is
      * returned.

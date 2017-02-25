@@ -20,6 +20,7 @@ package com.asemantics.rdfcoder.inspector;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -139,5 +140,23 @@ public class Inspector {
      */
     public void describeJSON(String expression, JsonGenerator generator) throws InspectorParserException, PatternException {
         describeJSON(expression, context, generator);
+    }
+
+    /**
+     * Lists the available properties for the current model.
+     *
+     * @return
+     * @throws PatternException
+     */
+    public Map<String, List<String>> listProperties() {
+        final Map<String, List<String>> properties = new HashMap<>();
+        try {
+            for(Map.Entry<String,Object> entry : context.entrySet()) {
+                properties.put(entry.getKey(), BeanAccessor.getPropertyNames(entry.getValue()));
+            }
+            return properties;
+        } catch (PatternException pe) {
+            throw new RuntimeException("Unexpected error while loading properties.", pe);
+        }
     }
 }

@@ -25,6 +25,8 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utility class to handle bean properties.
@@ -45,7 +47,7 @@ public class BeanAccessor {
             throw new NullPointerException();
         }
         try {
-            Method method = null;
+            Method method;
             String[] candidateMethodNames = getMethodGetterName(propertyName);
             for(String candidateMethodName : candidateMethodNames) {
                 try {
@@ -65,6 +67,48 @@ public class BeanAccessor {
     }
 
     /**
+     * Returns the accessible properties for an object.
+     *
+     * @param bean
+     * @return
+     * @throws PatternException
+     */
+    public static List<PropertyDescriptor> getProperties(Object bean) throws PatternException {
+        if( bean == null ) {
+            throw new NullPointerException("Invalid null bean");
+        }
+        List<PropertyDescriptor> descriptors = new ArrayList<>();
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
+            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+                final String propertyName = propertyDescriptor.getName();
+                if ("class".equals(propertyName)) {
+                    continue;
+                }
+                descriptors.add(propertyDescriptor);
+            }
+            return descriptors;
+        } catch (Exception e) {
+            throw new PatternException("Error while inspecting bean: '" + bean + "'", e);
+        }
+    }
+
+    /**
+     * Returns the names of all accessible properties for the bean.
+     *
+     * @param bean
+     * @return
+     */
+    public static List<String> getPropertyNames(Object bean) throws PatternException {
+        final List<String> out = new ArrayList<>();
+        for(PropertyDescriptor propertyDescriptor : getProperties(bean)) {
+            out.add(propertyDescriptor.getName());
+        }
+        return out;
+    }
+
+    /**
      * Describes a given <i>bean</i> in a human readable format.
      * 
      * @param bean
@@ -75,20 +119,12 @@ public class BeanAccessor {
         if( bean == null ) {
             throw new NullPointerException("Invalid null bean");
         }
-
         try {
-            BeanInfo beanInfo = Introspector.getBeanInfo( bean.getClass() );
-            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             StringBuilder sb = new StringBuilder();
-            sb.append(bean.getClass().getCanonicalName()).append('\n');
-            for(PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+            sb.append("class ").append(bean.getClass().getCanonicalName()).append('\n');
+            for(PropertyDescriptor propertyDescriptor : getProperties(bean)) {
                 final String propertyName = propertyDescriptor.getName();
-                if("class".equals(propertyName)) {
-                    continue;
-                }
-                sb.append('\t').append(propertyName)
-                        .append(":")
-                .append(
+                sb.append("\t- ").append(propertyName).append(": ").append(
                         getHumanDescription(
                                 propertyDescriptor.getPropertyType(),
                                 propertyDescriptor.getReadMethod().invoke(bean)

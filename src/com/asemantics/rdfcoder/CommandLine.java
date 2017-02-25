@@ -629,7 +629,20 @@ public class CommandLine extends AbstractCommandLine {
                 "\n\tThis can take minutes to complete.";
     }
 
+    private List<String> getModelProperties() {
+        final List<String> properties = new ArrayList<>();
+        String property;
+        for (Map.Entry<String, List<String>> entry : this.getSelectedModelInspector().listProperties().entrySet()) {
+            for (String prop : entry.getValue()) {
+                property = String.format("%s.%s", entry.getKey(), prop);
+                properties.add(property);
+            }
+        }
+        return properties;
+    }
+
     protected Completer configureCommandCompletors() {
+
         // cd completer.
         final ArgumentCompleter cdCompleter = new ArgumentCompleter(
                 new StringsCompleter("cd"),
@@ -647,12 +660,19 @@ public class CommandLine extends AbstractCommandLine {
         // describe completer.
         final ArgumentCompleter describeCompleter = new ArgumentCompleter(
                 new StringsCompleter("describe"),
-                new StringsCompleter("model.asset", "model.libraries"),
+                new StringsCompleter(getModelProperties()),
+                new NullCompleter()
+        );
+
+        // describe completer.
+        final ArgumentCompleter inspectCompleter = new ArgumentCompleter(
+                new StringsCompleter("inspect"),
+                new StringsCompleter(getModelProperties()),
                 new NullCompleter()
         );
 
         // help completer.
-        final ArgumentCompleter helpCompletor = new ArgumentCompleter(
+        final ArgumentCompleter helpCompleter = new ArgumentCompleter(
                 new StringsCompleter("help"),
                 new StringsCompleter(getCommandNames()),
                 new NullCompleter()
@@ -711,7 +731,8 @@ public class CommandLine extends AbstractCommandLine {
                 cdCompleter,
                 debugCompleter,
                 describeCompleter,
-                helpCompletor,
+                inspectCompleter,
+                helpCompleter,
                 loadClasspathCompleter,
                 lsCompleter,
                 newmodelCompleter,
