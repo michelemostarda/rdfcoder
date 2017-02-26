@@ -30,7 +30,7 @@ public interface Asset {
      *
      * @return the list of library names constituting the asset.
      */
-    public String[] getLibraries();
+    String[] getLibraries();
 
     /**
      * Returns the location path of a library.
@@ -38,7 +38,7 @@ public interface Asset {
      * @param library library name.
      * @return the location of a library.
      */
-    public String getLibraryLocation(String library);
+     String getLibraryLocation(String library);
 
     /**
      * Returns the date of parsing of a library.
@@ -46,6 +46,6 @@ public interface Asset {
      * @param library library name.
      * @return date of parsing of the library.
      */
-    public Date getLibraryDateTime(String library);
+    Date getLibraryDateTime(String library);
 
 }

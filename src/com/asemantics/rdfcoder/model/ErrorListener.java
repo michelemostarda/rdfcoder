@@ -32,7 +32,7 @@ public interface ErrorListener {
      * @param processedPackage
      * @param declaredContainerPackage
      */
-    public void packageDiscrepancy(
+    void packageDiscrepancy(
             JavaCodeHandler javaCodeHandler,
             String processedPackage,
             String declaredContainerPackage
@@ -45,7 +45,7 @@ public interface ErrorListener {
      * @param location
      * @param description
      */
-    public void parseError(JavaCodeHandler javaCodeHandler, String location, String description);
+    void parseError(JavaCodeHandler javaCodeHandler, String location, String description);
 
     /**
      * Notifies the list of the unresolved types.
@@ -53,5 +53,5 @@ public interface ErrorListener {
      * @param javaCodeHandler
      * @param types
      */
-    public void unresolvedTypes(JavaCodeHandler javaCodeHandler, String[] types);
+    void unresolvedTypes(JavaCodeHandler javaCodeHandler, String[] types);
 }

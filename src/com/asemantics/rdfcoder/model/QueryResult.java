@@ -48,12 +48,12 @@ public interface QueryResult {
      *
      * @return <code>true</code> if has a next element.
      */
-    public boolean hasNext();
+    boolean hasNext();
 
     /**
      * Moves to the next entry.
      */
-    public void next();
+    void next();
 
     /**
      * Returns the value associated to the variable v.
@@ -61,23 +61,23 @@ public interface QueryResult {
      * @param v
      * @return the next variable.
      */
-    public String getVariable(String v);
+    String getVariable(String v);
 
     /**
      * Closes the result set.
      */
-    public void close();
+    void close();
 
     /**
      * Prints a tabular view of the result set on the given out stream.
      * @param ps
      */
-    public void toTabularView(PrintStream ps);
+    void toTabularView(PrintStream ps);
 
     /**
      * Prints a JSON view of the result set on the given out stream.
      * @param generator used to compose valid JSON data output.
      */
-    public void toJSONView(JsonGenerator generator) throws IOException;
+    void toJSONView(JsonGenerator generator) throws IOException;
     
 }

@@ -36,12 +36,12 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
     /**
      * Expected format of the library date-time.
      */
-    public static final String LIBRARY_DATETIME_FORMAT = "yyyy_MM_dd__HH_mm_ss";
+    final String LIBRARY_DATETIME_FORMAT = "yyyy_MM_dd__HH_mm_ss";
 
     /**
      * The package separator character.
      */
-    public static final String PACKAGE_SEPARATOR = ".";
+    final String PACKAGE_SEPARATOR = ".";
 
     /**
      * Notifies the begin of a package parsing.
@@ -49,12 +49,12 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
      *
      * @param pathToPackage the path expressed as list of fragments to the package.
      */
-    public void startPackage(Identifier pathToPackage);
+    void startPackage(Identifier pathToPackage);
 
     /**
      * Notifies the end of a package parsing.
      */
-    public void endPackage();
+    void endPackage();
 
     /**
      * Notifies the begin of an interface definition.
@@ -62,12 +62,12 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
      * @param pathToInterface the path expressed as list of fragments to the interface.
      * @param extendedInterfaces the list of extended interfaces.
      */
-    public void startInterface(Identifier pathToInterface, Identifier[] extendedInterfaces);
+    void startInterface(Identifier pathToInterface, Identifier[] extendedInterfaces);
 
     /**
      * Notifies the end of an interface.
      */
-    public void endInterface();
+    void endInterface();
 
     /**
      * Notifies the begin of a class parsing.
@@ -79,7 +79,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
      * @param extendedClass the fully qualified pathToClass of the class extended by the starting class.
      * @param implementedInterfaces the fully qualified names for the interfaces implemented by the starting class.
      */
-    public void startClass(
+    void startClass(
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
             Identifier pathToClass,
@@ -90,7 +90,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
     /**
      * Notifies the end of a class parsing.
      */
-    public void endClass();
+    void endClass();
 
     /**
      * Notifies the begin of an enumeration class parsing.
@@ -102,7 +102,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
      * @param pathToEnumeration the fully qualified path to the enumeration.
      * @param elements the list of the elements of the enumeration.
      */
-    public void startEnumeration(
+    void startEnumeration(
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
             Identifier pathToEnumeration,
@@ -112,7 +112,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
     /**
      * Notifies the end of the enumeration class.
      */
-    public void endEnumeration();
+    void endEnumeration();
 
     /**
      * Notifies the parsing of an attribute.
@@ -125,7 +125,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
      * @param type the type of the attribute.
      * @param value the init value for the attribute. 
      */
-    public void attribute(
+    void attribute(
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
             Identifier pathToAttribute,
@@ -147,7 +147,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
      * @param exceptions exceptions raised by the constructor.
      *
      */
-    public void constructor(
+    void constructor(
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
             int signatureHashCode,
@@ -174,7 +174,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
      * @param exceptions exceptions raised by the method.
      *
      */
-    public void method(
+    void method(
             JavaCodeModel.JModifier[] modifiers,
             JavaCodeModel.JVisibility visibility,
             Identifier pathToMethod,
@@ -190,7 +190,7 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
      *
      * @param unresolvedTypes
      */
-    public void unresolvedTypes(String[] unresolvedTypes);
+    void unresolvedTypes(String[] unresolvedTypes);
 
     /**
      * Preloads the given Objects Table with the objects present in the underlying model.
@@ -198,18 +198,18 @@ public interface JavaCodeHandler extends CodeHandler, JavadocHandler {
      * @param objectsTable
      */
     //TODO: LOW - Integrate preloading.
-    public void preloadObjectsFromModel(ObjectsTable objectsTable);
+    void preloadObjectsFromModel(ObjectsTable objectsTable);
 
     /**
      * Adds an error listener to the code handler.
      * @param errorListener
      */
-    public void addErrorListener(ErrorListener errorListener);
+    void addErrorListener(ErrorListener errorListener);
 
     /**
      * Removes an error listener from the code handler.
      * @param errorListener
      */
-    public void removeErrorListener(ErrorListener errorListener);
+    void removeErrorListener(ErrorListener errorListener);
 
 }

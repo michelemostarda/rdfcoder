@@ -29,42 +29,42 @@ public interface CodeModel {
     /**
      * RDF schema prefix URI.
      */
-    static final String RDF_SCHEMA_URI = "http://www.w3.org/2000/01/rdf-schema#";
+    String RDF_SCHEMA_URI = "http://www.w3.org/2000/01/rdf-schema#";
 
     /**
      * Defines the relation subclass of.
      */
-    static final String SUBCLASSOF = RDF_SCHEMA_URI + "subClassOf";
+    String SUBCLASSOF = RDF_SCHEMA_URI + "subClassOf";
 
     /**
      * The separator used for URI prefixes.
      */
-    static final String URI_PREFIX_SEPARATOR = "#";
+    String URI_PREFIX_SEPARATOR = "#";
 
     /**
      * Coder base prefix URI.
      */
-    static final String CODER_URI_BASE = "http://www.rdfcoder.org/2007/1.0";
+    String CODER_URI_BASE = "http://www.rdfcoder.org/2007/1.0";
 
     /**
      * Coder prefix URI with prefix separator.
      */
-    static final String CODER_URI = CODER_URI_BASE + URI_PREFIX_SEPARATOR;
+    String CODER_URI = CODER_URI_BASE + URI_PREFIX_SEPARATOR;
 
     /**
      * Prefix separator definition.
      */
-    static final String PREFIX_SEPARATOR = ":";
+    String PREFIX_SEPARATOR = ":";
     
     /**
      * The temporary Type ID prefix.
      */
-    static final String TEMPORARY_TYPE_ID_PREFIX = "tmpTID_";
+    String TEMPORARY_TYPE_ID_PREFIX = "tmpTID_";
 
     /**
      * No element specified.
      */
-    static final String ALL_MATCH = null;
+    String ALL_MATCH = null;
 
     /**
      * Allows to perform a triple search on the org.asemantics.model.

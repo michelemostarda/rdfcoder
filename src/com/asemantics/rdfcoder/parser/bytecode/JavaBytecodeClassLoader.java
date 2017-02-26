@@ -49,7 +49,7 @@ public interface JavaBytecodeClassLoader {
     /**
      * Allows to load a Jar class file.
      */
-    public static class JarClassLoader implements JavaBytecodeClassLoader {
+    class JarClassLoader implements JavaBytecodeClassLoader {
 
         /**
          * Represents the JAR file. 
@@ -113,7 +113,7 @@ public interface JavaBytecodeClassLoader {
     /**
      * Directory class loader.
      */
-    public static class DirClassLoader implements JavaBytecodeClassLoader {
+    class DirClassLoader implements JavaBytecodeClassLoader {
 
         /**
          * The directory to load.

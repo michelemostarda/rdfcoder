@@ -32,6 +32,6 @@ public interface Profile<Q extends QueryModel> {
      *
      * @return the query model instance.
      */
-    public Q getQueryModel();
+    Q getQueryModel();
 
 }

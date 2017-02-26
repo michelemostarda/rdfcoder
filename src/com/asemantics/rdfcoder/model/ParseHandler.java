@@ -54,5 +54,5 @@ public interface ParseHandler {
      * @param location the location of the compilation unit raising the error.
      * @param description the error description.
      */
-    public void parseError(String location, String description);
+    void parseError(String location, String description);
 }

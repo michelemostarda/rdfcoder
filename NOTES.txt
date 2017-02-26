@@ -1,0 +1,21 @@
+TODOS
+
+Risoluzione problema migrazione jterm: export PATH="/bin:$PATH"  (bisogna usare lo standard /bin/stty)
+
+Riattivare JRE loading (al momento disattivato), provare a passare ad ultima versione di Jena con serializzazione binaria.
+
+Aggiungere exit command esplicito
+
+describe/inspect model dinamico
+
+EVALUATE new JavaParser http://javaparser.org/
+
+RDFCoderTest riabilitare test parse source code line 99
+
+TODOS Web CLI
+
+https://github.com/paradoxxxzero/butterfly
+
+https://trinket.io/console
+
+https://www.pythonanywhere.com/try-ipython/
