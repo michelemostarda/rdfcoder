@@ -367,39 +367,39 @@ Identifier<http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmd>
 A simple way to obtain all interfaces declared within the active model is using the following query:
 
 ```
-.~test> querymodel "select ?a ?b ?c where {?a <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.rdfcoder.org/2007/1.0#JInterface>}"  
----------------------------------------------------------------------------------------------------------------------------
-| a                                                                                                               | b | c |
-===========================================================================================================================
-| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.util.jinterface:Callback>                      |   |   |
-| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.lang.sparql.jinterface:SPARQLParserConstants>  |   |   |
-| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.lang.rdql.jinterface:NodeValue>                |   |   |
+.~test> querymodel "select ?a where {?a <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.rdfcoder.org/2007/1.0#JInterface>}"  
+-------------------------------------------------------------------------------------------------------------------
+| a                                                                                                               |
+===================================================================================================================
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.util.jinterface:Callback>                      |
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.lang.sparql.jinterface:SPARQLParserConstants>  |
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.lang.rdql.jinterface:NodeValue>                |
 [...]
 ```
 
 similarly to get all classes
 
 ```
-.~test> querymodel "select ?a ?b ?c where {?a <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.rdfcoder.org/2007/1.0#JClass>}"     
------------------------------------------------------------------------------------------------------------------------------------
-| a                                                                                                                       | b | c |
-===================================================================================================================================
-| <http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmd.jclass:QExec>                                                        |   |   |
-| <http://www.rdfcoder.org/2007/1.0#jpackage:arq.jclass:rdql>                                                             |   |   |
-| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.serializer.jclass:FmtExprAbstract>                     |   |   |
+.~test> querymodel "select ?a where {?a <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.rdfcoder.org/2007/1.0#JClass>}"     
+---------------------------------------------------------------------------------------------------------------------------
+| a                                                                                                                       |
+===========================================================================================================================
+| <http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmd.jclass:QExec>                                                        |
+| <http://www.rdfcoder.org/2007/1.0#jpackage:arq.jclass:rdql>                                                             |
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.serializer.jclass:FmtExprAbstract>                     |
 [...]
 ```
 
 and all methods
 
 ```
-.~test> querymodel "select ?a ?b ?c where {?a <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.rdfcoder.org/2007/1.0#JMethod>}" 
--------------------------------------------------------------------------------------------------------------------------------------------------------------
-| a                                                                                                                                                 | b | c |
+.~test> querymodel "select ?a where {?a <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.rdfcoder.org/2007/1.0#JMethod>}" 
+-----------------------------------------------------------------------------------------------------------------------------------------------
+| a | 
 =============================================================================================================================================================
-| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.resultset.jclass:OutputBase.jmethod:class$>                                      |   |   |
-| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.core.jclass:DataSourceImpl.jmethod:replaceNamedModel>                            |   |   |
-| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.engine1.jclass:BindingImmutable.jmethod:equals>                                  |   |   |
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.resultset.jclass:OutputBase.jmethod:class$>                                      |
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.core.jclass:DataSourceImpl.jmethod:replaceNamedModel>                            |
+| <http://www.rdfcoder.org/2007/1.0#jpackage:com.hp.hpl.jena.query.engine1.jclass:BindingImmutable.jmethod:equals>                                  |
 
 ```
 
