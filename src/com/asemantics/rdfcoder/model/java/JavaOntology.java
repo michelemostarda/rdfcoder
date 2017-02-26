@@ -19,6 +19,10 @@
 package com.asemantics.rdfcoder.model.java;
 
 
+import com.asemantics.rdfcoder.model.ontology.BaseOntology;
+
+import java.net.URL;
+
 import static com.asemantics.rdfcoder.model.java.JavaCodeModel.ATTRIBUTE_PREFIX;
 import static com.asemantics.rdfcoder.model.java.JavaCodeModel.ATTRIBUTE_TYPE;
 import static com.asemantics.rdfcoder.model.java.JavaCodeModel.ATTRIBUTE_VALUE;
@@ -48,11 +52,8 @@ import static com.asemantics.rdfcoder.model.java.JavaCodeModel.PARAMETER_PREFIX;
 import static com.asemantics.rdfcoder.model.java.JavaCodeModel.PARAMETER_TYPE;
 import static com.asemantics.rdfcoder.model.java.JavaCodeModel.RETURN_TYPE;
 import static com.asemantics.rdfcoder.model.java.JavaCodeModel.SIGNATURE_PREFIX;
-import static com.asemantics.rdfcoder.model.java.JavaCodeModel.SUBCLASSOF;
 import static com.asemantics.rdfcoder.model.java.JavaCodeModel.THROWS;
-import com.asemantics.rdfcoder.model.ontology.BaseOntology;
-
-import java.net.URL;
+import static com.asemantics.rdfcoder.model.java.JavaCodeModel.TYPE;
 
 
 /**
@@ -73,7 +74,7 @@ public class JavaOntology extends BaseOntology {
         try {
 
             // SUBCLASS OF
-            defineRelation( new URL(SUBCLASSOF) );
+            defineRelation( new URL(TYPE) );
 
             // CONTAINS_PACKAGE
             defineRelation(PACKAGE_PREFIX, new URL(CONTAINS_PACKAGE), PACKAGE_PREFIX);

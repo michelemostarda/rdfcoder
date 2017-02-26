@@ -27,13 +27,12 @@ import com.asemantics.rdfcoder.model.Identifier;
 import com.asemantics.rdfcoder.model.IdentifierBuilder;
 import com.asemantics.rdfcoder.model.IdentifierReader;
 import com.asemantics.rdfcoder.model.TripleIterator;
+import com.asemantics.rdfcoder.parser.ObjectsTable;
 import com.asemantics.rdfcoder.parser.javadoc.ClassJavadoc;
 import com.asemantics.rdfcoder.parser.javadoc.ConstructorJavadoc;
 import com.asemantics.rdfcoder.parser.javadoc.FieldJavadoc;
 import com.asemantics.rdfcoder.parser.javadoc.JavadocEntry;
 import com.asemantics.rdfcoder.parser.javadoc.MethodJavadoc;
-import com.asemantics.rdfcoder.parser.ObjectsTable;
-import com.hp.hpl.jena.vocabulary.RDFS;
 import org.apache.log4j.Logger;
 
 import java.text.ParseException;
@@ -57,11 +56,6 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
      * Formats the library date time.
      */
     private static final SimpleDateFormat libraryDatetimeFormatter = new SimpleDateFormat(LIBRARY_DATETIME_FORMAT);
-
-    /**
-     * Expresses the RDFS subclass relationship.
-     */
-    private static final String SUBCLASSOF = RDFS.subClassOf.getURI();
 
     /**
      * The default package.
@@ -241,7 +235,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
 
         checkPackageDiscrepancy(pathToInterface);
 
-        model.addTriple(pathToInterfaceIdentifier, CodeModel.SUBCLASSOF, JavaCodeModel.JINTERFACE);
+        model.addTriple(pathToInterfaceIdentifier, CodeModel.TYPE, JavaCodeModel.JINTERFACE);
         Identifier parentClass = peekContainer();
         model.addTriple(parentClass.getIdentifier(), JavaCodeModel.CONTAINS_INTERFACE, pathToInterfaceIdentifier);
         if(extendedInterfaces != null) {
@@ -279,7 +273,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
 
         checkPackageDiscrepancy(pathToClass);
 
-        model.addTriple(pathToClassIdentifier, CodeModel.SUBCLASSOF, JavaCodeModel.JCLASS);
+        model.addTriple(pathToClassIdentifier, CodeModel.TYPE, JavaCodeModel.JCLASS);
         model.addTripleLiteral(
                 pathToClassIdentifier,
                 JavaCodeModel.HAS_MODIFIERS,
@@ -329,7 +323,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
 
         checkPackageDiscrepancy(pathToEnumeration);
 
-        model.addTriple(pathToEnumerationIdentifier, CodeModel.SUBCLASSOF, JavaCodeModel.JENUMERATION);
+        model.addTriple(pathToEnumerationIdentifier, CodeModel.TYPE, JavaCodeModel.JENUMERATION);
         model.addTripleLiteral(
                 pathToEnumerationIdentifier,
                 JavaCodeModel.HAS_MODIFIERS,
@@ -371,7 +365,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         }
 
         final String identifier = pathToAttribute.getIdentifier();
-        model.addTriple(identifier, SUBCLASSOF, JavaCodeModel.JATTRIBUTE);
+        model.addTriple(identifier, CodeModel.TYPE, JavaCodeModel.JATTRIBUTE);
         model.addTripleLiteral(
                 identifier, JavaCodeModel.HAS_MODIFIERS, JavaCodeModel.JModifier.toByte(modifiers).toString()
         );
@@ -440,7 +434,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         final String identifier = pathToMethod.getIdentifier();
 
         // Creating structure.
-        model.addTriple(identifier, SUBCLASSOF, JavaCodeModel.JMETHOD);
+        model.addTriple(identifier, CodeModel.TYPE, JavaCodeModel.JMETHOD);
         model.addTripleLiteral(
                 identifier,
                 JavaCodeModel.HAS_MODIFIERS,
@@ -453,11 +447,11 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
                 .pushFragment( "_" + signatureHashCode, JavaCodeModel.SIGNATURE_KEY)
                 .build()
                 .getIdentifier();
-        model.addTriple(signature, SUBCLASSOF, JavaCodeModel.JSIGNATURE);
+        model.addTriple(signature, CodeModel.TYPE, JavaCodeModel.JSIGNATURE);
         String qualifiedParameter; 
         for(int i = 0; i < paramNamesSize; i++) {
             qualifiedParameter = qualifyParameterName(pathToMethod, parameterNames[i]);
-            model.addTriple( qualifiedParameter, SUBCLASSOF, JavaCodeModel.JPARAMETER);
+            model.addTriple( qualifiedParameter, CodeModel.TYPE, JavaCodeModel.JPARAMETER);
             model.addTripleLiteral(
                     qualifiedParameter,
                     JavaCodeModel.PARAMETER_TYPE,
@@ -489,7 +483,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
 
         // Preloading classes.
         TripleIterator t1 = model.searchTriples(
-                JavaCodeModel.ALL_MATCH, JavaCodeModel.SUBCLASSOF, JavaCodeModel.JCLASS
+                JavaCodeModel.ALL_MATCH, JavaCodeModel.TYPE, JavaCodeModel.JCLASS
         );
         try {
         Identifier fullyQualifiedObject;
@@ -506,7 +500,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
 
         // Preloading interfaces.
         TripleIterator t2 = model.searchTriples(
-                JavaCodeModel.ALL_MATCH, JavaCodeModel.SUBCLASSOF, JavaCodeModel.JINTERFACE
+                JavaCodeModel.ALL_MATCH, JavaCodeModel.TYPE, JavaCodeModel.JINTERFACE
         );
         try {
         Identifier fullyQualifiedObject;
@@ -619,7 +613,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         Identifier current = cp;
         do {
             currentStr = current.getIdentifier();
-            model.addTriple(currentStr, SUBCLASSOF, JavaCodeModel.JPACKAGE);
+            model.addTriple(currentStr, CodeModel.TYPE, JavaCodeModel.JPACKAGE);
             parent = current.getParent();
             model.addTriple(parent.getIdentifier(), JavaCodeModel.CONTAINS_PACKAGE, currentStr);
             current = parent;
@@ -716,7 +710,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         String identifier = IdentifierBuilder
                 .create(pathToClass)
                 .pushFragment( "_" + signatureHashCode, JavaCodeModel.CONSTRUCTOR_KEY).build().getIdentifier();
-        model.addTriple(identifier, CodeModel.SUBCLASSOF, JavaCodeModel.JCONSTRUCTOR);
+        model.addTriple(identifier, CodeModel.TYPE, JavaCodeModel.JCONSTRUCTOR);
         model.addTripleLiteral(
                 identifier,
                 JavaCodeModel.HAS_MODIFIERS,
@@ -726,7 +720,7 @@ public class JavaCodeHandlerImpl implements JavaCodeHandler {
         String qualifiedParameter;
         for(int i = 0; i < paramNamesSize; i++) {
             qualifiedParameter = qualifyParameterName( pathToClass, parameterNames[i]);
-            model.addTriple( qualifiedParameter, CodeModel.SUBCLASSOF, JavaCodeModel.JPARAMETER);
+            model.addTriple( qualifiedParameter, CodeModel.TYPE, JavaCodeModel.JPARAMETER);
             model.addTripleLiteral(
                     qualifiedParameter,
                     JavaCodeModel.PARAMETER_TYPE,

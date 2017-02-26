@@ -94,7 +94,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     public boolean packageExists(Identifier pathToPackage) {
         TripleIterator ti = codeModel.searchTriples(
                 pathToPackage.getIdentifier(),
-                CodeModel.SUBCLASSOF,
+                CodeModel.TYPE,
                 JavaCodeModel.JPACKAGE
         );
         try {
@@ -107,7 +107,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     public boolean classExists(Identifier pathToClass) {
         TripleIterator ti = codeModel.searchTriples(
                 pathToClass.getIdentifier(),
-                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.TYPE,
                 JavaCodeModel.JCLASS
         );
         try {
@@ -120,7 +120,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     public boolean interfaceExists(Identifier pathToInterface) {
         TripleIterator ti = codeModel.searchTriples(
                 pathToInterface.getIdentifier(),
-                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.TYPE,
                 JavaCodeModel.JINTERFACE
         );
         try {
@@ -133,7 +133,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     public boolean attributeExists(Identifier pathToAttribute) {
         TripleIterator ti = codeModel.searchTriples(
                 pathToAttribute.getIdentifier(),
-                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.TYPE,
                 JavaCodeModel.JATTRIBUTE
         );
         try {
@@ -146,7 +146,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     public boolean methodExists(Identifier pathToMethod) {
         TripleIterator ti = codeModel.searchTriples(
                 pathToMethod.getIdentifier(),
-                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.TYPE,
                 JavaCodeModel.JMETHOD
         );
         try {
@@ -159,7 +159,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     public boolean signatureExists(Identifier pathToSignature) {
         TripleIterator ti = codeModel.searchTriples(
                 pathToSignature.getIdentifier(),
-                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.TYPE,
                 JavaCodeModel.JSIGNATURE
         );
         try {
@@ -172,7 +172,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     public boolean enumerationExists(Identifier pathToEnumeration) {
         TripleIterator ti = codeModel.searchTriples(
                 pathToEnumeration.getIdentifier(),
-                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.TYPE,
                 JavaCodeModel.JENUMERATION
         );
         try {
@@ -185,7 +185,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     public JPackage[] getAllPackages() {
         TripleIterator t1 = codeModel.searchTriples(
                 JavaCodeModel.ALL_MATCH,
-                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.TYPE,
                 JavaCodeModel.JPACKAGE
         );
         List<JPackage> packages = new ArrayList<JPackage>();
@@ -229,7 +229,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     public JInterface[] getAllInterfaces() {
         TripleIterator t1 = codeModel.searchTriples(
                 JavaCodeModel.ALL_MATCH,
-                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.TYPE,
                 JavaCodeModel.JINTERFACE
         );
         List<JInterface> interfaces = new ArrayList<JInterface>();
@@ -257,7 +257,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     public JClass[] getAllClasses() {
         TripleIterator t1 = codeModel.searchTriples(
                 JavaCodeModel.ALL_MATCH,
-                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.TYPE,
                 JavaCodeModel.JCLASS
         );
         List<JClass> classes = new ArrayList<JClass>();
@@ -387,7 +387,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
     public JEnumeration[] getAllEnumerations() {
         TripleIterator t1 = codeModel.searchTriples(
                 JavaCodeModel.ALL_MATCH,
-                JavaCodeModel.SUBCLASSOF,
+                JavaCodeModel.TYPE,
                 JavaCodeModel.JENUMERATION
         );
         List<JEnumeration> packages = new ArrayList<JEnumeration>();

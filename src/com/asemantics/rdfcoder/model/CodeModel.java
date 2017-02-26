@@ -34,7 +34,7 @@ public interface CodeModel {
     /**
      * Defines the relation subclass of.
      */
-    String SUBCLASSOF = RDF_SCHEMA_URI + "subClassOf";
+    String TYPE = RDF_SCHEMA_URI + "type";
 
     /**
      * The separator used for URI prefixes.
