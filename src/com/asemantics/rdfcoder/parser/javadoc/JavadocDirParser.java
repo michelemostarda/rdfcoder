@@ -46,7 +46,7 @@ public class JavadocDirParser extends CodeParser {
         startParsing(libName, srcDir);
         try {
             File serializationFile = executeDoclet(srcDir);
-            JavadocHandlerSerializer handlerSerializer = new JavadocHandlerSerializer();
+            JavadocHandlerSerializer handlerSerializer = new JavadocHandlerSerializer(true);
             handlerSerializer.deserialize(serializationFile, (JavadocHandler) getParseHandler());
         } catch (Exception e) {
             throw new JavadocDirParserException("An error occurred during the Javadoc parsing.", e);

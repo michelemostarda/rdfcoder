@@ -27,7 +27,7 @@ public class JavadocHandlerSerializerTest implements Serializable {
 
     @Before
     public void setUp() {
-        javadocHandlerSerializer = new JavadocHandlerSerializer();
+        javadocHandlerSerializer = new JavadocHandlerSerializer(false);
     }
 
     @After

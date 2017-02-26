@@ -73,7 +73,7 @@ public class JavadocHandlerDoclet {
     }
 
     public JavadocHandlerDoclet() {
-        javadocHandlerSerializer = new JavadocHandlerSerializer();
+        javadocHandlerSerializer = new JavadocHandlerSerializer(true);
         javadocHandler           = javadocHandlerSerializer.getHandler();
     }
 

@@ -25,10 +25,13 @@ import java.util.List;
  */
 public class JavadocHandlerSerializer implements Serializable {
 
+    private final boolean nested;
+
     private List<Invocation> invocations;
 
-    public JavadocHandlerSerializer() {
-        invocations = new ArrayList<Invocation>();
+    public JavadocHandlerSerializer(boolean nested) {
+        this.nested = nested;
+        invocations = new ArrayList<>();
     }
 
     public void clear() {
@@ -73,10 +76,12 @@ public class JavadocHandlerSerializer implements Serializable {
             Method method;
             for (int i = 0; i < invocations.size(); i++) {
                 invocation = invocations.get(i);
-                if(invocation.methodName.equals("startParsing")) {
-                    continue;
-                } else if(invocation.methodName.equals("endParsing")) {
-                    continue;
+                if(nested) {
+                    if (invocation.methodName.equals("startParsing")) {
+                        continue;
+                    } else if (invocation.methodName.equals("endParsing")) {
+                        continue;
+                    }
                 }
                 method = javadocHandlerClass.getMethod(invocation.methodName, toClasses(invocation.args));
                 method.invoke(jh, invocation.args);
