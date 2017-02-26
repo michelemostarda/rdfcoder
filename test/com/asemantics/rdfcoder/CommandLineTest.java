@@ -214,9 +214,13 @@ public class CommandLineTest {
 
     @Test
     public void testQueryModelCommand() throws IOException {
-        Assert.assertTrue( commandLine.processLine("querymodel \"select * where {?s ?p ?o}\"") );
+        commandLine.processLine("debug true");
+        commandLine.processLine("loadclasspath junit jar:lib/junit-4.4.jar");
+        Assert.assertTrue( commandLine.processLine("querymodel \"select * where {?s ?p ?o} limit 1\"") );
         printStreamWrapper.dumpLines();
-        printStreamWrapper.assertContent("| s | p | o |");
+        printStreamWrapper.assertContent("| s");
+        printStreamWrapper.assertContent("| p");
+        printStreamWrapper.assertContent("| o");
     }
 
     @Test
@@ -234,11 +238,11 @@ public class CommandLineTest {
     public void testDescribeModelCommand() throws IllegalAccessException, InvocationTargetException, IOException {
         Assert.assertTrue(commandLine.processLine("describe model"));
         printStreamWrapper.dumpLines();
-        printStreamWrapper.assertContent("allClasses:com.asemantics.rdfcoder.model.java.JClass[0]");
-        printStreamWrapper.assertContent("allInterfaces:com.asemantics.rdfcoder.model.java.JInterface[0]");
-        printStreamWrapper.assertContent("allPackages:com.asemantics.rdfcoder.model.java.JPackage[0]");
-        printStreamWrapper.assertContent("asset:com.asemantics.rdfcoder.model.Asset");
-        printStreamWrapper.assertContent("libraries:java.lang.String[0]");
+        printStreamWrapper.assertContent("- allClasses: com.asemantics.rdfcoder.model.java.JClass[0]");
+        printStreamWrapper.assertContent("- allInterfaces: com.asemantics.rdfcoder.model.java.JInterface[0]");
+        printStreamWrapper.assertContent("- allPackages: com.asemantics.rdfcoder.model.java.JPackage[0]");
+        printStreamWrapper.assertContent("- asset: com.asemantics.rdfcoder.model.Asset");
+        printStreamWrapper.assertContent("- libraries: java.lang.String[0]");
     }
 
     @Test

@@ -646,33 +646,34 @@ public abstract class AbstractCommandLine {
         QueryResult qr = null;
         try {
             qr = qcm.performQuery(qry);
+            if (outputType == OutputType.TEXT) {
+                qr.toTabularView(getOutputStream());
+            } else if (outputType == OutputType.JSON) {
+                try {
+                    JsonGenerator generator = jsonFactory.createGenerator(new BufferedOutputStream(getOutputStream()));
+                    generator.writeStartObject();
+                    generator.writeFieldName("operation");
+                    generator.writeObject("sparql_query");
+                    generator.writeFieldName("result");
+                    qr.toJSONView(generator);
+                    generator.writeEndObject();
+                    generator.flush();
+                } catch (IOException ioe) {
+                    throw new RuntimeException("Error while composing JSON object.", ioe);
+                }
+                println();
+            } else {
+                throw new IllegalStateException();
+            }
         } catch (QueryParseException qpe) {
             throw new IllegalArgumentException("Error while parsing SPARQL query.", qpe);
         } catch (SPARQLException e) {
             throw new IllegalArgumentException("Cannot perform SPARQL query.", e);
         } finally {
-            if(qr != null) { qr.close(); }
-        }
-        if(outputType == OutputType.TEXT) {
-            qr.toTabularView(getOutputStream());
-        } else if(outputType == OutputType.JSON) {
-            try {
-                JsonGenerator generator = jsonFactory.createGenerator(new BufferedOutputStream(getOutputStream()));
-                generator.writeStartObject();
-                generator.writeFieldName("operation");
-                generator.writeObject("sparql_query");
-                generator.writeFieldName("result");
-                qr.toJSONView(generator);
-                generator.writeEndObject();
-                generator.flush();
-            } catch(IOException ioe) {
-                throw new RuntimeException("Error while composing JSON object.", ioe);
+            if (qr != null) {
+                qr.close();
             }
-            println();
-        } else {
-            throw new IllegalStateException();
         }
-
     }
 
     /**
