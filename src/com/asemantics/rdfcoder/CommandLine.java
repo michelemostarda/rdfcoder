@@ -51,6 +51,21 @@ public class CommandLine extends AbstractCommandLine {
      * Constructor.
      *
      * @param file the initial location.
+     * @param outputType the output type to apply.
+     * @throws java.io.IOException
+     * @throws IllegalAccessException
+     * @throws java.lang.reflect.InvocationTargetException
+     *
+     */
+    public CommandLine(File file, OutputType outputType)
+    throws IOException, IllegalAccessException, InvocationTargetException, ProfileException {
+        super(file, outputType);
+    }
+
+    /**
+     * Constructor for text output type.
+     *
+     * @param file the initial location.
      * @throws java.io.IOException
      * @throws IllegalAccessException
      * @throws java.lang.reflect.InvocationTargetException
@@ -58,7 +73,7 @@ public class CommandLine extends AbstractCommandLine {
      */
     public CommandLine(File file)
     throws IOException, IllegalAccessException, InvocationTargetException, ProfileException {
-        super(file);
+        super(file, OutputType.TEXT);
     }
 
     /**

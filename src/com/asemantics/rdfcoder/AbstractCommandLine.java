@@ -177,17 +177,16 @@ public abstract class AbstractCommandLine {
     private final StringBuilder lineBuffer = new StringBuilder();
 
     /**
-     * The format for the output type.
-     */
-    private static OutputType outputType = OutputType.TEXT;
-
-
-    /**
      * Arguments buffer.
      */
     private static List<String> argsBuffer = new ArrayList<String>();
 
     /* Fields. */
+
+    /**
+     * The format for the output type.
+     */
+    private OutputType outputType = OutputType.TEXT;
 
     /**
      * Loaded model handlers.
@@ -287,9 +286,7 @@ public abstract class AbstractCommandLine {
         final String commandBLock = cmd.getOptionValue("c", null);
         final File wDir = new File(cmd.getOptionValue("w", "."));
         final boolean isOutputTypeJSON = cmd.hasOption("j");
-        if(isOutputTypeJSON) {
-            outputType = OutputType.JSON;
-        }
+        final OutputType outputType = isOutputTypeJSON ? OutputType.JSON : OutputType.TEXT;
 
         if(isHelp) {
             formatter.printHelp("rdfcoder", options);
@@ -297,7 +294,7 @@ public abstract class AbstractCommandLine {
             return;
         }
 
-        CommandLine commandLine = new CommandLine(wDir);
+        CommandLine commandLine = new CommandLine(wDir, outputType);
         if(commandBLock != null) {
             final boolean blockSuccess = commandLine.processLine(commandBLock);
             System.exit(blockSuccess ? 0 : 2);
@@ -316,12 +313,16 @@ public abstract class AbstractCommandLine {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    public AbstractCommandLine(File file)
+    public AbstractCommandLine(File file, OutputType outputType)
             throws IOException, IllegalAccessException, InvocationTargetException, ProfileException {
         if(file == null) {
             throw new IllegalArgumentException("file cannot be null");
         }
-        currentDirectory = file;
+        if(outputType == null) {
+            throw new IllegalArgumentException("outputType cannot be null");
+        }
+        this.currentDirectory = file;
+        this.outputType = outputType;
 
         modelHandlers = new HashMap<>();
         toBeSaved = new ArrayList<>();
@@ -1391,7 +1392,7 @@ public abstract class AbstractCommandLine {
                 generator.writeFieldName("msg");
                 generator.writeObject(errMsg);
                 generator.writeFieldName("cause");
-                generator.writeObject(iae.getCause().getClass().getName());
+                generator.writeObject(iae.getCause() != null ? iae.getCause().getClass().getName() : null);
                 generator.writeEndObject();
                 generator.flush();
                 println();
