@@ -8,3 +8,5 @@ jrefactory-2.9.19-full/jrefactory-2.9.19-full.iml
 out/
 reports/
 target_test/
+rdfcoder-repository/*
+NOTES.txt
