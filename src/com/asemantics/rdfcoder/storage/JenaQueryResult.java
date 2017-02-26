@@ -26,6 +26,7 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.query.core.ResultBinding;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -116,11 +117,13 @@ public class JenaQueryResult implements QueryResult {
         generator.writeEndArray();
         generator.writeFieldName("data");
         generator.writeStartArray();
+        RDFNode v;
         while(resultSet.hasNext()) {
             ResultBinding rb = (ResultBinding) resultSet.nextSolution();
             generator.writeStartArray();
             for(String var : vars) {
-                generator.writeObject(rb.get(var).toString());
+                v = rb.get(var);
+                generator.writeObject(v != null ? v.toString() : null);
             }
             generator.writeEndArray();
         }
