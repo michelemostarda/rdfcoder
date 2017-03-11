@@ -316,49 +316,47 @@ The root element for the active model inspection is the _model_ object.
 
 ```
 .~test> describe model
-{
-allClasses:com.asemantics.rdfcoder.model.java.JClass[494]
-allEnumerations:com.asemantics.rdfcoder.model.java.JEnumeration[0]
-allInterfaces:com.asemantics.rdfcoder.model.java.JInterface[49]
-allPackages:com.asemantics.rdfcoder.model.java.JPackage[31]
-asset:com.asemantics.rdfcoder.model.Asset
-libraries:java.lang.String[1]
-}
+class com.asemantics.rdfcoder.model.java.JavaQueryModelImpl
+        - asset: com.asemantics.rdfcoder.model.Asset
+        - classes: com.asemantics.rdfcoder.model.java.JClass[0]
+        - enumerations: com.asemantics.rdfcoder.model.java.JEnumeration[0]
+        - interfaces: com.asemantics.rdfcoder.model.java.JInterface[0]
+        - libraries: java.lang.String[0]
+        - packages: com.asemantics.rdfcoder.model.java.JPackage[0]
 ```
 The command _describe_ lists all the available accessors for the current object and the relative data type.
-For example, to access all the declared classes in model you must use the _allClasses_ accessor which returns a list of
+For example, to access all the declared classes in model you must use the _classes_ accessor which returns a list of
 _com.asemantics.rdfcoder.model.java.JClass_ objects. To see all the available accessors of a _com.asemantics.rdfcoder.model.java.JClass_ object simply run:
 
 ```
-.~test> describe model.allClasses[0]
-{
-attributes:com.asemantics.rdfcoder.model.java.JAttribute[3]
-enumerations:com.asemantics.rdfcoder.model.java.JEnumeration[0]
-identifier:com.asemantics.rdfcoder.model.Identifier
-innerClass:boolean
-innerClasses:com.asemantics.rdfcoder.model.java.JClass[0]
-methods:com.asemantics.rdfcoder.model.java.JMethod[7]
-modifiers:com.asemantics.rdfcoder.model.java.JavaCodeModel$JModifier[1]
-name:java.lang.String
-parent:com.asemantics.rdfcoder.model.java.JContainer
-parentClass:com.asemantics.rdfcoder.model.java.JClass
-parentPackage:com.asemantics.rdfcoder.model.java.JPackage
-path:com.asemantics.rdfcoder.model.java.JContainer[3]
-queryModel:com.asemantics.rdfcoder.model.java.JavaQueryModel
-visibility:com.asemantics.rdfcoder.model.java.JavaCodeModel$JVisibility
-}
+.~test> describe model.classes[0]
+class com.asemantics.rdfcoder.model.java.JClass
+        - attributes: com.asemantics.rdfcoder.model.java.JAttribute[1]
+        - enumerations: com.asemantics.rdfcoder.model.java.JEnumeration[0]
+        - identifier: com.asemantics.rdfcoder.model.Identifier
+        - innerClass: boolean
+        - innerClasses: com.asemantics.rdfcoder.model.java.JClass[0]
+        - methods: com.asemantics.rdfcoder.model.java.JMethod[4]
+        - modifiers: com.asemantics.rdfcoder.model.java.JavaCodeModel$JModifier[1]
+        - name: java.lang.String
+        - parent: com.asemantics.rdfcoder.model.java.JContainer
+        - parentClass: com.asemantics.rdfcoder.model.java.JClass
+        - parentPackage: com.asemantics.rdfcoder.model.java.JPackage
+        - path: com.asemantics.rdfcoder.model.java.JContainer[8]
+        - queryModel: com.asemantics.rdfcoder.model.java.JavaQueryModel
+        - visibility: com.asemantics.rdfcoder.model.java.JavaCodeModel$JVisibility
 ```
 
 To get the content of an _accessor_ use the _inspect_ command: 
 ```
-.~test> inspect model.allClasses[0] 
+.~test> inspect model.classes[0] 
 Identifier<http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmd.jclass:QExec>
 .~test> 
 ```
 with any depth:
 
 ```
-.~default> inspect model.allClasses[0].parentPackage
+.~default> inspect model.classes[0].parentPackage
 Identifier<http://www.rdfcoder.org/2007/1.0#jpackage:arq.cmd>
 ```
 

@@ -92,7 +92,7 @@ public interface JavaQueryModel extends QueryModel {
      *
      * @return list of packages in model.
      */
-    JPackage[] getAllPackages();
+    JPackage[] getPackages();
 
     /**
      * Retruns the package with a given pack name.
@@ -117,7 +117,7 @@ public interface JavaQueryModel extends QueryModel {
      *
      * @return all the interfaces in the model.
      */
-    JInterface[] getAllInterfaces();
+    JInterface[] getInterfaces();
 
     /**
      * Returns the interface specified by the given path.
@@ -142,7 +142,7 @@ public interface JavaQueryModel extends QueryModel {
      *
      * @return all the classes.
      */
-    JClass[] getAllClasses();
+    JClass[] getClasses();
 
     /**
      * Returns the class specified by tge given path.
@@ -211,7 +211,7 @@ public interface JavaQueryModel extends QueryModel {
      *
      * @return list of available enumerations, an empty list if no enumerations are found. 
      */
-    JEnumeration[] getAllEnumerations();
+    JEnumeration[] getEnumerations();
 
     /**
      * Returns the enumerations in the given container.

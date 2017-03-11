@@ -132,8 +132,8 @@ public class JavaQueryModelImplTest {
     }
 
     @Test
-    public void testGetAllPackages() throws IOException, ParserException {
-        JPackage[] packages = javaQueryModel.getAllPackages();
+    public void testGetPackages() throws IOException, ParserException {
+        JPackage[] packages = javaQueryModel.getPackages();
         Assert.assertTrue("Unexpected number of packages.", packages.length > 0 );
     }
 
@@ -154,8 +154,8 @@ public class JavaQueryModelImplTest {
     }
 
     @Test
-    public void testGetAllInterfaces() throws IOException, ParserException {
-        JInterface[] interfaces = javaQueryModel.getAllInterfaces();
+    public void testGetInterfaces() throws IOException, ParserException {
+        JInterface[] interfaces = javaQueryModel.getInterfaces();
         Assert.assertTrue("Unexpected number of interfaces.", interfaces.length > 0 );
     }
 
@@ -168,8 +168,8 @@ public class JavaQueryModelImplTest {
     }
 
     @Test
-    public void testGetAllClasses() throws IOException, ParserException {
-        JClass[] classes = javaQueryModel.getAllClasses();
+    public void testGetClasses() throws IOException, ParserException {
+        JClass[] classes = javaQueryModel.getClasses();
         Assert.assertTrue("Unexpected number of classes.", classes.length > 0 );
     }
 

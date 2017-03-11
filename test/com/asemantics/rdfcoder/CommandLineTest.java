@@ -238,9 +238,9 @@ public class CommandLineTest {
     public void testDescribeModelCommand() throws IllegalAccessException, InvocationTargetException, IOException {
         Assert.assertTrue(commandLine.processLine("describe model"));
         printStreamWrapper.dumpLines();
-        printStreamWrapper.assertContent("- allClasses: com.asemantics.rdfcoder.model.java.JClass[0]");
-        printStreamWrapper.assertContent("- allInterfaces: com.asemantics.rdfcoder.model.java.JInterface[0]");
-        printStreamWrapper.assertContent("- allPackages: com.asemantics.rdfcoder.model.java.JPackage[0]");
+        printStreamWrapper.assertContent("- classes: com.asemantics.rdfcoder.model.java.JClass[0]");
+        printStreamWrapper.assertContent("- interfaces: com.asemantics.rdfcoder.model.java.JInterface[0]");
+        printStreamWrapper.assertContent("- packages: com.asemantics.rdfcoder.model.java.JPackage[0]");
         printStreamWrapper.assertContent("- asset: com.asemantics.rdfcoder.model.Asset");
         printStreamWrapper.assertContent("- libraries: java.lang.String[0]");
     }

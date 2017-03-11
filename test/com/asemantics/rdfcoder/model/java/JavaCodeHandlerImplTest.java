@@ -254,7 +254,7 @@ public class JavaCodeHandlerImplTest {
 
         // Retrieve packages.
         logger.info("Packages >>>");
-        JPackage[] packs = qm.getAllPackages();
+        JPackage[] packs = qm.getPackages();
         Assert.assertEquals(4, packs.length);
         for (JPackage pack : packs) {
             logger.info( pack.toString() );
@@ -264,7 +264,7 @@ public class JavaCodeHandlerImplTest {
         // Retrieve classes.
         logger.info("Classes >>>");
         // Check classes containment.
-        JClass[] classes  = qm.getAllClasses();
+        JClass[] classes  = qm.getClasses();
         Assert.assertEquals(3, classes.length);
         // Print out classes.
         for(JClass clazz : classes) {
@@ -355,7 +355,7 @@ public class JavaCodeHandlerImplTest {
         // Retrieve interfaces.
         logger.info("Interfaces >>>");
 
-        JInterface[] interfaces = qm.getAllInterfaces();
+        JInterface[] interfaces = qm.getInterfaces();
         Assert.assertEquals(1, interfaces.length);
         for(JInterface inter : interfaces) {
             logger.info(inter);

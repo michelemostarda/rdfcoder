@@ -182,7 +182,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         }
     }
 
-    public JPackage[] getAllPackages() {
+    public JPackage[] getPackages() {
         TripleIterator t1 = codeModel.searchTriples(
                 JavaCodeModel.ALL_MATCH,
                 JavaCodeModel.TYPE,
@@ -226,7 +226,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         return JavaCoderFactory.createJPackage(this, pathToPackage);
     }
 
-    public JInterface[] getAllInterfaces() {
+    public JInterface[] getInterfaces() {
         TripleIterator t1 = codeModel.searchTriples(
                 JavaCodeModel.ALL_MATCH,
                 JavaCodeModel.TYPE,
@@ -254,7 +254,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         return JavaCoderFactory.createJInterface(this, pathToInterface);
     }
 
-    public JClass[] getAllClasses() {
+    public JClass[] getClasses() {
         TripleIterator t1 = codeModel.searchTriples(
                 JavaCodeModel.ALL_MATCH,
                 JavaCodeModel.TYPE,
@@ -384,7 +384,7 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         return JavaCoderFactory.createJMethod(this, pathToMethod);
     }
 
-    public JEnumeration[] getAllEnumerations() {
+    public JEnumeration[] getEnumerations() {
         TripleIterator t1 = codeModel.searchTriples(
                 JavaCodeModel.ALL_MATCH,
                 JavaCodeModel.TYPE,
@@ -586,10 +586,10 @@ public class JavaQueryModelImpl implements JavaQueryModel {
         return String.format(
                 "%s{packages: %s, classes: %s, interfaces: %s, enumerations: %s}",
                 this.getClass().getName(),
-                getAllPackages().length,
-                getAllClasses().length,
-                getAllInterfaces().length,
-                getAllEnumerations().length
+                getPackages().length,
+                getClasses().length,
+                getInterfaces().length,
+                getEnumerations().length
         );
     }
 
