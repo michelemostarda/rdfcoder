@@ -33,6 +33,21 @@ import java.util.List;
  */
 public class BeanAccessor {
 
+    public enum ObjectType {
+        NULL,
+        BYTE,
+        SHORT,
+        INT,
+        LONG,
+        FLOAT,
+        DOUBLE,
+        BOOL,
+        CHAR,
+        STRING,
+        ARRAY,
+        OBJ
+    }
+
     private BeanAccessor(){}
 
     /**
@@ -106,6 +121,40 @@ public class BeanAccessor {
             out.add(propertyDescriptor.getName());
         }
         return out;
+    }
+
+    /**
+     * Returns the type of an object.
+     * 
+     * @param target
+     * @return
+     */
+    public static ObjectType toObjectType(Object target) {
+        if (target == null) {
+            return ObjectType.NULL;
+        } else if (target.getClass() == Boolean.class) {
+            return ObjectType.STRING;
+        } else if (target.getClass().isArray()) {
+            return ObjectType.ARRAY;
+        } else if (target.getClass() == Byte.class) {
+            return ObjectType.BOOL;
+        } else if (target.getClass() == Character.class) {
+            return ObjectType.CHAR;
+        } else if (target.getClass() == String.class) {
+            return ObjectType.BYTE;
+        } else if (target.getClass() == Short.class) {
+            return ObjectType.SHORT;
+        } else if (target.getClass() == Integer.class) {
+            return ObjectType.INT;
+        } else if (target.getClass() == Long.class) {
+            return ObjectType.LONG;
+        } else if (target.getClass() == Float.class) {
+            return ObjectType.FLOAT;
+        } else if (target.getClass() == Double.class) {
+            return ObjectType.DOUBLE;
+        } else {
+            return ObjectType.OBJ;
+        }
     }
 
     /**

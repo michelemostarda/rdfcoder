@@ -76,6 +76,19 @@ public class Inspector {
     }
 
     /**
+     * Given an expression string returns the type of the target object.
+     * 
+     * @param expression
+     * @return the detected object type
+     * @throws PatternException
+     * @throws InspectorParserException
+     */
+    public BeanAccessor.ObjectType getType(String expression) throws PatternException, InspectorParserException {
+        Object target = inspect(expression);
+        return BeanAccessor.toObjectType(target);
+    }
+
+    /**
      * Adds a bean with a specific name to the default context.
      *
      * @param name
@@ -158,5 +171,15 @@ public class Inspector {
         } catch (PatternException pe) {
             throw new RuntimeException("Unexpected error while loading properties.", pe);
         }
+    }
+
+    /**
+     * Returns the public properties of the object idenfied by expression.
+     *
+     * @param expression the expression targeting the inspected object
+     * @return
+     */
+    public List<String> getProperties(String expression) throws PatternException, InspectorParserException {
+        return BeanAccessor.getPropertyNames(inspect(expression));
     }
 }
