@@ -18,6 +18,7 @@
 
 package com.asemantics.rdfcoder;
 
+import com.asemantics.rdfcoder.inspector.BeanAccessor;
 import com.asemantics.rdfcoder.profile.ProfileException;
 import com.asemantics.rdfcoder.storage.CodeStorage;
 import com.asemantics.rdfcoder.storage.CodeStorageException;
@@ -46,6 +47,7 @@ import java.util.Map;
 public class CommandLine extends AbstractCommandLine {
 
     private final ModelNameCompleter modelNameCompleter = new ModelNameCompleter(this);
+    //private final DescribePathCompleter describePathCompleter = new DescribePathCompleter(this);
 
     /**
      * Constructor.
@@ -675,11 +677,63 @@ public class CommandLine extends AbstractCommandLine {
         // describe completer.
         final ArgumentCompleter describeCompleter = new ArgumentCompleter(
                 new StringsCompleter("describe"),
-                new StringsCompleter(getModelProperties()),
+                new StringsCompleter(getModelProperties()) {
+
+                    private String getPostfixCompletor(String modelProp) {
+                        try {
+                            BeanAccessor.ObjectType type = getSelectedModelInspector().getType(modelProp);
+                            switch (type) {
+                                case NULL:
+                                    return null;
+                                case ARRAY:
+                                    return "[0]";
+                                case OBJ:
+                                    return ".";
+                                default:
+                                    return null;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    public void complete(LineReader reader, ParsedLine commandLine, List<Candidate> candidates) {
+                        final String line = commandLine.line();
+                        final String word = commandLine.word();
+                        if (line.endsWith("[")) {
+                            final List<Candidate> defaultProperties = new ArrayList<>();
+                            defaultProperties.add(new Candidate("[0]"));
+                            candidates.addAll(defaultProperties);
+                        } else if (word.trim().isEmpty()) {
+                            final List<Candidate> defaultProperties = new ArrayList<>();
+                            for (String modelProperty : getModelProperties()) {
+                                defaultProperties.add(new Candidate(modelProperty));
+                                final String postfixCompletor = getPostfixCompletor(modelProperty);
+                                if (postfixCompletor != null) {
+                                    defaultProperties.add(new Candidate(modelProperty + postfixCompletor));
+                                }
+                            }
+                            candidates.addAll(defaultProperties);
+                        } else if (word.endsWith(".")) {
+                            final List<Candidate> newCandidates = new ArrayList<>();
+                            final String expression = word.substring(0, word.length() - 1);
+                            try {
+                                for(String property : getSelectedModelInspector().getProperties(expression)) {
+                                    newCandidates.add(new Candidate(String.format("%s.%s", expression, property)));
+                                }
+                                candidates.addAll(newCandidates);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                },
                 new NullCompleter()
         );
 
-        // describe completer.
+        // inspect completer.
         final ArgumentCompleter inspectCompleter = new ArgumentCompleter(
                 new StringsCompleter("inspect"),
                 new StringsCompleter(getModelProperties()),
@@ -782,7 +836,7 @@ public class CommandLine extends AbstractCommandLine {
 
     class ModelNameCompleter implements Completer {
 
-        private CommandLine cl;
+        private final CommandLine cl;
 
         ModelNameCompleter(CommandLine cl) {
             this.cl = cl;
